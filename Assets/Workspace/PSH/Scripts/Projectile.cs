@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -10,22 +8,38 @@ public class Projectile : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // DeformableTerrain 컴포넌트를 가진 오브젝트와 충돌했는지 확인
+        Vector2 explosionPoint = collision.contacts[0].point;
         DeformableTerrain terrain = collision.gameObject.GetComponent<DeformableTerrain>();
         if (terrain != null)
         {
-            // 충돌 지점(contacts[0].point)과 반경을 넘겨 지형 파괴 함수 호출
             if (explosionMask == null)
             {
-                terrain.DestroyTerrain(collision.contacts[0].point, explosionRadius);
+                terrain.DestroyTerrain(explosionPoint, explosionRadius);
             }
             else
             {
-                terrain.DestroyTerrain(collision.contacts[0].point, explosionMask, explosionScale);
+                terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
             }
 
-            // 포탄 파괴
-            Destroy(gameObject);
         }
+        else if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("플레이어와부딪힘");
+            DeformableTerrain activeTerrain = FindObjectOfType<DeformableTerrain>();
+            if (activeTerrain != null)
+            {
+                Debug.Log("테리안찾음");
+                if (explosionMask == null)
+                {
+                    activeTerrain.DestroyTerrain(explosionPoint, explosionRadius);
+                }
+                else
+                {
+                    activeTerrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
+                }
+            }
+        }
+        // 포탄 파괴
+        Destroy(gameObject);
     }
 }
