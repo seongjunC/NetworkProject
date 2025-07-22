@@ -116,7 +116,7 @@ public class DeformableTerrain : MonoBehaviour
                 {
                     Color maskPixel = explosionMask.GetPixel(maskX, maskY);
 
-                    if (maskPixel.a < 0.1f)
+                    if (maskPixel.a > 0.1f)
                     {
                         deformableTexture.SetPixel(targetX, targetY, Color.clear);
                     }

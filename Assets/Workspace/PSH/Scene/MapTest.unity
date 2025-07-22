@@ -618,7 +618,7 @@ PrefabInstance:
     - target: {fileID: 7254293581450941464, guid: d8dec524013cb4f47833ea17175c577d, type: 3}
       propertyPath: explosionMask
       value: 
-      objectReference: {fileID: 2800000, guid: 6077a1905c2eaad49a29af115b8698c5, type: 3}
+      objectReference: {fileID: 2800000, guid: 3f04701bb1d65804bac7d5a80f0ffc48, type: 3}
     - target: {fileID: 7254293581450941464, guid: d8dec524013cb4f47833ea17175c577d, type: 3}
       propertyPath: explosionScale
       value: 5
