@@ -50,7 +50,28 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
     public void LogOut()
     {
+        StartCoroutine(LogOutRoutine());
+    }
+
+    private IEnumerator LogOutRoutine()
+    {
+        if (PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.LeaveLobby();
+            Debug.Log("Photon 로비 나가는 중...");
+
+            yield return new WaitUntil(() => !PhotonNetwork.InLobby);
+        }
+
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+            Debug.Log("Photon 연결 끊는 중...");
+
+            yield return new WaitUntil(() => !PhotonNetwork.IsConnected);
+        }
+
         Auth.SignOut();
         SceneManager.LoadSceneAsync("Login");
-    }    
+    }
 }
