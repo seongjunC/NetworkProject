@@ -56,4 +56,10 @@ public class FirebaseManager : Singleton<FirebaseManager>
         });
     }
     #endregion
+
+    public void LogOut()
+    {
+        Auth.SignOut();
+        SceneManager.LoadSceneAsync("Login");
+    }
 }
