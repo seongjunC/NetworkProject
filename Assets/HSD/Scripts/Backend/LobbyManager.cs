@@ -33,13 +33,22 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }
     }
 
+    #region LifeCycle
     public override void OnEnable()
     {
         base.OnEnable();
 
+        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
+
         if (Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
     }
+
+    public override void OnDisable()
+    {
+        logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
+    }
+    #endregion
 
     public void CreateRoom()
     {

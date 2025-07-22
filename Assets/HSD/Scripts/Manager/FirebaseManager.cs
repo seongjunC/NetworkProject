@@ -3,6 +3,7 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,15 +21,10 @@ public class FirebaseManager : Singleton<FirebaseManager>
     private static FirebaseDatabase database;
     public static FirebaseDatabase  Database { get { return database; } }
     #endregion
-    public event System.Action<bool> OnAuthSettingComplated;
 
-    public void LogOut()
-    {
-        Auth.SignOut();
-        SceneManager.LoadSceneAsync("Login");
-    }
+    public event Action OnAuthSettingComplated;
 
-    public IEnumerator StartRoutine()
+    private void Awake()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(t =>
         {
@@ -39,28 +35,6 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 Debug.Log("파베 설정 충족");
                 app = FirebaseApp.DefaultInstance;
                 auth = FirebaseAuth.DefaultInstance;
-
-                if (auth.CurrentUser != null)
-                {
-                    Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
-                    FirebaseUser user = Auth.CurrentUser;
-
-                    OnAuthSettingComplated?.Invoke(user == null);
-
-                    if (user != null)
-                    {                        
-                        string firebaseUID = user.UserId;
-
-                        PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
-                        PhotonNetwork.AuthValues.UserId = firebaseUID;      // 포톤 UID 설정  
-                    }                    
-                }
-                else
-                {
-                    Debug.Log("자동 로그인 없음");
-                    return;
-                }
-
                 database = FirebaseDatabase.DefaultInstance;
                 database.GoOnline();
                 database.SetPersistenceEnabled(false);
@@ -70,39 +44,13 @@ public class FirebaseManager : Singleton<FirebaseManager>
             {
                 Debug.LogError("파베 설정이 충족되지 않음");
             }
+            OnAuthSettingComplated?.Invoke();
         });
-        PhotonNetwork.ConnectUsingSettings();
-        yield return new WaitForSeconds(1);
-        StartCoroutine(LoginRoutine());
     }
 
-    public IEnumerator LoginRoutine()
+    public void LogOut()
     {
-        var task = Manager.Database.userRef.GetValueAsync();
-        yield return new WaitUntil(() => task.IsCompleted);
-
-        if (task.IsFaulted || task.IsCanceled)
-        {
-            Debug.LogError("Firebase 데이터 가져오기 실패");
-            yield break;
-        }
-
-        var snapshot = task.Result;
-        string json = snapshot?.GetRawJsonValue();
-        Debug.Log("Firebase 유저 데이터: " + json);
-
-        if (string.IsNullOrEmpty(json))
-        {
-            var newData = new PlayerData();
-            Manager.Data.PlayerData = newData;
-
-            string saveJson = JsonUtility.ToJson(newData);
-            Manager.Database.userRef.SetRawJsonValueAsync(saveJson);
-        }
-        else
-        {
-            Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
-        } 
-        SceneManager.LoadSceneAsync("Lobby");
-    }
+        Auth.SignOut();
+        SceneManager.LoadSceneAsync("Login");
+    }    
 }
