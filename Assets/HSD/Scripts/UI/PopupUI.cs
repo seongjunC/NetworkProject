@@ -2,9 +2,10 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class PopupUI : MonoBehaviour
+public class PopUpUI : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI message;
+
     private Coroutine showRoutine;
     private YieldInstruction delay;
 

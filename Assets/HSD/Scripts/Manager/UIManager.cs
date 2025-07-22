@@ -7,14 +7,14 @@ using UnityEngine.UI;
 public class UIManager : Singleton<UIManager>
 {
     private Canvas mainCanvas;
-    public PopupUI PopupUI;
+    public PopUpUI PopUpUI;
 
     #region LifeCycle
     private void Awake()
     {
         CreateMainCanvas();
 
-        PopupUI = Instantiate(Resources.Load<PopupUI>("UI/PopupUI"), mainCanvas.transform);
+        PopUpUI = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
     }
     #endregion
 
