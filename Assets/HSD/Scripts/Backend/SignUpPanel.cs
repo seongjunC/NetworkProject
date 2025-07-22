@@ -1,3 +1,4 @@
+using Firebase;
 using Firebase.Auth;
 using Firebase.Extensions;
 using System.Linq;
@@ -60,7 +61,6 @@ public class SignUpPanel : MonoBehaviour
         checkText.color = Color.white;
         checkText.text = "Check";
     }
-
     private void CreateAccount()
     {
         if(pw.text != pwCheck.text)
@@ -79,6 +79,22 @@ public class SignUpPanel : MonoBehaviour
         {
             if (task.IsCanceled || task.IsFaulted)
             {
+                var exception = task.Exception.Flatten().InnerExceptions[0] as FirebaseException;
+                AuthError error = (AuthError)exception.ErrorCode;
+
+                if (error == AuthError.EmailAlreadyInUse)
+                {
+                    Manager.UI.PopUpUI.Show("이미 존재하는 계정입니다.");
+                }
+                else if (error == AuthError.InvalidEmail)
+                {
+                    Manager.UI.PopUpUI.Show("이메일 형식이 잘못되었습니다.");
+                }
+                else if (error == AuthError.WeakPassword)
+                {
+                    Manager.UI.PopUpUI.Show("비밀번호는 6자 이상이어야 합니다.");
+                }
+
                 Debug.LogError("회원가입 실패");
                 Manager.UI.PopUpUI.Show("Failed!", Color.red);
                 return;
