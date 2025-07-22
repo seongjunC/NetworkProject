@@ -19,6 +19,11 @@ public class LoginPanel : MonoBehaviour
     [SerializeField] GameObject signupPanel;
 
     #region LifeCycle
+    private void Start()
+    {
+        Manager.Firebase.OnAuthSettingComplated += LoginSetActive;
+    }
+
     private void OnEnable()
     {
         Init();
@@ -74,4 +79,6 @@ public class LoginPanel : MonoBehaviour
         gameObject.SetActive(false);
         signupPanel.SetActive(true);
     }
+
+    private void LoginSetActive(bool active) => gameObject.SetActive(active);
 }

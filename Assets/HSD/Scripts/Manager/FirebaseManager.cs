@@ -2,6 +2,7 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,14 +20,13 @@ public class FirebaseManager : Singleton<FirebaseManager>
     private static FirebaseDatabase database;
     public static FirebaseDatabase  Database { get { return database; } }
     #endregion
-    private bool isComplated;
+    public event System.Action<bool> OnAuthSettingComplated;
+
     #region LifeCycle
 
     private void Start()
     {
         StartCoroutine(StartRoutine());
-
-        
     }
     #endregion
 
@@ -51,11 +51,24 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 if (auth.CurrentUser != null)
                 {
                     Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
+                    FirebaseUser user = Auth.CurrentUser;
 
+                    OnAuthSettingComplated?.Invoke(user == null);
+
+                    if (user != null)
+                    {                        
+                        string firebaseUID = user.UserId;
+
+                        PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
+                        PhotonNetwork.AuthValues.UserId = firebaseUID;      // 포톤 UID 설정
+
+                        PhotonNetwork.ConnectUsingSettings();
+                    }                    
                 }
                 else
                 {
                     Debug.Log("자동 로그인 없음");
+                    return;
                 }
 
                 database = FirebaseDatabase.DefaultInstance;
@@ -99,7 +112,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
         {
             Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
         }
-
+        PhotonNetwork.JoinLobby();
         SceneManager.LoadSceneAsync("Lobby");
     }
 }

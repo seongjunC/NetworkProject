@@ -13,7 +13,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
 
-        if(Manager.Data.PlayerData.Name == default)
+        if(Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
     }
 }
