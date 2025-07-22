@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public int explosionRadius1 = 10; // 픽셀 단위 반경
-    public int explosionRadius2 = 10; // 픽셀 단위 반경
+    public int explosionRadiusx = 10; // 픽셀 단위 반경
+    public int explosionRadiusy = 10; // 픽셀 단위 반경
     public Texture2D explosionMask;
     public float explosionScale = 1;
 
@@ -15,7 +15,7 @@ public class Projectile : MonoBehaviour
         {
             if (explosionMask == null)
             {
-                terrain.DestroyTerrain(explosionPoint, explosionRadius1, explosionRadius2);
+                terrain.DestroyTerrain(explosionPoint, explosionRadiusx, explosionRadiusy);
             }
             else
             {
@@ -32,7 +32,7 @@ public class Projectile : MonoBehaviour
                 Debug.Log("테리안찾음");
                 if (explosionMask == null)
                 {
-                    activeTerrain.DestroyTerrain(explosionPoint, explosionRadius1, explosionRadius2);
+                    activeTerrain.DestroyTerrain(explosionPoint, explosionRadiusx, explosionRadiusy);
                 }
                 else
                 {

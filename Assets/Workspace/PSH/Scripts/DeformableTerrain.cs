@@ -51,7 +51,7 @@ public class DeformableTerrain : MonoBehaviour
 
         UpdateCollider();
     }
-    public void DestroyTerrain(Vector2 point, int radius1, int radius2)
+    public void DestroyTerrain(Vector2 point, int radiusx, int radiusy)
     {
         // 월드 좌표를 텍스처의 픽셀 좌표로 변환
         Vector2Int pixelCoord = WorldToPixel(point);
@@ -60,12 +60,12 @@ public class DeformableTerrain : MonoBehaviour
         int py = pixelCoord.y;
 
         // 해당 지점 주변의 픽셀을 타원형으로 순회하며 투명하게 만듬
-        for (int x = px - radius1; x < px + radius1; x++)
+        for (int x = px - radiusx; x < px + radiusx; x++)
         {
-            for (int y = py - radius2; y < py + radius2; y++)
+            for (int y = py - radiusy; y < py + radiusy; y++)
             {
-                if (Mathf.Pow(radius2, 2)*Mathf.Pow(x - px, 2) + Mathf.Pow(radius1, 2)* Mathf.Pow(y - py, 2) 
-                    < Mathf.Pow(radius1, 2)* Mathf.Pow(radius2, 2))
+                if (Mathf.Pow(radiusy, 2)*Mathf.Pow(x - px, 2) + Mathf.Pow(radiusx, 2)* Mathf.Pow(y - py, 2) 
+                    < Mathf.Pow(radiusx, 2)* Mathf.Pow(radiusy, 2))
                 {
                     if (x > 0 && x < deformableTexture.width && y > 0 && y < deformableTexture.height)
                     {
