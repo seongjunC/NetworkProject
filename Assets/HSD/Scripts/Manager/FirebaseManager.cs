@@ -5,6 +5,7 @@ using Firebase.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FirebaseManager : Singleton<FirebaseManager>
 {
@@ -32,6 +33,17 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 Debug.Log("파베 설정 충족");
                 app         = FirebaseApp.DefaultInstance;
                 auth        = FirebaseAuth.DefaultInstance;
+
+                if(auth.CurrentUser != null)
+                {
+                    Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
+                    SceneManager.LoadSceneAsync("Lobby");
+                }
+                else
+                {
+                    Debug.Log("자동 로그인 없음");
+                }
+
                 database    = FirebaseDatabase.DefaultInstance;
                 database.GoOnline();
                 database.SetPersistenceEnabled(false);
