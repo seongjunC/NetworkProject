@@ -2547,6 +2547,7 @@ GameObject:
   - component: {fileID: 758763832}
   - component: {fileID: 758763834}
   - component: {fileID: 758763833}
+  - component: {fileID: 758763835}
   m_Layer: 5
   m_Name: LoginPanel
   m_TagString: Untagged
@@ -2617,6 +2618,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 758763831}
   m_CullTransparentMesh: 1
+--- !u!114 &758763835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758763831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef539fbb91f6cf4a9352ad099fda8e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  email: {fileID: 756520986}
+  pw: {fileID: 856905853}
+  loginButton: {fileID: 1670376813}
+  signupButton: {fileID: 824231812}
+  googleLoginButton: {fileID: 211431498}
+  signupPanel: {fileID: 1375506313}
 --- !u!1 &824231810
 GameObject:
   m_ObjectHideFlags: 0
@@ -2630,7 +2649,7 @@ GameObject:
   - component: {fileID: 824231813}
   - component: {fileID: 824231812}
   m_Layer: 5
-  m_Name: SignUpButton
+  m_Name: SignupButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3597,6 +3616,7 @@ GameObject:
   - component: {fileID: 1375506314}
   - component: {fileID: 1375506316}
   - component: {fileID: 1375506315}
+  - component: {fileID: 1375506317}
   m_Layer: 5
   m_Name: SignUpPanel
   m_TagString: Untagged
@@ -3668,6 +3688,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1375506313}
   m_CullTransparentMesh: 1
+--- !u!114 &1375506317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375506313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0773d285602922c41b13e043bd76772c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  email: {fileID: 227558345}
+  pw: {fileID: 1250511221}
+  pwCheck: {fileID: 92814874}
+  loginPanel: {fileID: 758763831}
+  loginPanelButton: {fileID: 83400445}
+  createButton: {fileID: 1509111658}
+  emailCheckButton: {fileID: 19529918}
+  checkText: {fileID: 20395654}
 --- !u!1 &1402819867
 GameObject:
   m_ObjectHideFlags: 0

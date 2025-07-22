@@ -29,25 +29,37 @@ public class SignUpPanel : MonoBehaviour
     #region LifeCycle
     private void OnEnable()
     {
-        isEmailChecking = false;
+        InitChecking();
         Subscribe();
     }
-    #endregion
 
     private void OnDisable()
     {
         UnSubscribe();
     }
+    #endregion
+
     #region EventSubscribe
     private void Subscribe()
     {
-
+        loginPanelButton.onClick.AddListener(SwitchLoginPanel);
+        createButton    .onClick.AddListener(CreateAccount);
+        emailCheckButton.onClick.AddListener(CheckEmail);
     }
     private void UnSubscribe()
     {
-
+        loginPanelButton.onClick.RemoveListener(SwitchLoginPanel);
+        createButton    .onClick.RemoveListener(CreateAccount);
+        emailCheckButton.onClick.RemoveListener(CheckEmail);
     }
     #endregion
+
+    private void InitChecking()
+    {
+        isEmailChecking = false;
+        checkText.color = Color.white;
+        checkText.text = "Check";
+    }
 
     private void CreateAccount()
     {

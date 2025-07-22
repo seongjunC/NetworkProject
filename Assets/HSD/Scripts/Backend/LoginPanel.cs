@@ -44,7 +44,6 @@ public class LoginPanel : MonoBehaviour
     }
     #endregion
 
-    #region Login
     private void Login()
     {
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
@@ -60,13 +59,10 @@ public class LoginPanel : MonoBehaviour
             StartCoroutine(LoginRoutine());
         });
     }
-
     private IEnumerator LoginRoutine()
     {
         yield return null;
     }
-    #endregion
-
     private void SignUp()
     {
         gameObject.SetActive(false);
