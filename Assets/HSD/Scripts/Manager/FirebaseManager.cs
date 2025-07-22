@@ -22,21 +22,13 @@ public class FirebaseManager : Singleton<FirebaseManager>
     #endregion
     public event System.Action<bool> OnAuthSettingComplated;
 
-    #region LifeCycle
-
-    private void Start()
-    {
-        StartCoroutine(StartRoutine());
-    }
-    #endregion
-
     public void LogOut()
     {
         Auth.SignOut();
         SceneManager.LoadSceneAsync("Login");
     }
 
-    private IEnumerator StartRoutine()
+    public IEnumerator StartRoutine()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(t =>
         {
@@ -60,9 +52,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
                         string firebaseUID = user.UserId;
 
                         PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
-                        PhotonNetwork.AuthValues.UserId = firebaseUID;      // 포톤 UID 설정
-
-                        PhotonNetwork.ConnectUsingSettings();
+                        PhotonNetwork.AuthValues.UserId = firebaseUID;      // 포톤 UID 설정  
                     }                    
                 }
                 else
@@ -81,6 +71,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 Debug.LogError("파베 설정이 충족되지 않음");
             }
         });
+        PhotonNetwork.ConnectUsingSettings();
         yield return new WaitForSeconds(1);
         StartCoroutine(LoginRoutine());
     }
@@ -111,8 +102,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
         else
         {
             Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
-        }
-        PhotonNetwork.JoinLobby();
+        } 
         SceneManager.LoadSceneAsync("Lobby");
     }
 }
