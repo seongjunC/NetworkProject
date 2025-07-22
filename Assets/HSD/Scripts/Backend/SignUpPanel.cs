@@ -30,6 +30,7 @@ public class SignUpPanel : MonoBehaviour
     #region LifeCycle
     private void OnEnable()
     {
+        Init();
         InitChecking();
         Subscribe();
     }
@@ -55,10 +56,17 @@ public class SignUpPanel : MonoBehaviour
     }
     #endregion
 
+    private void Init()
+    {
+        email.text      = "";
+        pw.text         = "";
+        pwCheck.text    = "";
+    }
+
     private void InitChecking()
     {
         isEmailChecking = false;
-        checkText.color = Color.white;
+        checkText.color = Color.black;
         checkText.text = "Check";
     }
     private void CreateAccount()
@@ -128,6 +136,7 @@ public class SignUpPanel : MonoBehaviour
             {
                 checkText.color = Color.green;
                 checkText.text = "O";
+                isEmailChecking = true;
                 Manager.UI.PopUpUI.Show("This is An Available Email");
             }
         });
