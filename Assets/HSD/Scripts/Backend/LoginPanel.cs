@@ -1,8 +1,8 @@
-using Firebase.Auth;
 using Firebase.Extensions;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoginPanel : MonoBehaviour
@@ -23,6 +23,7 @@ public class LoginPanel : MonoBehaviour
     {
         Init();
         Subscribe();
+        loginButton.interactable = true;
     }
     private void OnDisable()
     {
@@ -49,6 +50,7 @@ public class LoginPanel : MonoBehaviour
         pw.text = "";
     }
 
+    #region Login
     private void Login()
     {
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
@@ -61,13 +63,30 @@ public class LoginPanel : MonoBehaviour
             }
 
             Debug.Log($"로그인 성공: {task.Result.User.Email}");
+            loginButton.interactable = false;
             StartCoroutine(LoginRoutine());
         });
     }
     private IEnumerator LoginRoutine()
     {
+        yield return Manager.Database.userRef.GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled) return;
+
+            string json = task.Result.GetRawJsonValue();
+            Debug.Log(json);
+            if(string.IsNullOrEmpty(json))
+            {
+                Manager.Data.PlayerData = new PlayerData();
+            }
+
+            Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
+            SceneManager.LoadSceneAsync("Lobby");
+        });
+
         yield return null;
-    }
+    }    
+    #endregion
     private void SignUp()
     {
         gameObject.SetActive(false);

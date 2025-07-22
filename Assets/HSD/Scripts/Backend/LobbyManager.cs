@@ -1,14 +1,19 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyManager : MonoBehaviour
+public class LobbyManager : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private Button logOutButton;
+    [SerializeField] Button logOutButton;
+    [SerializeField] GameObject nickNameSelectPanel;
 
-    private void OnEnable()
+    public override void OnEnable()
     {
-        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
+        base.OnEnable();
+
+        if(Manager.Data.PlayerData.Name == default)
+            nickNameSelectPanel.SetActive(true);
     }
 }
