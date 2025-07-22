@@ -35,8 +35,17 @@ public class NickNameSelectPanel : MonoBehaviour
 
         PhotonNetwork.NickName = nickName.text;
         Manager.Data.PlayerData.Name = nickName.text;
+        
         FirebaseUser user = FirebaseManager.Auth.CurrentUser;
         UserProfile profile = new UserProfile { DisplayName = nickName.text };
+
+        Manager.Database.userRef.Child("Name").SetValueAsync(nickName.text).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+                return;
+
+            Debug.Log($"닉네임 설정완료 : {nickName.text}");
+        });
 
         user.UpdateUserProfileAsync(profile).ContinueWithOnMainThread(task =>
         {
@@ -52,5 +61,7 @@ public class NickNameSelectPanel : MonoBehaviour
                 Debug.LogError(task.Exception);
             }
         });        
+
+        gameObject.SetActive(false);
     }
 }

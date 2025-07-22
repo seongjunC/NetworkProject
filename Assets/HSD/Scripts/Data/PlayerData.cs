@@ -24,11 +24,11 @@ public class PlayerData
         Init();
     }
 
-    private void Init()
+    public void Init()
     {
-        Manager.Database.RegisterUserDataEvent(Database.UserDataType.name, UpdateName);
-        Manager.Database.RegisterUserDataEvent(Database.UserDataType.win, UpdateWin);
-        Manager.Database.RegisterUserDataEvent(Database.UserDataType.lose, UpdateLose);
+        Manager.Database.RegisterUserDataEvent(Database.UserDataType.Name, UpdateName);
+        Manager.Database.RegisterUserDataEvent(Database.UserDataType.Win, UpdateWin);
+        Manager.Database.RegisterUserDataEvent(Database.UserDataType.Lose, UpdateLose);
     }
 
     private void UpdateName(object sender, ValueChangedEventArgs arg)

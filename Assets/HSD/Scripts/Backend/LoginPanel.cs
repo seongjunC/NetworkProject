@@ -64,28 +64,10 @@ public class LoginPanel : MonoBehaviour
 
             Debug.Log($"로그인 성공: {task.Result.User.Email}");
             loginButton.interactable = false;
-            StartCoroutine(LoginRoutine());
+            StartCoroutine(Manager.Firebase.LoginRoutine());
         });
     }
-    private IEnumerator LoginRoutine()
-    {
-        yield return Manager.Database.userRef.GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted || task.IsCanceled) return;
-
-            string json = task.Result.GetRawJsonValue();
-            Debug.Log(json);
-            if(string.IsNullOrEmpty(json))
-            {
-                Manager.Data.PlayerData = new PlayerData();
-            }
-
-            Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
-            SceneManager.LoadSceneAsync("Lobby");
-        });
-
-        yield return null;
-    }    
+       
     #endregion
     private void SignUp()
     {
