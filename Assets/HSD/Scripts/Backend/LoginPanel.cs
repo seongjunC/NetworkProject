@@ -1,3 +1,4 @@
+using Firebase.Auth;
 using Firebase.Extensions;
 using System.Collections;
 using TMPro;
@@ -13,7 +14,6 @@ public class LoginPanel : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] Button loginButton;
     [SerializeField] Button signupButton;
-    [SerializeField] Button googleLoginButton;
 
     [Header("Panels")]
     [SerializeField] GameObject signupPanel;
@@ -21,6 +21,7 @@ public class LoginPanel : MonoBehaviour
     #region LifeCycle
     private void OnEnable()
     {
+        Init();
         Subscribe();
     }
     private void OnDisable()
@@ -34,15 +35,19 @@ public class LoginPanel : MonoBehaviour
     {
         loginButton.onClick.AddListener(Login);
         signupButton.onClick.AddListener(SignUp);
-        googleLoginButton.onClick.AddListener(GoogleLogin);
     }
     private void UnSubscribe()
     {
         loginButton.onClick.RemoveListener(Login);
         signupButton.onClick.RemoveListener(SignUp);
-        googleLoginButton.onClick.RemoveListener(GoogleLogin);
     }
     #endregion
+
+    private void Init()
+    {
+        email.text = "";
+        pw.text = "";
+    }
 
     private void Login()
     {
@@ -67,10 +72,5 @@ public class LoginPanel : MonoBehaviour
     {
         gameObject.SetActive(false);
         signupPanel.SetActive(true);
-    }
-
-    private void GoogleLogin()
-    {
-
     }
 }

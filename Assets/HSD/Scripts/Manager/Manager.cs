@@ -11,7 +11,7 @@ public static class Manager
     private static void Init()
     {
         FirebaseManager.CreateInstance();
-        DatabaseManager.CreateInstance();
+        DatabaseManager.CreateInstance();        
         UIManager.CreateInstance();
     }
 }
