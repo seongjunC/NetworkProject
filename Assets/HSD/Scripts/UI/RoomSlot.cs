@@ -25,7 +25,7 @@ public class RoomSlot : MonoBehaviour
         roomName = room.Name;
         roomNameText.text = room.Name;
         roomCountText.text = $"{room.PlayerCount} / {room.MaxPlayers}";
-        mapIcon.sprite = Manager.Resource.Load<Sprite>($"MapIcon/{room.CustomProperties["Map"]}");
+        mapIcon.sprite = Manager.Resources.Load<Sprite>($"MapIcon/{room.CustomProperties["Map"]}");
     }
 
     public void JoinRoom()

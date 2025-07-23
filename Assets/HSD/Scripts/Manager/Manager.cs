@@ -9,7 +9,7 @@ public static class Manager
     public static DatabaseManager Database => DatabaseManager.Instance;
     public static UIManager UI => UIManager.Instance;
     public static DataManager Data => DataManager.Instance;
-    public static ResourcesManager Resource => ResourcesManager.Instance;
+    public static ResourcesManager Resources => ResourcesManager.Instance;
     public static PoolManager Pool => PoolManager.Instance;
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Init()
