@@ -18,7 +18,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] GameObject mapPrefab;
     [SerializeField] Transform mapContent;
     [SerializeField] GameObject mapSelectPanel;
-    [SerializeField] Image mapImage;
+    [SerializeField] RawImage mapImage;
     [SerializeField] Button changeButton;
     private int mapIdx;
 
@@ -58,7 +58,6 @@ public class RoomManager : MonoBehaviour
             MapChange();
         }
 
-        // 내가 새로 입장했을 때 호출
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             GameObject obj = Instantiate(playerSlotPrefab, playerContent);
@@ -101,6 +100,6 @@ public class RoomManager : MonoBehaviour
     public void MapChange()
     {
         mapIdx = (int)PhotonNetwork.CurrentRoom.CustomProperties["Map"];
-        mapImage.sprite = Manager.Resources.Load<Sprite>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
+        mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
     }
 }

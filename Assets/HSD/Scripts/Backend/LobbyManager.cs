@@ -10,6 +10,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] Button logOutButton;
     [SerializeField] GameObject nickNameSelectPanel;
+    [SerializeField] RoomManager roomManager;
 
     [Header("Room")]
     [SerializeField] GameObject roomPrefab;
@@ -83,13 +84,27 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Debug.Log("방 입장 완료");
         lobby.SetActive(false);
         room.SetActive(true);
+        roomManager.CreatePlayerSlot();
     }
     public override void OnLeftRoom()    
     {
         lobby.SetActive(true);
         room.SetActive(false);
     }
-
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        if(newPlayer != PhotonNetwork.LocalPlayer)
+            roomManager.CreatePlayerSlot(newPlayer);
+    }
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (otherPlayer != PhotonNetwork.LocalPlayer)            
+            roomManager.DestroyPlayerSlot(otherPlayer);
+    }
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        roomManager.CreatePlayerSlot(newMasterClient);
+    }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         foreach (RoomInfo room in roomList)

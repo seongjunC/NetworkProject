@@ -71,29 +71,29 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
             if (status == DependencyStatus.Available)
             {                                
-                FirebaseAuth auth = FirebaseManager.Auth;
-                FirebaseDatabase database = FirebaseManager.Database;
+                //FirebaseAuth auth = FirebaseManager.Auth;
+                //FirebaseDatabase database = FirebaseManager.Database;
 
-                if (auth.CurrentUser != null)
-                {
-                    Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
-                    FirebaseUser user = auth.CurrentUser;
+                //if (auth.CurrentUser != null)
+                //{
+                //    Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
+                //    FirebaseUser user = auth.CurrentUser;
 
-                    LoginSetActive(user == null);
+                //    LoginSetActive(user == null);
 
-                    if (user != null)
-                    {
-                        PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
-                        PhotonNetwork.AuthValues.UserId = user.UserId;      // 포톤 UID 설정  
+                //    if (user != null)
+                //    {
+                //        PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
+                //        PhotonNetwork.AuthValues.UserId = user.UserId;      // 포톤 UID 설정  
    
-                        PhotonNetwork.ConnectUsingSettings();
-                    }
-                }
-                else
-                {
-                    Debug.Log("자동 로그인 없음");
-                    return;
-                }
+                //        PhotonNetwork.ConnectUsingSettings();
+                //    }
+                //}
+                //else
+                //{
+                //    Debug.Log("자동 로그인 없음");
+                //    return;
+                //}
             }
             else
             {
