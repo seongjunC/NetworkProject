@@ -7,18 +7,18 @@ using System;
 
 public class DatabaseManager : Singleton<DatabaseManager>
 {   
-    private DatabaseReference root;
-    private DatabaseReference userRef;
+    public DatabaseReference root {  get; private set; }
+    public DatabaseReference userRef { get; private set; }
 
     #region LifeCycle
 
-    private void Start()
+    #endregion
+
+    public void Init()
     {
         root    = FirebaseManager.Database.RootReference;
         userRef = root.Child("UserData").Child(FirebaseManager.Auth.CurrentUser.UserId);
     }
-
-    #endregion
 
     #region EventHandler
     public void RegisterUserDataEvent(UserDataType dataType, EventHandler<ValueChangedEventArgs> eventHandler)

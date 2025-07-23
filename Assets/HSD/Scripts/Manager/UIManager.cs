@@ -23,6 +23,7 @@ public class UIManager : Singleton<UIManager>
         mainCanvas = new GameObject("MainCanvas").AddComponent<Canvas>();
         mainCanvas.pixelPerfect = true;
         mainCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        mainCanvas.sortingOrder = 5;
 
         CanvasScaler scaler         = mainCanvas.AddComponent<CanvasScaler>();
         scaler.uiScaleMode          = CanvasScaler.ScaleMode.ScaleWithScreenSize;

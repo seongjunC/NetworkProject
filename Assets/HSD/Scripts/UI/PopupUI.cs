@@ -35,7 +35,7 @@ public class PopUpUI : MonoBehaviour
         yield return StartCoroutine(Utils.Fade(message, 0, 1));
         yield return delay;
         yield return StartCoroutine(Utils.Fade(message, 1, 0));
-
+        message.color = Color.white;
         gameObject.SetActive(false);
     }
 }
