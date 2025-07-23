@@ -27,7 +27,7 @@ public class ColliderRenderer : MonoBehaviour
     // 콜라이더 경로로부터 메시 생성
     public void CreateMesh()
     {
-        Mesh mesh = _collider.CreateMesh(true, true);
+        Mesh mesh = _collider.CreateMesh(false, false);
         _meshFilter.mesh = mesh;
     }
 
