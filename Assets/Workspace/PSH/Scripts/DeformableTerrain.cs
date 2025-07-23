@@ -135,7 +135,7 @@ public class DeformableTerrain : MonoBehaviour
         polygonCollider = gameObject.AddComponent<PolygonCollider2D>();
     }
 
-    private Vector2Int WorldToPixel(Vector2 worldPoint)
+    public Vector2Int WorldToPixel(Vector2 worldPoint)
     {
         Vector2 localPoint = transform.InverseTransformPoint(worldPoint);
         float pixelsPerUnit = spriteRenderer.sprite.pixelsPerUnit;
