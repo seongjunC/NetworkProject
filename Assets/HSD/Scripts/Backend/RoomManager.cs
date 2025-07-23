@@ -133,9 +133,7 @@ public class RoomManager : MonoBehaviour
 
     public void ReadyPropertyUpdate()
     {
-        ExitGames.Client.Photon.Hashtable playerProperty = new ExitGames.Client.Photon.Hashtable();
-        playerProperty["Ready"] = isReady;
-        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperty);
+        PhotonNetwork.LocalPlayer.SetReady(isReady);
     }
     #endregion
 
@@ -143,11 +141,12 @@ public class RoomManager : MonoBehaviour
     public void MapChange()
     {
         mapIdx = (int)PhotonNetwork.CurrentRoom.CustomProperties["Map"];
+        Debug.Log($"MapIdx = {mapIdx}");
         mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
     }
     public void CreateMapSlot()
     {
-        for (int i = 0; i <= (int)MapType.Length; i ++)
+        for (int i = 0; i <= (int)MapType.Length-1; i ++)
         {
             GameObject obj = Instantiate(mapPrefab, mapContent);
             MapSlot slot = obj.GetComponent<MapSlot>();

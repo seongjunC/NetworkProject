@@ -138,5 +138,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             }
         }
     }
+    public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
+        roomManager.MapChange();
+    }
+    public override void OnPlayerPropertiesUpdate(Player target,
+        ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+    {
+        roomManager.ReadyCheck(target);        
+    }
     #endregion
 }

@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Game;
 using Photon.Pun;
 using System.Collections;
@@ -23,12 +24,13 @@ public class MapSlot : MonoBehaviour
 
     public void SetUp(MapType _mapType)
     {
-        mapIcon.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{mapType.ToString()}");
+        Debug.Log(_mapType);
         mapType = _mapType;
+        mapIcon.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{mapType.ToString()}");
     }
 
     public void MapSelect()
-    {
-        PhotonNetwork.CurrentRoom.CustomProperties["Map"] = mapType;
+    {        
+        PhotonNetwork.CurrentRoom.SetMap((int)mapType);
     }
 }
