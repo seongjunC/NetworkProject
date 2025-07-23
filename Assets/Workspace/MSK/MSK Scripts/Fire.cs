@@ -8,9 +8,12 @@ public class Fire : MonoBehaviour
     [SerializeField] private Bomb bombPrefab;
 
     [Header("Controls")]
-    [SerializeField] float angle = 45f;         // 현재 각도
-    [SerializeField] float angleStep = 1f;      // 각도 변화량
-    [SerializeField] float power = 10f;         // 폭탄 발사 속도
+    [SerializeField] private float angle = 45f;         // 현재 각도
+    [SerializeField] private float angleStep = 1f;      // 각도 변화량
+    [SerializeField] private float maxPower = 10f;         // 폭탄 발사 속도
+    [SerializeField] private float chargingSpeed = 10f;    // 차지속도
+    private float powerCharge = 0f;        // 차지
+    private bool isCharging = false;   // 차지 중인지 여부
 
     private void Update()
     {
@@ -29,10 +32,23 @@ public class Fire : MonoBehaviour
         // 포신 회전 적용 (localRotation 이용)
         firePivot.localRotation = Quaternion.Euler(0, 0, angle);
 
-        // 발사 (스페이스)
-        if (Input.GetKeyDown(KeyCode.Space))
+
+        // 스페이스바 누르고 있으면 차지 시작
+        if (Input.GetKey(KeyCode.Space))
         {
+            isCharging = true;
+            Debug.Log("차지");
+            powerCharge += chargingSpeed * Time.deltaTime;
+            powerCharge = Mathf.Clamp(powerCharge, 0f, maxPower);
+        }
+
+        // 스페이스바에서 손을 뗐을 때 발사
+        if (isCharging && Input.GetKeyUp(KeyCode.Space))
+        {
+            Debug.Log($"발사, 힘 : {powerCharge}");
             Shoot();
+            powerCharge = 0f;
+            isCharging = false;
         }
 
         // 디버그: 발사 방향 그리기
@@ -43,6 +59,6 @@ public class Fire : MonoBehaviour
     private void Shoot()
     {
         Bomb newBomb = Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
-        newBomb.SetVelocity(firePoint.up * power);
+        newBomb.SetVelocity(firePoint.up * powerCharge);
     }
 }
