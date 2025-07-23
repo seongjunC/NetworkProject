@@ -31,9 +31,9 @@ public class Line
 // 지정된 원형 콜라이더로부터 땅 콜라이더를 자르는 Cutter 클래스
 public class Cutter : MonoBehaviour
 {
-    [SerializeField] PolygonCollider2D _landCollider;   // 잘릴 대상인 땅 콜라이더
-    [SerializeField] PolygonCollider2D _circleCollider; // 잘라낼 영역인 원 콜라이더
-    [SerializeField] int _testIterations = 10;          // 절단 루프의 최대 반복 횟수 (무한루프 방지)
+    [SerializeField] private PolygonCollider2D _landCollider;   // 잘릴 대상인 땅 콜라이더
+    [SerializeField] private PolygonCollider2D _circleCollider; // 잘라낼 영역인 원 콜라이더
+    [SerializeField] private int _testIterations = 10;          // 절단 루프의 최대 반복 횟수 (무한루프 방지)
     
     // 실제 절단 실행 함수
     public void DoCut()
@@ -222,7 +222,7 @@ public class Cutter : MonoBehaviour
     }
 
     // 리스트를 왼쪽으로 한 칸 순환 이동
-    void ReorderList<T>(List<T> list)
+    private void ReorderList<T>(List<T> list)
     {
         var first = list[0];
         for (int i = 0; i < list.Count; i++)
@@ -270,7 +270,7 @@ public class Cutter : MonoBehaviour
 
 
     // 다음 인덱스를 시계/반시계 방향으로 반환
-    int GetNext(int index, int length, bool isCCW)
+    private int GetNext(int index, int length, bool isCCW)
     {
         int nextIndex = index + (isCCW ? 1 : -1);
         if (nextIndex >= length)

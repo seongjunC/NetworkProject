@@ -5,9 +5,9 @@ using UnityEngine;
 [ExecuteAlways]
 public class Land : MonoBehaviour
 {
-    [SerializeField] PolygonCollider2D _collider;       // 지형 콜라이더 참조
-    [SerializeField] MeshFilter _meshFilter;            // 메시 렌더러용 메쉬필터
-    [SerializeField] ColliderRenderer _colliderRenderer; // 메시 생성 담당 스크립트
+    [SerializeField] private PolygonCollider2D _collider;       // 지형 콜라이더 참조
+    [SerializeField] private MeshFilter _meshFilter;            // 메시 렌더러용 메쉬필터
+    [SerializeField] private ColliderRenderer _colliderRenderer; // 메시 생성 담당 스크립트
 
     // 외부에서 경로를 받아 콜라이더 패스 및 메시를 재생성하는 함수
     public void SetPath(List<List<Point>> paths)

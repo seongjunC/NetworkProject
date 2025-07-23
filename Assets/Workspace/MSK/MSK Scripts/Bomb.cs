@@ -5,10 +5,11 @@ using UnityEngine;
 // 폭탄 역할을 하는 클래스
 public class Bomb : MonoBehaviour
 {
-    Cutter _cut;                      // Cutter 스크립트 참조 (자르기 기능)
-    bool _dead;                       // 폭탄이 터졌는지 여부
-    [SerializeField] Rigidbody2D _rigidbody;          // 물리 이동을 위한 Rigidbody2D 컴포넌트
-    [SerializeField] GameObject _explosionPrefab;     // 폭발 효과 프리팹
+    private Cutter _cut;                      // Cutter 스크립트 참조 (자르기 기능)
+    private bool _dead;                       // 폭탄이 터졌는지 여부
+    [SerializeField] private Rigidbody2D _rigidbody;          // 물리 이동을 위한 Rigidbody2D 컴포넌트
+    [SerializeField] private GameObject _explosionPrefab;     // 폭발 효과 프리팹
+    [SerializeField] private int damageAmount = 50;
 
     // 외부에서 속도 설정하는 함수 (발사 속도 및 회전 토크)
     public void SetVelocity(Vector2 value)
@@ -27,6 +28,15 @@ public class Bomb : MonoBehaviour
     {
         if (_dead) return;                        // 이미 터졌으면 무시
 
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            var player = collision.gameObject.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.OnHit(damageAmount);
+            }
+        }
         // Cutter 위치를 폭탄 위치로 옮김 (자르기 위치 설정)
         _cut.transform.position = transform.position;
 

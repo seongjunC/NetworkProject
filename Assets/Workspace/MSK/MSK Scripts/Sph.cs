@@ -53,7 +53,7 @@ public class Sph : MonoBehaviour
     }
 
     [ContextMenu("CreateMesh")]
-    void CreateMesh()
+    private void CreateMesh()
     {
         _sphCollider.CreatePrimitive(_sides, Vector2.one);
         Mesh mesh = _sphCollider.CreateMesh(false, false); // false, false
@@ -147,7 +147,7 @@ public class Sph : MonoBehaviour
         }
     }
 
-    int GetNext(int index, int length, bool isCW) {
+    private int GetNext(int index, int length, bool isCW) {
         int nextIndex = index + (isCW ? 1 : -1);
         if (nextIndex >= length) {
             nextIndex = 0;

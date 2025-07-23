@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class Throwing : MonoBehaviour
+public class Fire : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] Transform firePivot;       // 회전할 포신 부분 (예: FirePivot)
-    [SerializeField] Transform firePoint;       // 실제 폭탄이 나갈 위치
-    [SerializeField] Bomb bombPrefab;
+    [SerializeField] private Transform firePivot;       // 회전할 포신 부분 (예: FirePivot)
+    [SerializeField] private Transform firePoint;       // 실제 폭탄이 나갈 위치
+    [SerializeField] private Bomb bombPrefab;
 
     [Header("Controls")]
     [SerializeField] float angle = 45f;         // 현재 각도
