@@ -10,6 +10,8 @@ public class Bomb : MonoBehaviour
     [SerializeField] private Rigidbody2D _rigidbody;          // 물리 이동을 위한 Rigidbody2D 컴포넌트
     [SerializeField] private GameObject _explosionPrefab;     // 폭발 효과 프리팹
     [SerializeField] private int damageAmount = 50;
+    [SerializeField] private float lifetime = 3f;
+
 
     // 외부에서 속도 설정하는 함수 (발사 속도 및 회전 토크)
     public void SetVelocity(Vector2 value)
@@ -21,6 +23,7 @@ public class Bomb : MonoBehaviour
     private void Start()
     {
         _cut = FindObjectOfType<Cutter>();       // 씬 내 Cutter 스크립트 찾아서 할당
+        Invoke(nameof(SelfDestruct), lifetime);
     }
 
     // 콜라이더 충돌 시 호출
@@ -52,5 +55,10 @@ public class Bomb : MonoBehaviour
         _cut.DoCut();                            // 자르기 실행
         Destroy(gameObject);                     // 폭탄 오브젝트 파괴
         Instantiate(_explosionPrefab, transform.position, Quaternion.identity);   // 폭발 이펙트 생성
+    }
+    private void SelfDestruct()
+    {
+        if (_dead) return; // 이미 터졌으면 무시
+        Destroy(gameObject);
     }
 }

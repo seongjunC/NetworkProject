@@ -29,7 +29,7 @@ public class Fire : MonoBehaviour
             if (angle < 0f) angle = 0f;
         }
 
-        // 포신 회전 적용 (localRotation 이용)
+        // 포신 회전 
         firePivot.localRotation = Quaternion.Euler(0, 0, angle);
 
 
@@ -50,8 +50,6 @@ public class Fire : MonoBehaviour
             powerCharge = 0f;
             isCharging = false;
         }
-
-        // 디버그: 발사 방향 그리기
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
     }
 

@@ -5,8 +5,8 @@ using UnityEngine;
 [ExecuteAlways]
 public class ColliderRenderer : MonoBehaviour
 {
-    [SerializeField] PolygonCollider2D _collider;   // 참조할 콜라이더
-    [SerializeField] MeshFilter _meshFilter;        // 메시 렌더링용 필터
+    [SerializeField] private PolygonCollider2D _collider;   // 참조할 콜라이더
+    [SerializeField] private MeshFilter _meshFilter;        // 메시 렌더링용 필터
 
     // 트랜스폼이 변경되면 메시 다시 생성
     private void Update()
