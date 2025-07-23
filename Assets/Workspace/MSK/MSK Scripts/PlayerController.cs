@@ -13,10 +13,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_isDead)
+        if (_isDead) 
             return;
 
-        // 이동
+        // 이동 처리
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal != 0)
         {
@@ -25,6 +25,11 @@ public class PlayerController : MonoBehaviour
             velocity.x = horizontal * _speed;
             _rigidbody.velocity = velocity;
         }
+
+        // 회전 각도 제한 ,뒤집힘 방지
+        float z = _rigidbody.rotation;
+        z = Mathf.Clamp(z, -45f, 45f);
+        _rigidbody.MoveRotation(z);
     }
     //  피격 처리
     public void OnHit(int damage)

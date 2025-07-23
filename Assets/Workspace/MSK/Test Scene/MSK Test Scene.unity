@@ -459,11 +459,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1556027435 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 55806390711248404, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-  m_PrefabInstance: {fileID: 5446547926894216998}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1833094126
 GameObject:
   m_ObjectHideFlags: 0
@@ -748,10 +743,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1009363424187354117, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 1467951412910940909, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.79
@@ -760,33 +751,13 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 2260124514565008059, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-      propertyPath: chargingSpeed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4053300521404119588, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 1556027435}
-    - target: {fileID: 4726332220335131546, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 5667671691882581391, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: 5767406228868708187, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
       propertyPath: m_Name
       value: Tank
       objectReference: {fileID: 0}
-    - target: {fileID: 5767406228868708187, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 7516055487962201883, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-      propertyPath: m_Layer
-      value: 9
+    - target: {fileID: 9063368050635690703, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
+      propertyPath: sceneViewId
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

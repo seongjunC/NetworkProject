@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class Fire : MonoBehaviour
@@ -5,7 +6,7 @@ public class Fire : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform firePivot;       // 회전할 포신 부분
     [SerializeField] private Transform firePoint;       // 실제 폭탄이 나갈 위치
-    [SerializeField] private Bomb bombPrefab;
+    [SerializeField] private ga bombPrefab;
 
     [Header("Controls")]
     [SerializeField] private float angle = 45f;         // 포신의 현재 각도
@@ -57,7 +58,7 @@ public class Fire : MonoBehaviour
     // 폭탄 생성하고 속도 설정
     private void Shoot()
     {
-        Bomb newBomb = Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
+        Bomb newBomb = PhotonNetwork.Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
         newBomb.SetVelocity(firePoint.up * powerCharge);
     }
 }

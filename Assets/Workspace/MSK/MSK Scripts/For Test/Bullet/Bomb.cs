@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,12 +54,12 @@ public class Bomb : MonoBehaviour
     private void DoCut()
     {
         _cut.DoCut();                            // 자르기 실행
-        Destroy(gameObject);                     // 폭탄 오브젝트 파괴
+        PhotonNetwork.Destroy(gameObject);                     // 폭탄 오브젝트 파괴
         Instantiate(_explosionPrefab, transform.position, Quaternion.identity);   // 폭발 이펙트 생성
     }
     private void SelfDestruct()
     {
         if (_dead) return; // 이미 터졌으면 무시
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 }
