@@ -7,12 +7,23 @@ using UnityEngine.UI;
 
 public class MapSlot : MonoBehaviour
 {
-    [SerializeField] Image mapIcon;        
+    [SerializeField] RawImage mapIcon;
+    [SerializeField] Button button;
     private MapType mapType;
+
+    private void OnEnable()
+    {
+        button.onClick.AddListener(MapSelect);
+    }
+
+    private void OnDisable()
+    {
+        button.onClick.RemoveListener(MapSelect);
+    }
 
     public void SetUp(MapType _mapType)
     {
-        mapIcon.sprite = Manager.Resources.Load<Sprite>($"MapIcon/{mapType.ToString()}");
+        mapIcon.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{mapType.ToString()}");
         mapType = _mapType;
     }
 

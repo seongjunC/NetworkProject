@@ -19,7 +19,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] Transform mapContent;
     [SerializeField] GameObject mapSelectPanel;
     [SerializeField] RawImage mapImage;
-    [SerializeField] Button changeButton;
+    [SerializeField] Button mapChangeButton;
     private int mapIdx;
 
     [Header("Game")]
@@ -27,15 +27,37 @@ public class RoomManager : MonoBehaviour
     [SerializeField] Button startButton;
     [SerializeField] TMP_Text readyCount;
 
+    [Header("Ready")]
+    [SerializeField] Color readyColor;
+    [SerializeField] Color defaultColor;
+
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
 
+    private bool isReady;
+
+    #region LifeCycle
+    private void OnEnable()
+    {
+        readyButton.onClick.AddListener(Ready);
+        startButton.onClick.AddListener(GameStart);
+        mapChangeButton.onClick.AddListener(OpenMapPanel);
+    }
+    private void OnDisable()
+    {
+        readyButton.onClick.RemoveListener(Ready);
+        startButton.onClick.RemoveListener(GameStart);
+        mapChangeButton.onClick.RemoveListener(OpenMapPanel);
+    }
+    #endregion
+
+    #region PlayerSlot
     public void CreatePlayerSlot(Player player)
     {
         if(playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot slot))
         {
-            changeButton.interactable = true;
+            mapChangeButton.interactable = true;
             startButton.interactable = true;
             slot.SetUp(player);
             return;
@@ -54,7 +76,7 @@ public class RoomManager : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient)
         {
             startButton.interactable = false;
-            changeButton.interactable = false;
+            mapChangeButton.interactable = false;
             MapChange();
         }
 
@@ -65,18 +87,6 @@ public class RoomManager : MonoBehaviour
             playerSlot.SetUp(player);
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
-    }
-
-    public void LeaveRoom()
-    {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            Destroy(playerSlotDic[player.ActorNumber].gameObject);
-        }
-
-        playerSlotDic.Clear();
-
-        PhotonNetwork.LeaveRoom();
     }
 
     public void DestroyPlayerSlot(Player player)
@@ -91,15 +101,71 @@ public class RoomManager : MonoBehaviour
             Debug.LogError("½½·Ô ¾øÀ½");
         }
     }
+    #endregion
 
-    public void CreateMapSlot()
+    public void LeaveRoom()
     {
-        
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            Destroy(playerSlotDic[player.ActorNumber].gameObject);
+        }
+
+        playerSlotDic.Clear();
+
+        PhotonNetwork.LeaveRoom();
+    }
+       
+    #region Ready
+    public void Ready()
+    {
+        isReady = !isReady;
+        playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+        ReadyPropertyUpdate();
     }
 
+    public void ReadyCheck(Player player)
+    {
+        if(player.CustomProperties.TryGetValue("Ready", out object value))
+        {
+            playerSlotDic[player.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+        }
+    }
+
+    public void ReadyPropertyUpdate()
+    {
+        ExitGames.Client.Photon.Hashtable playerProperty = new ExitGames.Client.Photon.Hashtable();
+        playerProperty["Ready"] = isReady;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperty);
+    }
+    #endregion
+
+    #region Map
     public void MapChange()
     {
         mapIdx = (int)PhotonNetwork.CurrentRoom.CustomProperties["Map"];
         mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
+    }
+    public void CreateMapSlot()
+    {
+        for (int i = 0; i <= (int)MapType.Length; i ++)
+        {
+            GameObject obj = Instantiate(mapPrefab, mapContent);
+            MapSlot slot = obj.GetComponent<MapSlot>();
+            slot.SetUp((MapType)i);
+        }        
+    }
+    public void OpenMapPanel()
+    {
+        mapSelectPanel.SetActive(true);
+    }
+    public void CloseMapPanel()
+    {
+        mapSelectPanel.SetActive(false);
+    }
+    #endregion 
+
+    public void GameStart()
+    {
+
     }
 }

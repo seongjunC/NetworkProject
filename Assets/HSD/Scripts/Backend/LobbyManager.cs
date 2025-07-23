@@ -27,6 +27,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject room;
 
     #region LifeCycle
+    private void Start()
+    {
+        lobby.SetActive(true);
+        room.SetActive(false);
+    }
     public override void OnEnable()
     {
         base.OnEnable();
@@ -85,6 +90,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(false);
         room.SetActive(true);
         roomManager.CreatePlayerSlot();
+        roomManager.CreateMapSlot();
     }
     public override void OnLeftRoom()    
     {

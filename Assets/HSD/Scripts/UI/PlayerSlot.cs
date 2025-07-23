@@ -5,12 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerSlot : MonoBehaviour
 {
     [SerializeField] TMP_Text playerName;
     [SerializeField] TMP_Text winText;
     [SerializeField] TMP_Text loseText;
+    [SerializeField] Image panel;
 
     public void SetUp(Player player)
     {
@@ -38,5 +40,10 @@ public class PlayerSlot : MonoBehaviour
     public void ViewPlayerInfo()
     {
         // 정보 보기
+    }
+
+    public void UpdateReady(Color color)
+    {
+        panel.color = color;
     }
 }

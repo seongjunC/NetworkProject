@@ -6,5 +6,5 @@ namespace Database
 
 namespace Game
 {
-    public enum MapType { A, B, C }
+    public enum MapType { A, B, C, Length }
 }
