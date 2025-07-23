@@ -1,5 +1,5 @@
 
 namespace Database
 {
-    public enum UserDataType { name, win, lose }
+    public enum UserDataType { Name, Win, Lose }
 }

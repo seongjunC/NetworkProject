@@ -2292,7 +2292,6 @@ GameObject:
   - component: {fileID: 758763832}
   - component: {fileID: 758763834}
   - component: {fileID: 758763833}
-  - component: {fileID: 758763835}
   m_Layer: 5
   m_Name: LoginPanel
   m_TagString: Untagged
@@ -2362,23 +2361,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 758763831}
   m_CullTransparentMesh: 1
---- !u!114 &758763835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 758763831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eef539fbb91f6cf4a9352ad099fda8e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  email: {fileID: 756520986}
-  pw: {fileID: 856905853}
-  loginButton: {fileID: 1670376813}
-  signupButton: {fileID: 824231812}
-  signupPanel: {fileID: 1375506313}
 --- !u!1 &824231810
 GameObject:
   m_ObjectHideFlags: 0
@@ -4187,6 +4169,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1670376811}
   m_CullTransparentMesh: 1
+--- !u!1 &1760596532
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1760596534}
+  - component: {fileID: 1760596533}
+  m_Layer: 0
+  m_Name: LoginManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1760596533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760596532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef539fbb91f6cf4a9352ad099fda8e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  email: {fileID: 756520986}
+  pw: {fileID: 856905853}
+  loginButton: {fileID: 1670376813}
+  signupButton: {fileID: 824231812}
+  signupPanel: {fileID: 1375506313}
+  loginPanel: {fileID: 758763831}
+--- !u!4 &1760596534
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760596532}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1029.3302, y: 364.79266, z: 5.581173}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1774785529
 GameObject:
   m_ObjectHideFlags: 0
@@ -5389,5 +5421,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1565306214}
+  - {fileID: 1760596534}
   - {fileID: 930328316}
   - {fileID: 12858987}

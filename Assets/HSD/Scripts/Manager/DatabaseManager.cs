@@ -7,8 +7,8 @@ using System;
 
 public class DatabaseManager : Singleton<DatabaseManager>
 {   
-    private DatabaseReference root;
-    private DatabaseReference userRef;
+    public DatabaseReference root {  get; private set; }
+    public DatabaseReference userRef { get; private set; }
 
     #region LifeCycle
 
