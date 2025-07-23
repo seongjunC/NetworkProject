@@ -2157,7 +2157,7 @@ MonoBehaviour:
   startButton: {fileID: 1023658111}
   readyCount: {fileID: 2038180299}
   readyColor: {r: 0.57267237, g: 0.9433962, b: 0.493948, a: 1}
-  defaultColor: {r: 0.46226805, g: 0.31510323, b: 0.9150943, a: 1}
+  defaultColor: {r: 0.16862746, g: 0.21568628, b: 0.5372549, a: 1}
   lobby: {fileID: 1214933021}
   room: {fileID: 1301098871}
 --- !u!4 &820160025

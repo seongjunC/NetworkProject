@@ -361,6 +361,7 @@ MonoBehaviour:
   playerName: {fileID: 4066017652296794214}
   winText: {fileID: 1941369221602578204}
   loseText: {fileID: 6293726224926855797}
+  panel: {fileID: 5596589959689982413}
 --- !u!1 &8075036083381515774
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,6 +36,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] GameObject room;
 
     private bool isReady;
+    private int currentReadyCount;
 
     #region LifeCycle
     private void OnEnable()
@@ -121,6 +122,7 @@ public class RoomManager : MonoBehaviour
         isReady = !isReady;
         playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
         ReadyPropertyUpdate();
+        UpdateReadyCountText();
     }
 
     public void ReadyCheck(Player player)
@@ -128,12 +130,26 @@ public class RoomManager : MonoBehaviour
         if(player.CustomProperties.TryGetValue("Ready", out object value))
         {
             playerSlotDic[player.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+            UpdateReadyCountText();
         }
     }
 
     public void ReadyPropertyUpdate()
     {
         PhotonNetwork.LocalPlayer.SetReady(isReady);
+    }
+    public void UpdateReadyCountText()
+    {
+        currentReadyCount = 0;
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player.CustomProperties.TryGetValue("Ready", out object isReady) && (bool)isReady)
+            {
+                currentReadyCount++;
+            }
+        }
+
+        readyCount.text = $"{currentReadyCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
     }
     #endregion
 
@@ -165,6 +181,12 @@ public class RoomManager : MonoBehaviour
 
     public void GameStart()
     {
+        if(currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
+        {
+            Debug.Log("방에 인원이 부족하거나 모든 플레이어가 레디하지 않았습니다.");
+            return;
+        }
 
+        //PhotonNetwork.LoadLevel(""); // 씬이동
     }
 }

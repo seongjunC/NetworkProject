@@ -166,6 +166,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         {
             Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
         }
+
+        PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);
         SceneManager.LoadSceneAsync("Lobby");
     }
