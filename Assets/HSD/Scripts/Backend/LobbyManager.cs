@@ -25,14 +25,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
 
-    private void Start()
-    {
-        if (!PhotonNetwork.IsConnected)
-        {
-            PhotonNetwork.ConnectUsingSettings();
-        }
-    }
-
     #region LifeCycle
     public override void OnEnable()
     {
@@ -69,15 +61,33 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 Manager.UI.PopUpUI.Show($"{maxPlayerCount} 보다 낮은 값을 입력해 주세요.");
             }
         }
-        ExitGames.Client.Photon.Hashtable customProps = new ExitGames.Client.Photon.Hashtable
-        {
-            { "Map", "Map1" },
-        };
+       
         RoomOptions option = new RoomOptions();
-        option.MaxPlayers = maxPlayer;
-        option.CustomRoomProperties = customProps;
+        option.MaxPlayers = maxPlayer;        
         option.CustomRoomPropertiesForLobby = new string[] { "Map" };
         PhotonNetwork.CreateRoom(roomNameField.text, option);
+        roomNameField.text = "";
+        maxPlayerField.text = "";
+    }
+
+    #region PhotonCallbacks
+    public override void OnCreatedRoom()
+    {
+        ExitGames.Client.Photon.Hashtable roomProperty = new ExitGames.Client.Photon.Hashtable();
+        roomProperty["Map"] = 0;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperty);
+        Debug.Log("방 생성 완료");
+    }
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("방 입장 완료");
+        lobby.SetActive(false);
+        room.SetActive(true);
+    }
+    public override void OnLeftRoom()    
+    {
+        lobby.SetActive(true);
+        room.SetActive(false);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -107,4 +117,5 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             }
         }
     }
+    #endregion
 }

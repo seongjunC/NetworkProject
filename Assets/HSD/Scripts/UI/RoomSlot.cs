@@ -1,4 +1,5 @@
 using ExitGames.Client.Photon.StructWrapping;
+using Game;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -11,7 +12,7 @@ public class RoomSlot : MonoBehaviour
 {    
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text roomCountText;
-    [SerializeField] Image mapIcon;
+    [SerializeField] RawImage mapIcon;
     [SerializeField] Button button;
     private string roomName;
 
@@ -25,7 +26,8 @@ public class RoomSlot : MonoBehaviour
         roomName = room.Name;
         roomNameText.text = room.Name;
         roomCountText.text = $"{room.PlayerCount} / {room.MaxPlayers}";
-        mapIcon.sprite = Manager.Resource.Load<Sprite>($"MapIcon/{room.CustomProperties["Map"]}");
+        Texture2D texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)((int)room.CustomProperties["Map"])).ToString()}");
+        mapIcon.texture = texture;
     }
 
     public void JoinRoom()

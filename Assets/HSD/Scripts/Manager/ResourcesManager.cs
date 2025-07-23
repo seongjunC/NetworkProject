@@ -7,7 +7,7 @@ public class ResourcesManager : Singleton<ResourcesManager>
 {
     private static Dictionary<string, Object> resources = new();
 
-    public T Load<T>(string path, bool isCached = false) where T : Object
+    public T Load<T>(string path, bool isCached = true) where T : Object
     {
         string _path = $"{typeof(T).Name}{path}";
 
