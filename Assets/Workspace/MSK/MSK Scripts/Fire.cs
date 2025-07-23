@@ -4,22 +4,24 @@ using UnityEngine;
 public class Fire : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform firePivot;       // È¸ÀüÇÒ Æ÷½Å ºÎºĞ
-    [SerializeField] private Transform firePoint;       // ½ÇÁ¦ ÆøÅºÀÌ ³ª°¥ À§Ä¡
-    [SerializeField] private GameObject bombPrefab;
+    [SerializeField] private Transform firePivot;       // íšŒì „í•  í¬ì‹  ë¶€ë¶„
+    [SerializeField] private Transform firePoint;       // ì‹¤ì œ í­íƒ„ì´ ë‚˜ê°ˆ ìœ„ì¹˜
+
+    // ì»´íŒŒì¼ ì—ëŸ¬ê°€ ìƒê²¨ì„œ ì£¼ì„ ì²˜ë¦¬ ì§„í–‰
+    // [SerializeField] private ga bombPrefab;
 
     [Header("Controls")]
-    [SerializeField] private float angle = 45f;         // Æ÷½ÅÀÇ ÇöÀç °¢µµ
-    [SerializeField] private float angleStep = 0.5f;      // °¢µµ º¯È­·®
-    [SerializeField] private float maxPower = 10f;         // ÆøÅº ¹ß»ç ¼Óµµ
-    [SerializeField] private float chargingSpeed = 10f;    // Â÷Áö¼Óµµ
+    [SerializeField] private float angle = 45f;         // í¬ì‹ ì˜ í˜„ì¬ ê°ë„
+    [SerializeField] private float angleStep = 0.5f;      // ê°ë„ ë³€í™”ëŸ‰
+    [SerializeField] private float maxPower = 10f;         // í­íƒ„ ë°œì‚¬ ì†ë„
+    [SerializeField] private float chargingSpeed = 10f;    // ì°¨ì§€ì†ë„
 
-    private float powerCharge = 0f;         // Â÷Áö
-    private bool isCharging = false;        // Â÷Áö ÁßÀÎÁö ¿©ºÎ
+    private float powerCharge = 0f;         // ì°¨ì§€
+    private bool isCharging = false;        // ì°¨ì§€ ì¤‘ì¸ì§€ ì—¬ë¶€
 
     private void Update()
     {
-        // °¢µµ Á¶Àı (Up/Down)
+        // ê°ë„ ì¡°ì ˆ (Up/Down)
         if (Input.GetKey(KeyCode.UpArrow))
         {
             angle += angleStep;
@@ -31,23 +33,23 @@ public class Fire : MonoBehaviour
             if (angle < 0f) angle = 0f;
         }
 
-        // Æ÷½Å È¸Àü 
+        // í¬ì‹  íšŒì „ 
         firePivot.localRotation = Quaternion.Euler(0, 0, angle);
 
 
-        // ½ºÆäÀÌ½º¹Ù ´©¸£°í ÀÖÀ¸¸é Â÷Áö ½ÃÀÛ
+        // ìŠ¤í˜ì´ìŠ¤ë°” ëˆ„ë¥´ê³  ìˆìœ¼ë©´ ì°¨ì§€ ì‹œì‘
         if (Input.GetKey(KeyCode.Space))
         {
             isCharging = true;
-            Debug.Log("Â÷Áö");
+            Debug.Log("ì°¨ì§€");
             powerCharge += chargingSpeed * Time.deltaTime;
             powerCharge = Mathf.Clamp(powerCharge, 0f, maxPower);
         }
 
-        // ½ºÆäÀÌ½º¹Ù¿¡¼­ ¼ÕÀ» ¶ÃÀ» ¶§ ¹ß»ç
+        // ìŠ¤í˜ì´ìŠ¤ë°”ì—ì„œ ì†ì„ ë—ì„ ë•Œ ë°œì‚¬
         if (isCharging && Input.GetKeyUp(KeyCode.Space))
         {
-            Debug.Log($"¹ß»ç, Èû : {powerCharge}");
+            Debug.Log($"ë°œì‚¬, í˜ : {powerCharge}");
             Shoot();
             powerCharge = 0f;
             isCharging = false;
@@ -55,7 +57,7 @@ public class Fire : MonoBehaviour
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
     }
 
-    // ÆøÅº »ı¼ºÇÏ°í ¼Óµµ ¼³Á¤
+    // í­íƒ„ ìƒì„±í•˜ê³  ì†ë„ ì„¤ì •
     private void Shoot()
     {
         //Bomb newBomb = PhotonNetwork.Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
