@@ -80,9 +80,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
+        Debug.Log("방 입장 완료");
         lobby.SetActive(false);
         room.SetActive(true);
-        Debug.Log("방 입장 완료");
     }
     public override void OnLeftRoom()    
     {

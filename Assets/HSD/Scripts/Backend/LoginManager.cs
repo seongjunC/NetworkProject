@@ -85,9 +85,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
                     {
                         PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
                         PhotonNetwork.AuthValues.UserId = user.UserId;      // Æ÷Åæ UID ¼³Á¤  
-                        Debug.Log("1");
+   
                         PhotonNetwork.ConnectUsingSettings();
-                        Debug.Log("2");
                     }
                 }
                 else
@@ -136,6 +135,12 @@ public class LoginManager : MonoBehaviourPunCallbacks
     
     public IEnumerator LoginRoutine()
     {
+        if (Manager.Database == null || Manager.Database.userRef == null)
+        {
+            Debug.LogError("Database or userRef is null!");
+            Manager.Database.Init();
+        }
+
         var task = Manager.Database.userRef.GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
 
