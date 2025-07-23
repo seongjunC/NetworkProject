@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Game;
 using Photon.Pun;
 using System.Collections;
@@ -7,17 +8,29 @@ using UnityEngine.UI;
 
 public class MapSlot : MonoBehaviour
 {
-    [SerializeField] Image mapIcon;        
+    [SerializeField] RawImage mapIcon;
+    [SerializeField] Button button;
     private MapType mapType;
+
+    private void OnEnable()
+    {
+        button.onClick.AddListener(MapSelect);
+    }
+
+    private void OnDisable()
+    {
+        button.onClick.RemoveListener(MapSelect);
+    }
 
     public void SetUp(MapType _mapType)
     {
-        mapIcon.sprite = Manager.Resources.Load<Sprite>($"MapIcon/{mapType.ToString()}");
+        Debug.Log(_mapType);
         mapType = _mapType;
+        mapIcon.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{mapType.ToString()}");
     }
 
     public void MapSelect()
-    {
-        PhotonNetwork.CurrentRoom.CustomProperties["Map"] = mapType;
+    {        
+        PhotonNetwork.CurrentRoom.SetMap((int)mapType);
     }
 }

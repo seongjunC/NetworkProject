@@ -18,8 +18,8 @@ public class RoomManager : MonoBehaviour
     [SerializeField] GameObject mapPrefab;
     [SerializeField] Transform mapContent;
     [SerializeField] GameObject mapSelectPanel;
-    [SerializeField] Image mapImage;
-    [SerializeField] Button changeButton;
+    [SerializeField] RawImage mapImage;
+    [SerializeField] Button mapChangeButton;
     private int mapIdx;
 
     [Header("Game")]
@@ -27,15 +27,38 @@ public class RoomManager : MonoBehaviour
     [SerializeField] Button startButton;
     [SerializeField] TMP_Text readyCount;
 
+    [Header("Ready")]
+    [SerializeField] Color readyColor;
+    [SerializeField] Color defaultColor;
+
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
 
+    private bool isReady;
+    private int currentReadyCount;
+
+    #region LifeCycle
+    private void OnEnable()
+    {
+        readyButton.onClick.AddListener(Ready);
+        startButton.onClick.AddListener(GameStart);
+        mapChangeButton.onClick.AddListener(OpenMapPanel);
+    }
+    private void OnDisable()
+    {
+        readyButton.onClick.RemoveListener(Ready);
+        startButton.onClick.RemoveListener(GameStart);
+        mapChangeButton.onClick.RemoveListener(OpenMapPanel);
+    }
+    #endregion
+
+    #region PlayerSlot
     public void CreatePlayerSlot(Player player)
     {
         if(playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot slot))
         {
-            changeButton.interactable = true;
+            mapChangeButton.interactable = true;
             startButton.interactable = true;
             slot.SetUp(player);
             return;
@@ -54,11 +77,10 @@ public class RoomManager : MonoBehaviour
         if (!PhotonNetwork.IsMasterClient)
         {
             startButton.interactable = false;
-            changeButton.interactable = false;
+            mapChangeButton.interactable = false;
             MapChange();
         }
 
-        // 내가 새로 입장했을 때 호출
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             GameObject obj = Instantiate(playerSlotPrefab, playerContent);
@@ -66,18 +88,6 @@ public class RoomManager : MonoBehaviour
             playerSlot.SetUp(player);
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
-    }
-
-    public void LeaveRoom()
-    {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            Destroy(playerSlotDic[player.ActorNumber].gameObject);
-        }
-
-        playerSlotDic.Clear();
-
-        PhotonNetwork.LeaveRoom();
     }
 
     public void DestroyPlayerSlot(Player player)
@@ -92,15 +102,91 @@ public class RoomManager : MonoBehaviour
             Debug.LogError("슬롯 없음");
         }
     }
+    #endregion
 
-    public void CreateMapSlot()
+    public void LeaveRoom()
     {
-        
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            Destroy(playerSlotDic[player.ActorNumber].gameObject);
+        }
+
+        playerSlotDic.Clear();
+
+        PhotonNetwork.LeaveRoom();
+    }
+       
+    #region Ready
+    public void Ready()
+    {
+        isReady = !isReady;
+        playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+        ReadyPropertyUpdate();
+        UpdateReadyCountText();
     }
 
+    public void ReadyCheck(Player player)
+    {
+        if(player.CustomProperties.TryGetValue("Ready", out object value))
+        {
+            playerSlotDic[player.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+            UpdateReadyCountText();
+        }
+    }
+
+    public void ReadyPropertyUpdate()
+    {
+        PhotonNetwork.LocalPlayer.SetReady(isReady);
+    }
+    public void UpdateReadyCountText()
+    {
+        currentReadyCount = 0;
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player.CustomProperties.TryGetValue("Ready", out object isReady) && (bool)isReady)
+            {
+                currentReadyCount++;
+            }
+        }
+
+        readyCount.text = $"{currentReadyCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
+    }
+    #endregion
+
+    #region Map
     public void MapChange()
     {
         mapIdx = (int)PhotonNetwork.CurrentRoom.CustomProperties["Map"];
-        mapImage.sprite = Manager.Resources.Load<Sprite>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
+        Debug.Log($"MapIdx = {mapIdx}");
+        mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
+    }
+    public void CreateMapSlot()
+    {
+        for (int i = 0; i <= (int)MapType.Length-1; i ++)
+        {
+            GameObject obj = Instantiate(mapPrefab, mapContent);
+            MapSlot slot = obj.GetComponent<MapSlot>();
+            slot.SetUp((MapType)i);
+        }        
+    }
+    public void OpenMapPanel()
+    {
+        mapSelectPanel.SetActive(true);
+    }
+    public void CloseMapPanel()
+    {
+        mapSelectPanel.SetActive(false);
+    }
+    #endregion 
+
+    public void GameStart()
+    {
+        if(currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
+        {
+            Debug.Log("방에 인원이 부족하거나 모든 플레이어가 레디하지 않았습니다.");
+            return;
+        }
+
+        //PhotonNetwork.LoadLevel(""); // 씬이동
     }
 }

@@ -15,19 +15,29 @@ public class RoomSlot : MonoBehaviour
     [SerializeField] RawImage mapIcon;
     [SerializeField] Button button;
     private string roomName;
+    private RoomInfo room;
 
     private void OnEnable()
     {
         button.onClick.AddListener(JoinRoom);
     }
 
-    public void SetUp(RoomInfo room)
+    public void SetUp(RoomInfo _room)
     {
-        roomName = room.Name;
-        roomNameText.text = room.Name;
-        roomCountText.text = $"{room.PlayerCount} / {room.MaxPlayers}";
-        Texture2D texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)((int)room.CustomProperties["Map"])).ToString()}");
+        this.room = _room;
+        roomName = _room.Name;
+        roomNameText.text = _room.Name;
+        roomCountText.text = $"{_room.PlayerCount} / {_room.MaxPlayers}";
+        Texture2D texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)((int)_room.CustomProperties["Map"])).ToString()}");
         mapIcon.texture = texture;
+    }
+
+    public void Refresh()
+    {
+        if(room != null)
+        {
+            SetUp(room);
+        }
     }
 
     public void JoinRoom()

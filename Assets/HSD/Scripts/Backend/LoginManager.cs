@@ -70,7 +70,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             DependencyStatus status = t.Result;
 
             if (status == DependencyStatus.Available)
-            {                                
+            {
                 FirebaseAuth auth = FirebaseManager.Auth;
                 FirebaseDatabase database = FirebaseManager.Database;
 
@@ -85,7 +85,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
                     {
                         PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
                         PhotonNetwork.AuthValues.UserId = user.UserId;      // Æ÷Åæ UID ¼³Á¤  
-   
+
                         PhotonNetwork.ConnectUsingSettings();
                     }
                 }
@@ -166,6 +166,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         {
             Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
         }
+
+        PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);
         SceneManager.LoadSceneAsync("Lobby");
     }
