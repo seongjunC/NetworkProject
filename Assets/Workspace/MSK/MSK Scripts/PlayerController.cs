@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _jumpSpeed = 5f;
     [SerializeField] Transform player;
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal != 0)

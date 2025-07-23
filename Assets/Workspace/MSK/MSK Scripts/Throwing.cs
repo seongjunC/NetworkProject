@@ -39,7 +39,8 @@ public class Throwing : MonoBehaviour
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
     }
 
-    void Shoot()
+    // 气藕 积己窍绊 加档 汲沥
+    private void Shoot()
     {
         Bomb newBomb = Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
         newBomb.SetVelocity(firePoint.up * power);
