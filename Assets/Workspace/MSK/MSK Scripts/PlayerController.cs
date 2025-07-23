@@ -4,18 +4,19 @@ public class PlayerController : MonoBehaviour
 {
 
     [SerializeField] private Rigidbody2D _rigidbody;
-    [SerializeField] private float _speed = 2f;
+    [SerializeField] private float _speed = 2f; // 속도
     [SerializeField] private Transform player;
-    [SerializeField] private float _maxMove = 10f;
-    [SerializeField] private int _hp = 100;
+    //  [SerializeField] private float _maxMove = 10f;  // 최대 이동거리
+    [SerializeField] private int _hp = 100;         // hp
 
-    private bool _isDead = false;
+    private bool _isDead = false;                   // 사망여부
 
     private void FixedUpdate()
     {
         if (_isDead)
             return;
 
+        // 이동
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal != 0)
         {
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
             _rigidbody.velocity = velocity;
         }
     }
+    //  피격 처리
     public void OnHit(int damage)
     {
         _hp -= damage;

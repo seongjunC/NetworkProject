@@ -3,17 +3,18 @@ using UnityEngine;
 public class Fire : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform firePivot;       // 회전할 포신 부분 (예: FirePivot)
+    [SerializeField] private Transform firePivot;       // 회전할 포신 부분
     [SerializeField] private Transform firePoint;       // 실제 폭탄이 나갈 위치
     [SerializeField] private Bomb bombPrefab;
 
     [Header("Controls")]
-    [SerializeField] private float angle = 45f;         // 현재 각도
-    [SerializeField] private float angleStep = 1f;      // 각도 변화량
+    [SerializeField] private float angle = 45f;         // 포신의 현재 각도
+    [SerializeField] private float angleStep = 0.5f;      // 각도 변화량
     [SerializeField] private float maxPower = 10f;         // 폭탄 발사 속도
     [SerializeField] private float chargingSpeed = 10f;    // 차지속도
-    private float powerCharge = 0f;        // 차지
-    private bool isCharging = false;   // 차지 중인지 여부
+
+    private float powerCharge = 0f;         // 차지
+    private bool isCharging = false;        // 차지 중인지 여부
 
     private void Update()
     {
