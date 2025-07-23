@@ -142,6 +142,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
         roomManager.MapChange();
+
+        foreach(var slot in roomListDic.Values)
+        {
+            slot.Refresh();
+        }
     }
     public override void OnPlayerPropertiesUpdate(Player target,
         ExitGames.Client.Photon.Hashtable propertiesThatChanged)
