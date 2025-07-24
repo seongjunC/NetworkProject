@@ -43,6 +43,11 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
 
         UnSubscribe();
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+            Login();
+    }
     #endregion
 
     #region EventSubscribe
