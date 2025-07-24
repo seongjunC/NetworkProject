@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6685754623727689472}
   m_Layer: 0
   m_Name: Projectile1
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
   explosionRadiusy: 200
   explosionMask: {fileID: 0}
   explosionScale: 1
-  maxDamage: 100
+  damage: 100
 --- !u!50 &2398114623178038475
 Rigidbody2D:
   serializedVersion: 4
