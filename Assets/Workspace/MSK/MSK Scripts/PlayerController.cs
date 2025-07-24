@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun
 {
 
     [SerializeField] private Rigidbody2D _rigidbody;
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine)
+            return;
         if (_isDead) 
             return;
 
