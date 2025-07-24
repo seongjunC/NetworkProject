@@ -55,19 +55,33 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     #endregion
 
-    private void UnSubscribe()
-    {
-        logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
-        isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
-    }
+    #region EventSubscribe
     private void Subscribe()
     {
         logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
         isPassword.onValueChanged.AddListener(PasswordToggleChanged);
-    }
 
-    public void CreateRoom()
+        roomNameField.onEndEdit.AddListener(CreateRoom);
+        passwordField.onEndEdit.AddListener(CreateRoom);
+        maxPlayerField.onEndEdit.AddListener(CreateRoom);
+    }
+    private void UnSubscribe()
     {
+        logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
+        isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
+
+        roomNameField.onEndEdit.RemoveListener(CreateRoom);
+        passwordField.onEndEdit.RemoveListener(CreateRoom);
+        maxPlayerField.onEndEdit.RemoveListener(CreateRoom);
+    }
+    #endregion
+
+    public void CreateRoom(string s)
+    {
+        if (isRoomCreate) return;
+
+        isRoomCreate = true;
+
         if (string.IsNullOrEmpty(roomNameField.text))
         {
             Manager.UI.PopUpUI.Show("방 이름을 입력해 주세요.");
@@ -131,6 +145,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Debug.Log("방 생성 완료");        
     }
 
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        isRoomCreate = false;
+    }
+
     public override void OnLeftLobby()
     {
         lobby.SetActive(false);
@@ -160,8 +179,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.JoinLobby();
     }
-
-
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
