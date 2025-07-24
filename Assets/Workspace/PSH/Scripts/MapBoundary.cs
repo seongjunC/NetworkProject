@@ -65,5 +65,23 @@ public class MapBoundary : MonoBehaviour
         boxCollider.offset = Vector2.zero;
         Debug.Log("맵 크기에 맞게 트리거 영역 설정 완료");
     }
+    private void OnDrawGizmos()
+    {
+        if (mapSpriteRenderer == null)
+            return;
 
+        // 컬라이더 크기/오프셋이 최신이라면, Awake/Start에서 ResizeCollider()를 한 번 호출해두세요
+        if (boxCollider == null)
+            boxCollider = GetComponent<BoxCollider2D>();
+
+        // Gizmo 색상
+        Gizmos.color = Color.green;
+
+        // 월드 위치 계산 (Transform 위치 + 콜라이더 offset)
+        Vector2 center = (Vector2)transform.position + boxCollider.offset;
+        Vector2 size = boxCollider.size;
+
+        // 2D 박스 그리기
+        Gizmos.DrawWireCube(center, size);
+    }
 }
