@@ -26,7 +26,7 @@ public static class CustomProperty
     #region Player
     public static bool GetReady(this Player player)
     {
-        if(player.CustomProperties.TryGetValue(READY, out object value))
+        if (player.CustomProperties.TryGetValue(READY, out object value))
         {
             return (bool)value;
         }
@@ -34,13 +34,14 @@ public static class CustomProperty
     }
 
     public static void SetReady(this Player player, bool isReady)
-    {;
+    {
+        ;
         hash[READY] = isReady;
         player.SetCustomProperties(hash);
     }
 
     public static void SetUID(this Player player, string _uid)
-    {        
+    {
         hash[UID] = _uid;
         player.SetCustomProperties(hash);
     }
@@ -66,7 +67,7 @@ public static class CustomProperty
     }
 
     public static void SetMap(this Room room, int mapType)
-    {        
+    {
         hash[MAP] = (MapType)(mapType);
         room.SetCustomProperties(hash);
     }
@@ -79,7 +80,7 @@ public static class CustomProperty
     }
     public static string GetPassword(this Room room)
     {
-        if(room.CustomProperties.TryGetValue(PASSWORD, out object value))
+        if (room.CustomProperties.TryGetValue(PASSWORD, out object value))
         {
             return (string)value;
         }
@@ -94,7 +95,7 @@ public static class CustomProperty
 
     public static bool GetTurnRandom(this Room room)
     {
-        if(room.CustomProperties.TryGetValue(TURNRANDOM, out object value))
+        if (room.CustomProperties.TryGetValue(TURNRANDOM, out object value))
         {
             return (bool)value;
         }
@@ -109,7 +110,7 @@ public static class CustomProperty
 
     public static bool GetFull(this Room room)
     {
-        if(room.CustomProperties.TryGetValue(FULL, out object value))
+        if (room.CustomProperties.TryGetValue(FULL, out object value))
         {
             return (bool)value;
         }
