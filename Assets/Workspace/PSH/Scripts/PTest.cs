@@ -42,6 +42,7 @@ public class PTest : MonoBehaviour
         }
 
         GameObject projectile = Instantiate(projectilePrefab, muzzlePoint.transform.position, Quaternion.identity);
+        CameraController.Instance.FollowBullet(projectile.transform);
         Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
 
         if (projectileRb != null)

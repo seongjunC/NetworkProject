@@ -19,7 +19,7 @@ public class DeformableTerrain : MonoBehaviour
         deformableTexture.Apply();
 
         // 새로운 스프라이트를 생성
-        Sprite newSprite = Sprite.Create(deformableTexture, spriteRenderer.sprite.rect, new Vector2(0.5f, 0.5f));
+        Sprite newSprite = Sprite.Create(deformableTexture, spriteRenderer.sprite.rect, new Vector2(0.5f, 0.5f), spriteRenderer.sprite.pixelsPerUnit);
         spriteRenderer.sprite = newSprite;
     }
 
