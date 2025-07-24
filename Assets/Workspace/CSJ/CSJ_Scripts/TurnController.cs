@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TurnManager : MonoBehaviourPunCallbacks
+public class TurnController : MonoBehaviourPunCallbacks
 {
     private Queue<PlayerInfo> turnQueue = new();
     private List<PlayerInfo> nextCycle = new();
@@ -23,7 +22,7 @@ public class TurnManager : MonoBehaviourPunCallbacks
 
         int playerCount = PhotonNetwork.CountOfPlayers;
         // 추후 연계하여 조절
-        if (CustomProperty.GetTurnStd() == "Random")
+        if (CustomProperty.GetTurnRandom())
         {
             List<int> randNumList = new();
             for (int i = 0; i < playerCount; i++)
@@ -43,7 +42,7 @@ public class TurnManager : MonoBehaviourPunCallbacks
                 turnQueue.Enqueue(new PlayerInfo(nowPlayer));
             }
         }
-        else if (CustomProperty.GetTurnStd() == "Order")
+        else
         {
             foreach (Player p in PhotonNetwork.PlayerList)
             {

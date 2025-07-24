@@ -15,6 +15,5 @@ public class PlayerInfo
         player = _player;
         ActorNumber = _player.ActorNumber;
         isDead = false;
-
     }
 }
