@@ -52,8 +52,14 @@ public class TestNetworkManager : MonoBehaviourPunCallbacks
     private void PlayerSpawn()
     {
         Vector3 spawnPos = _spawnPoint.position;
-        PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
+        GameObject playerObj = PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
+        PlayerController controller = playerObj.GetComponent<PlayerController>();
+        if (controller != null)
+        {
+            controller.PlayerName(PhotonNetwork.NickName);
+        }
     }
+
     public override void OnPlayerEnteredRoom(Player player)
     {
         Debug.Log($"TestNetworkManager : OnPlayerEnteredRoom, {player.NickName} 입장 완료");

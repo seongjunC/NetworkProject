@@ -1,4 +1,5 @@
 using Photon.Pun;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviourPun
@@ -10,7 +11,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private float _maxMove = 5f;  // 최대 이동거리
     [SerializeField] private int _hp = 100;         // hp
 
-
+    [SerializeField] private TextMeshProUGUI _textMeshPro;
     private float _movable;
     private bool _isDead = false;                   // 사망여부
 
@@ -85,5 +86,9 @@ public class PlayerController : MonoBehaviourPun
     {
         Destroy(gameObject);
         _isDead = true;
+    }
+    public void PlayerName(string name)
+    {
+        _textMeshPro.text = name;
     }
 }

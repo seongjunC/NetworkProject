@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class Fire : MonoBehaviour
+public class Fire : MonoBehaviourPun
 {
     [Header("References")]
     [SerializeField] private Transform firePivot;       // 회전할 포신 부분
@@ -24,23 +24,13 @@ public class Fire : MonoBehaviour
         _playerController = GetComponentInParent<PlayerController>();
     }
 
+
     private void Update()
     {
-        // 각도 조절 (Up/Down)
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            angle += angleStep;
-            if (angle > 90f) angle = 90f;
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            angle -= angleStep;
-            if (angle < 0f) angle = 0f;
-        }
+        if (!photonView.IsMine)
+            return;
 
-        // 포신 회전 
-        firePivot.localRotation = Quaternion.Euler(0, 0, angle);
-
+        photonView.RPC("Aim",RpcTarget.All);
 
         //  이미 공격했다면 공격 불가능
         if (_playerController.IsAttacked)
@@ -65,6 +55,24 @@ public class Fire : MonoBehaviour
             _playerController.SetAttacked(true);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
+    }
+
+    [PunRPC]
+    private void Aim()
+    {
+        // 각도 조절 (Up/Down)
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            angle += angleStep;
+            if (angle > 90f) angle = 90f;
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            angle -= angleStep;
+            if (angle < 0f) angle = 0f;
+        }
+        // 포신 회전 
+        firePivot.localRotation = Quaternion.Euler(0, 0, angle);
     }
 
     // 발사 
