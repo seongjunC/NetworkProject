@@ -271,7 +271,6 @@ public class RoomManager : MonoBehaviour
     #region PhotonCallbacks
     public void OnJoinedRoom()
     {        
-        teamManager.Init();
         Init();
         CreatePlayerSlot();        
         UpdateReadyCountText();

@@ -9,11 +9,6 @@ public class TeamManager : MonoBehaviour
     [SerializeField] Color blueColor;
     private int team;
 
-    public void Init()
-    {
-        team = 0;
-    }
-
     public void UpdateSlot(Player player, PlayerSlot slot)
     {
         if (player.CustomProperties.TryGetValue("Team", out object value))
