@@ -55,23 +55,35 @@ public class PlayerController : MonoBehaviourPun
         z = Mathf.Clamp(z, -45f, 45f);
         _rigidbody.MoveRotation(z);
     }
+
     //  피격 처리
     public void OnHit(int damage)
     {
         _hp -= damage;
         Debug.Log("피격");
         if (_hp <= 0)
-            _isDead = true;
+            PlayerDead();
     }
+
+    //  턴 종료
     public void ResetTurn()
     {
         //이동 가능한 거리를 이동 최대거리로 설정
         _movable = _maxMove;
         SetAttacked(false);
-        Debug.Log("이동력 충전");
+        Debug.Log("턴 종료");
     }
+
+    //  공격 가능 여부 바꿈
     public void SetAttacked(bool value)
     {
         IsAttacked = value;
+    }
+
+    //  플레이어 사망 시 파괴처리
+    public void PlayerDead()
+    {
+        Destroy(gameObject);
+        _isDead = true;
     }
 }
