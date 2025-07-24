@@ -20,23 +20,28 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("RoomCreate")]
     [SerializeField] TMP_InputField roomNameField;
     [SerializeField] TMP_InputField maxPlayerField;
+    [SerializeField] TMP_InputField passwordField;
+    [SerializeField] Toggle isPassword;
     [SerializeField] int maxPlayerCount;
 
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
+    [SerializeField] PasswordPanel passwordPanel;        
 
     #region LifeCycle
     private void Start()
     {
         lobby.SetActive(true);
         room.SetActive(false);
+        PhotonNetwork.JoinLobby();
     }
     public override void OnEnable()
     {
         base.OnEnable();
 
         logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
+        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
 
         if (Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
@@ -45,6 +50,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnDisable()
     {
         logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
+        isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
     }
     #endregion
 
@@ -55,6 +61,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Manager.UI.PopUpUI.Show("방 이름을 입력해 주세요.");
             return;
         }
+
         if (int.TryParse(maxPlayerField.text, out int maxPlayer))
         {
             if (maxPlayer % 2 != 0)
@@ -67,52 +74,91 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 Manager.UI.PopUpUI.Show($"{maxPlayerCount} 보다 낮은 값을 입력해 주세요.");
             }
         }
-       
+
+        if (isPassword.isOn)
+        {
+            if (string.IsNullOrWhiteSpace(passwordField.text))
+            {
+                Manager.UI.PopUpUI.Show("비밀번호는 뛰어쓰거나 빈칸일 수 없습니다.");
+                return;
+            }
+        }
+
         RoomOptions option = new RoomOptions();
-        option.MaxPlayers = maxPlayer;        
-        option.CustomRoomPropertiesForLobby = new string[] { "Map" };
-        PhotonNetwork.CreateRoom(roomNameField.text, option);
+        option.MaxPlayers = maxPlayer;
+        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password", "Full"};               
+        PhotonNetwork.CreateRoom(roomNameField.text, option);        
         roomNameField.text = "";
         maxPlayerField.text = "";
+    }
+
+    private void PasswordToggleChanged(bool isPassword)
+    {
+        passwordField.interactable = isPassword;        
+    }
+
+    private void OpenPasswordPanel(RoomInfo room)
+    {
+        passwordPanel.SetUp(room);
+        passwordPanel.gameObject.SetActive(true);
     }
 
     #region PhotonCallbacks
     public override void OnCreatedRoom()
     {
-        ExitGames.Client.Photon.Hashtable roomProperty = new ExitGames.Client.Photon.Hashtable();
-        roomProperty["Map"] = 0;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperty);
-        Debug.Log("방 생성 완료");
+        PhotonNetwork.CurrentRoom.SetMap(0);
+        PhotonNetwork.CurrentRoom.SetTurnRandom(true);
+        PhotonNetwork.CurrentRoom.SetFull(false);
+
+        if (isPassword.isOn)
+        {
+            PhotonNetwork.CurrentRoom.SetPassword(passwordField.text);            
+        }        
+
+        passwordField.text = "";
+        Debug.Log("방 생성 완료");        
     }
+
+    public override void OnLeftLobby()
+    {
+        base.OnLeftLobby();
+    }
+
     public override void OnJoinedRoom()
     {
         Debug.Log("방 입장 완료");
         lobby.SetActive(false);
         room.SetActive(true);
-        roomManager.CreatePlayerSlot();
-        roomManager.CreateMapSlot();
-        roomManager.UpdateReadyCountText();
+
+        roomManager.OnJoinedRoom();
     }
+
     public override void OnLeftRoom()    
     {
         lobby.SetActive(true);
         room.SetActive(false);
+        roomManager.OnLeftRoom();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if(newPlayer != PhotonNetwork.LocalPlayer)
-            roomManager.CreatePlayerSlot(newPlayer);
+            roomManager.OnPlayerEnteredRoom(newPlayer);
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         if (otherPlayer != PhotonNetwork.LocalPlayer)            
-            roomManager.DestroyPlayerSlot(otherPlayer);
+            roomManager.OnPlayerLeftRoom(otherPlayer);
     }
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        roomManager.CreatePlayerSlot(newMasterClient);
+        roomManager.OnMasterClientSwitched(newMasterClient);
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        CreateRoomSlots(roomList);
+    }
+
+    private void CreateRoomSlots(List<RoomInfo> roomList)
     {
         foreach (RoomInfo room in roomList)
         {
@@ -120,6 +166,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             {
                 if (roomListDic.TryGetValue(room.Name, out RoomSlot roomSlot))
                 {
+                    roomListDic[room.Name].OnPasswordRoomSelected -= OpenPasswordPanel;
                     Destroy(roomSlot);
                     roomListDic.Remove(room.Name);
                 }
@@ -132,6 +179,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 RoomSlot slot = Instantiate(roomPrefab, roomContent).GetComponent<RoomSlot>();
                 slot.SetUp(room);
                 roomListDic.Add(room.Name, slot);
+                roomListDic[room.Name].OnPasswordRoomSelected += OpenPasswordPanel;
             }
             else
             {
@@ -139,11 +187,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             }
         }
     }
+
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
-        roomManager.MapChange();
+        roomManager.OnRoomPropertiesUpdate();
 
-        foreach(var slot in roomListDic.Values)
+        foreach (var slot in roomListDic.Values)
         {
             slot.Refresh();
         }
@@ -151,7 +200,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player target,
         ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
-        roomManager.ReadyCheck(target);        
+        roomManager.OnPlayerPropertiesUpdate(target);       
     }
     #endregion
 }
