@@ -34,6 +34,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         lobby.SetActive(true);
         room.SetActive(false);
+        PhotonNetwork.JoinLobby();
     }
     public override void OnEnable()
     {
@@ -116,10 +117,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         passwordField.text = "";
         Debug.Log("방 생성 완료");        
     }
-    public override void OnJoinedLobby()
-    {
-        
-    }
 
     public override void OnJoinedRoom()
     {
@@ -127,10 +124,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(false);
         room.SetActive(true);
 
-        roomManager.CreatePlayerSlot();
-        roomManager.CreateMapSlot();
-        roomManager.UpdateReadyCountText();
-        roomManager.Init();
+        roomManager.OnJoinedRoom();
     }
 
     public override void OnLeftRoom()    
@@ -141,16 +135,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if(newPlayer != PhotonNetwork.LocalPlayer)
-            roomManager.CreatePlayerSlot(newPlayer);
+            roomManager.OnPlayerEnteredRoom(newPlayer);
     }
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         if (otherPlayer != PhotonNetwork.LocalPlayer)            
-            roomManager.DestroyPlayerSlot(otherPlayer);
+            roomManager.OnPlayerLeftRoom(otherPlayer);
     }
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        roomManager.CreatePlayerSlot(newMasterClient);
+        roomManager.OnMasterClientSwitched(newMasterClient);
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
@@ -183,8 +177,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
-        roomManager.MapChange();
-        roomManager.UpdateTurnType();
+        roomManager.OnRoomPropertiesUpdate();
 
         foreach (var slot in roomListDic.Values)
         {
@@ -194,7 +187,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player target,
         ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
-        roomManager.ReadyCheck(target);        
+        roomManager.OnPlayerPropertiesUpdate(target);       
     }
     #endregion
 }

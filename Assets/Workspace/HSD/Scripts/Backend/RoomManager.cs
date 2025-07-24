@@ -4,6 +4,7 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,7 +46,7 @@ public class RoomManager : MonoBehaviour
     #region LifeCycle
     private void OnEnable()
     {
-        exitButton.onClick      .AddListener(ExitRoom);
+        exitButton.onClick      .AddListener(LeaveRoom);
         readyButton.onClick     .AddListener(Ready);
         startButton.onClick     .AddListener(GameStart);
         mapChangeButton.onClick .AddListener(OpenMapPanel);
@@ -53,7 +54,7 @@ public class RoomManager : MonoBehaviour
     }
     private void OnDisable()
     {
-        exitButton.onClick      .RemoveListener(ExitRoom);
+        exitButton.onClick      .RemoveListener(LeaveRoom);
         readyButton.onClick     .RemoveListener(Ready);
         startButton.onClick     .RemoveListener(GameStart);
         mapChangeButton.onClick .RemoveListener(OpenMapPanel);
@@ -62,7 +63,7 @@ public class RoomManager : MonoBehaviour
     #endregion
 
     #region PlayerSlot
-    public void CreatePlayerSlot(Player player)
+    private void CreatePlayerSlot(Player player)
     {
         if (!playerSlotDic.ContainsKey(player.ActorNumber))
         {
@@ -90,7 +91,7 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void CreatePlayerSlot()
+    private void CreatePlayerSlot()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
 
@@ -111,7 +112,7 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void DestroyPlayerSlot(Player player)
+    private void DestroyPlayerSlot(Player player)
     {
         if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
         {
@@ -125,13 +126,13 @@ public class RoomManager : MonoBehaviour
     }
     #endregion
 
-    public void Init()
+    private void Init()
     {
         isReady = false;
         isRandom = true;
     }
 
-    public void LeaveRoom()
+    private void LeaveRoom()
     {
         foreach (Player player in PhotonNetwork.PlayerList)
         {
@@ -144,7 +145,7 @@ public class RoomManager : MonoBehaviour
     }
        
     #region Ready
-    public void Ready()
+    private void Ready()
     {        
         isReady = !isReady;
         playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
@@ -152,7 +153,7 @@ public class RoomManager : MonoBehaviour
         UpdateReadyCountText();
     }
 
-    public void ReadyCheck(Player player)
+    private void ReadyCheck(Player player)
     {
         if(player.CustomProperties.TryGetValue("Ready", out object value))
         {
@@ -161,11 +162,11 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void ReadyPropertyUpdate()
+    private void ReadyPropertyUpdate()
     {
         PhotonNetwork.LocalPlayer.SetReady(isReady);
     }
-    public void UpdateReadyCountText()
+    private void UpdateReadyCountText()
     {
         currentReadyCount = 0;
         foreach (var player in PhotonNetwork.PlayerList)
@@ -181,12 +182,12 @@ public class RoomManager : MonoBehaviour
     #endregion
 
     #region Map
-    public void MapChange()
+    private void MapChange()
     {
         mapIdx = (int)PhotonNetwork.CurrentRoom.CustomProperties["Map"];
         mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
     }
-    public void CreateMapSlot()
+    private void CreateMapSlot()
     {
         for (int i = 0; i <= (int)MapType.Length-1; i ++)
         {
@@ -195,11 +196,11 @@ public class RoomManager : MonoBehaviour
             slot.SetUp((MapType)i);
         }        
     }
-    public void OpenMapPanel()
+    private void OpenMapPanel()
     {
         mapSelectPanel.SetActive(true);
     }
-    public void CloseMapPanel()
+    private void CloseMapPanel()
     {
         mapSelectPanel.SetActive(false);
     }
@@ -212,12 +213,13 @@ public class RoomManager : MonoBehaviour
         PhotonNetwork.CurrentRoom.SetTurnRandom(isRandom);
     }
 
-    public void UpdateTurnType()
+    private void UpdateTurnType()
     {
         turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "Random" : "NotRandom";
     }
     #endregion
-    public void GameStart()
+
+    private void GameStart()
     {
         if(currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
@@ -228,8 +230,37 @@ public class RoomManager : MonoBehaviour
         //PhotonNetwork.LoadLevel(""); // ¾ÀÀÌµ¿
     }
 
-    private void ExitRoom()
+    #region PhotonCallbacks
+    public void OnJoinedRoom()
     {
-        PhotonNetwork.LeaveRoom();
+        CreatePlayerSlot();
+        CreateMapSlot();
+        UpdateReadyCountText();
+        UpdateTurnType();
+        Init();
     }
+
+    public void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        CreatePlayerSlot(newPlayer);
+    }
+    public void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        DestroyPlayerSlot(otherPlayer);
+    }
+    public void OnRoomPropertiesUpdate()
+    {
+        MapChange();
+        UpdateTurnType();
+    }
+
+    public void OnPlayerPropertiesUpdate(Player target)
+    {
+        ReadyCheck(target);
+    }
+    public void OnMasterClientSwitched(Player newMasterClient)
+    {
+        CreatePlayerSlot(newMasterClient);
+    }
+    #endregion
 }

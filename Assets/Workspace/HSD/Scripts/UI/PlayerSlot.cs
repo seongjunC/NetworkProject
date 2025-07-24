@@ -17,7 +17,7 @@ public class PlayerSlot : MonoBehaviour
     public void SetUp(Player player)
     {
         playerName.text = player.NickName;
-        Debug.Log(player.GetUID());
+
         Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Win").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted) return;
@@ -25,7 +25,6 @@ public class PlayerSlot : MonoBehaviour
             DataSnapshot snapshot = task.Result;
 
             int win = (int)(long)snapshot.Value;
-            Debug.Log(win);
             winText.text = $"Win : {win}";
         });
         Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
@@ -35,7 +34,6 @@ public class PlayerSlot : MonoBehaviour
             DataSnapshot snapshot = task.Result;
 
             int lose = (int)(long)snapshot.Value;
-            Debug.Log(lose);
             loseText.text = $"Lose : {lose}";
         });
     }

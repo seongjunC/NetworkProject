@@ -171,17 +171,13 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Master Connected");
 
-        PhotonNetwork.JoinLobby();
+        StartCoroutine(LoginRoutine());
     }
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
         Debug.Log("Connected");
         PhotonNetwork.ConnectUsingSettings();
-    }
-    public override void OnJoinedLobby()
-    {
-        StartCoroutine(LoginRoutine());
     }
     #endregion
 
