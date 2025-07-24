@@ -5,7 +5,6 @@ using Firebase.Extensions;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;

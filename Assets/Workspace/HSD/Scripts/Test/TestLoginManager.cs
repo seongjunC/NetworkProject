@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Realtime;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class TestLoginManager : MonoBehaviourPunCallbacks
 {

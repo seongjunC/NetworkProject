@@ -19,6 +19,7 @@ public static class CustomProperty
     #region PlayerProperty
     private const string UID = "UID";
     private const string READY = "Ready";
+    private const string TEAM = "Team";
     #endregion
 
     private static ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
@@ -52,6 +53,21 @@ public static class CustomProperty
             return (string)value;
         }
         return "";
+    }
+
+    public static void SetTeam(this Player player, Team team)
+    {
+        hash[TEAM] = team;
+        player.SetCustomProperties(hash);
+    }
+
+    public static Team GetTeam(this Player player)
+    {
+        if(player.CustomProperties.TryGetValue(TEAM, out object value))
+        { 
+            return (Team)value;
+        }
+        return Team.Length;
     }
     #endregion
 

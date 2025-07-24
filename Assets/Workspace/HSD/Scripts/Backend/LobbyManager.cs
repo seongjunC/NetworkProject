@@ -1,6 +1,5 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -61,22 +60,22 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
         isPassword.onValueChanged.AddListener(PasswordToggleChanged);
 
-        roomNameField.onEndEdit.AddListener(CreateRoom);
-        passwordField.onEndEdit.AddListener(CreateRoom);
-        maxPlayerField.onEndEdit.AddListener(CreateRoom);
+        roomNameField.onEndEdit.AddListener(EnterCreateRoom);
+        passwordField.onEndEdit.AddListener(EnterCreateRoom);
+        maxPlayerField.onEndEdit.AddListener(EnterCreateRoom);
     }
     private void UnSubscribe()
     {
         logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
         isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
 
-        roomNameField.onEndEdit.RemoveListener(CreateRoom);
-        passwordField.onEndEdit.RemoveListener(CreateRoom);
-        maxPlayerField.onEndEdit.RemoveListener(CreateRoom);
+        roomNameField.onEndEdit.RemoveListener(EnterCreateRoom);
+        passwordField.onEndEdit.RemoveListener(EnterCreateRoom);
+        maxPlayerField.onEndEdit.RemoveListener(EnterCreateRoom);
     }
     #endregion
 
-    public void CreateRoom(string s)
+    public void CreateRoom()
     {
         if (isRoomCreate) return;
 
@@ -98,6 +97,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             if (maxPlayer > maxPlayerCount)
             {
                 Manager.UI.PopUpUI.Show($"{maxPlayerCount} 보다 낮은 값을 입력해 주세요.");
+                return;
             }
         }
 
@@ -116,6 +116,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(roomNameField.text, option);        
         roomNameField.text = "";
         maxPlayerField.text = "";
+    }
+
+    private void EnterCreateRoom(string s)
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+            CreateRoom();
     }
 
     private void PasswordToggleChanged(bool isPassword)
@@ -172,6 +178,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(true);
         room.SetActive(false);
         roomManager.OnLeftRoom();
+        isRoomCreate = false;
         Debug.Log("방 나감");              
     }
 

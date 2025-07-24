@@ -1,10 +1,8 @@
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
