@@ -48,7 +48,7 @@ public class MapBoundary : MonoBehaviour
 
             if (p != null)
             {
-                p.BeginDestroyRoutine();
+                p.BeginDestroyRoutine(false);
                 Debug.Log("투사체가 맵 밖으로 나감");
             }
 

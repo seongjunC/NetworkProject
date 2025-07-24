@@ -60,8 +60,7 @@ public class Projectile : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (hasCollided) return;
-        hasCollided = true;
+
 
         Vector2 explosionPoint = collision.contacts[0].point;
 
@@ -87,13 +86,15 @@ public class Projectile : MonoBehaviour
             DetectPlayerInCircle(explosionPoint, worldRadius);
         }
 
-        BeginDestroyRoutine();
+        BeginDestroyRoutine(true);
     }
-    public void BeginDestroyRoutine()
+    public void BeginDestroyRoutine(bool hasExplosionEffect)
     {
-        StartCoroutine(DestroyRoutine());
+        if (hasCollided) return;
+        hasCollided = true;
+        StartCoroutine(DestroyRoutine(hasExplosionEffect));
     }
-    private IEnumerator DestroyRoutine()
+    private IEnumerator DestroyRoutine(bool hasExplosionEffect)
     {
         //투사체 비활성화
         GetComponent<SpriteRenderer>().enabled = false;
@@ -101,7 +102,7 @@ public class Projectile : MonoBehaviour
         GetComponent<Rigidbody2D>().simulated = false;
 
         //폭발이펙트
-        if (explosionEffect != null)
+        if (explosionEffect != null && hasExplosionEffect)
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
 
 
