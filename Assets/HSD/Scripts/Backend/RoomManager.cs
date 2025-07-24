@@ -56,18 +56,28 @@ public class RoomManager : MonoBehaviour
     #region PlayerSlot
     public void CreatePlayerSlot(Player player)
     {
-        if(playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot slot))
+        if (!playerSlotDic.ContainsKey(player.ActorNumber))
+        {
+            GameObject obj = Instantiate(playerSlotPrefab, playerContent);
+            PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
+            playerSlot.SetUp(player);
+            playerSlotDic.Add(player.ActorNumber, playerSlot);
+        }
+        else
+        {
+            playerSlotDic[player.ActorNumber].SetUp(player);
+        }
+
+        if (PhotonNetwork.IsMasterClient)
         {
             mapChangeButton.interactable = true;
             startButton.interactable = true;
-            slot.SetUp(player);
-            return;
         }
-
-        GameObject obj = Instantiate(playerSlotPrefab, playerContent);
-        PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
-        playerSlot.SetUp(player);
-        playerSlotDic.Add(player.ActorNumber, playerSlot);
+        else
+        {
+            mapChangeButton.interactable = false;
+            startButton.interactable = false;
+        }
     }
 
     public void CreatePlayerSlot()
@@ -129,7 +139,7 @@ public class RoomManager : MonoBehaviour
     {
         if(player.CustomProperties.TryGetValue("Ready", out object value))
         {
-            playerSlotDic[player.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+            playerSlotDic[player.ActorNumber].UpdateReady(player.GetReady() ? readyColor : defaultColor);
             UpdateReadyCountText();
         }
     }
@@ -157,7 +167,6 @@ public class RoomManager : MonoBehaviour
     public void MapChange()
     {
         mapIdx = (int)PhotonNetwork.CurrentRoom.CustomProperties["Map"];
-        Debug.Log($"MapIdx = {mapIdx}");
         mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
     }
     public void CreateMapSlot()

@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Realtime;
 
-public class LoginManager : MonoBehaviourPunCallbacks
+public class TestLoginManager : MonoBehaviourPunCallbacks
 {
     [Header("InputFields")]
     [SerializeField] TMP_InputField email;
@@ -71,26 +71,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
             if (status == DependencyStatus.Available)
             {
-                FirebaseAuth auth = FirebaseManager.Auth;
-                FirebaseDatabase database = FirebaseManager.Database;
-
-                if (auth.CurrentUser != null)
-                {
-                    Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
-                    FirebaseUser user = auth.CurrentUser;
-
-                    LoginSetActive(user == null);
-
-                    if (user != null)
-                    {
-                        PhotonNetwork.ConnectUsingSettings();
-                    }
-                }
-                else
-                {
-                    Debug.Log("자동 로그인 없음");
-                    return;
-                }
+ 
             }
             else
             {
@@ -115,7 +96,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 Debug.LogError($"로그인 실패: {task.Exception}");
                 Manager.UI.PopUpUI.Show("Login Failed");
                 return;
-            }        
+            }
+            FirebaseUser user = task.Result.User;
 
             Debug.Log($"로그인 성공: {task.Result.User.Email}");
             loginButton.interactable = false;
@@ -123,7 +105,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
         });
     }
-    
+
     public IEnumerator LoginRoutine()
     {
         if (Manager.Database == null || Manager.Database.userRef == null)
@@ -159,7 +141,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.LocalPlayer.SetUID(FirebaseManager.Auth.CurrentUser.UserId);
-
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);
         SceneManager.LoadSceneAsync("Lobby");

@@ -93,6 +93,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomManager.CreateMapSlot();
         roomManager.UpdateReadyCountText();
     }
+
     public override void OnLeftRoom()    
     {
         lobby.SetActive(true);
