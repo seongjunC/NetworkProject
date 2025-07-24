@@ -111,11 +111,7 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
 
     public IEnumerator LoginRoutine()
     {
-        if (Manager.Database == null || Manager.Database.userRef == null)
-        {
-            Debug.LogError("Database or userRef is null!");
-            Manager.Database.Init();
-        }
+        Manager.Database.Init();
 
         var task = Manager.Database.userRef.GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);

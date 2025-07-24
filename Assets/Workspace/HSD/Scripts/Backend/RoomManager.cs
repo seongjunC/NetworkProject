@@ -154,11 +154,24 @@ public class RoomManager : MonoBehaviour
        
     #region Ready
     private void Ready()
-    {        
+    {
         isReady = !isReady;
-        playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+        UpdateReadyColor();
         ReadyPropertyUpdate();
         UpdateReadyCountText();
+    }
+
+    private void UpdateReadyColor()
+    {
+        playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
+    }
+
+    private void AllReadyCheck()
+    {
+        foreach (var player in PhotonNetwork.CurrentRoom.Players)
+        {
+            ReadyCheck(player.Value);
+        }
     }
 
     private void ReadyCheck(Player player)
@@ -241,11 +254,12 @@ public class RoomManager : MonoBehaviour
 
     #region PhotonCallbacks
     public void OnJoinedRoom()
-    {
+    {        
+        Init();
         CreatePlayerSlot();        
         UpdateReadyCountText();
+        ReadyPropertyUpdate();
         UpdateTurnType();
-        Init();
     }
 
     public void OnPlayerEnteredRoom(Player newPlayer)
@@ -258,7 +272,7 @@ public class RoomManager : MonoBehaviour
     }
     public void OnRoomPropertiesUpdate()
     {
-        MapChange();
+        MapChange();       
         UpdateTurnType();
     }
 

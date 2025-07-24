@@ -129,6 +129,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("방 입장 완료");
+        Debug.Log($"RoomPanel = {room != null}");
+        lobby.SetActive(false);
         room.SetActive(true);
 
         roomManager.OnJoinedRoom();
@@ -139,13 +141,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(true);
         room.SetActive(false);
         roomManager.OnLeftRoom();
-        Debug.Log("방 나감");
-        
-        if(!PhotonNetwork.InLobby)
-            PhotonNetwork.JoinLobby();
-
-        Debug.Log(PhotonNetwork.NetworkClientState);
+        Debug.Log("방 나감");              
     }
+
+    public override void OnConnectedToMaster()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+
+
+
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if(newPlayer != PhotonNetwork.LocalPlayer)
