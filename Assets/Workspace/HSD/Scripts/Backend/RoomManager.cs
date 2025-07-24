@@ -29,6 +29,10 @@ public class RoomManager : MonoBehaviour
     [SerializeField] TMP_Text turnType;
     [SerializeField] TMP_Text readyCount;
 
+    [Header("Team")]
+    [SerializeField] TeamManager teamManager;
+    [SerializeField] Button teamSwitchButton;
+
     [Header("Ready")]
     [SerializeField] Color readyColor;
     [SerializeField] Color defaultColor;
@@ -39,7 +43,7 @@ public class RoomManager : MonoBehaviour
 
     [Header("Chat")]
     [SerializeField] Chat chat;
-
+    
     private bool isReady;
     private bool isRandom;
     private int currentReadyCount;
@@ -123,6 +127,8 @@ public class RoomManager : MonoBehaviour
         }
     }
     #endregion
+
+    #region EventSubscribe
     private void Subscribe()
     {
         exitButton.onClick      .AddListener(LeaveRoom);
@@ -130,6 +136,7 @@ public class RoomManager : MonoBehaviour
         startButton.onClick     .AddListener(GameStart);
         mapChangeButton.onClick .AddListener(OpenMapPanel);
         turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
+        teamSwitchButton.onClick.AddListener(teamManager.ChangeTeam);
     }
 
     private void UnSubscribe()
@@ -139,7 +146,9 @@ public class RoomManager : MonoBehaviour
         startButton.onClick     .RemoveListener(GameStart);
         mapChangeButton.onClick .RemoveListener(OpenMapPanel);
         turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
+        teamSwitchButton.onClick.RemoveListener(teamManager.ChangeTeam);
     }
+    #endregion
 
     private void Init()
     {
@@ -286,6 +295,7 @@ public class RoomManager : MonoBehaviour
     public void OnPlayerPropertiesUpdate(Player target)
     {
         ReadyCheck(target);
+        teamManager.UpdateSlot(target, playerSlotDic[target.ActorNumber]);
     }
 
     public void OnMasterClientSwitched(Player newMasterClient)

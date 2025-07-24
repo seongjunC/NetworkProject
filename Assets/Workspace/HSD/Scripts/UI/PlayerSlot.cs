@@ -13,6 +13,7 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] TMP_Text winText;
     [SerializeField] TMP_Text loseText;
     [SerializeField] Image panel;
+    [SerializeField] Image teamPanel;
 
     public void SetUp(Player player)
     {
@@ -46,5 +47,10 @@ public class PlayerSlot : MonoBehaviour
     public void UpdateReady(Color color)
     {
         panel.color = color;
+    }
+
+    public void UpdateTeam(Color color)
+    {
+        teamPanel.color = color;
     }
 }
