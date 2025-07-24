@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviourPun
                 battleManager.RegisterPlayer(this);
             }
         }
+        //  닉네임 초기화
+        _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
     }
     private void FixedUpdate()
     {
@@ -86,9 +88,5 @@ public class PlayerController : MonoBehaviourPun
     {
         Destroy(gameObject);
         _isDead = true;
-    }
-    public void PlayerName(string name)
-    {
-        _textMeshPro.text = name;
     }
 }
