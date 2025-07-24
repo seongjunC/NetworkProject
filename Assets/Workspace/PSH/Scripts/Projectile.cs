@@ -71,20 +71,10 @@ public class Projectile : MonoBehaviour
             terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
 
         // 데미지 처리
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            // 직격: 100%
-            Debug.Log($"플레이어에게 {damage} 데미지 (직격)");
-            // player.TakeDamage(maxDamage);
-        }
-        else
-        {
-            // 주변 피해
-            float pixelRadius = Mathf.Max(explosionRadiusx, explosionRadiusy);
-            float worldRadius = pixelRadius * worldPerPixel;
+        float pixelRadius = Mathf.Max(explosionRadiusx, explosionRadiusy);
+        float worldRadius = pixelRadius * worldPerPixel;
 
-            DetectPlayerInCircle(explosionPoint, worldRadius);
-        }
+        DetectPlayerInCircle(explosionPoint, worldRadius);
 
         BeginDestroyRoutine(true);
     }
