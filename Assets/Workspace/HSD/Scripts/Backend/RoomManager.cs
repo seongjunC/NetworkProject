@@ -25,6 +25,8 @@ public class RoomManager : MonoBehaviour
     [Header("Game")]
     [SerializeField] Button readyButton;
     [SerializeField] Button startButton;
+    [SerializeField] Button turnSwitchButton;
+    [SerializeField] TMP_Text turnType;
     [SerializeField] TMP_Text readyCount;
 
     [Header("Ready")]
@@ -36,6 +38,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] GameObject room;
 
     private bool isReady;
+    private bool isRandom;
     private int currentReadyCount;
 
     #region LifeCycle
@@ -44,12 +47,14 @@ public class RoomManager : MonoBehaviour
         readyButton.onClick.AddListener(Ready);
         startButton.onClick.AddListener(GameStart);
         mapChangeButton.onClick.AddListener(OpenMapPanel);
+        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
     }
     private void OnDisable()
     {
         readyButton.onClick.RemoveListener(Ready);
         startButton.onClick.RemoveListener(GameStart);
         mapChangeButton.onClick.RemoveListener(OpenMapPanel);
+        turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
     }
     #endregion
 
@@ -114,6 +119,12 @@ public class RoomManager : MonoBehaviour
     }
     #endregion
 
+    public void Init()
+    {
+        isReady = false;
+        isRandom = true;
+    }
+
     public void LeaveRoom()
     {
         foreach (Player player in PhotonNetwork.PlayerList)
@@ -128,7 +139,7 @@ public class RoomManager : MonoBehaviour
        
     #region Ready
     public void Ready()
-    {
+    {        
         isReady = !isReady;
         playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
         ReadyPropertyUpdate();
@@ -186,8 +197,20 @@ public class RoomManager : MonoBehaviour
     {
         mapSelectPanel.SetActive(false);
     }
-    #endregion 
+    #endregion
 
+    #region Turn
+    private void TurnTypeSwitch()
+    {
+        isRandom = !isRandom;
+        PhotonNetwork.CurrentRoom.SetTurnRandom(isRandom);
+    }
+
+    public void UpdateTurnType()
+    {
+        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "Random" : "NotRandom";
+    }
+    #endregion
     public void GameStart()
     {
         if(currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)

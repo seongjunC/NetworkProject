@@ -126,9 +126,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Debug.Log("방 입장 완료");
         lobby.SetActive(false);
         room.SetActive(true);
+
         roomManager.CreatePlayerSlot();
         roomManager.CreateMapSlot();
         roomManager.UpdateReadyCountText();
+        roomManager.Init();
     }
 
     public override void OnLeftRoom()    
@@ -182,8 +184,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
         roomManager.MapChange();
+        roomManager.UpdateTurnType();
 
-        foreach(var slot in roomListDic.Values)
+        foreach (var slot in roomListDic.Values)
         {
             slot.Refresh();
         }
