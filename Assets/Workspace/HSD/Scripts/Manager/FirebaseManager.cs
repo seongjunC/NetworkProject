@@ -38,7 +38,6 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 database = FirebaseDatabase.DefaultInstance;
                 database.GoOnline();
                 database.SetPersistenceEnabled(false);
-                Manager.Database.Init();
             }
             else
             {

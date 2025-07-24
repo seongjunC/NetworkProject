@@ -1,14 +1,14 @@
+using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using Firebase;
 using Firebase.Extensions;
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Photon.Realtime;
 
 public class LoginManager : MonoBehaviourPunCallbacks
 {
@@ -126,14 +126,10 @@ public class LoginManager : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
         });
     }
-    
+
     public IEnumerator LoginRoutine()
     {
-        if (Manager.Database == null || Manager.Database.userRef == null)
-        {
-            Debug.LogError("Database or userRef is null!");
-            Manager.Database.Init();
-        }
+        Manager.Database.Init();
 
         var task = Manager.Database.userRef.GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
