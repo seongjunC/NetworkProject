@@ -27,7 +27,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
-    [SerializeField] PasswordPanel passwordPanel;        
+    [SerializeField] PasswordPanel passwordPanel;
+
+    private bool isRoomCreate;
 
     #region LifeCycle
     private void Start()
@@ -41,7 +43,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnEnable();
 
         Subscribe();
-
+        isRoomCreate = false;
         if (Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
     }
