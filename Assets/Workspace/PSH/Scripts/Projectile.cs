@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public int explosionRadiusx = 10; // 텍스처 픽셀 단위
-    public int explosionRadiusy = 10;
+    public int explosionRadiusx = 100; // 텍스처 픽셀 단위
+    public int explosionRadiusy = 100;
     public Texture2D explosionMask;
     public float explosionScale = 1f;
-    public float damage = 100f;
+    public int damage = 50;
 
     private float worldPerPixel; // Terrain 기준
     private DeformableTerrain terrain;
@@ -116,6 +116,8 @@ public class Projectile : MonoBehaviour
         {
             if (hit.CompareTag("Player"))
             {
+                var player = hit.GetComponent<PlayerController>();
+                player.OnHit(damage);
                 Debug.Log($"플레이어에게 {damage} 데미지");
             }
         }
