@@ -31,7 +31,7 @@ public static class CustomProperty
 
     public static bool GetReady(this Player player)
     {
-        if(player.CustomProperties.TryGetValue(ready, out object value))
+        if (player.CustomProperties.TryGetValue(ready, out object value))
         {
             return (bool)value;
         }
