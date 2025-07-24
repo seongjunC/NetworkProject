@@ -39,7 +39,9 @@ public class MapBoundary : MonoBehaviour
         //플레이어가 맵 밖을 나갈 경우
         if (collision.CompareTag("Player"))
         {
-            //플레이어 낙사 판정
+            //큰 데미지를 줘서 낙사
+            var p = collision.GetComponent<PlayerController>();
+            p.OnHit(9999999);
         }
         //투사체가 맵 밖을 나갈 경우
         else if (collision.CompareTag("Bullet"))
