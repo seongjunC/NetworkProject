@@ -15,7 +15,7 @@ public static class CustomProperty
 
     public static int GetMap(this Room room)
     {
-        if (room.CustomProperties.TryGetValue(map, out object value))
+        if(room.CustomProperties.TryGetValue(map, out object value))
         {
             return (int)value;
         }
