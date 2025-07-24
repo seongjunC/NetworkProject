@@ -72,6 +72,9 @@ public class Projectile : MonoBehaviour
         GetComponent<Rigidbody2D>().simulated = false;
 
         //폭발이펙트
+        if (explosionEffect != null)
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+
 
         //몇초후 카메라 무브
         yield return new WaitForSeconds(delay);
