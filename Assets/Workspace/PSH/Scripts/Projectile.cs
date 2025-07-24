@@ -18,6 +18,10 @@ public class Projectile : MonoBehaviour
     [SerializeField] float delay = 2f;
 
     private Rigidbody2D rb;
+
+    [Header("기즈모")]
+    private Vector2 gizmoCenter;
+    private float gizmoRadius;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -112,6 +116,9 @@ public class Projectile : MonoBehaviour
 
     public void DetectPlayerInCircle(Vector2 centerWorld, float radiusWorld)
     {
+        gizmoCenter = centerWorld;
+        gizmoRadius = radiusWorld;
+
         var colliders = Physics2D.OverlapCircleAll(centerWorld, radiusWorld);
 
         foreach (var hit in colliders)
@@ -121,5 +128,13 @@ public class Projectile : MonoBehaviour
                 Debug.Log($"플레이어에게 {damage} 데미지");
             }
         }
+    }
+    private void OnDrawGizmos()
+    {
+        // 1) 색상 설정
+        Gizmos.color = Color.red;
+
+        // 2) 2D용 원 그리기
+        Gizmos.DrawWireSphere(gizmoCenter, gizmoRadius);
     }
 }
