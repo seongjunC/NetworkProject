@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Realtime;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class TestLoginManager : MonoBehaviourPunCallbacks
 {
@@ -23,6 +24,8 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
     [Header("Panels")]
     [SerializeField] GameObject signupPanel;
     [SerializeField] GameObject loginPanel;
+
+    private FirebaseUser user;
 
     #region LifeCycle
 
@@ -97,7 +100,7 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
                 Manager.UI.PopUpUI.Show("Login Failed");
                 return;
             }
-            FirebaseUser user = task.Result.User;
+            user = task.Result.User;
 
             Debug.Log($"로그인 성공: {task.Result.User.Email}");
             loginButton.interactable = false;
@@ -140,7 +143,7 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
             Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
         }
 
-        PhotonNetwork.LocalPlayer.SetUID(FirebaseManager.Auth.CurrentUser.UserId);
+        PhotonNetwork.LocalPlayer.SetUID(user.UserId);
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);
         SceneManager.LoadSceneAsync("Lobby");

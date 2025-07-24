@@ -39,11 +39,18 @@ public class RoomManager : MonoBehaviour
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
 
+    [Header("Chat")]
+    [SerializeField] Chat chat;
+
     private bool isReady;
     private bool isRandom;
     private int currentReadyCount;
 
     #region LifeCycle
+    private void Start()
+    {
+        CreateMapSlot();
+    }
     private void OnEnable()
     {
         exitButton.onClick      .AddListener(LeaveRoom);
@@ -100,6 +107,7 @@ public class RoomManager : MonoBehaviour
             startButton.interactable        = false;
             mapChangeButton.interactable    = false;
             turnSwitchButton.interactable   = false;
+            Debug.Log("PlayerSlot");
             MapChange();
         }
 
@@ -184,9 +192,10 @@ public class RoomManager : MonoBehaviour
     #region Map
     private void MapChange()
     {
-        mapIdx = (int)PhotonNetwork.CurrentRoom.CustomProperties["Map"];
+        mapIdx = PhotonNetwork.CurrentRoom.GetMap();
         mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
     }
+
     private void CreateMapSlot()
     {
         for (int i = 0; i <= (int)MapType.Length-1; i ++)
@@ -233,8 +242,7 @@ public class RoomManager : MonoBehaviour
     #region PhotonCallbacks
     public void OnJoinedRoom()
     {
-        CreatePlayerSlot();
-        CreateMapSlot();
+        CreatePlayerSlot();        
         UpdateReadyCountText();
         UpdateTurnType();
         Init();
@@ -258,9 +266,15 @@ public class RoomManager : MonoBehaviour
     {
         ReadyCheck(target);
     }
+
     public void OnMasterClientSwitched(Player newMasterClient)
     {
         CreatePlayerSlot(newMasterClient);
+    }
+
+    public void OnLeftRoom()
+    {
+        chat.ResetChat();
     }
     #endregion
 }

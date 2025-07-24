@@ -105,14 +105,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     #region PhotonCallbacks
     public override void OnCreatedRoom()
-    {        
+    {
         PhotonNetwork.CurrentRoom.SetMap(0);
         PhotonNetwork.CurrentRoom.SetTurnRandom(true);
 
         if (isPassword.isOn)
         {
             PhotonNetwork.CurrentRoom.SetPassword(passwordField.text);            
-        }
+        }        
 
         passwordField.text = "";
         Debug.Log("방 생성 완료");        
@@ -131,6 +131,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         lobby.SetActive(true);
         room.SetActive(false);
+        roomManager.OnLeftRoom();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {

@@ -24,6 +24,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject signupPanel;
     [SerializeField] GameObject loginPanel;
 
+    private FirebaseUser user;
+
     #region LifeCycle
 
     public override void OnEnable()
@@ -77,7 +79,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 if (auth.CurrentUser != null)
                 {
                     Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
-                    FirebaseUser user = auth.CurrentUser;
+                    user = auth.CurrentUser;
 
                     LoginSetActive(user == null);
 
@@ -115,8 +117,9 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 Debug.LogError($"로그인 실패: {task.Exception}");
                 Manager.UI.PopUpUI.Show("Login Failed");
                 return;
-            }        
+            }
 
+            user = task.Result.User;
             Debug.Log($"로그인 성공: {task.Result.User.Email}");
             loginButton.interactable = false;
 
@@ -158,7 +161,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
         }
 
-        PhotonNetwork.LocalPlayer.SetUID(FirebaseManager.Auth.CurrentUser.UserId);
+        PhotonNetwork.LocalPlayer.SetUID(user.UserId);
 
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);

@@ -45,7 +45,7 @@ public class RoomSlot : MonoBehaviour
 
     public void JoinRoom()
     {
-        if ((string)room.CustomProperties["Password"] != "")
+        if ((string)room.CustomProperties["Password"] != null)
         {
             OnPasswordRoomSelected?.Invoke(room);
             return;
