@@ -78,13 +78,15 @@ public class RoomManager : MonoBehaviour
 
         if (PhotonNetwork.IsMasterClient)
         {
-            mapChangeButton.interactable = true;
-            startButton.interactable = true;
+            mapChangeButton.interactable    = true;
+            startButton.interactable        = true;
+            turnSwitchButton.interactable   = true;
         }
         else
         {
-            mapChangeButton.interactable = false;
-            startButton.interactable = false;
+            turnSwitchButton.interactable   = false;
+            mapChangeButton.interactable    = false;
+            startButton.interactable        = false;
         }
     }
 
@@ -94,8 +96,9 @@ public class RoomManager : MonoBehaviour
 
         if (!PhotonNetwork.IsMasterClient)
         {
-            startButton.interactable = false;
-            mapChangeButton.interactable = false;
+            startButton.interactable        = false;
+            mapChangeButton.interactable    = false;
+            turnSwitchButton.interactable   = false;
             MapChange();
         }
 
