@@ -270,6 +270,12 @@ public class RoomManager : MonoBehaviour
     public void OnMasterClientSwitched(Player newMasterClient)
     {
         CreatePlayerSlot(newMasterClient);
+        if(PhotonNetwork.LocalPlayer == newMasterClient)
+        {
+            startButton.interactable = true;
+            mapChangeButton.interactable = true;
+            turnSwitchButton.interactable = true;
+        }
     }
 
     public void OnLeftRoom()

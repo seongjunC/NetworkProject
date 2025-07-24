@@ -86,7 +86,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         RoomOptions option = new RoomOptions();
         option.MaxPlayers = maxPlayer;
-        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password"};               
+        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password", "Full"};               
         PhotonNetwork.CreateRoom(roomNameField.text, option);        
         roomNameField.text = "";
         maxPlayerField.text = "";
@@ -108,6 +108,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.CurrentRoom.SetMap(0);
         PhotonNetwork.CurrentRoom.SetTurnRandom(true);
+        PhotonNetwork.CurrentRoom.SetFull(false);
 
         if (isPassword.isOn)
         {
@@ -116,6 +117,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         passwordField.text = "";
         Debug.Log("방 생성 완료");        
+    }
+
+    public override void OnLeftLobby()
+    {
+        base.OnLeftLobby();
     }
 
     public override void OnJoinedRoom()
@@ -149,6 +155,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        CreateRoomSlots(roomList);
+    }
+
+    private void CreateRoomSlots(List<RoomInfo> roomList)
+    {
         foreach (RoomInfo room in roomList)
         {
             if (room.RemovedFromList)
@@ -176,6 +187,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             }
         }
     }
+
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
         roomManager.OnRoomPropertiesUpdate();

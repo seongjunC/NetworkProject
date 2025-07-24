@@ -10,9 +10,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class RoomSlot : MonoBehaviour
-{    
+{
+    [SerializeField] Image roomPanel;
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text roomCountText;
+    [SerializeField] TMP_Text roomVisibleText;
     [SerializeField] RawImage mapIcon;
     [SerializeField] Button button;
     private string roomName;
@@ -29,10 +31,19 @@ public class RoomSlot : MonoBehaviour
     {
         this.room = _room;
         roomName = _room.Name;
+
+        // UI
         roomNameText.text = _room.Name;
         roomCountText.text = $"{_room.PlayerCount} / {_room.MaxPlayers}";
-        Texture2D texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)((int)_room.CustomProperties["Map"])).ToString()}");
-        mapIcon.texture = texture;
+        mapIcon.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)((int)_room.CustomProperties["Map"])).ToString()}");
+        roomVisibleText.text = (string)_room.CustomProperties["Password"] == null ? "Lock : false" : "Lock : true";        
+
+        if (_room.CustomProperties.TryGetValue("Full", out object value))
+        {
+            roomPanel.color = (bool)value ? Color.red : Color.green;
+        }
+        else
+            roomPanel.color = Color.green;
     }
 
     public void Refresh()

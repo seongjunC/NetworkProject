@@ -13,6 +13,7 @@ public static class CustomProperty
     private const string MAP = "Map";
     private const string PASSWORD = "Password";
     private const string TURNRANDOM = "TurnRandom";
+    private const string FULL = "Full";
     #endregion
 
     #region PlayerProperty
@@ -94,6 +95,21 @@ public static class CustomProperty
     public static bool GetTurnRandom(this Room room)
     {
         if(room.CustomProperties.TryGetValue(TURNRANDOM, out object value))
+        {
+            return (bool)value;
+        }
+        return false;
+    }
+
+    public static void SetFull(this Room room, bool isFull)
+    {
+        hash[FULL] = isFull;
+        room.SetCustomProperties(hash);
+    }
+
+    public static bool GetFull(this Room room)
+    {
+        if(room.CustomProperties.TryGetValue(FULL, out object value))
         {
             return (bool)value;
         }
