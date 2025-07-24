@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public int explosionRadiusx = 10; // 텍스처 픽셀 단위
-    public int explosionRadiusy = 10;
+    public int explosionRadiusx = 100; // 텍스처 픽셀 단위
+    public int explosionRadiusy = 100;
     public Texture2D explosionMask;
     public float explosionScale = 1f;
-    public float damage = 100f;
+    public int damage = 50;
 
     private float worldPerPixel; // Terrain 기준
     private DeformableTerrain terrain;
@@ -18,6 +18,10 @@ public class Projectile : MonoBehaviour
     [SerializeField] float delay = 2f;
 
     private Rigidbody2D rb;
+
+    [Header("기즈모")]
+    private Vector2 gizmoCenter;
+    private float gizmoRadius;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -56,8 +60,7 @@ public class Projectile : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (hasCollided) return;
-        hasCollided = true;
+
 
         Vector2 explosionPoint = collision.contacts[0].point;
 
@@ -68,28 +71,20 @@ public class Projectile : MonoBehaviour
             terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
 
         // 데미지 처리
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            // 직격: 100%
-            Debug.Log($"플레이어에게 {damage} 데미지 (직격)");
-            // player.TakeDamage(maxDamage);
-        }
-        else
-        {
-            // 주변 피해
-            float pixelRadius = Mathf.Max(explosionRadiusx, explosionRadiusy);
-            float worldRadius = pixelRadius * worldPerPixel;
+        float pixelRadius = Mathf.Max(explosionRadiusx, explosionRadiusy);
+        float worldRadius = pixelRadius * worldPerPixel;
 
-            DetectPlayerInCircle(explosionPoint, worldRadius);
-        }
+        DetectPlayerInCircle(explosionPoint, worldRadius);
 
-        BeginDestroyRoutine();
+        BeginDestroyRoutine(true);
     }
-    public void BeginDestroyRoutine()
+    public void BeginDestroyRoutine(bool hasExplosionEffect)
     {
-        StartCoroutine(DestroyRoutine());
+        if (hasCollided) return;
+        hasCollided = true;
+        StartCoroutine(DestroyRoutine(hasExplosionEffect));
     }
-    private IEnumerator DestroyRoutine()
+    private IEnumerator DestroyRoutine(bool hasExplosionEffect)
     {
         //투사체 비활성화
         GetComponent<SpriteRenderer>().enabled = false;
@@ -97,7 +92,7 @@ public class Projectile : MonoBehaviour
         GetComponent<Rigidbody2D>().simulated = false;
 
         //폭발이펙트
-        if (explosionEffect != null)
+        if (explosionEffect != null && hasExplosionEffect)
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
 
 
@@ -112,14 +107,27 @@ public class Projectile : MonoBehaviour
 
     public void DetectPlayerInCircle(Vector2 centerWorld, float radiusWorld)
     {
+        gizmoCenter = centerWorld;
+        gizmoRadius = radiusWorld;
+
         var colliders = Physics2D.OverlapCircleAll(centerWorld, radiusWorld);
 
         foreach (var hit in colliders)
         {
             if (hit.CompareTag("Player"))
             {
+                var player = hit.GetComponent<PlayerController>();
+                player.OnHit(damage);
                 Debug.Log($"플레이어에게 {damage} 데미지");
             }
         }
+    }
+    private void OnDrawGizmos()
+    {
+        // 1) 색상 설정
+        Gizmos.color = Color.red;
+
+        // 2) 2D용 원 그리기
+        Gizmos.DrawWireSphere(gizmoCenter, gizmoRadius);
     }
 }
