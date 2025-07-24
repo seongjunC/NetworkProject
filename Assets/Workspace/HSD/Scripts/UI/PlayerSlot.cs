@@ -15,9 +15,19 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Image panel;
     [SerializeField] Image teamPanel;
 
+    [Header("ReadyColor")]
+    [SerializeField] Color readyColor;
+    [SerializeField] Color defaultColor;
+
+    [Header("TeamColor")]
+    [SerializeField] Color redColor;
+    [SerializeField] Color blueColor;
+
     public void SetUp(Player player)
     {
         playerName.text = player.NickName;
+
+
 
         Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Win").GetValueAsync().ContinueWithOnMainThread(task =>
         {

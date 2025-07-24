@@ -70,6 +70,11 @@ public class TeamManager : MonoBehaviour
         return team;
     }
 
+    public Color GetTeamColor(Player player)
+    {
+        return player.GetTeam() == Team.Red ? redColor : blueColor;
+    }
+
     private void GetPlayerTeamCount(out int red, out int blue)
     {
         red = 0;
@@ -84,4 +89,5 @@ public class TeamManager : MonoBehaviour
             }
         }
     }
+
 }

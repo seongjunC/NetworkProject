@@ -63,6 +63,47 @@ public class RoomManager : MonoBehaviour
     }
     #endregion
 
+
+    #region EventSubscribe
+    private void Subscribe()
+    {
+        exitButton.onClick      .AddListener(LeaveRoom);
+        readyButton.onClick     .AddListener(Ready);
+        startButton.onClick     .AddListener(GameStart);
+        mapChangeButton.onClick .AddListener(OpenMapPanel);
+        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
+        teamSwitchButton.onClick.AddListener(teamManager.ChangeTeam);
+    }
+
+    private void UnSubscribe()
+    {
+        exitButton.onClick      .RemoveListener(LeaveRoom);
+        readyButton.onClick     .RemoveListener(Ready);
+        startButton.onClick     .RemoveListener(GameStart);
+        mapChangeButton.onClick .RemoveListener(OpenMapPanel);
+        turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
+        teamSwitchButton.onClick.RemoveListener(teamManager.ChangeTeam);
+    }
+    #endregion
+
+    private void Init()
+    {
+        isReady = false;
+        isRandom = true;
+    }
+
+    private void LeaveRoom()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            Destroy(playerSlotDic[player.ActorNumber].gameObject);
+        }
+
+        playerSlotDic.Clear();
+
+        PhotonNetwork.LeaveRoom();
+    }
+       
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
     {
@@ -114,6 +155,17 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    private void UpdatePlayerSlot()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            PlayerSlot slot = playerSlotDic[player.ActorNumber];
+            slot.SetUp(player);
+            slot.UpdateReady(GetReadyColor(player));
+            slot.UpdateTeam(teamManager.GetTeamColor(player));
+        }
+    }
+
     private void DestroyPlayerSlot(Player player)
     {
         if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
@@ -128,46 +180,6 @@ public class RoomManager : MonoBehaviour
     }
     #endregion
 
-    #region EventSubscribe
-    private void Subscribe()
-    {
-        exitButton.onClick      .AddListener(LeaveRoom);
-        readyButton.onClick     .AddListener(Ready);
-        startButton.onClick     .AddListener(GameStart);
-        mapChangeButton.onClick .AddListener(OpenMapPanel);
-        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
-        teamSwitchButton.onClick.AddListener(teamManager.ChangeTeam);
-    }
-
-    private void UnSubscribe()
-    {
-        exitButton.onClick      .RemoveListener(LeaveRoom);
-        readyButton.onClick     .RemoveListener(Ready);
-        startButton.onClick     .RemoveListener(GameStart);
-        mapChangeButton.onClick .RemoveListener(OpenMapPanel);
-        turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
-        teamSwitchButton.onClick.RemoveListener(teamManager.ChangeTeam);
-    }
-    #endregion
-
-    private void Init()
-    {
-        isReady = false;
-        isRandom = true;
-    }
-
-    private void LeaveRoom()
-    {
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            Destroy(playerSlotDic[player.ActorNumber].gameObject);
-        }
-
-        playerSlotDic.Clear();
-
-        PhotonNetwork.LeaveRoom();
-    }
-       
     #region Ready
     private void Ready()
     {
@@ -215,6 +227,11 @@ public class RoomManager : MonoBehaviour
         }
 
         readyCount.text = $"{currentReadyCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
+    }
+
+    private Color GetReadyColor(Player player)
+    {
+        return player.GetReady() ? readyColor : defaultColor;
     }
     #endregion
 
@@ -272,7 +289,8 @@ public class RoomManager : MonoBehaviour
     public void OnJoinedRoom()
     {        
         Init();
-        CreatePlayerSlot();        
+        CreatePlayerSlot();
+        UpdatePlayerSlot();
         UpdateReadyCountText();
         ReadyPropertyUpdate();
         UpdateTurnType();

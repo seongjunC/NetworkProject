@@ -167,7 +167,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("방 입장 완료");
-        Debug.Log($"RoomPanel = {room != null}");
         lobby.SetActive(false);
         room.SetActive(true);
 
