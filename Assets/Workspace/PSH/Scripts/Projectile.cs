@@ -49,6 +49,7 @@ public class Projectile : MonoBehaviour
             DetectPlayerInCircle(explosionPoint, worldRadius);
         }
 
+        CameraController.Instance.ReturnToPlayerCam();
         Destroy(gameObject);
     }
 
