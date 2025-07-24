@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,10 +33,6 @@ public class RoomManager : MonoBehaviour
     [Header("Team")]
     public TeamManager teamManager;
     [SerializeField] Button teamSwitchButton;
-
-    [Header("Ready")]
-    [SerializeField] Color readyColor;
-    [SerializeField] Color defaultColor;
 
     [Header("Panel")]
     [SerializeField] GameObject lobby;
@@ -119,18 +116,14 @@ public class RoomManager : MonoBehaviour
             playerSlotDic[player.ActorNumber].SetUp(player);
         }
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            mapChangeButton.interactable    = true;
-            startButton.interactable        = true;
-            turnSwitchButton.interactable   = true;
-        }
-        else
-        {
-            turnSwitchButton.interactable   = false;
-            mapChangeButton.interactable    = false;
-            startButton.interactable        = false;
-        }
+        SetButtonInteractable();
+    }
+
+    private void SetButtonInteractable()
+    {
+        mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;
+        startButton.interactable        = PhotonNetwork.IsMasterClient;
+        turnSwitchButton.interactable   = PhotonNetwork.IsMasterClient;
     }
 
     private void CreatePlayerSlot()
@@ -139,10 +132,6 @@ public class RoomManager : MonoBehaviour
 
         if (!PhotonNetwork.IsMasterClient)
         {
-            startButton.interactable        = false;
-            mapChangeButton.interactable    = false;
-            turnSwitchButton.interactable   = false;
-            Debug.Log("PlayerSlot");
             MapChange();
         }
 
@@ -153,16 +142,15 @@ public class RoomManager : MonoBehaviour
             playerSlot.SetUp(player);
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
+        SetButtonInteractable();
     }
 
-    private void UpdatePlayerSlot()
+    private void UpdateAllPlayerSlot()
     {
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             PlayerSlot slot = playerSlotDic[player.ActorNumber];
             slot.SetUp(player);
-            slot.UpdateReady(GetReadyColor(player));
-            slot.UpdateTeam(teamManager.GetTeamColor(player));
         }
     }
 
@@ -184,14 +172,8 @@ public class RoomManager : MonoBehaviour
     private void Ready()
     {
         isReady = !isReady;
-        UpdateReadyColor();
         ReadyPropertyUpdate();
         UpdateReadyCountText();
-    }
-
-    private void UpdateReadyColor()
-    {
-        playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
     }
 
     private void AllReadyCheck()
@@ -206,7 +188,7 @@ public class RoomManager : MonoBehaviour
     {
         if(player.CustomProperties.TryGetValue("Ready", out object value))
         {
-            playerSlotDic[player.ActorNumber].UpdateReady(player.GetReady() ? readyColor : defaultColor);
+            playerSlotDic[player.ActorNumber].SetUp(player);
             UpdateReadyCountText();
         }
     }
@@ -227,11 +209,6 @@ public class RoomManager : MonoBehaviour
         }
 
         readyCount.text = $"{currentReadyCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
-    }
-
-    private Color GetReadyColor(Player player)
-    {
-        return player.GetReady() ? readyColor : defaultColor;
     }
     #endregion
 
@@ -288,9 +265,10 @@ public class RoomManager : MonoBehaviour
     #region PhotonCallbacks
     public void OnJoinedRoom()
     {        
+        PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         Init();
         CreatePlayerSlot();
-        UpdatePlayerSlot();
+        UpdateAllPlayerSlot();
         UpdateReadyCountText();
         ReadyPropertyUpdate();
         UpdateTurnType();
@@ -313,18 +291,12 @@ public class RoomManager : MonoBehaviour
     public void OnPlayerPropertiesUpdate(Player target)
     {
         ReadyCheck(target);
-        teamManager.UpdateSlot(target, playerSlotDic[target.ActorNumber]);
     }
 
     public void OnMasterClientSwitched(Player newMasterClient)
     {
         CreatePlayerSlot(newMasterClient);
-        if(PhotonNetwork.LocalPlayer == newMasterClient)
-        {
-            startButton.interactable = true;
-            mapChangeButton.interactable = true;
-            turnSwitchButton.interactable = true;
-        }
+        SetButtonInteractable();
     }
 
     public void OnLeftRoom()

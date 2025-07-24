@@ -5,18 +5,7 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
-    [SerializeField] Color redColor;
-    [SerializeField] Color blueColor;
     private int team;
-
-    public void UpdateSlot(Player player, PlayerSlot slot)
-    {
-        if (player.CustomProperties.TryGetValue("Team", out object value))
-        {
-            Color teamColor = (Team)value == 0 ? redColor : blueColor;
-            slot.UpdateTeam(teamColor);
-        }
-    }
 
     public void ChangeTeam()
     {
@@ -24,7 +13,7 @@ public class TeamManager : MonoBehaviour
         int blue = 0;
 
         GetPlayerTeamCount(out red, out blue);
-
+        Debug.Log($"Red : {red}, Blue : {blue}");
         if (team + 1 >= (int)Team.Length)
             team = 0;
         else
@@ -56,7 +45,7 @@ public class TeamManager : MonoBehaviour
     {
         int red = 0;
         int blue = 0;
-        Team team = Team.Length;
+        Team team = Team.Red;
 
         GetPlayerTeamCount(out red, out blue);
 
@@ -70,11 +59,6 @@ public class TeamManager : MonoBehaviour
         return team;
     }
 
-    public Color GetTeamColor(Player player)
-    {
-        return player.GetTeam() == Team.Red ? redColor : blueColor;
-    }
-
     private void GetPlayerTeamCount(out int red, out int blue)
     {
         red = 0;
@@ -82,10 +66,10 @@ public class TeamManager : MonoBehaviour
 
         foreach (Player player in PhotonNetwork.PlayerList)
         {
-            if (player.CustomProperties.TryGetValue("TEAM", out object teamObj) && teamObj is Team team)
+            if (player.CustomProperties.TryGetValue("Team", out object value))
             {
-                if (team == Team.Red) red++;
-                else if (team == Team.Blue) blue++;
+                if ((Team)value == Team.Red) red++;
+                else if ((Team)value == Team.Blue) blue++;
             }
         }
     }

@@ -362,8 +362,12 @@ MonoBehaviour:
   playerName: {fileID: 4066017652296794214}
   winText: {fileID: 1941369221602578204}
   loseText: {fileID: 6293726224926855797}
-  panel: {fileID: 2525182445079040546}
+  readyPanel: {fileID: 2525182445079040546}
   teamPanel: {fileID: 5596589959689982413}
+  readyColor: {r: 0.34451762, g: 0.9245283, b: 0.39083904, a: 1}
+  defaultColor: {r: 0.16078432, g: 0.21568629, b: 0.5372549, a: 1}
+  redColor: {r: 1, g: 0.21226418, b: 0.21226418, a: 1}
+  blueColor: {r: 0.31626022, g: 0.7692308, b: 0.9716981, a: 1}
 --- !u!1 &8075036083381515774
 GameObject:
   m_ObjectHideFlags: 0

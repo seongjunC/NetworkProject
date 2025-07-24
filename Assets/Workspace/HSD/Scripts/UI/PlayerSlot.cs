@@ -12,7 +12,7 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] TMP_Text playerName;
     [SerializeField] TMP_Text winText;
     [SerializeField] TMP_Text loseText;
-    [SerializeField] Image panel;
+    [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
 
     [Header("ReadyColor")]
@@ -27,7 +27,9 @@ public class PlayerSlot : MonoBehaviour
     {
         playerName.text = player.NickName;
 
+        readyPanel.color = player.GetReady() ? readyColor : defaultColor;
 
+        teamPanel.color = player.GetTeam() == Game.Team.Red ? redColor : blueColor;
 
         Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Win").GetValueAsync().ContinueWithOnMainThread(task =>
         {
@@ -56,7 +58,7 @@ public class PlayerSlot : MonoBehaviour
 
     public void UpdateReady(Color color)
     {
-        panel.color = color;
+        readyPanel.color = color;
     }
 
     public void UpdateTeam(Color color)

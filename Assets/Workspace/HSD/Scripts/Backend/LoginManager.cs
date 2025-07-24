@@ -25,7 +25,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject loginPanel;
 
     private FirebaseUser user;
-    private bool isLogin;
+    private bool isLogin = false;
 
     #region LifeCycle
 
@@ -121,6 +121,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
     #region Login
     private void Login()
     {
+        if (isLogin) return;
+
         isLogin = true;
         loginButton.interactable = false;
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
