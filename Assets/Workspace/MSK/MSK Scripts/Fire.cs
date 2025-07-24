@@ -7,7 +7,7 @@ public class Fire : MonoBehaviour
     [SerializeField] private Transform firePivot;       // 회전할 포신 부분
     [SerializeField] private Transform firePoint;       // 실제 폭탄이 나갈 위치
 
-    [SerializeField] private GameObject bombPrefab;
+    [SerializeField] private GameObject bulletPrefab;
 
     [Header("Controls")]
     [SerializeField] private float angle = 45f;         // 포신의 현재 각도
@@ -67,10 +67,15 @@ public class Fire : MonoBehaviour
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
     }
 
-    // 폭탄 생성하고 속도 설정
+    // 발사 
     private void Shoot()
     {
-        //Bomb newBomb = PhotonNetwork.Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
-        //newBomb.SetVelocity(firePoint.up * powerCharge);
+        GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePoint.position, firePoint.rotation);
+
+        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = firePoint.up * powerCharge;
+        }
     }
 }

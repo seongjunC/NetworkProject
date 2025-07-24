@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviourPun
 
     private float _movable;
     private bool _isDead = false;                   // 사망여부
-    private bool _isMoving = false;                 // 움직임 여부
+
     public bool IsAttacked { get; private set; } = false;
     private void Awake()
     {
@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviourPun
             return;
         if (horizontal != 0)
         {
-            _isMoving = true;
             _movable -= Mathf.Abs(horizontal) * _speed * Time.deltaTime;
             player.localScale = new Vector3(-horizontal, 1f, 1f);
             Vector2 velocity = _rigidbody.velocity;
