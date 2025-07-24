@@ -53,19 +53,11 @@ public class RoomManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        exitButton.onClick      .AddListener(LeaveRoom);
-        readyButton.onClick     .AddListener(Ready);
-        startButton.onClick     .AddListener(GameStart);
-        mapChangeButton.onClick .AddListener(OpenMapPanel);
-        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
+        Subscribe();
     }
     private void OnDisable()
     {
-        exitButton.onClick      .RemoveListener(LeaveRoom);
-        readyButton.onClick     .RemoveListener(Ready);
-        startButton.onClick     .RemoveListener(GameStart);
-        mapChangeButton.onClick .RemoveListener(OpenMapPanel);
-        turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
+        UnSubscribe();
     }
     #endregion
 
@@ -133,6 +125,23 @@ public class RoomManager : MonoBehaviour
         }
     }
     #endregion
+    private void Subscribe()
+    {
+        exitButton.onClick      .AddListener(LeaveRoom);
+        readyButton.onClick     .AddListener(Ready);
+        startButton.onClick     .AddListener(GameStart);
+        mapChangeButton.onClick .AddListener(OpenMapPanel);
+        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
+    }
+
+    private void UnSubscribe()
+    {
+        exitButton.onClick      .RemoveListener(LeaveRoom);
+        readyButton.onClick     .RemoveListener(Ready);
+        startButton.onClick     .RemoveListener(GameStart);
+        mapChangeButton.onClick .RemoveListener(OpenMapPanel);
+        turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
+    }
 
     private void Init()
     {

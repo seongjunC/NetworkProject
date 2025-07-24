@@ -40,8 +40,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
 
-        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
-        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
+        Subscribe();
 
         if (Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
@@ -49,10 +48,21 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnDisable()
     {
+        UnSubscribe();
+    }
+
+    #endregion
+
+    private void UnSubscribe()
+    {
         logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
         isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
     }
-    #endregion
+    private void Subscribe()
+    {
+        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
+        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
+    }
 
     public void CreateRoom()
     {

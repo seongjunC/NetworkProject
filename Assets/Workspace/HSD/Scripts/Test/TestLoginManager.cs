@@ -43,22 +43,21 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
 
         UnSubscribe();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-            Login();
-    }
     #endregion
 
     #region EventSubscribe
     private void Subscribe()
     {
+        pw.onEndEdit.AddListener(EnterLogin);
+        email.onEndEdit.AddListener(EnterLogin);
         loginButton.onClick.AddListener(Login);
         signupButton.onClick.AddListener(SignUp);
         Manager.Firebase.OnAuthSettingComplated += StartRoutine;
     }
     private void UnSubscribe()
     {
+        pw.onEndEdit.RemoveListener(EnterLogin);
+        email.onEndEdit.RemoveListener(EnterLogin);
         loginButton.onClick.RemoveListener(Login);
         signupButton.onClick.RemoveListener(SignUp);
         Manager.Firebase.OnAuthSettingComplated -= StartRoutine;
@@ -69,6 +68,12 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
     {
         email.text = "";
         pw.text = "";
+    }
+
+    private void EnterLogin(string s)
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+            Login();
     }
 
     public void StartRoutine()
