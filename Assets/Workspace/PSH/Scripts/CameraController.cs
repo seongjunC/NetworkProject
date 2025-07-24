@@ -27,12 +27,14 @@ public class CameraController : MonoBehaviour
         if (vcamBullet == null) return;
         vcamBullet.Follow = bulletTransform;
         vcamBullet.Priority = 20;
+        Debug.Log("카메라가 투사체를향함");
     }
 
     public void ReturnToPlayerCam()
     {
         if(vcamPlayer == null) return;
-        vcamBullet.Follow = null;
         vcamBullet.Priority = 5;
+        vcamBullet.Follow = null;
+        Debug.Log("카메라가 돌아옴");
     }
 }

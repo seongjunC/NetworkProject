@@ -44,9 +44,14 @@ public class MapBoundary : MonoBehaviour
         //투사체가 맵 밖을 나갈 경우
         else if (collision.CompareTag("Bullet"))
         {
-            //투사체 삭제
-            Destroy(collision.gameObject);
-            Debug.Log("투사체가 맵 밖으로 나감 투사체 삭제");
+            Projectile p = collision.GetComponent<Projectile>();
+
+            if (p != null)
+            {
+                p.BeginDestroyRoutine();
+                Debug.Log("투사체가 맵 밖으로 나감");
+            }
+
         }
     }
 

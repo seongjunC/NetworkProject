@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -10,6 +11,11 @@ public class Projectile : MonoBehaviour
 
     private float worldPerPixel; // Terrain 기준
     private DeformableTerrain terrain;
+
+    private bool hasCollided = false;
+
+    [SerializeField] GameObject explosionEffect;
+    [SerializeField] float delay = 2f;
 
     private void Start()
     {
@@ -25,6 +31,9 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (hasCollided) return;
+        hasCollided = true;
+
         Vector2 explosionPoint = collision.contacts[0].point;
 
         // Terrain 파괴
@@ -49,7 +58,27 @@ public class Projectile : MonoBehaviour
             DetectPlayerInCircle(explosionPoint, worldRadius);
         }
 
-        CameraController.Instance.ReturnToPlayerCam();
+        BeginDestroyRoutine();
+    }
+    public void BeginDestroyRoutine()
+    {
+        StartCoroutine(DestroyRoutine());
+    }
+    private IEnumerator DestroyRoutine()
+    {
+        //투사체 비활성화
+        GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<Rigidbody2D>().simulated = false;
+
+        //폭발이펙트
+
+        //몇초후 카메라 무브
+        yield return new WaitForSeconds(delay);
+
+        if (CameraController.Instance != null)
+            CameraController.Instance.ReturnToPlayerCam();   
+
         Destroy(gameObject);
     }
 
