@@ -46,6 +46,7 @@ public class PasswordPanel : MonoBehaviour
         {
             PhotonNetwork.JoinRoom(roomName);
             applyButton.onClick.RemoveListener(JoinRoomCheck);
+            gameObject.SetActive(false);
         }
         else
             Manager.UI.PopUpUI.Show("비밀번호가 일치하지 않습니다.");
