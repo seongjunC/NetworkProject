@@ -28,6 +28,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
 
+    [Header("Password")]
+    [SerializeField] GameObject passwordPanel;    
+
     #region LifeCycle
     private void Start()
     {
@@ -39,7 +42,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnEnable();
 
         logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
-        isPassword.onValueChanged.AddListener();
+        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
 
         if (Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
@@ -48,6 +51,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnDisable()
     {
         logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
+        isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
     }
     #endregion
 
@@ -94,14 +98,21 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         passwordField.interactable = isPassword;        
     }
 
+    private void OpenPasswordPanel(RoomInfo room)
+    {
+
+    }
+
     #region PhotonCallbacks
     public override void OnCreatedRoom()
     {        
         PhotonNetwork.CurrentRoom.SetMap(0);
+
         if (isPassword.isOn)
         {
-            
+            PhotonNetwork.CurrentRoom.SetPassword(passwordField.text);
         }
+
         Debug.Log("방 생성 완료");        
     }
     public override void OnJoinedRoom()
@@ -141,6 +152,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             {
                 if (roomListDic.TryGetValue(room.Name, out RoomSlot roomSlot))
                 {
+                    roomListDic[room.Name].OnPasswordRoomSelected -= OpenPasswordPanel;
                     Destroy(roomSlot);
                     roomListDic.Remove(room.Name);
                 }
@@ -153,6 +165,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 RoomSlot slot = Instantiate(roomPrefab, roomContent).GetComponent<RoomSlot>();
                 slot.SetUp(room);
                 roomListDic.Add(room.Name, slot);
+                roomListDic[room.Name].OnPasswordRoomSelected += OpenPasswordPanel;
             }
             else
             {

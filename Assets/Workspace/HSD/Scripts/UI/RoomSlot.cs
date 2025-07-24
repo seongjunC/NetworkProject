@@ -2,6 +2,7 @@ using ExitGames.Client.Photon.StructWrapping;
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -16,6 +17,8 @@ public class RoomSlot : MonoBehaviour
     [SerializeField] Button button;
     private string roomName;
     private RoomInfo room;
+
+    public event Action<RoomInfo> OnPasswordRoomSelected;
 
     private void OnEnable()
     {
@@ -42,6 +45,12 @@ public class RoomSlot : MonoBehaviour
 
     public void JoinRoom()
     {
+        if ((string)room.CustomProperties["Password"] != "")
+        {
+            OnPasswordRoomSelected?.Invoke(room);
+            return;
+        }
+
         PhotonNetwork.JoinRoom(roomName);
         button.onClick.RemoveListener(JoinRoom);        
     }

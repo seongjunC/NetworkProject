@@ -70,18 +70,18 @@ public static class CustomProperty
     }
 
 
-    public static void SetPassword(this Room room, long value)
+    public static void SetPassword(this Room room, string value)
     {
         hash[password] = value;
         room.SetCustomProperties(hash);
     }
-    public static long GetPassword(this Room room)
+    public static string GetPassword(this Room room)
     {
         if(room.CustomProperties.TryGetValue(password, out object value))
         {
-            return (long)value;
+            return (string)value;
         }
-        return -1;
+        return "";
     }
     #endregion
 }
