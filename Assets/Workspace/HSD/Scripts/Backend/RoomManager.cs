@@ -26,6 +26,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] Button readyButton;
     [SerializeField] Button startButton;
     [SerializeField] Button turnSwitchButton;
+    [SerializeField] Button exitButton;
     [SerializeField] TMP_Text turnType;
     [SerializeField] TMP_Text readyCount;
 
@@ -44,16 +45,18 @@ public class RoomManager : MonoBehaviour
     #region LifeCycle
     private void OnEnable()
     {
-        readyButton.onClick.AddListener(Ready);
-        startButton.onClick.AddListener(GameStart);
-        mapChangeButton.onClick.AddListener(OpenMapPanel);
+        exitButton.onClick      .AddListener(ExitRoom);
+        readyButton.onClick     .AddListener(Ready);
+        startButton.onClick     .AddListener(GameStart);
+        mapChangeButton.onClick .AddListener(OpenMapPanel);
         turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
     }
     private void OnDisable()
     {
-        readyButton.onClick.RemoveListener(Ready);
-        startButton.onClick.RemoveListener(GameStart);
-        mapChangeButton.onClick.RemoveListener(OpenMapPanel);
+        exitButton.onClick      .RemoveListener(ExitRoom);
+        readyButton.onClick     .RemoveListener(Ready);
+        startButton.onClick     .RemoveListener(GameStart);
+        mapChangeButton.onClick .RemoveListener(OpenMapPanel);
         turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
     }
     #endregion
@@ -220,5 +223,10 @@ public class RoomManager : MonoBehaviour
         }
 
         //PhotonNetwork.LoadLevel(""); // æ¿¿Ãµø
+    }
+
+    private void ExitRoom()
+    {
+        PhotonNetwork.LeaveRoom();
     }
 }
