@@ -9,8 +9,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Realtime;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
-public class LoginManager : MonoBehaviourPunCallbacks
+public class TestLoginManager : MonoBehaviourPunCallbacks
 {
     [Header("InputFields")]
     [SerializeField] TMP_InputField email;
@@ -23,6 +24,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [Header("Panels")]
     [SerializeField] GameObject signupPanel;
     [SerializeField] GameObject loginPanel;
+
+    private FirebaseUser user;
 
     #region LifeCycle
 
@@ -71,29 +74,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
             if (status == DependencyStatus.Available)
             {
-                FirebaseAuth auth = FirebaseManager.Auth;
-                FirebaseDatabase database = FirebaseManager.Database;
-
-                if (auth.CurrentUser != null)
-                {
-                    Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
-                    FirebaseUser user = auth.CurrentUser;
-
-                    LoginSetActive(user == null);
-
-                    if (user != null)
-                    {
-                        PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues();
-                        PhotonNetwork.AuthValues.UserId = user.UserId;      // 포톤 UID 설정  
-
-                        PhotonNetwork.ConnectUsingSettings();
-                    }
-                }
-                else
-                {
-                    Debug.Log("자동 로그인 없음");
-                    return;
-                }
+ 
             }
             else
             {
@@ -119,12 +100,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 Manager.UI.PopUpUI.Show("Login Failed");
                 return;
             }
-            FirebaseUser user = task.Result.User;
-    
-            PhotonNetwork.AuthValues = new Photon.Realtime.AuthenticationValues
-            {
-                UserId = user.UserId
-            };
+            user = task.Result.User;
 
             Debug.Log($"로그인 성공: {task.Result.User.Email}");
             loginButton.interactable = false;
@@ -132,7 +108,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
         });
     }
-    
+
     public IEnumerator LoginRoutine()
     {
         if (Manager.Database == null || Manager.Database.userRef == null)
@@ -167,6 +143,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
         }
 
+        PhotonNetwork.LocalPlayer.SetUID(user.UserId);
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);
         SceneManager.LoadSceneAsync("Lobby");
@@ -178,17 +155,13 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Master Connected");
 
-        PhotonNetwork.JoinLobby();
+        StartCoroutine(LoginRoutine());
     }
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
         Debug.Log("Connected");
         PhotonNetwork.ConnectUsingSettings();
-    }
-    public override void OnJoinedLobby()
-    {
-        StartCoroutine(LoginRoutine());
     }
     #endregion
 

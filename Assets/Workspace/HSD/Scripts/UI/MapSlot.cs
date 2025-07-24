@@ -24,7 +24,6 @@ public class MapSlot : MonoBehaviour
 
     public void SetUp(MapType _mapType)
     {
-        Debug.Log(_mapType);
         mapType = _mapType;
         mapIcon.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{mapType.ToString()}");
     }
