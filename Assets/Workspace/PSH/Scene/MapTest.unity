@@ -229,13 +229,14 @@ GameObject:
   - component: {fileID: 59243637}
   - component: {fileID: 59243636}
   - component: {fileID: 59243635}
+  - component: {fileID: 59243639}
   m_Layer: 0
   m_Name: Player (1)
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!70 &59243635
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -359,13 +360,29 @@ Transform:
   m_GameObject: {fileID: 59243634}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.05, y: 0.28, z: 0}
+  m_LocalPosition: {x: -7.3, y: -0.79, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 773159322}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &59243639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 59243634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19636be462e65e141b6ce850a0394629, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 59243636}
+  _speed: 2
+  player: {fileID: 59243638}
+  _hp: 100
 --- !u!1 &399238260
 GameObject:
   m_ObjectHideFlags: 3
