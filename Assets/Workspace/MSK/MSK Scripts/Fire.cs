@@ -30,8 +30,7 @@ public class Fire : MonoBehaviourPun
         if (!photonView.IsMine)
             return;
 
-        photonView.RPC("Aim",RpcTarget.All);
-
+        Aim();
         //  이미 공격했다면 공격 불가능
         if (_playerController.IsAttacked)
             return;
@@ -55,9 +54,10 @@ public class Fire : MonoBehaviourPun
             _playerController.SetAttacked(true);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
+
+        
     }
 
-    [PunRPC]
     private void Aim()
     {
         // 각도 조절 (Up/Down)

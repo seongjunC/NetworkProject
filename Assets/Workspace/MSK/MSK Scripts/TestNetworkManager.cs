@@ -8,6 +8,7 @@ public class TestNetworkManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private Transform _spawnPoint;
 
+    [SerializeField] private string _roomName;
 
     private void Start()
     {
@@ -17,7 +18,7 @@ public class TestNetworkManager : MonoBehaviourPunCallbacks
     //  테스트 용도이기 때문에 즉시 연결
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinRandomOrCreateRoom();
+        PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions(), TypedLobby.Default);
     }
 
     public override void OnCreatedRoom() { }
@@ -51,6 +52,7 @@ public class TestNetworkManager : MonoBehaviourPunCallbacks
     //  플레이어 스폰
     private void PlayerSpawn()
     {
+        // 프폰 포인트 중복되지 않게 리스트에서 랜덤하게 생성
         Vector3 spawnPos = _spawnPoint.position;
         PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
     }

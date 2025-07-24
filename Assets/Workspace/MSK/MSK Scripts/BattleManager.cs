@@ -1,10 +1,11 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TestBattleManager : MonoBehaviour
+public class TestBattleManager : MonoBehaviourPun
 {
     [SerializeField] Button _turnEndButton;
     private PlayerController _playerController;
@@ -17,6 +18,7 @@ public class TestBattleManager : MonoBehaviour
     {
         if (_playerController != null)
             _playerController.ResetTurn();
+       // photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
     }
     public void RegisterPlayer(PlayerController playerController)
     {
