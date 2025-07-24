@@ -30,7 +30,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] TMP_Text readyCount;
 
     [Header("Team")]
-    [SerializeField] TeamManager teamManager;
+    public TeamManager teamManager;
     [SerializeField] Button teamSwitchButton;
 
     [Header("Ready")]
@@ -271,6 +271,7 @@ public class RoomManager : MonoBehaviour
     #region PhotonCallbacks
     public void OnJoinedRoom()
     {        
+        teamManager.Init();
         Init();
         CreatePlayerSlot();        
         UpdateReadyCountText();

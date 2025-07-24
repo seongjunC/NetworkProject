@@ -141,6 +141,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetMap(0);
         PhotonNetwork.CurrentRoom.SetTurnRandom(true);
         PhotonNetwork.CurrentRoom.SetFull(false);
+        PhotonNetwork.LocalPlayer.SetTeam(roomManager.teamManager.GetRemainingTeam());
 
         if (isPassword.isOn)
         {
