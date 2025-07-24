@@ -1,14 +1,13 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class Fire : MonoBehaviour
+public class Fire : MonoBehaviourPun
 {
     [Header("References")]
     [SerializeField] private Transform firePivot;       // 회전할 포신 부분
     [SerializeField] private Transform firePoint;       // 실제 폭탄이 나갈 위치
 
-    // 컴파일 에러가 생겨서 주석 처리 진행
-    // [SerializeField] private ga bombPrefab;
+    [SerializeField] private GameObject bulletPrefab;
 
     [Header("Controls")]
     [SerializeField] private float angle = 45f;         // 포신의 현재 각도
@@ -19,23 +18,22 @@ public class Fire : MonoBehaviour
     private float powerCharge = 0f;         // 차지
     private bool isCharging = false;        // 차지 중인지 여부
 
+    private PlayerController _playerController;
+    private void Awake()
+    {
+        _playerController = GetComponentInParent<PlayerController>();
+    }
+
+
     private void Update()
     {
-        // 각도 조절 (Up/Down)
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            angle += angleStep;
-            if (angle > 90f) angle = 90f;
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            angle -= angleStep;
-            if (angle < 0f) angle = 0f;
-        }
+        if (!photonView.IsMine)
+            return;
 
-        // 포신 회전 
-        firePivot.localRotation = Quaternion.Euler(0, 0, angle);
-
+        Aim();
+        //  이미 공격했다면 공격 불가능
+        if (_playerController.IsAttacked)
+            return;
 
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
@@ -53,14 +51,39 @@ public class Fire : MonoBehaviour
             Shoot();
             powerCharge = 0f;
             isCharging = false;
+            _playerController.SetAttacked(true);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
+
+        
     }
 
-    // 폭탄 생성하고 속도 설정
+    private void Aim()
+    {
+        // 각도 조절 (Up/Down)
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            angle += angleStep;
+            if (angle > 90f) angle = 90f;
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            angle -= angleStep;
+            if (angle < 0f) angle = 0f;
+        }
+        // 포신 회전 
+        firePivot.localRotation = Quaternion.Euler(0, 0, angle);
+    }
+
+    // 발사 
     private void Shoot()
     {
-        //Bomb newBomb = PhotonNetwork.Instantiate(bombPrefab, firePoint.position, Quaternion.identity);
-        //newBomb.SetVelocity(firePoint.up * powerCharge);
+        GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePoint.position, firePoint.rotation);
+
+        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = firePoint.up * powerCharge;
+        }
     }
 }

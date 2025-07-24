@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4599087246704047299}
   - component: {fileID: 8432144287873418836}
-  - component: {fileID: 4289018053977415306}
   - component: {fileID: 8281826099760855332}
   - component: {fileID: 5913624491507077922}
   - component: {fileID: -1205791360441249399}
@@ -89,22 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4289018053977415306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9086765382274316891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2517358ef293da5498cb8002dea5be42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rigidbody: {fileID: 8281826099760855332}
-  _explosionPrefab: {fileID: 2773333339186338914, guid: 1e743894d419bf8408a64eba25f40bae, type: 3}
-  damageAmount: 50
-  lifetime: 3
 --- !u!50 &8281826099760855332
 Rigidbody2D:
   serializedVersion: 4
@@ -201,7 +184,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: -1205791360441249399}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
