@@ -215,7 +215,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePivot: {fileID: 6317161916298699979}
   firePoint: {fileID: 1467951412910940909}
-  bombPrefab: {fileID: 4289018053977415306, guid: 2661e464d1000394dabc9b40d61a6a91, type: 3}
   angle: 45
   angleStep: 1
   maxPower: 10
