@@ -20,6 +20,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("RoomCreate")]
     [SerializeField] TMP_InputField roomNameField;
     [SerializeField] TMP_InputField maxPlayerField;
+    [SerializeField] TMP_InputField passwordField;
+    [SerializeField] Toggle isPassword;
     [SerializeField] int maxPlayerCount;
 
     [Header("Panel")]
@@ -37,6 +39,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnEnable();
 
         logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
+        isPassword.onValueChanged.AddListener();
 
         if (Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
@@ -55,6 +58,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Manager.UI.PopUpUI.Show("방 이름을 입력해 주세요.");
             return;
         }
+
         if (int.TryParse(maxPlayerField.text, out int maxPlayer))
         {
             if (maxPlayer % 2 != 0)
@@ -67,22 +71,38 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 Manager.UI.PopUpUI.Show($"{maxPlayerCount} 보다 낮은 값을 입력해 주세요.");
             }
         }
-       
+
+        if (isPassword.isOn)
+        {
+            if (string.IsNullOrWhiteSpace(passwordField.text))
+            {
+                Manager.UI.PopUpUI.Show("비밀번호는 뛰어쓰거나 빈칸일 수 없습니다.");
+                return;
+            }
+        }
+
         RoomOptions option = new RoomOptions();
-        option.MaxPlayers = maxPlayer;        
-        option.CustomRoomPropertiesForLobby = new string[] { "Map" };
-        PhotonNetwork.CreateRoom(roomNameField.text, option);
+        option.MaxPlayers = maxPlayer;
+        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password"};               
+        PhotonNetwork.CreateRoom(roomNameField.text, option);        
         roomNameField.text = "";
         maxPlayerField.text = "";
     }
 
+    private void PasswordToggleChanged(bool isPassword)
+    {
+        passwordField.interactable = isPassword;        
+    }
+
     #region PhotonCallbacks
     public override void OnCreatedRoom()
-    {
-        ExitGames.Client.Photon.Hashtable roomProperty = new ExitGames.Client.Photon.Hashtable();
-        roomProperty["Map"] = 0;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperty);
-        Debug.Log("방 생성 완료");
+    {        
+        PhotonNetwork.CurrentRoom.SetMap(0);
+        if (isPassword.isOn)
+        {
+            
+        }
+        Debug.Log("방 생성 완료");        
     }
     public override void OnJoinedRoom()
     {
