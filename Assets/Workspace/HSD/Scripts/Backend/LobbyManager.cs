@@ -27,9 +27,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
-
-    [Header("Password")]
-    [SerializeField] GameObject passwordPanel;    
+    [SerializeField] PasswordPanel passwordPanel;        
 
     #region LifeCycle
     private void Start()
@@ -100,21 +98,29 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void OpenPasswordPanel(RoomInfo room)
     {
-
+        passwordPanel.SetUp(room);
+        passwordPanel.gameObject.SetActive(true);
     }
 
     #region PhotonCallbacks
     public override void OnCreatedRoom()
     {        
         PhotonNetwork.CurrentRoom.SetMap(0);
+        PhotonNetwork.CurrentRoom.SetTurnRandom(true);
 
         if (isPassword.isOn)
         {
-            PhotonNetwork.CurrentRoom.SetPassword(passwordField.text);
+            PhotonNetwork.CurrentRoom.SetPassword(passwordField.text);            
         }
 
+        passwordField.text = "";
         Debug.Log("방 생성 완료");        
     }
+    public override void OnJoinedLobby()
+    {
+        
+    }
+
     public override void OnJoinedRoom()
     {
         Debug.Log("방 입장 완료");

@@ -21,7 +21,8 @@ public class PasswordPanel : MonoBehaviour
 
     private void OnEnable()
     {
-        applyButton.onClick.AddListener(JoinRoomCheck);    
+        inputPassword.text = "";
+        applyButton.onClick.AddListener(JoinRoomCheck);
     }
 
     private void Update()
