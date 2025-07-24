@@ -7,8 +7,7 @@ public class Fire : MonoBehaviour
     [SerializeField] private Transform firePivot;       // 회전할 포신 부분
     [SerializeField] private Transform firePoint;       // 실제 폭탄이 나갈 위치
 
-    // 컴파일 에러가 생겨서 주석 처리 진행
-    // [SerializeField] private ga bombPrefab;
+    [SerializeField] private GameObject bombPrefab;
 
     [Header("Controls")]
     [SerializeField] private float angle = 45f;         // 포신의 현재 각도
@@ -18,6 +17,12 @@ public class Fire : MonoBehaviour
 
     private float powerCharge = 0f;         // 차지
     private bool isCharging = false;        // 차지 중인지 여부
+
+    private PlayerController _playerController;
+    private void Awake()
+    {
+        _playerController = GetComponentInParent<PlayerController>();
+    }
 
     private void Update()
     {
@@ -37,6 +42,10 @@ public class Fire : MonoBehaviour
         firePivot.localRotation = Quaternion.Euler(0, 0, angle);
 
 
+        //  이미 공격했다면 공격 불가능
+        if (_playerController.IsAttacked)
+            return;
+
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
         {
@@ -53,6 +62,7 @@ public class Fire : MonoBehaviour
             Shoot();
             powerCharge = 0f;
             isCharging = false;
+            _playerController.SetAttacked(true);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
     }

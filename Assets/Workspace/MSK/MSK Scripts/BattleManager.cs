@@ -1,18 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class BattleManager : MonoBehaviour
+public class TestBattleManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] Button _turnEndButton;
+    private PlayerController _playerController;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        _turnEndButton.onClick.AddListener(TestTurnEnd);
+    }
+    private void TestTurnEnd()
+    {
+        if (_playerController != null)
+            _playerController.ResetTurn();
+    }
+    public void RegisterPlayer(PlayerController playerController)
+    {
+        _playerController = playerController;
     }
 }

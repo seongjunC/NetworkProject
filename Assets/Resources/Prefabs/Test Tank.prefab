@@ -299,6 +299,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 111607446027858654}
   _speed: 2
   player: {fileID: 55806390711248404}
+  _maxMove: 5
   _hp: 100
 --- !u!114 &9063368050635690703
 MonoBehaviour:
