@@ -3,7 +3,7 @@ using UnityEngine;
 public class DeformableTerrain : MonoBehaviour
 {
     private Texture2D originalTexture;
-    private Texture2D deformableTexture;
+    public Texture2D deformableTexture { get; private set; }
     private SpriteRenderer spriteRenderer;
     private PolygonCollider2D polygonCollider;
 
