@@ -102,9 +102,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        if (isRoomCreate) return;
-
-        isRoomCreate = true;
+        if (isRoomCreate) return;        
 
         if (string.IsNullOrEmpty(roomNameField.text))
         {
@@ -134,6 +132,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 return;
             }
         }
+
+        isRoomCreate = true;
 
         RoomOptions option = new RoomOptions();
         option.MaxPlayers = maxPlayer;
