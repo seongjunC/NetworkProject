@@ -61,8 +61,7 @@ public class PlayerInfoPanel : MonoBehaviour
     private void Init(bool isEnded)
     {
         waitforMessage.SetActive(!isEnded);
-        playerName.gameObject.SetActive(isEnded);
-        winCount.gameObject.SetActive(isEnded);
-        loseCount.gameObject.SetActive(isEnded);
+        namePanel.SetActive(isEnded);
+        infoPanel.SetActive(isEnded);
     }
 }

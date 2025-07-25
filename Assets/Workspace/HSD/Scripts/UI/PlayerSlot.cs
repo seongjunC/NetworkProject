@@ -53,7 +53,7 @@ public class PlayerSlot : MonoBehaviour
 
     public void ViewPlayerInfo()
     {
-        // 정보 보기
+        Manager.UI.PlayerInfoPanel.Show(player);
     }
 
     public void UpdateReady(Color color)

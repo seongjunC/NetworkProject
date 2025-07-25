@@ -8,13 +8,15 @@ public class UIManager : Singleton<UIManager>
 {
     private Canvas mainCanvas;
     public PopUpUI PopUpUI;
+    public PlayerInfoPanel PlayerInfoPanel;
 
     #region LifeCycle
     private void Awake()
     {
         CreateMainCanvas();
 
-        PopUpUI = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
+        PopUpUI         = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
+        PlayerInfoPanel = Instantiate(Resources.Load<PlayerInfoPanel>("UI/PlayerInfoPanel"), mainCanvas.transform);
     }
     #endregion
 

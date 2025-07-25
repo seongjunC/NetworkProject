@@ -11,9 +11,16 @@ public class NickNameSelectPanel : MonoBehaviour
 {
     [SerializeField] TMP_InputField nickName;
     [SerializeField] Button selectButton;
+    [SerializeField] Button closeButton;
+
+    #region LifeCycle
+    private void Start()
+    {
+        closeButton.onClick.AddListener(() => gameObject.SetActive(false));
+    }
 
     private void OnEnable()
-    {
+    { 
         selectButton.onClick.AddListener(NickNameSelect);
         selectButton.interactable = true;
     }
@@ -22,6 +29,7 @@ public class NickNameSelectPanel : MonoBehaviour
     {
         selectButton.onClick.RemoveListener(NickNameSelect);
     }
+    #endregion
 
     private void NickNameSelect()
     {
@@ -63,5 +71,5 @@ public class NickNameSelectPanel : MonoBehaviour
         });        
 
         gameObject.SetActive(false);
-    }
+    }    
 }
