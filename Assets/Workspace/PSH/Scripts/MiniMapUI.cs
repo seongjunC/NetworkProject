@@ -26,19 +26,23 @@ public class MiniMapUI : MonoBehaviour
 
     void LateUpdate()
     {
-        miniMapRaw.texture = terrain.deformableTexture;
-        // 1) 플레이어 월드 좌표 → 0~1 정규화
-        Vector3 p = player.position;
-        float u = (p.x - terrain.transform.position.x) / worldWidth;
-        float v = (p.y - terrain.transform.position.y) / worldHeight;
+        // 플레이어 월드 좌표
+        Vector3 wp = player.position;
 
-        // 2) RawImage 크기
-        var r = miniMapRaw.rectTransform.rect;
-        // 로컬 좌표계: 왼쪽 아래 (0,0), 오른쪽 위 (width, height)
-        float px = Mathf.Clamp01(u) * r.width;
-        float py = Mathf.Clamp01(v) * r.height;
+        // 맵 월드 경계 (terrain이나 tilemap.bounds로부터)
+        Vector3 min = terrain.GetComponent<SpriteRenderer>().bounds.min;
+        Vector3 size = terrain.GetComponent<SpriteRenderer>().bounds.size;
+        float u = (wp.x - min.x) / size.x;
+        float v = (wp.y - min.y) / size.y;
 
-        // 3) 아이콘 위치 업데이트 (왼쪽 아래 기준)
+        u = Mathf.Clamp01(u);
+        v = Mathf.Clamp01(v);
+
+        // RawImage 크기
+        Rect rect = miniMapRaw.rectTransform.rect;
+        float px = u * rect.width;
+        float py = v * rect.height;
+
         playerIcon.anchoredPosition = new Vector2(px, py);
     }
 }
