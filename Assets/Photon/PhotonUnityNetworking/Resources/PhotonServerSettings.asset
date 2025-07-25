@@ -42,6 +42,10 @@ MonoBehaviour:
   - Aim
   - Shoot
   - SendChating
+  - RPC_GameEnded
+  - RPC_PlayerDead
+  - RPC_TurnFinished
+  - StartTurnForPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
