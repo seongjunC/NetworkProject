@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Realtime;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class TestLoginManager : MonoBehaviourPunCallbacks
 {
@@ -48,12 +47,16 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
+        pw.onEndEdit.AddListener(EnterLogin);
+        email.onEndEdit.AddListener(EnterLogin);
         loginButton.onClick.AddListener(Login);
         signupButton.onClick.AddListener(SignUp);
         Manager.Firebase.OnAuthSettingComplated += StartRoutine;
     }
     private void UnSubscribe()
     {
+        pw.onEndEdit.RemoveListener(EnterLogin);
+        email.onEndEdit.RemoveListener(EnterLogin);
         loginButton.onClick.RemoveListener(Login);
         signupButton.onClick.RemoveListener(SignUp);
         Manager.Firebase.OnAuthSettingComplated -= StartRoutine;
@@ -64,6 +67,12 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
     {
         email.text = "";
         pw.text = "";
+    }
+
+    private void EnterLogin(string s)
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+            Login();
     }
 
     public void StartRoutine()
@@ -111,11 +120,7 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
 
     public IEnumerator LoginRoutine()
     {
-        if (Manager.Database == null || Manager.Database.userRef == null)
-        {
-            Debug.LogError("Database or userRef is null!");
-            Manager.Database.Init();
-        }
+        Manager.Database.Init();
 
         var task = Manager.Database.userRef.GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);

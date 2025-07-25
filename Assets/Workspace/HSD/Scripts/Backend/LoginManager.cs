@@ -1,14 +1,14 @@
+using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
-using Firebase;
 using Firebase.Extensions;
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Photon.Realtime;
 
 public class LoginManager : MonoBehaviourPunCallbacks
 {
@@ -25,6 +25,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject loginPanel;
 
     private FirebaseUser user;
+    private bool isLogin = false;
 
     #region LifeCycle
 
@@ -47,12 +48,16 @@ public class LoginManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
+        pw.onEndEdit.AddListener(EnterLogin);
+        email.onEndEdit.AddListener(EnterLogin);
         loginButton.onClick.AddListener(Login);
         signupButton.onClick.AddListener(SignUp);
         Manager.Firebase.OnAuthSettingComplated += StartRoutine;
     }
     private void UnSubscribe()
     {
+        pw.onEndEdit.RemoveListener(EnterLogin);
+        email.onEndEdit.RemoveListener(EnterLogin);
         loginButton.onClick.RemoveListener(Login);
         signupButton.onClick.RemoveListener(SignUp);
         Manager.Firebase.OnAuthSettingComplated -= StartRoutine;
@@ -63,6 +68,12 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         email.text = "";
         pw.text = "";
+    }
+
+    private void EnterLogin(string s)
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+            Login();
     }
 
     public void StartRoutine()
@@ -110,30 +121,31 @@ public class LoginManager : MonoBehaviourPunCallbacks
     #region Login
     private void Login()
     {
+        if (isLogin) return;
+
+        isLogin = true;
+        loginButton.interactable = false;
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted)
             {
                 Debug.LogError($"로그인 실패: {task.Exception}");
                 Manager.UI.PopUpUI.Show("Login Failed");
+                isLogin = false;
+                loginButton.interactable = true;
                 return;
             }
 
             user = task.Result.User;
-            Debug.Log($"로그인 성공: {task.Result.User.Email}");
-            loginButton.interactable = false;
+            Debug.Log($"로그인 성공: {task.Result.User.Email}");  
 
             PhotonNetwork.ConnectUsingSettings();
         });
     }
-    
+
     public IEnumerator LoginRoutine()
     {
-        if (Manager.Database == null || Manager.Database.userRef == null)
-        {
-            Debug.LogError("Database or userRef is null!");
-            Manager.Database.Init();
-        }
+        Manager.Database.Init();
 
         var task = Manager.Database.userRef.GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
@@ -141,6 +153,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         if (task.IsFaulted || task.IsCanceled)
         {
             Debug.LogError("Firebase 데이터 가져오기 실패");
+            isLogin = false;
+            loginButton.interactable = true;
             yield break;
         }
 
