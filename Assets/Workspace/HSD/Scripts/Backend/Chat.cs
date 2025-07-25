@@ -26,6 +26,10 @@ public class Chat : MonoBehaviourPun
     {
         if (!Input.GetKeyDown(KeyCode.Return)) return;
 
+        Debug.Log($"닉네임 : {PhotonNetwork.NickName}");
+        Debug.Log($"네임 필드 : {messageField.text}");
+        if (messageField.text == "") return;
+
         photonView.RPC(nameof(SendChating), RpcTarget.All, PhotonNetwork.NickName, messageField.text);
         messageField.text = "";
         messageField.ActivateInputField();

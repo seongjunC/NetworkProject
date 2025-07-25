@@ -888,6 +888,7 @@ GameObject:
   - component: {fileID: 90391376}
   - component: {fileID: 90391375}
   - component: {fileID: 90391378}
+  - component: {fileID: 90391379}
   m_Layer: 5
   m_Name: Chat Window Scroll View
   m_TagString: Untagged
@@ -1001,6 +1002,28 @@ MonoBehaviour:
   messageField: {fileID: 254444597}
   chatContent: {fileID: 1795996672}
   chatPrefab: {fileID: 2380134647262137451, guid: aff4845d7669b9943acce245f92daeab, type: 3}
+--- !u!114 &90391379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90391373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &90580810
 GameObject:
   m_ObjectHideFlags: 0
@@ -6755,7 +6778,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &742476367
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8784,9 +8807,9 @@ RectTransform:
   m_Father: {fileID: 90391374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &946292198
 MonoBehaviour:
@@ -14806,7 +14829,7 @@ RectTransform:
   m_Father: {fileID: 1463632014}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -17488,10 +17511,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
+    m_Left: 17
     m_Right: 0
     m_Top: 0
-    m_Bottom: 0
+    m_Bottom: 9
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
