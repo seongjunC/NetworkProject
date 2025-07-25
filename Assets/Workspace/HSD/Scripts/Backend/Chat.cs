@@ -18,7 +18,9 @@ public class Chat : MonoBehaviourPun
 
     public void Chating()
     {
-        photonView.RPC(nameof(SendChating), RpcTarget.All, PhotonNetwork.NickName, messageField.text);
+        if (messageField.text == "") return;
+
+        photonView.RPC(nameof(SendChating), RpcTarget.All, PhotonNetwork.LocalPlayer, PhotonNetwork.NickName, messageField.text);
         messageField.text = "";
         messageField.ActivateInputField();
     }

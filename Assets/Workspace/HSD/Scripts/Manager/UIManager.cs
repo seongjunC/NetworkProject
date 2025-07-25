@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.TerrainTools;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
 {
     private Canvas mainCanvas;
+
     public PopUpUI PopUpUI;
     public PlayerInfoPanel PlayerInfoPanel;
+    public SettingPanel settingPanel;
 
     #region LifeCycle
     private void Awake()
@@ -16,6 +19,7 @@ public class UIManager : Singleton<UIManager>
         CreateMainCanvas();
 
         PopUpUI         = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
+        settingPanel    = Instantiate(Resources.Load<SettingPanel>("UI/SettingPanel"), mainCanvas.transform);
         PlayerInfoPanel = Instantiate(Resources.Load<PlayerInfoPanel>("UI/PlayerInfoPanel"), mainCanvas.transform);
     }
     #endregion
@@ -23,8 +27,9 @@ public class UIManager : Singleton<UIManager>
     private void CreateMainCanvas()
     {
         mainCanvas = new GameObject("MainCanvas").AddComponent<Canvas>();
+
         mainCanvas.pixelPerfect = true;
-        mainCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        mainCanvas.renderMode   = RenderMode.ScreenSpaceOverlay;
         mainCanvas.sortingOrder = 5;
 
         CanvasScaler scaler         = mainCanvas.AddComponent<CanvasScaler>();

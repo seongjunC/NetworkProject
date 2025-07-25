@@ -66,6 +66,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
+        optionButton.onClick    .AddListener(Manager.UI.settingPanel.Show);
+        gameOutButton.onClick   .AddListener(GameOut);
+
         fastJoinButton.onClick          .AddListener(RandomMatching);
         roomCreateButton.onClick        .AddListener(CreateRoom);
         roomCreateOpenButton.onClick    .AddListener(OpenRoomCreatePanel);
@@ -83,6 +86,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     private void UnSubscribe()
     {
+        optionButton.onClick    .RemoveListener(Manager.UI.settingPanel.Show);
+        gameOutButton.onClick   .RemoveListener(GameOut);
+
         fastJoinButton.onClick          .RemoveListener(RandomMatching);
         roomCreateButton.onClick        .RemoveListener(CreateRoom);
         roomCreateOpenButton.onClick    .RemoveListener(OpenRoomCreatePanel);
@@ -181,6 +187,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         title.SetActive(true);
         lobby.SetActive(false);        
     }
+    private void GameOut() => Application.Quit();
     private void ActiveRoomSelectPanel(bool isActive)
     {
         roomSelectPanel.SetActive(isActive);
