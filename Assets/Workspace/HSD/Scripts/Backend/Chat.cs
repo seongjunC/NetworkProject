@@ -14,6 +14,14 @@ public class Chat : MonoBehaviourPun
     {
         messageField.onEndEdit.AddListener(Chating);
     }
+
+    public void Chating()
+    {
+        photonView.RPC(nameof(SendChating), RpcTarget.All, PhotonNetwork.NickName, messageField.text);
+        messageField.text = "";
+        messageField.ActivateInputField();
+    }
+
     private void Chating(string message)
     {
         if (!Input.GetKeyDown(KeyCode.Return)) return;

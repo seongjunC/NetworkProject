@@ -36,7 +36,6 @@ public static class CustomProperty
 
     public static void SetReady(this Player player, bool isReady)
     {
-        ;
         hash[READY] = isReady;
         player.SetCustomProperties(hash);
     }

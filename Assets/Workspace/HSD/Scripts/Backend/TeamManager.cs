@@ -9,11 +9,13 @@ public class TeamManager : MonoBehaviour
 
     public void ChangeTeam()
     {
+        team = (int)PhotonNetwork.LocalPlayer.GetTeam();
+
         int red = 0;
         int blue = 0;
 
         GetPlayerTeamCount(out red, out blue);
-        Debug.Log($"Red : {red}, Blue : {blue}");
+
         if (team + 1 >= (int)Team.Length)
             team = 0;
         else
@@ -73,5 +75,4 @@ public class TeamManager : MonoBehaviour
             }
         }
     }
-
 }

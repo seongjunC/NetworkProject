@@ -53,9 +53,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         base.OnEnable();
 
         Subscribe();
-        isRoomCreate = false;
-        if (Manager.Data.PlayerData.Name == "")
-            nickNameSelectPanel.SetActive(true);
+        isRoomCreate = false;    
     }
 
     public override void OnDisable()
@@ -144,13 +142,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomNameField.text = "";
         maxPlayerField.text = "";
     }
-
     private void EnterCreateRoom(string s)
     {
         if (Input.GetKeyDown(KeyCode.Return))
             CreateRoom();
     }
-
     private void PasswordToggleChanged(bool isPassword)
     {
         passwordField.interactable = isPassword;        
@@ -162,8 +158,19 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
 
     #region ButtonEvent
-    private void OpenRoomCreatePanel() => roomCreatePanel.SetActive(true);
-    private void CloseRoomCreatePanel() => roomCreatePanel.SetActive(false);
+    private void OpenRoomCreatePanel()
+    {
+        roomCreatePanel.SetActive(true);
+    }
+
+    private void CloseRoomCreatePanel()
+    {
+        roomCreatePanel.SetActive(false);
+
+        roomNameField.text  = "";
+        passwordField.text  = "";
+        maxPlayerField.text = "";
+    }
     private void RandomMatching()
     {
         PhotonNetwork.JoinRandomOrCreateRoom();
@@ -213,8 +220,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("방 입장 완료");
-        lobby.SetActive(false);
+
         room.SetActive(true);
+        lobby.SetActive(false);
+        roomSelectPanel.SetActive(false);
+        roomCreatePanel.SetActive(false);
+        
+        if (Manager.Data.PlayerData.Name == "")
+            nickNameSelectPanel.SetActive(true);
 
         roomManager.OnJoinedRoom();
     }

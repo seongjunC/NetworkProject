@@ -46,6 +46,10 @@ MonoBehaviour:
   - RPC_PlayerDead
   - RPC_TurnFinished
   - StartTurnForPlayer
+  - RPC_SetBulletTarget
+  - RPC_SetCameraTarget
+  - RPC_Spawned
+  - RPC_SpawnTank
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -23,6 +23,7 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
     [Header("Panels")]
     [SerializeField] GameObject signupPanel;
     [SerializeField] GameObject loginPanel;
+    [SerializeField] GameObject lobbyPanel;
 
     private FirebaseUser user;
 
@@ -151,7 +152,9 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.SetUID(user.UserId);
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);
-        SceneManager.LoadSceneAsync("Lobby");
+        gameObject.SetActive(false);
+        lobbyPanel.SetActive(true);
+        PhotonNetwork.JoinLobby();
     }
     #endregion
 
