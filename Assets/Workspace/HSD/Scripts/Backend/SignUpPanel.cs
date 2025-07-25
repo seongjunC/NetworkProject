@@ -49,7 +49,7 @@ public class SignUpPanel : MonoBehaviour
     private void Subscribe()
     {
         pw.onValueChanged.AddListener(PasswordCheck);
-        pwCheck.onValueChanged.AddListener(PasswordConfirm);
+        pwCheck.onValueChanged.AddListener(PasswordConfirm);        
 
         loginPanelButton.onClick.AddListener(SwitchLoginPanel);
         createButton    .onClick.AddListener(CreateAccount);
@@ -86,9 +86,9 @@ public class SignUpPanel : MonoBehaviour
     }
     private void CreateAccount()
     {
-        if(pw.text != pwCheck.text)
+        if (pw.text != pwCheck.text)
         {
-            Manager.UI.PopUpUI.Show("Password Not Equals",Color.red);
+            Manager.UI.PopUpUI.Show("Password Not Equals", Color.red);
             return;
         }
 
@@ -122,11 +122,22 @@ public class SignUpPanel : MonoBehaviour
                 Manager.UI.PopUpUI.Show("Failed!", Color.red);
                 return;
             }
-            else
+
+            FirebaseUser newUser = task.Result.User;
+
+            newUser.SendEmailVerificationAsync().ContinueWithOnMainThread(emailTask =>
             {
-                Debug.Log("회원가입 성공");
-                Manager.UI.PopUpUI.Show("Succes!", Color.green);
-            }
+                if (emailTask.IsCompleted && !emailTask.IsFaulted)
+                {
+                    Manager.UI.PopUpUI.Show("인증 메일이 전송되었습니다. 이메일을 확인해주세요.", Color.green);
+                }
+                else
+                {
+                    Manager.UI.PopUpUI.Show("이메일 인증 메일 전송 실패", Color.red);
+                }
+            });
+            
+            Manager.UI.PopUpUI.Show("회원가입 성공!", Color.green);
         });
     }
 

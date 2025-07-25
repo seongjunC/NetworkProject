@@ -52,7 +52,8 @@ public class AccountDeletePanel : MonoBehaviour
 
         if (loginTask.Exception != null)
         {
-            Manager.UI.PopUpUI.Show($"실패 : {loginTask.Exception.GetBaseException().Message}");            
+            Manager.UI.PopUpUI.Show($"실패 : {loginTask.Exception.GetBaseException().Message}");
+            gameObject.SetActive(false);
             yield break;
         }
 
@@ -61,14 +62,9 @@ public class AccountDeletePanel : MonoBehaviour
 
         yield return new WaitUntil(() => deleteTask.IsCompleted);
 
-        if (deleteTask.Exception != null)
-        {
-            Manager.UI.PopUpUI.Show($"실패 : {deleteTask.Exception.GetBaseException().Message}");
-        }
-        else
-        {
-            Manager.UI.PopUpUI_Action.Show("정말로 계정을 삭제하시겠습니까?", DeleteAccount);
-        }
+        Manager.UI.PopUpUI_Action.Show("정말로 계정을 삭제하시겠습니까?", DeleteAccount);
+
+        gameObject.SetActive(false);
     }
 
     private void DeleteAccount()

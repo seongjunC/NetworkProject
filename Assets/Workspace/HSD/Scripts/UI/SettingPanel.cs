@@ -61,11 +61,13 @@ public class SettingPanel : MonoBehaviour
 
     private void OpenNickNameSelectPanel()
     {
+        gameObject.SetActive(false);
         nickNameSelectPanel.SetActive(true);
     }
 
     private void OpenAccountDeletePanel()
     {
+        gameObject.SetActive(false);
         Manager.UI.AccountDeletePanel.Show();
     }
 }

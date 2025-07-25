@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {    
-    [SerializeField] GameObject nickNameSelectPanel;
     [SerializeField] RoomManager roomManager;
 
     [Header("Room")]
@@ -243,9 +242,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(false);
         roomSelectPanel.SetActive(false);
         roomCreatePanel.SetActive(false);
-        
+
         if (Manager.Data.PlayerData.Name == "")
-            nickNameSelectPanel.SetActive(true);
+            Manager.UI.NickNameSelectPanel.Show();
 
         roomManager.OnJoinedRoom();
     }
