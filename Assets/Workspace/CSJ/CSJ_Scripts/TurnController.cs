@@ -13,6 +13,7 @@ public class TurnController : MonoBehaviourPunCallbacks
     PlayerController[] tanks;
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
+    private Room room;
 
     private void GameStart()
     {
@@ -21,8 +22,9 @@ public class TurnController : MonoBehaviourPunCallbacks
         tanks = FindObjectsOfType<PlayerController>();
 
         int playerCount = PhotonNetwork.CountOfPlayers;
-        // 추후 연계하여 조절 TODO : 임시 크래쉬 수정
-        if (true)//CustomProperty.GetTurnRandom())
+        room = PhotonNetwork.CurrentRoom;
+        // 추후 연계하여 조절
+        if (CustomProperty.GetTurnRandom(room))
         {
             List<int> randNumList = new();
             for (int i = 0; i < playerCount; i++)

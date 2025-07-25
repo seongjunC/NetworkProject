@@ -1,6 +1,5 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -27,7 +26,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
-    [SerializeField] PasswordPanel passwordPanel;        
+    [SerializeField] PasswordPanel passwordPanel;
+
+    private bool isRoomCreate;
 
     #region LifeCycle
     private void Start()
@@ -40,22 +41,46 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
 
-        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
-        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
-
+        Subscribe();
+        isRoomCreate = false;
         if (Manager.Data.PlayerData.Name == "")
             nickNameSelectPanel.SetActive(true);
     }
 
     public override void OnDisable()
     {
+        UnSubscribe();
+    }
+
+    #endregion
+
+    #region EventSubscribe
+    private void Subscribe()
+    {
+        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
+        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
+
+        roomNameField.onEndEdit.AddListener(EnterCreateRoom);
+        passwordField.onEndEdit.AddListener(EnterCreateRoom);
+        maxPlayerField.onEndEdit.AddListener(EnterCreateRoom);
+    }
+    private void UnSubscribe()
+    {
         logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
         isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
+
+        roomNameField.onEndEdit.RemoveListener(EnterCreateRoom);
+        passwordField.onEndEdit.RemoveListener(EnterCreateRoom);
+        maxPlayerField.onEndEdit.RemoveListener(EnterCreateRoom);
     }
     #endregion
 
     public void CreateRoom()
     {
+        if (isRoomCreate) return;
+
+        isRoomCreate = true;
+
         if (string.IsNullOrEmpty(roomNameField.text))
         {
             Manager.UI.PopUpUI.Show("방 이름을 입력해 주세요.");
@@ -72,6 +97,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             if (maxPlayer > maxPlayerCount)
             {
                 Manager.UI.PopUpUI.Show($"{maxPlayerCount} 보다 낮은 값을 입력해 주세요.");
+                return;
             }
         }
 
@@ -90,6 +116,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(roomNameField.text, option);        
         roomNameField.text = "";
         maxPlayerField.text = "";
+    }
+
+    private void EnterCreateRoom(string s)
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+            CreateRoom();
     }
 
     private void PasswordToggleChanged(bool isPassword)
@@ -119,9 +151,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Debug.Log("방 생성 완료");        
     }
 
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        isRoomCreate = false;
+    }
+
     public override void OnLeftLobby()
     {
-        base.OnLeftLobby();
+        lobby.SetActive(false);
+
+        Debug.Log("로비에 접속함");
     }
 
     public override void OnJoinedRoom()
@@ -138,7 +177,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(true);
         room.SetActive(false);
         roomManager.OnLeftRoom();
+        isRoomCreate = false;
+        Debug.Log("방 나감");              
     }
+
+    public override void OnConnectedToMaster()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if(newPlayer != PhotonNetwork.LocalPlayer)
@@ -160,14 +207,17 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void CreateRoomSlots(List<RoomInfo> roomList)
     {
+        Debug.Log("OnRoomListUpdate");
         foreach (RoomInfo room in roomList)
         {
             if (room.RemovedFromList)
             {
+                Debug.Log($"RemoveRoom : {room.Name}");
                 if (roomListDic.TryGetValue(room.Name, out RoomSlot roomSlot))
                 {
+                    Debug.Log($"RemoveRoom1 : {room.Name}");
                     roomListDic[room.Name].OnPasswordRoomSelected -= OpenPasswordPanel;
-                    Destroy(roomSlot);
+                    Destroy(roomSlot.gameObject);
                     roomListDic.Remove(room.Name);
                 }
 
@@ -176,6 +226,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
             if (!roomListDic.ContainsKey(room.Name))
             {
+                Debug.Log($"Instantiate Room : {room.Name}");
                 RoomSlot slot = Instantiate(roomPrefab, roomContent).GetComponent<RoomSlot>();
                 slot.SetUp(room);
                 roomListDic.Add(room.Name, slot);

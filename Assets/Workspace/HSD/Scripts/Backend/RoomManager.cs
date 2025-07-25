@@ -1,7 +1,6 @@
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.EditorTools;
@@ -31,9 +30,9 @@ public class RoomManager : MonoBehaviour
     [SerializeField] TMP_Text turnType;
     [SerializeField] TMP_Text readyCount;
 
-    [Header("Ready")]
-    [SerializeField] Color readyColor;
-    [SerializeField] Color defaultColor;
+    [Header("Team")]
+    public TeamManager teamManager;
+    [SerializeField] Button teamSwitchButton;
 
     [Header("Panel")]
     [SerializeField] GameObject lobby;
@@ -41,7 +40,7 @@ public class RoomManager : MonoBehaviour
 
     [Header("Chat")]
     [SerializeField] Chat chat;
-
+    
     private bool isReady;
     private bool isRandom;
     private int currentReadyCount;
@@ -53,84 +52,34 @@ public class RoomManager : MonoBehaviour
     }
     private void OnEnable()
     {
+        Subscribe();
+    }
+    private void OnDisable()
+    {
+        UnSubscribe();
+    }
+    #endregion
+
+
+    #region EventSubscribe
+    private void Subscribe()
+    {
         exitButton.onClick      .AddListener(LeaveRoom);
         readyButton.onClick     .AddListener(Ready);
         startButton.onClick     .AddListener(GameStart);
         mapChangeButton.onClick .AddListener(OpenMapPanel);
         turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
+        teamSwitchButton.onClick.AddListener(teamManager.ChangeTeam);
     }
-    private void OnDisable()
+
+    private void UnSubscribe()
     {
         exitButton.onClick      .RemoveListener(LeaveRoom);
         readyButton.onClick     .RemoveListener(Ready);
         startButton.onClick     .RemoveListener(GameStart);
         mapChangeButton.onClick .RemoveListener(OpenMapPanel);
         turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
-    }
-    #endregion
-
-    #region PlayerSlot
-    private void CreatePlayerSlot(Player player)
-    {
-        if (!playerSlotDic.ContainsKey(player.ActorNumber))
-        {
-            GameObject obj = Instantiate(playerSlotPrefab, playerContent);
-            PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
-            playerSlot.SetUp(player);
-            playerSlotDic.Add(player.ActorNumber, playerSlot);
-        }
-        else
-        {
-            playerSlotDic[player.ActorNumber].SetUp(player);
-        }
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            mapChangeButton.interactable    = true;
-            startButton.interactable        = true;
-            turnSwitchButton.interactable   = true;
-        }
-        else
-        {
-            turnSwitchButton.interactable   = false;
-            mapChangeButton.interactable    = false;
-            startButton.interactable        = false;
-        }
-    }
-
-    private void CreatePlayerSlot()
-    {
-        PhotonNetwork.AutomaticallySyncScene = true;
-
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            startButton.interactable        = false;
-            mapChangeButton.interactable    = false;
-            turnSwitchButton.interactable   = false;
-            Debug.Log("PlayerSlot");
-            MapChange();
-        }
-
-        foreach (Player player in PhotonNetwork.PlayerList)
-        {
-            GameObject obj = Instantiate(playerSlotPrefab, playerContent);
-            PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
-            playerSlot.SetUp(player);
-            playerSlotDic.Add(player.ActorNumber, playerSlot);
-        }
-    }
-
-    private void DestroyPlayerSlot(Player player)
-    {
-        if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
-        {
-            Destroy(panel.gameObject);
-            playerSlotDic.Remove(player.ActorNumber);
-        }
-        else
-        {
-            Debug.LogError("½½·Ô ¾øÀ½");
-        }
+        teamSwitchButton.onClick.RemoveListener(teamManager.ChangeTeam);
     }
     #endregion
 
@@ -152,20 +101,94 @@ public class RoomManager : MonoBehaviour
         PhotonNetwork.LeaveRoom();
     }
        
+    #region PlayerSlot
+    private void CreatePlayerSlot(Player player)
+    {
+        if (!playerSlotDic.ContainsKey(player.ActorNumber))
+        {
+            GameObject obj = Instantiate(playerSlotPrefab, playerContent);
+            PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
+            playerSlot.SetUp(player);
+            playerSlotDic.Add(player.ActorNumber, playerSlot);
+        }
+        else
+        {
+            playerSlotDic[player.ActorNumber].SetUp(player);
+        }
+
+        SetButtonInteractable();
+    }
+
+    private void SetButtonInteractable()
+    {
+        mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;
+        startButton.interactable        = PhotonNetwork.IsMasterClient;
+        turnSwitchButton.interactable   = PhotonNetwork.IsMasterClient;
+    }
+
+    private void CreatePlayerSlot()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            MapChange();
+        }
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            GameObject obj = Instantiate(playerSlotPrefab, playerContent);
+            PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
+            playerSlot.SetUp(player);
+            playerSlotDic.Add(player.ActorNumber, playerSlot);
+        }
+        SetButtonInteractable();
+    }
+
+    private void UpdateAllPlayerSlot()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            PlayerSlot slot = playerSlotDic[player.ActorNumber];
+            slot.SetUp(player);
+        }
+    }
+
+    private void DestroyPlayerSlot(Player player)
+    {
+        if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
+        {
+            Destroy(panel.gameObject);
+            playerSlotDic.Remove(player.ActorNumber);
+        }
+        else
+        {
+            Debug.LogError("½½·Ô ¾øÀ½");
+        }
+    }
+    #endregion
+
     #region Ready
     private void Ready()
-    {        
+    {
         isReady = !isReady;
-        playerSlotDic[PhotonNetwork.LocalPlayer.ActorNumber].UpdateReady(isReady ? readyColor : defaultColor);
         ReadyPropertyUpdate();
         UpdateReadyCountText();
+    }
+
+    private void AllReadyCheck()
+    {
+        foreach (var player in PhotonNetwork.CurrentRoom.Players)
+        {
+            ReadyCheck(player.Value);
+        }
     }
 
     private void ReadyCheck(Player player)
     {
         if(player.CustomProperties.TryGetValue("Ready", out object value))
         {
-            playerSlotDic[player.ActorNumber].UpdateReady(player.GetReady() ? readyColor : defaultColor);
+            playerSlotDic[player.ActorNumber].SetUp(player);
             UpdateReadyCountText();
         }
     }
@@ -241,11 +264,14 @@ public class RoomManager : MonoBehaviour
 
     #region PhotonCallbacks
     public void OnJoinedRoom()
-    {
-        CreatePlayerSlot();        
-        UpdateReadyCountText();
-        UpdateTurnType();
+    {        
+        PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         Init();
+        CreatePlayerSlot();
+        UpdateAllPlayerSlot();
+        UpdateReadyCountText();
+        ReadyPropertyUpdate();
+        UpdateTurnType();
     }
 
     public void OnPlayerEnteredRoom(Player newPlayer)
@@ -255,10 +281,12 @@ public class RoomManager : MonoBehaviour
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
         DestroyPlayerSlot(otherPlayer);
+        UpdateReadyCountText();
+        UpdateAllPlayerSlot();
     }
     public void OnRoomPropertiesUpdate()
     {
-        MapChange();
+        MapChange();       
         UpdateTurnType();
     }
 
@@ -270,12 +298,7 @@ public class RoomManager : MonoBehaviour
     public void OnMasterClientSwitched(Player newMasterClient)
     {
         CreatePlayerSlot(newMasterClient);
-        if(PhotonNetwork.LocalPlayer == newMasterClient)
-        {
-            startButton.interactable = true;
-            mapChangeButton.interactable = true;
-            turnSwitchButton.interactable = true;
-        }
+        SetButtonInteractable();
     }
 
     public void OnLeftRoom()
