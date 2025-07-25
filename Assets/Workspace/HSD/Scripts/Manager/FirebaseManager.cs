@@ -23,6 +23,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
     #endregion
 
     public event Action OnAuthSettingComplated;
+    public event Action OnLogOut;
 
     private void Awake()
     {
@@ -71,6 +72,6 @@ public class FirebaseManager : Singleton<FirebaseManager>
         }
 
         Auth.SignOut();
-        SceneManager.LoadSceneAsync("Login");
+        OnLogOut?.Invoke();
     }
 }

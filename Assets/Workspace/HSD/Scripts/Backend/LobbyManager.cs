@@ -6,8 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
-{
-    [SerializeField] Button logOutButton;
+{    
     [SerializeField] GameObject nickNameSelectPanel;
     [SerializeField] RoomManager roomManager;
 
@@ -23,20 +22,32 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Toggle isPassword;
     [SerializeField] int maxPlayerCount;
 
-    [Header("Panel")]
-    [SerializeField] GameObject lobby;
+    [Header("Main Panel")]
+    [SerializeField] GameObject title;
+    [SerializeField] GameObject lobby;    
     [SerializeField] GameObject room;
     [SerializeField] PasswordPanel passwordPanel;
+
+    [Header("Main Buttons")]
+    [SerializeField] Button roomOpenSelectButton;
+    [SerializeField] Button optionButton;
+    [SerializeField] Button gameOutButton;
+    [SerializeField] Button logOutButton;
+
+    [Header("Sub Panel")]
+    [SerializeField] GameObject roomSelectPanel;
+    [SerializeField] GameObject roomCreatePanel;
+
+    [Header("Sub Buttons")]
+    [SerializeField] Button roomCloseSelectButton;
+    [SerializeField] Button roomCreateOpenButton;
+    [SerializeField] Button roomCreateCloseButton;
+    [SerializeField] Button roomCreateButton;
+    [SerializeField] Button fastJoinButton;
 
     private bool isRoomCreate;
 
     #region LifeCycle
-    private void Start()
-    {
-        lobby.SetActive(true);
-        room.SetActive(false);
-        PhotonNetwork.JoinLobby();
-    }
     public override void OnEnable()
     {
         base.OnEnable();
@@ -57,20 +68,36 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
-        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
-        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
+        fastJoinButton.onClick          .AddListener(RandomMatching);
+        roomCreateButton.onClick        .AddListener(CreateRoom);
+        roomCreateOpenButton.onClick    .AddListener(OpenRoomCreatePanel);
+        roomCreateCloseButton.onClick   .AddListener(CloseRoomCreatePanel);
 
-        roomNameField.onEndEdit.AddListener(EnterCreateRoom);
-        passwordField.onEndEdit.AddListener(EnterCreateRoom);
+        roomOpenSelectButton.onClick    .AddListener(OpenRoomSelectPanel);
+        roomCloseSelectButton.onClick   .AddListener(CloseRoomSelectPanel);
+
+        logOutButton.onClick        .AddListener(LogOut);
+        isPassword.onValueChanged   .AddListener(PasswordToggleChanged);
+
+        roomNameField.onEndEdit .AddListener(EnterCreateRoom);
+        passwordField.onEndEdit .AddListener(EnterCreateRoom);
         maxPlayerField.onEndEdit.AddListener(EnterCreateRoom);
     }
     private void UnSubscribe()
     {
-        logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
-        isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
+        fastJoinButton.onClick          .RemoveListener(RandomMatching);
+        roomCreateButton.onClick        .RemoveListener(CreateRoom);
+        roomCreateOpenButton.onClick    .RemoveListener(OpenRoomCreatePanel);
+        roomCreateCloseButton.onClick   .RemoveListener(CloseRoomCreatePanel);
 
-        roomNameField.onEndEdit.RemoveListener(EnterCreateRoom);
-        passwordField.onEndEdit.RemoveListener(EnterCreateRoom);
+        roomOpenSelectButton.onClick    .RemoveListener(OpenRoomSelectPanel);
+        roomCloseSelectButton.onClick   .RemoveListener(CloseRoomSelectPanel);
+
+        logOutButton.onClick        .RemoveListener(LogOut);
+        isPassword.onValueChanged   .RemoveListener(PasswordToggleChanged);
+
+        roomNameField.onEndEdit .RemoveListener(EnterCreateRoom);
+        passwordField.onEndEdit .RemoveListener(EnterCreateRoom);
         maxPlayerField.onEndEdit.RemoveListener(EnterCreateRoom);
     }
     #endregion
@@ -128,12 +155,32 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         passwordField.interactable = isPassword;        
     }
-
     private void OpenPasswordPanel(RoomInfo room)
     {
         passwordPanel.SetUp(room);
         passwordPanel.gameObject.SetActive(true);
     }
+
+    #region ButtonEvent
+    private void OpenRoomCreatePanel() => roomCreatePanel.SetActive(true);
+    private void CloseRoomCreatePanel() => roomCreatePanel.SetActive(false);
+    private void RandomMatching()
+    {
+        PhotonNetwork.JoinRandomOrCreateRoom();
+    }
+    private void LogOut()
+    {
+        title.SetActive(true);
+        lobby.SetActive(false);        
+    }
+    private void ActiveRoomSelectPanel(bool isActive)
+    {
+        roomSelectPanel.SetActive(isActive);
+        lobby.SetActive(!isActive);
+    }
+    private void OpenRoomSelectPanel() => ActiveRoomSelectPanel(true);
+    private void CloseRoomSelectPanel() => ActiveRoomSelectPanel(false);    
+    #endregion
 
     #region PhotonCallbacks
     public override void OnCreatedRoom()

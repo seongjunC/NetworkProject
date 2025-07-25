@@ -60,7 +60,6 @@ public class RoomManager : MonoBehaviour
     }
     #endregion
 
-
     #region EventSubscribe
     private void Subscribe()
     {
@@ -247,7 +246,7 @@ public class RoomManager : MonoBehaviour
 
     private void UpdateTurnType()
     {
-        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "Random" : "NotRandom";
+        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "랜덤" : "입장순서";
     }
     #endregion
 
