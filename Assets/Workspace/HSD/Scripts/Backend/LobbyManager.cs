@@ -6,8 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
-{
-    [SerializeField] Button logOutButton;
+{    
     [SerializeField] GameObject nickNameSelectPanel;
     [SerializeField] RoomManager roomManager;
 
@@ -23,10 +22,23 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Toggle isPassword;
     [SerializeField] int maxPlayerCount;
 
-    [Header("Panel")]
-    [SerializeField] GameObject lobby;
+    [Header("Main Panel")]
+    [SerializeField] GameObject title;
+    [SerializeField] GameObject lobby;    
     [SerializeField] GameObject room;
     [SerializeField] PasswordPanel passwordPanel;
+
+    [Header("Main Buttons")]
+    [SerializeField] Button roomOpenSelectButton;
+    [SerializeField] Button optionButton;
+    [SerializeField] Button gameOutButton;
+    [SerializeField] Button logOutButton;
+
+    [Header("Sub Panel")]
+    [SerializeField] GameObject roomSelectPanel;    
+
+    [Header("Sub Buttons")]
+    [SerializeField] Button roomCloseSelectButton;
 
     private bool isRoomCreate;
 
@@ -57,7 +69,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
-        logOutButton.onClick.AddListener(Manager.Firebase.LogOut);
+        logOutButton.onClick.AddListener(LogOut);
         isPassword.onValueChanged.AddListener(PasswordToggleChanged);
 
         roomNameField.onEndEdit.AddListener(EnterCreateRoom);
@@ -66,7 +78,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     private void UnSubscribe()
     {
-        logOutButton.onClick.RemoveListener(Manager.Firebase.LogOut);
+        logOutButton.onClick.RemoveListener(LogOut);
         isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
 
         roomNameField.onEndEdit.RemoveListener(EnterCreateRoom);
@@ -134,6 +146,18 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         passwordPanel.SetUp(room);
         passwordPanel.gameObject.SetActive(true);
     }
+
+    #region ButtonEvent
+    private void LogOut()
+    {
+        title.SetActive(true);
+        lobby.SetActive(false);        
+    }
+    private void AcviteRoomSelectPanel(bool isActive)
+    {
+        roomSelectPanel.SetActive(isActive);
+    }
+    #endregion
 
     #region PhotonCallbacks
     public override void OnCreatedRoom()

@@ -23,6 +23,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [Header("Panels")]
     [SerializeField] GameObject signupPanel;
     [SerializeField] GameObject loginPanel;
+    [SerializeField] GameObject lobbyPanel;
 
     private FirebaseUser user;
     private bool isLogin = false;
@@ -179,7 +180,9 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         yield return new WaitForSeconds(1);
-        SceneManager.LoadSceneAsync("Lobby");
+
+        gameObject.SetActive(false);
+        lobbyPanel.SetActive(true);
     }
     #endregion
 
