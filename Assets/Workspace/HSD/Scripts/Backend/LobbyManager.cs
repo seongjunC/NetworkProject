@@ -38,7 +38,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomSelectPanel;    
 
     [Header("Sub Buttons")]
-    [SerializeField] Button roomCloseSelectButton;
+    [SerializeField] Button roomCloseSelectButton;    
 
     private bool isRoomCreate;
 
@@ -69,6 +69,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
+        roomOpenSelectButton.onClick.AddListener(OpenRoomSelectPanel);
+        roomCloseSelectButton.onClick.AddListener(CloseRoomSelectPanel);
+
         logOutButton.onClick.AddListener(LogOut);
         isPassword.onValueChanged.AddListener(PasswordToggleChanged);
 
@@ -78,6 +81,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     private void UnSubscribe()
     {
+        roomOpenSelectButton.onClick.RemoveListener(OpenRoomSelectPanel);
+        roomCloseSelectButton.onClick.RemoveListener(CloseRoomSelectPanel);
+
         logOutButton.onClick.RemoveListener(LogOut);
         isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
 
@@ -153,10 +159,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         title.SetActive(true);
         lobby.SetActive(false);        
     }
-    private void AcviteRoomSelectPanel(bool isActive)
+    private void ActiveRoomSelectPanel(bool isActive)
     {
         roomSelectPanel.SetActive(isActive);
     }
+    private void OpenRoomSelectPanel() => ActiveRoomSelectPanel(true);
+    private void CloseRoomSelectPanel() => ActiveRoomSelectPanel(false);    
     #endregion
 
     #region PhotonCallbacks
