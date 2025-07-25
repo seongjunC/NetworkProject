@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -17,6 +18,10 @@ public class PlayerController : MonoBehaviourPun
     private bool isControllable = false;
 
     public bool IsAttacked { get; private set; } = false;
+
+    public Action OnPlayerAttacked;
+    public Action OnPlayerDied;
+
     private void Awake()
     {
         //이동 가능한 거리를 이동 최대거리로 설정
@@ -33,10 +38,10 @@ public class PlayerController : MonoBehaviourPun
         //  닉네임 초기화
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
     }
+
     private void FixedUpdate()
     {
         //  플레이어가 죽었거나, 내 플래이어가 아니라면 움직임 권한 박탈
-
         if (!photonView.IsMine)
             return;
         if (_isDead) 
@@ -88,8 +93,7 @@ public class PlayerController : MonoBehaviourPun
         IsAttacked = value;
         if (IsAttacked == true)
         {
-            //TODO : 턴 종료 타이밍 의논, 수정 가능성 (공격 종료시/ 탄 명중, 소멸시/)
-            //photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+            OnPlayerAttacked?.Invoke();
         }
     }
 
@@ -99,16 +103,16 @@ public class PlayerController : MonoBehaviourPun
         Destroy(gameObject);
         photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         _isDead = true;
-        // TODO : 턴 메니저에게 플레이어 죽음 사실은 전달하기
+        // TODO : 턴 메니저에게 플레이어 죽음 사실을 이벤트 전달하기
     }
 
     public void EnableControl(bool enable)
     {
+        Debug.Log($" {photonView.IsMine}, {PhotonNetwork.NickName}, {isControllable}");
         isControllable = enable;
         if (isControllable == true) 
         {
             ResetTurn();
         }
-    
     }
 }

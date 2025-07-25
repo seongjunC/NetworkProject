@@ -34,6 +34,7 @@ public class Fire : MonoBehaviourPun
         //  이미 공격했다면 공격 불가능
         if (_playerController.IsAttacked)
             return;
+        //TODO : 턴 아닐 때 발사 제한 추가하기 
 
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
