@@ -18,10 +18,13 @@ public class Fire : MonoBehaviourPun
     private float powerCharge = 0f;         // 차지
     private bool isCharging = false;        // 차지 중인지 여부
 
+
+    private MSKTurnController _turnController;
     private PlayerController _playerController;
     private void Awake()
     {
         _playerController = GetComponentInParent<PlayerController>();
+        _turnController = FindObjectOfType<MSKTurnController>();
     }
 
 
@@ -79,7 +82,8 @@ public class Fire : MonoBehaviourPun
     private void Shoot()
     {
         GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePoint.position, firePoint.rotation);
-
+        PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
+        _turnController.photonView.RPC("RPC_SetBulletTarget", RpcTarget.All, bulletPhotonView.ViewID);
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
         {

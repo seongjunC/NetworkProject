@@ -81,6 +81,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             StartNextTurn();
             return;
         }
+        photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
 
@@ -118,6 +119,34 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
             EnableCurrentPlayer();
+        }
+    }
+
+    [PunRPC]
+    void RPC_SetCameraTarget(int actorNumber)
+    {
+        tanks = FindObjectsOfType<PlayerController>();
+        // 턴 플레이어 찾기
+        foreach (var player in tanks)
+        {
+            PhotonView view = player.GetComponent<PhotonView>();
+            if (view != null && view.Owner != null && view.Owner.ActorNumber == actorNumber)
+            {
+                CameraController.Instance.vcamPlayer.Follow = player.transform;
+                CameraController.Instance.vcamPlayer.Priority = 20;
+                break;
+            }
+        }
+    }
+
+    [PunRPC]
+    void RPC_SetBulletTarget(int bulletViewID)
+    {
+        PhotonView bulletView = PhotonView.Find(bulletViewID);
+        if (bulletView != null)
+        {
+            CameraController.Instance.vcamBullet.Follow = bulletView.transform;
+            CameraController.Instance.vcamBullet.Priority = 20;
         }
     }
 
