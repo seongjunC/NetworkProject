@@ -1,5 +1,6 @@
 using Firebase.Database;
 using Firebase.Extensions;
+using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,10 +15,11 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] TMP_Text loseText;
     [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
+    [SerializeField] Image masterPanel;
 
     [Header("ReadyColor")]
-    [SerializeField] Color readyColor;
-    [SerializeField] Color defaultColor;
+    [SerializeField] Sprite readySpite;
+    [SerializeField] Sprite defaultSprite;
 
     [Header("TeamColor")]
     [SerializeField] Color redColor;
@@ -27,7 +29,9 @@ public class PlayerSlot : MonoBehaviour
     {
         playerName.text = player.NickName;
 
-        readyPanel.color = player.GetReady() ? readyColor : defaultColor;
+        masterPanel.color = PhotonNetwork.IsMasterClient ? Color.white : Color.clear;
+
+        readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
 
         teamPanel.color = player.GetTeam() == Game.Team.Red ? redColor : blueColor;
 
