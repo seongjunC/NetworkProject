@@ -161,8 +161,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private void OpenRoomCreatePanel()
     {
         roomCreatePanel.SetActive(true);
+        isPassword.isOn = false;
+        passwordField.interactable = isPassword.isOn;
     }
-
     private void CloseRoomCreatePanel()
     {
         roomCreatePanel.SetActive(false);
