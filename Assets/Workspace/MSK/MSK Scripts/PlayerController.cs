@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -6,26 +7,30 @@ public class PlayerController : MonoBehaviourPun
 {
 
     [SerializeField] private Rigidbody2D _rigidbody;
-    [SerializeField] private float _speed = 2f; // ¼Óµµ
+    [SerializeField] private float _speed = 2f; // ì†ë„
     [SerializeField] private Transform player;
-    [SerializeField] private float _maxMove = 5f;  // ÃÖ´ë ÀÌµ¿°Å¸®
+    [SerializeField] private float _maxMove = 5f;  // ìµœëŒ€ ì´ë™ê±°ë¦¬
     [SerializeField] private int _hp = 100;         // hp
-
+    
     [SerializeField] private TextMeshProUGUI _textMeshPro;
     private float _movable;
-    private bool _isDead = false;                   // »ç¸Á¿©ºÎ
-    private bool isControllable = false;
-    // ¾È°è¼Å¼­ ÀÏ´Ü ÀÓ½Ã·Î Ãß°¡Çß½À´Ï´Ù. 
-    // ÃßÈÄ myInfo¿¡ ÇÃ·¹ÀÌ¾îÁ¤º¸¸¦ ³Ö¾î¾ßÇÕ´Ï´Ù.
+    private bool _isDead = false;                   // ì‚¬ë§ì—¬ë¶€
+    // ì•ˆê³„ì…”ì„œ ì¼ë‹¨ ì„ì‹œë¡œ ì¶”ê°€í–ˆìŠµë‹ˆë‹¤. 
+    // ì¶”í›„ myInfoì— í”Œë ˆì´ì–´ì •ë³´ë¥¼ ë„£ì–´ì•¼í•©ë‹ˆë‹¤.
     public PlayerInfo myInfo;
 
+    public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
+
+    public Action OnPlayerAttacked;
+    public Action OnPlayerDied;
+
     private void Awake()
     {
-        //ÀÌµ¿ °¡´ÉÇÑ °Å¸®¸¦ ÀÌµ¿ ÃÖ´ë°Å¸®·Î ¼³Á¤
+        //ì´ë™ ê°€ëŠ¥í•œ ê±°ë¦¬ë¥¼ ì´ë™ ìµœëŒ€ê±°ë¦¬ë¡œ ì„¤ì •
         _movable = _maxMove;
 
-        if (photonView.IsMine) // ³» Ä³¸¯ÅÍÀÏ ¶§¸¸ µî·Ï
+        if (photonView.IsMine) // ë‚´ ìºë¦­í„°ì¼ ë•Œë§Œ ë“±ë¡
         {
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             if (battleManager != null)
@@ -33,21 +38,21 @@ public class PlayerController : MonoBehaviourPun
                 battleManager.RegisterPlayer(this);
             }
         }
-        //  ´Ğ³×ÀÓ ÃÊ±âÈ­
+        //  ë‹‰ë„¤ì„ ì´ˆê¸°í™”
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
     }
+
     private void FixedUpdate()
     {
-        //  ÇÃ·¹ÀÌ¾î°¡ Á×¾ú°Å³ª, ³» ÇÃ·¡ÀÌ¾î°¡ ¾Æ´Ï¶ó¸é ¿òÁ÷ÀÓ ±ÇÇÑ ¹ÚÅ»
-
+        //  í”Œë ˆì´ì–´ê°€ ì£½ì—ˆê±°ë‚˜, ë‚´ í”Œë˜ì´ì–´ê°€ ì•„ë‹ˆë¼ë©´ ì›€ì§ì„ ê¶Œí•œ ë°•íƒˆ
         if (!photonView.IsMine)
             return;
         if (_isDead)
             return;
-        //if (!isControllable)
-        //    return;
+        if (!isControllable)
+            return;
 
-        // ÀÌµ¿ Ã³¸®
+        // ì´ë™ ì²˜ë¦¬
         float horizontal = Input.GetAxisRaw("Horizontal");
 
         if (_movable <= 0)
@@ -61,48 +66,60 @@ public class PlayerController : MonoBehaviourPun
             _rigidbody.velocity = velocity;
         }
 
-        // È¸Àü °¢µµ Á¦ÇÑ ,µÚÁıÈû ¹æÁö
+        // íšŒì „ ê°ë„ ì œí•œ ,ë’¤ì§‘í˜ ë°©ì§€
         float z = _rigidbody.rotation;
         z = Mathf.Clamp(z, -45f, 45f);
         _rigidbody.MoveRotation(z);
     }
 
-    //  ÇÇ°İ Ã³¸®
+    //  í”¼ê²© ì²˜ë¦¬
     public void OnHit(int damage)
     {
         _hp -= damage;
-        Debug.Log("ÇÇ°İ");
+        Debug.Log("í”¼ê²©");
         if (_hp <= 0)
             PlayerDead();
     }
 
-    //  ÇÃ·¹ÀÌ¾î ÀçÇàµ¿
-    public void ResetTurn()
+    //  í”Œë ˆì´ì–´ í„´ ì¢…ë£Œ
+    public void EndPlayerTurn()
     {
-        //ÀÌµ¿ °¡´ÉÇÑ °Å¸®¸¦ ÀÌµ¿ ÃÖ´ë°Å¸®·Î ¼³Á¤
-        _movable = _maxMove;
-        SetAttacked(false);
-        Debug.Log("°ø°İ & ¿òÁ÷ÀÓ °¡´É");
+        _movable = 0;
+        SetAttacked(true);
+        isControllable = false;
     }
 
-    //  °ø°İ °¡´É ¿©ºÎ ¹Ù²Ş
+    //  í”Œë ˆì´ì–´ ì¬í–‰ë™
+    public void ResetTurn()
+    {
+        //ì´ë™ ê°€ëŠ¥í•œ ê±°ë¦¬ë¥¼ ì´ë™ ìµœëŒ€ê±°ë¦¬ë¡œ ì„¤ì •
+        _movable = _maxMove;
+        SetAttacked(false);
+        isControllable = true;
+    }
+
+    //  ê³µê²© ê°€ëŠ¥ ì—¬ë¶€ ë°”ê¿ˆ
     public void SetAttacked(bool value)
     {
+        if (IsAttacked == value) return;
+
         IsAttacked = value;
-        if (IsAttacked == true)
+
+        if (IsAttacked)
         {
-            //TODO : ÅÏ Á¾·á Å¸ÀÌ¹Ö ÀÇ³í, ¼öÁ¤ °¡´É¼º (°ø°İ Á¾·á½Ã/ Åº ¸íÁß½Ã/)
-            //photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+            OnPlayerAttacked?.Invoke();
+            isControllable = false;
         }
     }
 
-    //  ÇÃ·¹ÀÌ¾î »ç¸Á ½Ã ÆÄ±«Ã³¸®
+    //  í”Œë ˆì´ì–´ ì‚¬ë§ ì‹œ íŒŒê´´ì²˜ë¦¬
     public void PlayerDead()
     {
         Destroy(gameObject);
+        OnPlayerAttacked -= OnPlayerAttacked;
         photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         _isDead = true;
-        // TODO : ÅÏ ¸Ş´ÏÀú¿¡°Ô ÇÃ·¹ÀÌ¾î Á×À½ »ç½ÇÀº Àü´ŞÇÏ±â
+        // TODO : í„´ ë©”ë‹ˆì €ì—ê²Œ í”Œë ˆì´ì–´ ì£½ìŒ ì‚¬ì‹¤ì„ ì´ë²¤íŠ¸ ì „ë‹¬í•˜ê¸°
     }
 
     public void EnableControl(bool enable)

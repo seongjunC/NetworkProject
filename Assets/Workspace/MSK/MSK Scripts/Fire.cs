@@ -12,16 +12,19 @@ public class Fire : MonoBehaviourPun
     [Header("Controls")]
     [SerializeField] private float angle = 45f;         // 포신의 현재 각도
     [SerializeField] private float angleStep = 0.5f;      // 각도 변화량
-    [SerializeField] private float maxPower = 10f;         // 폭탄 발사 속도
+    [SerializeField] private float maxPower = 20f;         // 폭탄 발사 속도
     [SerializeField] private float chargingSpeed = 10f;    // 차지속도
 
     private float powerCharge = 0f;         // 차지
     private bool isCharging = false;        // 차지 중인지 여부
 
+
+    private MSKTurnController _turnController;
     private PlayerController _playerController;
     private void Awake()
     {
         _playerController = GetComponentInParent<PlayerController>();
+        _turnController = FindObjectOfType<MSKTurnController>();
     }
 
 
@@ -30,16 +33,17 @@ public class Fire : MonoBehaviourPun
         if (!photonView.IsMine)
             return;
 
+        if (!_playerController.isControllable)
+            return;
+
         Aim();
         //  이미 공격했다면 공격 불가능
         if (_playerController.IsAttacked)
             return;
-
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
         {
             isCharging = true;
-            Debug.Log("차지");
             powerCharge += chargingSpeed * Time.deltaTime;
             powerCharge = Mathf.Clamp(powerCharge, 0f, maxPower);
         }
@@ -47,7 +51,6 @@ public class Fire : MonoBehaviourPun
         // 스페이스바에서 손을 뗐을 때 발사
         if (isCharging && Input.GetKeyUp(KeyCode.Space))
         {
-            Debug.Log($"발사, 힘 : {powerCharge}");
             Shoot();
             powerCharge = 0f;
             isCharging = false;
@@ -79,7 +82,8 @@ public class Fire : MonoBehaviourPun
     private void Shoot()
     {
         GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePoint.position, firePoint.rotation);
-
+        PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
+        _turnController.photonView.RPC("RPC_SetBulletTarget", RpcTarget.All, bulletPhotonView.ViewID);
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
         {

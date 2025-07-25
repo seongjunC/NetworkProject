@@ -21,8 +21,12 @@ public class SignUpPanel : MonoBehaviour
     [SerializeField] Button createButton;
     [SerializeField] Button emailCheckButton;
 
-    [Header("Text")]
-    [SerializeField] TMP_Text checkText;
+    [Header("Check")]
+    [SerializeField] Sprite checkSprite;
+    [SerializeField] Sprite xSprite;
+    [SerializeField] Image emailCheckImage;
+    [SerializeField] Image pwCheckImage;
+    [SerializeField] Image pwCCheckImage;
     [Space]
 
     private bool isEmailChecking;
@@ -44,12 +48,18 @@ public class SignUpPanel : MonoBehaviour
     #region EventSubscribe
     private void Subscribe()
     {
+        pw.onValueChanged.AddListener(PasswordCheck);
+        pwCheck.onValueChanged.AddListener(PasswordConfirm);
+
         loginPanelButton.onClick.AddListener(SwitchLoginPanel);
         createButton    .onClick.AddListener(CreateAccount);
         emailCheckButton.onClick.AddListener(CheckEmail);
     }
     private void UnSubscribe()
     {
+        pw.onValueChanged.RemoveListener(PasswordCheck);
+        pwCheck.onValueChanged.RemoveListener(PasswordConfirm);
+
         loginPanelButton.onClick.RemoveListener(SwitchLoginPanel);
         createButton    .onClick.RemoveListener(CreateAccount);
         emailCheckButton.onClick.RemoveListener(CheckEmail);
@@ -60,14 +70,19 @@ public class SignUpPanel : MonoBehaviour
     {
         email.text      = "";
         pw.text         = "";
-        pwCheck.text    = "";
+        pwCheck.text    = "";        
     }
 
     private void InitChecking()
     {
-        isEmailChecking = false;
-        checkText.color = Color.black;
-        checkText.text = "Check";
+        isEmailChecking = false;        
+        emailCheckImage.sprite  = null;
+        pwCCheckImage.sprite    = null;
+        pwCheckImage.sprite     = null;
+        
+        emailCheckImage.color   = Color.clear;
+        pwCCheckImage.color     = Color.clear;
+        pwCheckImage.color      = Color.clear;
     }
     private void CreateAccount()
     {
@@ -114,6 +129,7 @@ public class SignUpPanel : MonoBehaviour
             }
         });
     }
+
     private void CheckEmail()
     {
         FirebaseManager.Auth.FetchProvidersForEmailAsync(email.text).ContinueWithOnMainThread(task =>
@@ -128,19 +144,48 @@ public class SignUpPanel : MonoBehaviour
 
             if (providers != null && providers.Count() > 0)
             {
-                checkText.color = Color.red;
-                checkText.text = "X";
+                emailCheckImage.sprite = xSprite;
+                emailCheckImage.color = Color.white;                
                 Manager.UI.PopUpUI.Show("Error : An Account Already Exists");
             }
             else
             {
-                checkText.color = Color.green;
-                checkText.text = "O";
+                emailCheckImage.sprite = checkSprite;
+                emailCheckImage.color = Color.white;
                 isEmailChecking = true;
                 Manager.UI.PopUpUI.Show("This is An Available Email");
             }
         });
     }
+
+    private void PasswordCheck(string s)
+    {
+        if(s.Length >= 6)
+        {
+            pwCheckImage.sprite = checkSprite;
+            pwCheckImage.color = Color.white;
+        }
+        else
+        {
+            pwCheckImage.sprite = xSprite;
+            pwCheckImage.color = Color.white;
+        }
+    }
+
+    private void PasswordConfirm(string s)
+    {
+        if(pw.text.Length >= 6 && (s == pw.text))
+        {
+            pwCCheckImage.sprite = checkSprite;
+            pwCheckImage.color = Color.white;
+        }
+        else
+        {
+            pwCCheckImage.sprite = xSprite;
+            pwCheckImage.color = Color.white;
+        }
+    }
+
     private void SwitchLoginPanel()
     {
         loginPanel.SetActive(true);

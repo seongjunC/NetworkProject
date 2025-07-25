@@ -1,5 +1,6 @@
 using Firebase.Database;
 using Firebase.Extensions;
+using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,14 +11,13 @@ using UnityEngine.UI;
 public class PlayerSlot : MonoBehaviour
 {
     [SerializeField] TMP_Text playerName;
-    [SerializeField] TMP_Text winText;
-    [SerializeField] TMP_Text loseText;
     [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
+    [SerializeField] Image masterPanel;
 
     [Header("ReadyColor")]
-    [SerializeField] Color readyColor;
-    [SerializeField] Color defaultColor;
+    [SerializeField] Sprite readySpite;
+    [SerializeField] Sprite defaultSprite;
 
     [Header("TeamColor")]
     [SerializeField] Color redColor;
@@ -27,7 +27,9 @@ public class PlayerSlot : MonoBehaviour
     {
         playerName.text = player.NickName;
 
-        readyPanel.color = player.GetReady() ? readyColor : defaultColor;
+        masterPanel.color = PhotonNetwork.IsMasterClient ? Color.white : Color.clear;
+
+        readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
 
         teamPanel.color = player.GetTeam() == Game.Team.Red ? redColor : blueColor;
 
@@ -38,7 +40,6 @@ public class PlayerSlot : MonoBehaviour
             DataSnapshot snapshot = task.Result;
 
             int win = (int)(long)snapshot.Value;
-            winText.text = $"Win : {win}";
         });
         Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
         {
@@ -47,7 +48,6 @@ public class PlayerSlot : MonoBehaviour
             DataSnapshot snapshot = task.Result;
 
             int lose = (int)(long)snapshot.Value;
-            loseText.text = $"Lose : {lose}";
         });
     }
 

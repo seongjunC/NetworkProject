@@ -6,21 +6,32 @@ using UnityEngine;
 
 public class TestNetworkManager : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private Transform _spawnPoint;
+    public static TestNetworkManager Instance { get; private set; }
 
     [SerializeField] private string _roomName;
+
+    private void Awake()
+    {
+        // 싱글톤 중복 방지
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    //  테스트 용도이기 때문에 즉시 연결
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinOrCreateRoom(_roomName, new RoomOptions(), TypedLobby.Default);
     }
-
+    
     public override void OnCreatedRoom() { }
 
     // 방 입장 시
@@ -29,9 +40,6 @@ public class TestNetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("TestNetworkManager : OnJoinedRoom, 입장 완료");
         //  닉네임을 플레이어 번호로 대체
         PhotonNetwork.LocalPlayer.NickName = $"Player_{PhotonNetwork.LocalPlayer.ActorNumber}";
-
-        // PC 스폰
-        PlayerSpawn();
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
@@ -41,21 +49,6 @@ public class TestNetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private IEnumerator MonsterSpawn()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(2f);
-        }
-    }
-
-    //  플레이어 스폰
-    private void PlayerSpawn()
-    {
-        // 프폰 포인트 중복되지 않게 리스트에서 랜덤하게 생성
-        Vector3 spawnPos = _spawnPoint.position;
-        PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
-    }
 
     public override void OnPlayerEnteredRoom(Player player)
     {
