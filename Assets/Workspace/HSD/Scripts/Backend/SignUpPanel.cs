@@ -187,15 +187,15 @@ public class SignUpPanel : MonoBehaviour
 
     private void PasswordConfirm(string s)
     {
-        if(pw.text.Length >= 6 && (s == pw.text))
+        if(s.Length >= 6 && (s == pw.text))
         {
             pwCCheckImage.sprite = checkSprite;
-            pwCheckImage.color = Color.white;
+            pwCCheckImage.color = Color.white;
         }
         else
         {
             pwCCheckImage.sprite = xSprite;
-            pwCheckImage.color = Color.white;
+            pwCCheckImage.color = Color.white;
         }
     }
 
