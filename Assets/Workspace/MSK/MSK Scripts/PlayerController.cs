@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,13 +11,16 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private Transform player;
     [SerializeField] private float _maxMove = 5f;  // 최대 이동거리
     [SerializeField] private int _hp = 100;         // hp
-
+    
     [SerializeField] private TextMeshProUGUI _textMeshPro;
     private float _movable;
     private bool _isDead = false;                   // 사망여부
-    private bool isControllable = false;
-
+    public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
+
+    public Action OnPlayerAttacked;
+    public Action OnPlayerDied;
+
     private void Awake()
     {
         //이동 가능한 거리를 이동 최대거리로 설정
@@ -33,16 +37,16 @@ public class PlayerController : MonoBehaviourPun
         //  닉네임 초기화
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
     }
+
     private void FixedUpdate()
     {
         //  플레이어가 죽었거나, 내 플래이어가 아니라면 움직임 권한 박탈
-
         if (!photonView.IsMine)
             return;
         if (_isDead) 
             return;
-        //if (!isControllable)
-        //    return;
+        if (!isControllable)
+            return;
 
         // 이동 처리
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -73,23 +77,34 @@ public class PlayerController : MonoBehaviourPun
             PlayerDead();
     }
 
+    //  플레이어 턴 종료
+    public void EndPlayerTurn()
+    {
+        _movable = 0;
+        SetAttacked(true);
+        isControllable = false;
+    }
+
     //  플레이어 재행동
     public void ResetTurn()
     {
         //이동 가능한 거리를 이동 최대거리로 설정
         _movable = _maxMove;
         SetAttacked(false);
-        Debug.Log("공격 & 움직임 가능");
+        isControllable = true;
     }
 
     //  공격 가능 여부 바꿈
     public void SetAttacked(bool value)
     {
+        if (IsAttacked == value) return;
+
         IsAttacked = value;
-        if (IsAttacked == true)
+
+        if (IsAttacked)
         {
-            //TODO : 턴 종료 타이밍 의논, 수정 가능성 (공격 종료시/ 탄 명중시/)
-            //photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+            OnPlayerAttacked?.Invoke();
+            isControllable = false;
         }
     }
 
@@ -97,9 +112,10 @@ public class PlayerController : MonoBehaviourPun
     public void PlayerDead()
     {   
         Destroy(gameObject);
+        OnPlayerAttacked -= OnPlayerAttacked;
         photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         _isDead = true;
-        // TODO : 턴 메니저에게 플레이어 죽음 사실은 전달하기
+        // TODO : 턴 메니저에게 플레이어 죽음 사실을 이벤트 전달하기
     }
 
     public void EnableControl(bool enable)
