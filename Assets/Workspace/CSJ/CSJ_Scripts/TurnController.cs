@@ -14,6 +14,21 @@ public class TurnController : MonoBehaviourPunCallbacks
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
     private Room room;
+    [SerializeField] float turnLimit = 30f;
+    private float turnTimer = 0f;
+    private bool isTurnRunning = false;
+
+    void Update()
+    {
+        if (!PhotonNetwork.IsMasterClient || !isTurnRunning) return;
+
+        turnTimer += Time.deltaTime;
+
+        if (turnTimer >= turnLimit)
+        {
+            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        }
+    }
 
     private void GameStart()
     {
@@ -57,16 +72,18 @@ public class TurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
+        // TODO : 로직에서 turnQueue가 1, nextCycle이 0일때 문제 발생 -> 수정 예정 
         if (turnQueue.Count == 0)
         {
             if (nextCycle.Count <= 1)
             {
                 Debug.Log("게임 종료");
-                photonView.RPC("RPC_GameEnded", RpcTarget.All, currentPlayer.ActorNumber);
+                photonView.RPC("RPC_GameEnded", RpcTarget.All);
                 return;
             }
             else
             {
+                photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
                 turnQueue = new Queue<PlayerInfo>(nextCycle);
                 nextCycle.Clear();
             }
@@ -78,7 +95,15 @@ public class TurnController : MonoBehaviourPunCallbacks
         {
             return;
         }
+        turnTimer = 0f;
+        isTurnRunning = true;
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
+
+    }
+
+    [PunRPC]
+    private void RPC_CycleEnd()
+    {
 
     }
 
@@ -87,6 +112,7 @@ public class TurnController : MonoBehaviourPunCallbacks
     {
         if (currentPlayer != null && currentPlayer.ActorNumber == actorNumber)
         {
+            isTurnRunning = false;
             nextCycle.Add(currentPlayer);
             StartNextTurn();
         }
@@ -115,6 +141,7 @@ public class TurnController : MonoBehaviourPunCallbacks
         {
             Debug.Log("턴 시작");
             EnableCurrentPlayer();
+
         }
     }
 

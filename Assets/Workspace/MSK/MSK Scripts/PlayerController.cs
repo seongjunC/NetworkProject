@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviourPun
     private float _movable;
     private bool _isDead = false;                   // 사망여부
     private bool isControllable = false;
+    // 안계셔서 일단 임시로 추가했습니다. 
+    // 추후 myInfo에 플레이어정보를 넣어야합니다.
+    public PlayerInfo myInfo;
 
     public bool IsAttacked { get; private set; } = false;
     private void Awake()
@@ -39,7 +42,7 @@ public class PlayerController : MonoBehaviourPun
 
         if (!photonView.IsMine)
             return;
-        if (_isDead) 
+        if (_isDead)
             return;
         //if (!isControllable)
         //    return;
@@ -95,7 +98,7 @@ public class PlayerController : MonoBehaviourPun
 
     //  플레이어 사망 시 파괴처리
     public void PlayerDead()
-    {   
+    {
         Destroy(gameObject);
         photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         _isDead = true;
