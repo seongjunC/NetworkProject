@@ -281,6 +281,8 @@ public class RoomManager : MonoBehaviour
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
         DestroyPlayerSlot(otherPlayer);
+        UpdateReadyCountText();
+        UpdateAllPlayerSlot();
     }
     public void OnRoomPropertiesUpdate()
     {

@@ -20,6 +20,7 @@ public class Chat : MonoBehaviourPun
 
         photonView.RPC(nameof(SendChating), RpcTarget.All, PhotonNetwork.NickName, messageField.text);
         messageField.text = "";
+        messageField.ActivateInputField();
     }
 
     public void ResetChat()
