@@ -43,12 +43,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private bool isRoomCreate;
 
     #region LifeCycle
-    private void Start()
-    {
-        lobby.SetActive(true);
-        room.SetActive(false);
-        PhotonNetwork.JoinLobby();
-    }
     public override void OnEnable()
     {
         base.OnEnable();

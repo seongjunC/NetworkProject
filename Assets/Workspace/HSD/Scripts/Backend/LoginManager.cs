@@ -183,6 +183,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         gameObject.SetActive(false);
         lobbyPanel.SetActive(true);
+        PhotonNetwork.JoinLobby();
     }
     #endregion
 
