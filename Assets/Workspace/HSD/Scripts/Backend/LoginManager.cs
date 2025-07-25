@@ -69,6 +69,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         email.text = "";
         pw.text = "";
+        isLogin = false;
     }
 
     private void EnterLogin(string s)
