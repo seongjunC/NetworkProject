@@ -29,17 +29,17 @@ public class TestBattleManager : MonoBehaviourPun
     }
     private void PlayerSpawn()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient)
+            return;
 
         Photon.Realtime.Player[] players = PhotonNetwork.PlayerList;
 
         for (int i = 0; i < players.Length; i++)
         {
-            if (i >= _spawnPoint.Count) break;
+            if (i >= _spawnPoint.Count)
+                break;
 
             Vector3 spawnPos = _spawnPoint[i].position;
-
-            // 소유자를 명시하기 위해 커스텀 RPC로 생성 요청
             photonView.RPC("RPC_SpawnTank", players[i], spawnPos);
         }
     }
