@@ -1,7 +1,5 @@
 using Photon.Pun;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,8 +16,11 @@ public class TestBattleManager : MonoBehaviourPun
         _turnEndButton.onClick.AddListener(TestTurnEnd);
         PlayerSpawn();
         _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
+    }
 
-        _playerController.OnPlayerAttacked += PlayerAttacked;
+    private void PlayerAttacked()
+    {
+        _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     private void TestTurnEnd()
@@ -33,7 +34,9 @@ public class TestBattleManager : MonoBehaviourPun
     public void RegisterPlayer(PlayerController playerController)
     {
         _playerController = playerController;
+        _playerController.OnPlayerAttacked += PlayerAttacked;
     }
+
     private void PlayerSpawn()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -55,10 +58,5 @@ public class TestBattleManager : MonoBehaviourPun
     private void RPC_SpawnTank(Vector3 spawnPos)
     {
         PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
-    }
-
-    private void PlayerAttacked()
-    {
-        _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 }

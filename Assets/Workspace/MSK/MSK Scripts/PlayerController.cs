@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private Transform player;
     [SerializeField] private float _maxMove = 5f;  // 최대 이동거리
     [SerializeField] private int _hp = 100;         // hp
-
+    
     [SerializeField] private TextMeshProUGUI _textMeshPro;
     private float _movable;
     private bool _isDead = false;                   // 사망여부
@@ -83,8 +83,8 @@ public class PlayerController : MonoBehaviourPun
         _movable = 0;
         SetAttacked(true);
         isControllable = false;
-        Debug.Log("공격 & 움직임 불가능");
     }
+
     //  플레이어 재행동
     public void ResetTurn()
     {
@@ -92,14 +92,16 @@ public class PlayerController : MonoBehaviourPun
         _movable = _maxMove;
         SetAttacked(false);
         isControllable = true;
-        Debug.Log("공격 & 움직임 가능");
     }
 
     //  공격 가능 여부 바꿈
     public void SetAttacked(bool value)
     {
+        if (IsAttacked == value) return;
+
         IsAttacked = value;
-        if (IsAttacked == true)
+
+        if (IsAttacked)
         {
             OnPlayerAttacked?.Invoke();
             isControllable = false;
@@ -110,6 +112,7 @@ public class PlayerController : MonoBehaviourPun
     public void PlayerDead()
     {   
         Destroy(gameObject);
+        OnPlayerAttacked -= OnPlayerAttacked;
         photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         _isDead = true;
         // TODO : 턴 메니저에게 플레이어 죽음 사실을 이벤트 전달하기
