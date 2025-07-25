@@ -11,8 +11,6 @@ using UnityEngine.UI;
 public class PlayerSlot : MonoBehaviour
 {
     [SerializeField] TMP_Text playerName;
-    [SerializeField] TMP_Text winText;
-    [SerializeField] TMP_Text loseText;
     [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
     [SerializeField] Image masterPanel;
@@ -42,7 +40,6 @@ public class PlayerSlot : MonoBehaviour
             DataSnapshot snapshot = task.Result;
 
             int win = (int)(long)snapshot.Value;
-            winText.text = $"Win : {win}";
         });
         Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
         {
@@ -51,7 +48,6 @@ public class PlayerSlot : MonoBehaviour
             DataSnapshot snapshot = task.Result;
 
             int lose = (int)(long)snapshot.Value;
-            loseText.text = $"Lose : {lose}";
         });
     }
 

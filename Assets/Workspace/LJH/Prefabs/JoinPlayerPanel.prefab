@@ -225,15 +225,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e433d7292ac002641971abcef9a28568, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerName: {fileID: 0}
-  winText: {fileID: 0}
-  loseText: {fileID: 0}
-  readyPanel: {fileID: 0}
-  teamPanel: {fileID: 0}
-  readyColor: {r: 0, g: 0, b: 0, a: 0}
-  defaultColor: {r: 0, g: 0, b: 0, a: 0}
-  redColor: {r: 0, g: 0, b: 0, a: 0}
-  blueColor: {r: 0, g: 0, b: 0, a: 0}
+  playerName: {fileID: 9144808188512231909}
+  readyPanel: {fileID: 47024698015446509}
+  teamPanel: {fileID: 3638935828854303326}
+  masterPanel: {fileID: 5152965029094376439}
+  readySpite: {fileID: 21300000, guid: e593aa48f1252b943bd98c7364e67039, type: 3}
+  defaultSprite: {fileID: 21300000, guid: 719db591f18339b428572a7810768ceb, type: 3}
+  redColor: {r: 1, g: 0.24056602, b: 0.24056602, a: 1}
+  blueColor: {r: 0.21226418, g: 0.82968223, b: 1, a: 1}
 --- !u!1 &8349968802444923851
 GameObject:
   m_ObjectHideFlags: 0
