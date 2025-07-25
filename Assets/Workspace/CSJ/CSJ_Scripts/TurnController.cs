@@ -21,8 +21,8 @@ public class TurnController : MonoBehaviourPunCallbacks
         tanks = FindObjectsOfType<PlayerController>();
 
         int playerCount = PhotonNetwork.CountOfPlayers;
-        // 추후 연계하여 조절
-        if (CustomProperty.GetTurnRandom())
+        // 추후 연계하여 조절 TODO : 임시 크래쉬 수정
+        if (true)//CustomProperty.GetTurnRandom())
         {
             List<int> randNumList = new();
             for (int i = 0; i < playerCount; i++)
