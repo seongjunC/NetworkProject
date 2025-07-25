@@ -15,8 +15,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private TextMeshProUGUI _textMeshPro;
     private float _movable;
     private bool _isDead = false;                   // 사망여부
-    private bool isControllable = false;
-
+    public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
 
     public Action OnPlayerAttacked;
@@ -78,12 +77,21 @@ public class PlayerController : MonoBehaviourPun
             PlayerDead();
     }
 
+    //  플레이어 턴 종료
+    public void EndPlayerTurn()
+    {
+        _movable = 0;
+        SetAttacked(true);
+        isControllable = false;
+        Debug.Log("공격 & 움직임 불가능");
+    }
     //  플레이어 재행동
     public void ResetTurn()
     {
         //이동 가능한 거리를 이동 최대거리로 설정
         _movable = _maxMove;
         SetAttacked(false);
+        isControllable = true;
         Debug.Log("공격 & 움직임 가능");
     }
 
@@ -94,6 +102,7 @@ public class PlayerController : MonoBehaviourPun
         if (IsAttacked == true)
         {
             OnPlayerAttacked?.Invoke();
+            isControllable = false;
         }
     }
 
@@ -108,11 +117,6 @@ public class PlayerController : MonoBehaviourPun
 
     public void EnableControl(bool enable)
     {
-        Debug.Log($" {photonView.IsMine}, {PhotonNetwork.NickName}, {isControllable}");
         isControllable = enable;
-        if (isControllable == true) 
-        {
-            ResetTurn();
-        }
     }
 }

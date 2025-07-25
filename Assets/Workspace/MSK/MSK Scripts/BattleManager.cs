@@ -25,7 +25,7 @@ public class TestBattleManager : MonoBehaviourPun
     private void TestTurnEnd()
     {
         if (_playerController != null)
-            _playerController.ResetTurn();
+            _playerController.EndPlayerTurn();
         _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
