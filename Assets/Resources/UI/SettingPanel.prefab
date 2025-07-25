@@ -228,7 +228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5024116302046568169
 RectTransform:
   m_ObjectHideFlags: 0
@@ -305,6 +305,9 @@ MonoBehaviour:
   closeButton: {fileID: 4328113170319263191}
   gamePanel: {fileID: 2815319469288656931}
   accountPanel: {fileID: 3270682692126100228}
+  nickNameChangeButton: {fileID: 3632803498477936551}
+  accountDeleteButton: {fileID: 8886519590067512605}
+  nickNameSelectPanel: {fileID: 0}
 --- !u!1 &1558723956165522294
 GameObject:
   m_ObjectHideFlags: 0

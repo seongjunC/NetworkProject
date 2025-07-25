@@ -10,7 +10,10 @@ public class UIManager : Singleton<UIManager>
     private Canvas mainCanvas;
 
     public PopUpUI PopUpUI;
+    public PopUpUI_Action PopUpUI_Action;
     public PlayerInfoPanel PlayerInfoPanel;
+    public AccountDeletePanel AccountDeletePanel;
+    public NickNameSelectPanel NickNameSelectPanel;
     public SettingPanel settingPanel;
 
     #region LifeCycle
@@ -18,9 +21,12 @@ public class UIManager : Singleton<UIManager>
     {
         CreateMainCanvas();
 
-        PopUpUI         = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
-        settingPanel    = Instantiate(Resources.Load<SettingPanel>("UI/SettingPanel"), mainCanvas.transform);
-        PlayerInfoPanel = Instantiate(Resources.Load<PlayerInfoPanel>("UI/PlayerInfoPanel"), mainCanvas.transform);
+        PopUpUI             = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
+        PopUpUI_Action      = Instantiate(Resources.Load<PopUpUI_Action>("UI/PopUpUI_Action"), mainCanvas.transform);
+        settingPanel        = Instantiate(Resources.Load<SettingPanel>("UI/SettingPanel"), mainCanvas.transform);
+        PlayerInfoPanel     = Instantiate(Resources.Load<PlayerInfoPanel>("UI/PlayerInfoPanel"), mainCanvas.transform);
+        AccountDeletePanel  = Instantiate(Resources.Load<AccountDeletePanel>("UI/AccountDeletePanel"), mainCanvas.transform);
+        NickNameSelectPanel = Instantiate(Resources.Load<NickNameSelectPanel>("UI/NickNameSelectPanel"), mainCanvas.transform);
     }
     #endregion
 

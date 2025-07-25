@@ -31,6 +31,11 @@ public class NickNameSelectPanel : MonoBehaviour
     }
     #endregion
 
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+
     private void NickNameSelect()
     {
         if (string.IsNullOrWhiteSpace(nickName.text))

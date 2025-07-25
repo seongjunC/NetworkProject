@@ -73,5 +73,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
         Auth.SignOut();
         OnLogOut?.Invoke();
+
+        Manager.UI.PopUpUI.Show("성공적으로 로그아웃 하였습니다.");
     }
 }

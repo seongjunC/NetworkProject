@@ -66,6 +66,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
+        Manager.Firebase.OnLogOut += GoTitle;
+
         optionButton.onClick    .AddListener(Manager.UI.settingPanel.Show);
         gameOutButton.onClick   .AddListener(GameOut);
 
@@ -161,6 +163,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         passwordPanel.SetUp(room);
         passwordPanel.gameObject.SetActive(true);
+    }
+    private void GoTitle()
+    {
+        lobby.SetActive(false);
+        room.SetActive(false);
+        roomSelectPanel.SetActive(false);
+        roomCreatePanel.SetActive(false);
+        title.SetActive(true);
     }
 
     #region ButtonEvent

@@ -20,7 +20,6 @@ public class SettingPanel : MonoBehaviour
 
     [Header("Panel")]
     [SerializeField] GameObject nickNameSelectPanel;
-    [SerializeField] GameObject accountDeletePanel;
 
     #region LifeCycle
     private void Start()
@@ -67,6 +66,6 @@ public class SettingPanel : MonoBehaviour
 
     private void OpenAccountDeletePanel()
     {
-        accountDeletePanel.SetActive(true);
+        Manager.UI.AccountDeletePanel.Show();
     }
 }

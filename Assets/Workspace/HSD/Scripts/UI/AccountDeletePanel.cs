@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class AccountDeletePanel : MonoBehaviour
 {
     [SerializeField] Button deleteButton;
+    [SerializeField] Button closeButton;
 
     [SerializeField] TMP_InputField email;
     [SerializeField] TMP_InputField password;
@@ -15,8 +16,16 @@ public class AccountDeletePanel : MonoBehaviour
 
     private void Start()
     {
+        closeButton.onClick.AddListener(Close);
         deleteButton.onClick.AddListener(CheckDelete);
     }
+
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+
+    private void Close() => gameObject.SetActive(false);
 
     private void CheckDelete()
     {
@@ -55,6 +64,33 @@ public class AccountDeletePanel : MonoBehaviour
         if (deleteTask.Exception != null)
         {
             Manager.UI.PopUpUI.Show($"실패 : {deleteTask.Exception.GetBaseException().Message}");
+        }
+        else
+        {
+            Manager.UI.PopUpUI_Action.Show("정말로 계정을 삭제하시겠습니까?", DeleteAccount);
+        }
+    }
+
+    private void DeleteAccount()
+    {
+        FirebaseUser user = FirebaseManager.Auth.CurrentUser;
+
+        if (user != null)
+        {
+            user.DeleteAsync().ContinueWith(task =>
+            {
+                if (task.IsCanceled || task.IsFaulted)
+                {
+                    Debug.LogError($"계정 삭제 실패: {task.Exception?.GetBaseException().Message}");
+                    return;
+                }
+                
+                Manager.Firebase.LogOut();
+            });
+        }
+        else
+        {
+            Debug.LogWarning("로그인된 사용자가 없습니다.");
         }
     }
 }
