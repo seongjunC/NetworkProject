@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Realtime;
+using System.Runtime.CompilerServices;
 
 public class TestLoginManager : MonoBehaviourPunCallbacks
 {
@@ -26,9 +27,9 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject lobbyPanel;
 
     private FirebaseUser user;
+    private bool isLogin = false;
 
     #region LifeCycle
-
     public override void OnEnable()
     {
         base.OnEnable();
@@ -102,18 +103,33 @@ public class TestLoginManager : MonoBehaviourPunCallbacks
     #region Login
     private void Login()
     {
+        if (isLogin) return;
+
+        isLogin = true;
+        loginButton.interactable = false;
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted)
             {
                 Debug.LogError($"로그인 실패: {task.Exception}");
                 Manager.UI.PopUpUI.Show("Login Failed");
+                isLogin = false;
+                loginButton.interactable = true;
                 return;
             }
+
             user = task.Result.User;
 
+            if (!user.IsEmailVerified)
+            {
+                Manager.UI.PopUpUI.Show("이메일 인증이 필요합니다. 메일을 확인해주세요.", Color.yellow);
+                FirebaseManager.Auth.SignOut();
+                isLogin = false;
+                loginButton.interactable = true;
+                return;
+            }
+
             Debug.Log($"로그인 성공: {task.Result.User.Email}");
-            loginButton.interactable = false;
 
             PhotonNetwork.ConnectUsingSettings();
         });

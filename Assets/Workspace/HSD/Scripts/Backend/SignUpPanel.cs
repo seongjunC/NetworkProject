@@ -27,7 +27,7 @@ public class SignUpPanel : MonoBehaviour
     [SerializeField] Image emailCheckImage;
     [SerializeField] Image pwCheckImage;
     [SerializeField] Image pwCCheckImage;
-    [Space]
+    [Space]    
 
     private bool isEmailChecking;
 
@@ -138,6 +138,8 @@ public class SignUpPanel : MonoBehaviour
             });
             
             Manager.UI.PopUpUI.Show("회원가입 성공!", Color.green);
+            gameObject.SetActive(false);
+            loginPanel.SetActive(true);
         });
     }
 

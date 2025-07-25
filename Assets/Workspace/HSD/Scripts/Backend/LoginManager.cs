@@ -88,7 +88,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 FirebaseAuth auth = FirebaseManager.Auth;
                 FirebaseDatabase database = FirebaseManager.Database;
 
-                if (auth.CurrentUser != null)
+                if (auth.CurrentUser != null && auth.CurrentUser.IsEmailVerified)
                 {
                     Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
                     user = auth.CurrentUser;
@@ -138,6 +138,16 @@ public class LoginManager : MonoBehaviourPunCallbacks
             }
 
             user = task.Result.User;
+
+            if (!user.IsEmailVerified)
+            {
+                Manager.UI.PopUpUI.Show("이메일 인증이 필요합니다. 메일을 확인해주세요.", Color.yellow);
+                FirebaseManager.Auth.SignOut();
+                isLogin = false;
+                loginButton.interactable = true;
+                return;
+            }
+
             Debug.Log($"로그인 성공: {task.Result.User.Email}");  
 
             PhotonNetwork.ConnectUsingSettings();
