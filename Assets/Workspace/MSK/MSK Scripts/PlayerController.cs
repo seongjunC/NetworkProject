@@ -41,8 +41,8 @@ public class PlayerController : MonoBehaviourPun
             return;
         if (_isDead) 
             return;
-        //if (!isControllable)
-        //    return;
+        if (!isControllable)
+            return;
 
         // 이동 처리
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviourPun
         IsAttacked = value;
         if (IsAttacked == true)
         {
-            //TODO : 턴 종료 타이밍 의논, 수정 가능성 (공격 종료시/ 탄 명중시/)
+            //TODO : 턴 종료 타이밍 의논, 수정 가능성 (공격 종료시/ 탄 명중, 소멸시/)
             //photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
         }
     }
@@ -105,5 +105,10 @@ public class PlayerController : MonoBehaviourPun
     public void EnableControl(bool enable)
     {
         isControllable = enable;
+        if (isControllable == true) 
+        {
+            ResetTurn();
+        }
+    
     }
 }
