@@ -35,10 +35,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Button logOutButton;
 
     [Header("Sub Panel")]
-    [SerializeField] GameObject roomSelectPanel;    
+    [SerializeField] GameObject roomSelectPanel;
+    [SerializeField] GameObject roomCreatePanel;
 
     [Header("Sub Buttons")]
-    [SerializeField] Button roomCloseSelectButton;    
+    [SerializeField] Button roomCloseSelectButton;
+    [SerializeField] Button roomCreateOpenButton;
+    [SerializeField] Button roomCreateCloseButton;
+    [SerializeField] Button roomCreateButton;
+    [SerializeField] Button fastJoinButton;
 
     private bool isRoomCreate;
 
@@ -63,26 +68,36 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region EventSubscribe
     private void Subscribe()
     {
-        roomOpenSelectButton.onClick.AddListener(OpenRoomSelectPanel);
-        roomCloseSelectButton.onClick.AddListener(CloseRoomSelectPanel);
+        fastJoinButton.onClick          .AddListener(RandomMatching);
+        roomCreateButton.onClick        .AddListener(CreateRoom);
+        roomCreateOpenButton.onClick    .AddListener(OpenRoomCreatePanel);
+        roomCreateCloseButton.onClick   .AddListener(CloseRoomCreatePanel);
 
-        logOutButton.onClick.AddListener(LogOut);
-        isPassword.onValueChanged.AddListener(PasswordToggleChanged);
+        roomOpenSelectButton.onClick    .AddListener(OpenRoomSelectPanel);
+        roomCloseSelectButton.onClick   .AddListener(CloseRoomSelectPanel);
 
-        roomNameField.onEndEdit.AddListener(EnterCreateRoom);
-        passwordField.onEndEdit.AddListener(EnterCreateRoom);
+        logOutButton.onClick        .AddListener(LogOut);
+        isPassword.onValueChanged   .AddListener(PasswordToggleChanged);
+
+        roomNameField.onEndEdit .AddListener(EnterCreateRoom);
+        passwordField.onEndEdit .AddListener(EnterCreateRoom);
         maxPlayerField.onEndEdit.AddListener(EnterCreateRoom);
     }
     private void UnSubscribe()
     {
-        roomOpenSelectButton.onClick.RemoveListener(OpenRoomSelectPanel);
-        roomCloseSelectButton.onClick.RemoveListener(CloseRoomSelectPanel);
+        fastJoinButton.onClick          .RemoveListener(RandomMatching);
+        roomCreateButton.onClick        .RemoveListener(CreateRoom);
+        roomCreateOpenButton.onClick    .RemoveListener(OpenRoomCreatePanel);
+        roomCreateCloseButton.onClick   .RemoveListener(CloseRoomCreatePanel);
 
-        logOutButton.onClick.RemoveListener(LogOut);
-        isPassword.onValueChanged.RemoveListener(PasswordToggleChanged);
+        roomOpenSelectButton.onClick    .RemoveListener(OpenRoomSelectPanel);
+        roomCloseSelectButton.onClick   .RemoveListener(CloseRoomSelectPanel);
 
-        roomNameField.onEndEdit.RemoveListener(EnterCreateRoom);
-        passwordField.onEndEdit.RemoveListener(EnterCreateRoom);
+        logOutButton.onClick        .RemoveListener(LogOut);
+        isPassword.onValueChanged   .RemoveListener(PasswordToggleChanged);
+
+        roomNameField.onEndEdit .RemoveListener(EnterCreateRoom);
+        passwordField.onEndEdit .RemoveListener(EnterCreateRoom);
         maxPlayerField.onEndEdit.RemoveListener(EnterCreateRoom);
     }
     #endregion
@@ -140,7 +155,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         passwordField.interactable = isPassword;        
     }
-
     private void OpenPasswordPanel(RoomInfo room)
     {
         passwordPanel.SetUp(room);
@@ -148,6 +162,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
 
     #region ButtonEvent
+    private void OpenRoomCreatePanel() => roomCreatePanel.SetActive(true);
+    private void CloseRoomCreatePanel() => roomCreatePanel.SetActive(false);
+    private void RandomMatching()
+    {
+        PhotonNetwork.JoinRandomOrCreateRoom();
+    }
     private void LogOut()
     {
         title.SetActive(true);
@@ -156,6 +176,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private void ActiveRoomSelectPanel(bool isActive)
     {
         roomSelectPanel.SetActive(isActive);
+        lobby.SetActive(!isActive);
     }
     private void OpenRoomSelectPanel() => ActiveRoomSelectPanel(true);
     private void CloseRoomSelectPanel() => ActiveRoomSelectPanel(false);    
