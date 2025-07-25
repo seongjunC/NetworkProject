@@ -36,7 +36,6 @@ public class SettingPanel : MonoBehaviour
     private void OnEnable()
     {
         SelectGameSetting();
-        nickNameSelectPanel?? = 
     }
 
     private void Update()
