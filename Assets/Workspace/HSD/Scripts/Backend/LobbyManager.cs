@@ -193,8 +193,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     private void LogOut()
     {
-        title.SetActive(true);
-        lobby.SetActive(false);        
+        Manager.Firebase.LogOut();       
     }
     private void GameOut() => Application.Quit();
     private void ActiveRoomSelectPanel(bool isActive)
