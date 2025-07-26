@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Workspace/HSD/HSD_Scene/Lobby.unity
     guid: c7392cac3c5479841a87f697a6ca4a0f
+  - enabled: 1
+    path: Assets/Workspace/MSK/Test Scene/MSK Test Scene.unity
+    guid: 5d456d8f4f88dab48bdf97f182ead989
   m_configObjects: {}

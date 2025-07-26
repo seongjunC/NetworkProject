@@ -39,12 +39,14 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
-  - Aim
-  - Shoot
-  - SendChating
   - RPC_GameEnded
   - RPC_PlayerDead
+  - RPC_SetBulletTarget
+  - RPC_SetCameraTarget
+  - RPC_Spawned
+  - RPC_SpawnTank
   - RPC_TurnFinished
+  - SendChating
   - StartTurnForPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1

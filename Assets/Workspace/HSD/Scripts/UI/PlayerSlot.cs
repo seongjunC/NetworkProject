@@ -14,6 +14,7 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
     [SerializeField] Image masterPanel;
+    [SerializeField] Button infoButton;
 
     [Header("ReadyColor")]
     [SerializeField] Sprite readySpite;
@@ -23,8 +24,24 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Color redColor;
     [SerializeField] Color blueColor;
 
+    private Player player;
+
+    #region LifeCycle
+    private void OnEnable()
+    {
+        infoButton.onClick.AddListener(ViewPlayerInfo);
+    }
+
+    private void OnDisable()
+    {
+        infoButton.onClick.RemoveListener(ViewPlayerInfo);
+    }
+    #endregion
+
     public void SetUp(Player player)
     {
+        this.player = player;
+
         playerName.text = player.NickName;
 
         masterPanel.color = PhotonNetwork.IsMasterClient ? Color.white : Color.clear;
@@ -32,28 +49,11 @@ public class PlayerSlot : MonoBehaviour
         readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
 
         teamPanel.color = player.GetTeam() == Game.Team.Red ? redColor : blueColor;
-
-        Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Win").GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCanceled || task.IsFaulted) return;
-
-            DataSnapshot snapshot = task.Result;
-
-            int win = (int)(long)snapshot.Value;
-        });
-        Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCanceled || task.IsFaulted) return;
-
-            DataSnapshot snapshot = task.Result;
-
-            int lose = (int)(long)snapshot.Value;
-        });
     }
 
     public void ViewPlayerInfo()
     {
-        // 정보 보기
+        Manager.UI.PlayerInfoPanel.Show(player);
     }
 
     public void UpdateReady(Color color)
