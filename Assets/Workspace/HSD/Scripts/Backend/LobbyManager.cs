@@ -67,7 +67,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Manager.Firebase.OnLogOut += GoTitle;
 
-        optionButton.onClick    .AddListener(Manager.UI.settingPanel.Show);
+        optionButton.onClick    .AddListener(Manager.UI.SettingPanel.Show);
         gameOutButton.onClick   .AddListener(GameOut);
 
         fastJoinButton.onClick          .AddListener(RandomMatching);
@@ -87,7 +87,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     private void UnSubscribe()
     {
-        optionButton.onClick    .RemoveListener(Manager.UI.settingPanel.Show);
+        optionButton.onClick    .RemoveListener(Manager.UI.SettingPanel.Show);
         gameOutButton.onClick   .RemoveListener(GameOut);
 
         fastJoinButton.onClick          .RemoveListener(RandomMatching);

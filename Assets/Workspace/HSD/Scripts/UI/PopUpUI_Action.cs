@@ -21,7 +21,7 @@ public class PopUpUI_Action : MonoBehaviour
     }
 
     public void Show(string _message, Action _yes = null, Action _no = null)
-    {
+    {       
         yesAction = _yes;
         noAction = _no;
         yesAction += Close;

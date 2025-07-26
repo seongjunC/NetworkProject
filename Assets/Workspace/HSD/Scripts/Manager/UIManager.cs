@@ -14,7 +14,8 @@ public class UIManager : Singleton<UIManager>
     public PlayerInfoPanel PlayerInfoPanel;
     public AccountDeletePanel AccountDeletePanel;
     public NickNameSelectPanel NickNameSelectPanel;
-    public SettingPanel settingPanel;
+    public SettingPanel SettingPanel;
+    public FadeScreen FadeScreen;
 
     #region LifeCycle
     private void Awake()
@@ -22,8 +23,9 @@ public class UIManager : Singleton<UIManager>
         CreateMainCanvas();
 
         PopUpUI             = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
+        FadeScreen          = Instantiate(Resources.Load<FadeScreen>("UI/FadeScreen"), mainCanvas.transform);
+        SettingPanel        = Instantiate(Resources.Load<SettingPanel>("UI/SettingPanel"), mainCanvas.transform);
         PopUpUI_Action      = Instantiate(Resources.Load<PopUpUI_Action>("UI/PopUpUI_Action"), mainCanvas.transform);
-        settingPanel        = Instantiate(Resources.Load<SettingPanel>("UI/SettingPanel"), mainCanvas.transform);
         PlayerInfoPanel     = Instantiate(Resources.Load<PlayerInfoPanel>("UI/PlayerInfoPanel"), mainCanvas.transform);
         AccountDeletePanel  = Instantiate(Resources.Load<AccountDeletePanel>("UI/AccountDeletePanel"), mainCanvas.transform);
         NickNameSelectPanel = Instantiate(Resources.Load<NickNameSelectPanel>("UI/NickNameSelectPanel"), mainCanvas.transform);
