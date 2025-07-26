@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,9 +19,6 @@ public class SettingPanel : MonoBehaviour
     [SerializeField] Button nickNameChangeButton;
     [SerializeField] Button accountDeleteButton;
 
-    [Header("Panel")]
-    [SerializeField] GameObject nickNameSelectPanel;
-
     #region LifeCycle
     private void Start()
     {
@@ -35,6 +33,8 @@ public class SettingPanel : MonoBehaviour
     private void OnEnable()
     {
         SelectGameSetting();
+
+        accountSettingButton.interactable = !PhotonNetwork.InRoom;
     }
 
     private void Update()
@@ -62,7 +62,7 @@ public class SettingPanel : MonoBehaviour
     private void OpenNickNameSelectPanel()
     {
         gameObject.SetActive(false);
-        nickNameSelectPanel.SetActive(true);
+        Manager.UI.NickNameSelectPanel.Show();
     }
 
     private void OpenAccountDeletePanel()

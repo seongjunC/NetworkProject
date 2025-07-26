@@ -27,6 +27,8 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
     private void Awake()
     {
+        Application.runInBackground = true;
+
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(t =>
         {
             DependencyStatus status = t.Result;

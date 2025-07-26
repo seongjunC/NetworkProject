@@ -284,15 +284,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private void CreateRoomSlots(List<RoomInfo> roomList)
     {
-        Debug.Log("OnRoomListUpdate");
         foreach (RoomInfo room in roomList)
         {
             if (room.RemovedFromList)
             {
-                Debug.Log($"RemoveRoom : {room.Name}");
                 if (roomListDic.TryGetValue(room.Name, out RoomSlot roomSlot))
                 {
-                    Debug.Log($"RemoveRoom1 : {room.Name}");
                     roomListDic[room.Name].OnPasswordRoomSelected -= OpenPasswordPanel;
                     Destroy(roomSlot.gameObject);
                     roomListDic.Remove(room.Name);
@@ -303,7 +300,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
             if (!roomListDic.ContainsKey(room.Name))
             {
-                Debug.Log($"Instantiate Room : {room.Name}");
                 RoomSlot slot = Instantiate(roomPrefab, roomContent).GetComponent<RoomSlot>();
                 slot.SetUp(room);
                 roomListDic.Add(room.Name, slot);

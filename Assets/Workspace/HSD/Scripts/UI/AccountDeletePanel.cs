@@ -58,9 +58,6 @@ public class AccountDeletePanel : MonoBehaviour
         }
 
         FirebaseUser user = FirebaseManager.Auth.CurrentUser;
-        var deleteTask = user.DeleteAsync();
-
-        yield return new WaitUntil(() => deleteTask.IsCompleted);
 
         Manager.UI.PopUpUI_Action.Show("정말로 계정을 삭제하시겠습니까?", DeleteAccount);
 

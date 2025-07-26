@@ -61,12 +61,13 @@ public class RoomSlot : MonoBehaviour
 
     public void JoinRoom()
     {
+        Debug.Log("1");
         if ((string)room.CustomProperties["Password"] != null)
         {
             OnPasswordRoomSelected?.Invoke(room);
             return;
         }
-
+        Debug.Log("2");
         PhotonNetwork.JoinRoom(roomName);
         button.onClick.RemoveListener(JoinRoom);        
     }

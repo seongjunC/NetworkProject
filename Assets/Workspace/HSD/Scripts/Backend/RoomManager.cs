@@ -11,7 +11,8 @@ public class RoomManager : MonoBehaviour
 {
     [Header("Player")]
     [SerializeField] GameObject playerSlotPrefab;
-    [SerializeField] Transform playerContent;
+    [SerializeField] Transform redPlayerContent;
+    [SerializeField] Transform bluePlayerContent;
     private Dictionary<int, PlayerSlot> playerSlotDic = new Dictionary<int, PlayerSlot>();
 
     [Header("Map")]
@@ -108,10 +109,10 @@ public class RoomManager : MonoBehaviour
        
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
-    {
+    {        
         if (!playerSlotDic.ContainsKey(player.ActorNumber))
         {
-            GameObject obj = Instantiate(playerSlotPrefab, playerContent);
+            GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
             playerSlotDic.Add(player.ActorNumber, playerSlot);
@@ -153,7 +154,7 @@ public class RoomManager : MonoBehaviour
 
         foreach (Player player in PhotonNetwork.PlayerList)
         {
-            GameObject obj = Instantiate(playerSlotPrefab, playerContent);
+            GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
             playerSlotDic.Add(player.ActorNumber, playerSlot);
@@ -181,6 +182,15 @@ public class RoomManager : MonoBehaviour
         {
             Debug.LogError("½½·Ô ¾øÀ½");
         }
+    }
+
+    private Transform GetPlayerTeamContent(Player player)
+    {
+        return player.GetTeam() == Team.Red ? redPlayerContent : bluePlayerContent;
+    }
+    private void PlayerSlotSetParent(Player player)
+    {
+        playerSlotDic[player.ActorNumber].gameObject.transform.SetParent(GetPlayerTeamContent(player), false);
     }
     #endregion
 
@@ -288,12 +298,12 @@ public class RoomManager : MonoBehaviour
         UpdateAllPlayerSlot();
         UpdateReadyCountText();
         ReadyPropertyUpdate();
-        UpdateTurnType();
+        UpdateTurnType();        
     }
 
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
-        CreatePlayerSlot(newPlayer);
+        CreatePlayerSlot(newPlayer);        
     }
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -303,19 +313,21 @@ public class RoomManager : MonoBehaviour
     }
     public void OnRoomPropertiesUpdate()
     {
-        MapChange();       
+        MapChange();
         UpdateTurnType();
     }
 
     public void OnPlayerPropertiesUpdate(Player target)
     {
         ReadyCheck(target);
+        PlayerSlotSetParent(target);
     }
 
     public void OnMasterClientSwitched(Player newMasterClient)
     {
         CreatePlayerSlot(newMasterClient);
         SetButtonInteractable();
+        newMasterClient.SetReady(true);
     }
 
     public void OnLeftRoom()

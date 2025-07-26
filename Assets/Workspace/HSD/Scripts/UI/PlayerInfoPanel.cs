@@ -34,6 +34,8 @@ public class PlayerInfoPanel : MonoBehaviour
         Init(false);        
         gameObject.SetActive(true);
 
+        playerName.text = player.NickName;
+
         Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Win").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted) return;
