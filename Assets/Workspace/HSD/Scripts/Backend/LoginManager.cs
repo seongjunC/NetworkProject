@@ -7,7 +7,6 @@ using Photon.Realtime;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviourPunCallbacks
@@ -25,6 +24,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject loginPanel;
     [SerializeField] GameObject lobbyPanel;
 
+    [SerializeField] bool isTest;
     private FirebaseUser user;
     private bool isLogin = false;
 
@@ -86,25 +86,28 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
             if (status == DependencyStatus.Available)
             {
-                FirebaseAuth auth = FirebaseManager.Auth;
-                FirebaseDatabase database = FirebaseManager.Database;
-
-                if (auth.CurrentUser != null && auth.CurrentUser.IsEmailVerified)
+                if (!isTest)
                 {
-                    Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
-                    user = auth.CurrentUser;
+                    FirebaseAuth auth = FirebaseManager.Auth;
+                    FirebaseDatabase database = FirebaseManager.Database;
 
-                    LoginSetActive(user == null);
-
-                    if (user != null)
+                    if (auth.CurrentUser != null && auth.CurrentUser.IsEmailVerified)
                     {
-                        PhotonNetwork.ConnectUsingSettings();
+                        Debug.Log("자동 로그인 유효함: " + auth.CurrentUser.Email);
+                        user = auth.CurrentUser;
+
+                        LoginSetActive(user == null);
+
+                        if (user != null)
+                        {
+                            PhotonNetwork.ConnectUsingSettings();
+                        }
                     }
-                }
-                else
-                {
-                    Debug.Log("자동 로그인 없음");
-                    return;
+                    else
+                    {
+                        Debug.Log("자동 로그인 없음");
+                        return;
+                    }
                 }
             }
             else
@@ -124,7 +127,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
     private void Login()
     {
         if (isLogin) return;
-
         isLogin = true;
         loginButton.interactable = false;
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
@@ -140,18 +142,32 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
             user = task.Result.User;
 
-            if (!user.IsEmailVerified)
+            user.ReloadAsync().ContinueWithOnMainThread(reloadTask =>
             {
-                Manager.UI.PopUpUI.Show("이메일 인증이 필요합니다. 메일을 확인해주세요.", Color.yellow);
-                FirebaseManager.Auth.SignOut();
-                isLogin = false;
-                loginButton.interactable = true;
-                return;
-            }
+                if (reloadTask.IsFaulted || reloadTask.IsCanceled)
+                    return;
 
-            Debug.Log($"로그인 성공: {task.Result.User.Email}");  
+                if (!user.IsEmailVerified)
+                {
+                    user.SendEmailVerificationAsync().ContinueWithOnMainThread(sendTaskEmail =>
+                    {
+                        if (sendTaskEmail.IsCanceled || sendTaskEmail.IsFaulted)
+                            return;
 
-            PhotonNetwork.ConnectUsingSettings();
+                        Debug.Log("이메일 재전송");
+                    });
+
+                    Manager.UI.PopUpUI.Show("이메일 인증이 필요합니다. 메일을 확인해주세요.", Color.yellow);
+                    FirebaseManager.Auth.SignOut();
+                    isLogin = false;
+                    loginButton.interactable = true;
+                    return;
+                }
+
+                Debug.Log($"로그인 성공: {task.Result.User.Email}");
+
+                PhotonNetwork.ConnectUsingSettings();
+            });
         });
     }
 
@@ -190,6 +206,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.SetUID(user.UserId);
 
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
+        Manager.Data.PlayerData.Init();
         yield return new WaitForSeconds(1);
 
         gameObject.SetActive(false);

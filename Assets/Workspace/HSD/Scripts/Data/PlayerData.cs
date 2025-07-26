@@ -20,8 +20,6 @@ public class PlayerData
         Name = default;
         Win = 0;
         Lose = 0;
-
-        Init();
     }
 
     public void Init()
