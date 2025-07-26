@@ -29,11 +29,10 @@ public class LoginManager : MonoBehaviourPunCallbacks
     private bool isLogin = false;
 
     #region LifeCycle
-
     public override void OnEnable()
     {
         base.OnEnable();
-
+        Manager.UI.FadeScreen.FadeOut(1);
         Init();
         Subscribe();
         loginButton.interactable = true;
@@ -167,6 +166,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 Debug.Log($"로그인 성공: {task.Result.User.Email}");
 
                 PhotonNetwork.ConnectUsingSettings();
+                Manager.UI.FadeScreen.FadeIn(1);
             });
         });
     }
@@ -212,6 +212,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         gameObject.SetActive(false);
         lobbyPanel.SetActive(true);
         PhotonNetwork.JoinLobby();
+        Manager.UI.FadeScreen.FadeOut(1);
     }
     #endregion
 
