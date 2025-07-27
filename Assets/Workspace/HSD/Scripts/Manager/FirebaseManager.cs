@@ -58,6 +58,9 @@ public class FirebaseManager : Singleton<FirebaseManager>
     private IEnumerator LogOutRoutine()
     {
         Manager.UI.FadeScreen.FadeIn(1);
+
+        yield return new WaitForSeconds(1);
+
         if (PhotonNetwork.InLobby)
         {
             PhotonNetwork.LeaveLobby();

@@ -191,8 +191,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(roomNameField.text, option);
         roomNameField.text = "";
         maxPlayerField.text = "";
-        yield return new WaitForSeconds(.5f);
-        Manager.UI.FadeScreen.FadeOut(.5f);
+        
     }
     private IEnumerator RandomRoomJoinRoutine()
     {
@@ -201,7 +200,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.JoinRandomRoom();
 
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
     #region ButtonEvent
@@ -294,7 +293,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }        
 
         passwordField.text = "";
-        Debug.Log("规 积己 肯丰");        
+        Debug.Log("规 积己 肯丰");
+        Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)

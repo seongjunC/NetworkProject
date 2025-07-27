@@ -12872,6 +12872,9 @@ MonoBehaviour:
   roomCreateCloseButton: {fileID: 163036120}
   roomCreateButton: {fileID: 2023180171}
   fastJoinButton: {fileID: 751974556}
+  roomLeftButton: {fileID: 466348317}
+  roomRightButton: {fileID: 706423465}
+  roomMax: 8
 --- !u!4 &1377205620
 Transform:
   m_ObjectHideFlags: 0
