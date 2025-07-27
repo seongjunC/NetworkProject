@@ -167,4 +167,10 @@ public class AudioManager : Singleton<AudioManager>
         else
             audioMixer.SetFloat("BGM", volume);
     }
+    public float GetVolume(SoundType type)
+    {
+        float db;
+        audioMixer.GetFloat(type.ToString(), out db);
+        return db;
+    }
 }
