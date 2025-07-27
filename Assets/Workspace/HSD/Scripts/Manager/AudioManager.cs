@@ -70,7 +70,7 @@ public class AudioManager : Singleton<AudioManager>
         if(!sfxCached.TryGetValue(name, out var clip))
             clip = LoadClip(name, SoundType.SFX);
 
-        GameObject audioObj = Manager.Resources.Instantiate<GameObject>("SFX_Obj", position, true);
+        GameObject audioObj = Manager.Resources.Instantiate<GameObject>($"{SOUND_PATH}SFX_Obj", position, true);
 
         if (!audioSourceCached.TryGetValue(audioObj.GetInstanceID(), out var audio))
         {
@@ -92,13 +92,14 @@ public class AudioManager : Singleton<AudioManager>
 
     public void PlaySFX(AudioClip clip, Vector3 position, float volume = 1, float pitch = 1)
     {        
-        GameObject audioObj = Manager.Resources.Instantiate<GameObject>("SFX_Obj", position, true);
+        GameObject audioObj = Manager.Resources.Instantiate<GameObject>($"{SOUND_PATH}SFX_Obj", position, true);
 
         if (!audioSourceCached.TryGetValue(audioObj.GetInstanceID(), out var audio))
         {
             audio = audioObj.GetComponent<AudioSource>();
 
             if (audio != null)
+
                 audioSourceCached[audioObj.GetInstanceID()] = audio;
         }
 
@@ -111,6 +112,17 @@ public class AudioManager : Singleton<AudioManager>
         audio.Play();
         Manager.Resources.Destroy(audioObj, clip.length / pitch);
     }
+
+    public void PlaySFX(AudioClip clip, float volume = 1, float pitch = 1)
+    {
+        sfxSource.clip = clip;
+        sfxSource.pitch = pitch;
+        sfxSource.volume = volume * 2;
+        sfxSource.spatialBlend = 1;
+        sfxSource.outputAudioMixerGroup = sfxGroup;
+
+        sfxSource.Play();
+    }    
 
     public void PlayBGM(string name, float volume = 1, float pitch = 1)
     {

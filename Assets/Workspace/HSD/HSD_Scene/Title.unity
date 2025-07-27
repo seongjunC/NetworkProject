@@ -122,6 +122,52 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &2874219
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2874220}
+  - component: {fileID: 2874221}
+  m_Layer: 0
+  m_Name: InputFieldSoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2874220
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2874219}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 913.6447, y: 444.9297, z: 0.0327145}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2874221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2874219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d3305524dd370140bd148c0b672a60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputSound: {fileID: 8300000, guid: 3a6fb2b369c670d40891d3520a906bf0, type: 3}
+  deleteSound: {fileID: 8300000, guid: 3a6fb2b369c670d40891d3520a906bf0, type: 3}
 --- !u!1 &11571522
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,6 +450,7 @@ GameObject:
   - component: {fileID: 29813283}
   - component: {fileID: 29813282}
   - component: {fileID: 29813285}
+  - component: {fileID: 29813286}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -533,6 +580,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &29813286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29813280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &31959173
 GameObject:
   m_ObjectHideFlags: 0
@@ -2392,6 +2453,7 @@ GameObject:
   - component: {fileID: 253161969}
   - component: {fileID: 253161968}
   - component: {fileID: 253161971}
+  - component: {fileID: 253161972}
   m_Layer: 5
   m_Name: MapSelectButton
   m_TagString: Untagged
@@ -2522,6 +2584,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &253161972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253161966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &254444595
 GameObject:
   m_ObjectHideFlags: 0
@@ -4026,6 +4102,7 @@ GameObject:
   - component: {fileID: 334888755}
   - component: {fileID: 334888754}
   - component: {fileID: 334888757}
+  - component: {fileID: 334888758}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -4156,6 +4233,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &334888758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334888752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &338581431
 GameObject:
   m_ObjectHideFlags: 0
@@ -4831,6 +4922,7 @@ GameObject:
   - component: {fileID: 466348319}
   - component: {fileID: 466348318}
   - component: {fileID: 466348317}
+  - component: {fileID: 466348320}
   m_Layer: 5
   m_Name: PreviousPageButton
   m_TagString: Untagged
@@ -4940,6 +5032,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 466348315}
   m_CullTransparentMesh: 1
+--- !u!114 &466348320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466348315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &468691236
 GameObject:
   m_ObjectHideFlags: 0
@@ -5281,6 +5387,7 @@ GameObject:
   - component: {fileID: 504369271}
   - component: {fileID: 504369270}
   - component: {fileID: 504369273}
+  - component: {fileID: 504369274}
   m_Layer: 5
   m_Name: SignUpButton
   m_TagString: Untagged
@@ -5411,6 +5518,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &504369274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504369268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &508600998
 GameObject:
   m_ObjectHideFlags: 0
@@ -5673,6 +5794,7 @@ GameObject:
   - component: {fileID: 513053681}
   - component: {fileID: 513053680}
   - component: {fileID: 513053683}
+  - component: {fileID: 513053684}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -5803,6 +5925,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &513053684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513053678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &514901865
 GameObject:
   m_ObjectHideFlags: 0
@@ -6015,6 +6151,7 @@ GameObject:
   - component: {fileID: 590341446}
   - component: {fileID: 590341445}
   - component: {fileID: 590341448}
+  - component: {fileID: 590341449}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -6145,6 +6282,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &590341449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590341443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &607988202
 GameObject:
   m_ObjectHideFlags: 0
@@ -6853,6 +7004,7 @@ GameObject:
   - component: {fileID: 706423467}
   - component: {fileID: 706423466}
   - component: {fileID: 706423465}
+  - component: {fileID: 706423468}
   m_Layer: 5
   m_Name: NextPageButton
   m_TagString: Untagged
@@ -6962,6 +7114,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706423463}
   m_CullTransparentMesh: 1
+--- !u!114 &706423468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706423463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &733320105
 GameObject:
   m_ObjectHideFlags: 0
@@ -6975,6 +7141,7 @@ GameObject:
   - component: {fileID: 733320108}
   - component: {fileID: 733320107}
   - component: {fileID: 733320110}
+  - component: {fileID: 733320111}
   m_Layer: 5
   m_Name: GameStartButton
   m_TagString: Untagged
@@ -7105,6 +7272,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &733320111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733320105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &742476366
 GameObject:
   m_ObjectHideFlags: 0
@@ -7202,6 +7383,7 @@ GameObject:
   - component: {fileID: 751974557}
   - component: {fileID: 751974556}
   - component: {fileID: 751974559}
+  - component: {fileID: 751974560}
   m_Layer: 5
   m_Name: QuickJoinButton
   m_TagString: Untagged
@@ -7332,6 +7514,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &751974560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751974554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &754913872
 GameObject:
   m_ObjectHideFlags: 0
@@ -7345,6 +7541,7 @@ GameObject:
   - component: {fileID: 754913875}
   - component: {fileID: 754913874}
   - component: {fileID: 754913877}
+  - component: {fileID: 754913878}
   m_Layer: 5
   m_Name: SignUpOkButton
   m_TagString: Untagged
@@ -7475,6 +7672,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &754913878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754913872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &761284061
 GameObject:
   m_ObjectHideFlags: 0
@@ -9265,6 +9476,7 @@ GameObject:
   - component: {fileID: 946512429}
   - component: {fileID: 946512428}
   - component: {fileID: 946512431}
+  - component: {fileID: 946512432}
   m_Layer: 5
   m_Name: LoginButton
   m_TagString: Untagged
@@ -9395,6 +9607,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &946512432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946512426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &975803560
 GameObject:
   m_ObjectHideFlags: 0
@@ -10168,6 +10394,7 @@ GameObject:
   - component: {fileID: 1108910643}
   - component: {fileID: 1108910642}
   - component: {fileID: 1108910645}
+  - component: {fileID: 1108910646}
   m_Layer: 5
   m_Name: ReadyButton
   m_TagString: Untagged
@@ -10298,6 +10525,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1108910646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108910640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1109534986
 GameObject:
   m_ObjectHideFlags: 0
@@ -10386,6 +10627,7 @@ GameObject:
   - component: {fileID: 1129176672}
   - component: {fileID: 1129176671}
   - component: {fileID: 1129176674}
+  - component: {fileID: 1129176675}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -10516,6 +10758,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1129176675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129176669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1144994910
 GameObject:
   m_ObjectHideFlags: 0
@@ -12873,6 +13129,7 @@ GameObject:
   - component: {fileID: 1359662872}
   - component: {fileID: 1359662871}
   - component: {fileID: 1359662875}
+  - component: {fileID: 1359662876}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -13003,6 +13260,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1359662876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359662870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1360886336
 GameObject:
   m_ObjectHideFlags: 0
@@ -13826,6 +14097,7 @@ GameObject:
   - component: {fileID: 1427803132}
   - component: {fileID: 1427803131}
   - component: {fileID: 1427803134}
+  - component: {fileID: 1427803135}
   m_Layer: 5
   m_Name: CraetRoomButton
   m_TagString: Untagged
@@ -13956,6 +14228,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1427803135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427803129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1429291235
 GameObject:
   m_ObjectHideFlags: 0
@@ -14661,6 +14947,7 @@ GameObject:
   - component: {fileID: 1475644348}
   - component: {fileID: 1475644347}
   - component: {fileID: 1475644350}
+  - component: {fileID: 1475644351}
   m_Layer: 5
   m_Name: TeamSwitchButton
   m_TagString: Untagged
@@ -14791,6 +15078,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1475644351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475644345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1513314736
 GameObject:
   m_ObjectHideFlags: 0
@@ -15122,6 +15423,7 @@ GameObject:
   - component: {fileID: 1521155778}
   - component: {fileID: 1521155780}
   - component: {fileID: 1521155781}
+  - component: {fileID: 1521155782}
   m_Layer: 5
   m_Name: SettingButton
   m_TagString: Untagged
@@ -15252,6 +15554,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1521155782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521155776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1522605637
 GameObject:
   m_ObjectHideFlags: 0
@@ -15760,6 +16076,7 @@ GameObject:
   - component: {fileID: 1583460838}
   - component: {fileID: 1583460837}
   - component: {fileID: 1583460840}
+  - component: {fileID: 1583460841}
   m_Layer: 5
   m_Name: OutButton
   m_TagString: Untagged
@@ -15890,6 +16207,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1583460841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583460835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1601142722
 GameObject:
   m_ObjectHideFlags: 0
@@ -20373,6 +20704,7 @@ GameObject:
   - component: {fileID: 1957983576}
   - component: {fileID: 1957983575}
   - component: {fileID: 1957983578}
+  - component: {fileID: 1957983579}
   m_Layer: 5
   m_Name: LogOutButton
   m_TagString: Untagged
@@ -20503,6 +20835,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1957983579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957983573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &1978165175
 GameObject:
   m_ObjectHideFlags: 0
@@ -20802,6 +21148,7 @@ GameObject:
   - component: {fileID: 2019246839}
   - component: {fileID: 2019246838}
   - component: {fileID: 2019246841}
+  - component: {fileID: 2019246842}
   m_Layer: 5
   m_Name: ApplyButton
   m_TagString: Untagged
@@ -20932,6 +21279,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2019246842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2019246836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1 &2019317633
 GameObject:
   m_ObjectHideFlags: 0
@@ -22394,6 +22755,7 @@ GameObject:
   - component: {fileID: 2129785242}
   - component: {fileID: 2129785244}
   - component: {fileID: 2129785245}
+  - component: {fileID: 2129785246}
   m_Layer: 5
   m_Name: TurnType
   m_TagString: Untagged
@@ -22524,6 +22886,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2129785246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129785240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e27ceec5fdf9df4b8826300b660f665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
+  buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -22531,6 +22907,7 @@ SceneRoots:
   - {fileID: 1225018571}
   - {fileID: 1328322433}
   - {fileID: 271927144}
+  - {fileID: 2874220}
   - {fileID: 514901867}
   - {fileID: 1377205620}
   - {fileID: 122676291}
