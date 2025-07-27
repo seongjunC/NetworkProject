@@ -60,15 +60,27 @@ public class RoomSlot : MonoBehaviour
     }
 
     public void JoinRoom()
-    {
-        Debug.Log("1");
+    {        
         if ((string)room.CustomProperties["Password"] != null)
         {
             OnPasswordRoomSelected?.Invoke(room);
             return;
         }
-        Debug.Log("2");
+        button.onClick.RemoveListener(JoinRoom);
+
+        StartCoroutine(JoinRoomRoutine());
+    }
+
+    private IEnumerator JoinRoomRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+
+        yield return new WaitForSeconds(.5f);
+
         PhotonNetwork.JoinRoom(roomName);
-        button.onClick.RemoveListener(JoinRoom);        
+
+        yield return new WaitForSeconds(.5f);
+
+        Manager.UI.FadeScreen.FadeOut(.5f);
     }
 }

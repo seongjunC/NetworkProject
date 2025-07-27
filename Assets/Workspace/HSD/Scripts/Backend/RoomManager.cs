@@ -1,6 +1,7 @@
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.EditorTools;
@@ -97,16 +98,26 @@ public class RoomManager : MonoBehaviour
 
     private void LeaveRoom()
     {
+        StartCoroutine(LeaveRoomRoutine());
+    }
+    private IEnumerator LeaveRoomRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+
+        yield return new WaitForSeconds(.5f);
+
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             Destroy(playerSlotDic[player.ActorNumber].gameObject);
         }
 
         playerSlotDic.Clear();
-
         PhotonNetwork.LeaveRoom();
+
+        yield return new WaitForSeconds(.5f);
+
+        Manager.UI.FadeScreen.FadeOut(.5f);
     }
-       
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
     {        
