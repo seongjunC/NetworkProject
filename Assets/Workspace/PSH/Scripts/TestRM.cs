@@ -26,7 +26,7 @@ public class TestRM : MonoBehaviourPunCallbacks
     {
         var props = new Hashtable
         {
-            {"Map", 2}
+            {"Map", 0}
         };
         var options = new RoomOptions
         {
