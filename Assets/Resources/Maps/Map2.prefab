@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3173892711612077993}
   - component: {fileID: 3904521764565598673}
   - component: {fileID: 7618563501162330658}
-  - component: {fileID: 8809903667098938981}
   m_Layer: 0
   m_Name: Map2
   m_TagString: Untagged
@@ -29,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 8841352257447635857}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.42, y: -1.73, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -351,16 +350,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d29b35d3fb7d34e81738b4f10b7687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8809903667098938981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8841352257447635857}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de6db06e12ed60640b1f70f020e22ef9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapSpriteRenderer: {fileID: 0}
