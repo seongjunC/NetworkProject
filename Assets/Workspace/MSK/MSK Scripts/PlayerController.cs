@@ -81,6 +81,9 @@ public class PlayerController : MonoBehaviourPun
     public void OnHit(int damage)
     {
         // TODO : 플레이어 피격 처리 시 방 설정에 따른 피격여부
+        //  if ()   return;
+        //  방법 1 : 턴 플레이어를 검사
+        //  방법 2 탄 발사 시 탄이 발사한 플레이어 정보를 가져오기
         _hp -= damage;
         Debug.Log("피격");
         if (_hp <= 0)
@@ -124,7 +127,6 @@ public class PlayerController : MonoBehaviourPun
         Destroy(gameObject);
         OnPlayerAttacked -= OnPlayerAttacked;
         _isDead = true;
-        // TODO : 턴 메니저에게 플레이어 죽음 사실을 이벤트 전달하기
     }
 
     public void EnableControl(bool enable)

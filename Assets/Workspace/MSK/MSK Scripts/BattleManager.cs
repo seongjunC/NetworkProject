@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class TestBattleManager : MonoBehaviourPun
@@ -28,7 +27,7 @@ public class TestBattleManager : MonoBehaviourPun
     private void PlayerAttacked()
     {
         _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
-        if (_playerController._hp <= 0) 
+        if (_playerController._hp <= 0)
             _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.All);
     }
 
@@ -57,8 +56,28 @@ public class TestBattleManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    private void RPC_SpawnTank(Vector3 spawnPos)
+    private void RPC_SpawnTank(Vector3 spawnPos, int tankTypeIndex)
     {
-        PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
+        TankType tankType = (TankType)tankTypeIndex;
+        if (_tankPrefabPaths.TryGetValue(tankType, out string prefabPath))
+        {
+            PhotonNetwork.Instantiate(prefabPath, spawnPos, Quaternion.identity);
+        }
     }
+
+    private readonly Dictionary<TankType, string> _tankPrefabPaths = new()
+    {
+        { TankType.Tank1, "Prefabs/Tank1" },
+        { TankType.Tank2, "Prefabs/Tank2" },
+        { TankType.Tank3, "Prefabs/Tank3" },
+        { TankType.Tank4, "Prefabs/Tank4" },
+    };
+}
+
+public enum TankType
+{
+    Tank1,
+    Tank2,
+    Tank3,
+    Tank4
 }
