@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class TurnController : MonoBehaviourPunCallbacks
 {
     private Queue<PlayerInfo> turnQueue = new();
     private List<PlayerInfo> nextCycle = new();
+    private int blueRemain;
+    private int redRemain;
     PlayerController[] tanks;
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
@@ -57,6 +60,8 @@ public class TurnController : MonoBehaviourPunCallbacks
             {
                 Player nowPlayer = PhotonNetwork.PlayerList[randNumList[i]];
                 turnQueue.Enqueue(new PlayerInfo(nowPlayer));
+                if (CustomProperty.GetTeam(nowPlayer) == Game.Team.Red) redRemain++;
+                else blueRemain++;
             }
         }
         else
@@ -72,21 +77,18 @@ public class TurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
-        // TODO : 로직에서 turnQueue가 1, nextCycle이 0일때 문제 발생 -> 수정 예정 
-        if (turnQueue.Count == 0)
+        if (blueRemain <= 0 || redRemain <= 0)
         {
-            if (nextCycle.Count <= 1)
-            {
-                Debug.Log("게임 종료");
-                photonView.RPC("RPC_GameEnded", RpcTarget.All);
-                return;
-            }
-            else
-            {
-                photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
-                turnQueue = new Queue<PlayerInfo>(nextCycle);
-                nextCycle.Clear();
-            }
+            string team = blueRemain == 0 ? "블루" : "레드";
+            Debug.Log($"게임 종료!\n {team}팀의 승리");
+            photonView.RPC("RPC_GameEnded", RpcTarget.All);
+            return;
+        }
+        if (turnQueue.Count <= 0)
+        {
+            photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
+            turnQueue = new Queue<PlayerInfo>(nextCycle);
+            nextCycle.Clear();
         }
 
         currentPlayer = turnQueue.Dequeue();
@@ -100,6 +102,7 @@ public class TurnController : MonoBehaviourPunCallbacks
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
 
     }
+
 
     [PunRPC]
     private void RPC_CycleEnd()
