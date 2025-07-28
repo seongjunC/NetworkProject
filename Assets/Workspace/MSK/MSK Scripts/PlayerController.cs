@@ -10,14 +10,15 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private float _speed = 2f; // 속도
     [SerializeField] private Transform player;
     [SerializeField] private float _maxMove = 5f;  // 최대 이동거리
-    [SerializeField] private int _hp = 100;         // hp
-    
+    [SerializeField] private float _maxhp = 200;         // hp
     [SerializeField] private TextMeshProUGUI _textMeshPro;
-    private float _movable;
+
     private bool _isDead = false;                   // 사망여부
     // 안계셔서 일단 임시로 추가했습니다. 
     // 추후 myInfo에 플레이어정보를 넣어야합니다.
     public PlayerInfo myInfo;
+    public float _hp;
+    public float _movable;
 
     public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
@@ -27,19 +28,25 @@ public class PlayerController : MonoBehaviourPun
 
     private void Awake()
     {
-        //이동 가능한 거리를 이동 최대거리로 설정
-        _movable = _maxMove;
-
         if (photonView.IsMine) // 내 캐릭터일 때만 등록
         {
+            //이동 가능한 거리를 이동 최대거리로 설정
+            _movable = _maxMove;
+            _hp = _maxhp;
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
+            MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
+
             if (battleManager != null)
             {
                 battleManager.RegisterPlayer(this);
+                uiManager.RegisterPlayer(this);
             }
         }
-        //  닉네임 초기화
+        //  닉네임 초기화,
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
+        _textMeshPro.text = photonView.IsMine 
+            ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>" 
+            : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
     }
 
     private void FixedUpdate()
@@ -73,8 +80,13 @@ public class PlayerController : MonoBehaviourPun
     }
 
     //  피격 처리
+    [PunRPC]
     public void OnHit(int damage)
     {
+        // TODO : 플레이어 피격 처리 시 방 설정에 따른 피격여부
+        //  if ()   return;
+        //  방법 1 : 턴 플레이어를 검사
+        //  방법 2 탄 발사 시 탄이 발사한 플레이어 정보를 가져오기
         _hp -= damage;
         Debug.Log("피격");
         if (_hp <= 0)
@@ -117,9 +129,7 @@ public class PlayerController : MonoBehaviourPun
     {
         Destroy(gameObject);
         OnPlayerAttacked -= OnPlayerAttacked;
-        photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         _isDead = true;
-        // TODO : 턴 메니저에게 플레이어 죽음 사실을 이벤트 전달하기
     }
 
     public void EnableControl(bool enable)

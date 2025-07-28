@@ -12,7 +12,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
     private Room room;
+    public PhotonView PhotonView { get; private set; }
 
+    private void Start()
+    {
+        PhotonView = GetComponent<PhotonView>();
+    }
     public void GameStart()
     {
         turnQueue.Clear();
@@ -66,7 +71,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             if (nextCycle.Count <= 1)
             {
-                photonView.RPC("RPC_GameEnded", RpcTarget.All, currentPlayer.ActorNumber);
+                //photonView.RPC("RPC_GameEnded", RpcTarget.All, currentPlayer.ActorNumber);
                 return;
             }
             else
@@ -76,13 +81,21 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             }
         }
         currentPlayer = turnQueue.Dequeue();
+
         if (currentPlayer.isDead)
         {
             StartNextTurn();
             return;
         }
+
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
+    }
+
+    public void TurnFinished() 
+    {
+        // if (photonView.IsMine)
+            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     [PunRPC]
@@ -98,11 +111,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             nextCycle.Add(currentPlayer);
             StartNextTurn();
+            Debug.Log("조건문");
         }
     }
 
     [PunRPC]
-    private void RPC_GameEnded()
+    private void RPC_GameEnded(int someInt)
     {
         Debug.Log("게임 종료!");
     }
