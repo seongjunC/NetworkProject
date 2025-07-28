@@ -1441,7 +1441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de6db06e12ed60640b1f70f020e22ef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSpriteRenderer: {fileID: 1275911137}
+  mapPrefabs: []
 --- !u!4 &1602292649
 Transform:
   m_ObjectHideFlags: 0
@@ -1468,7 +1468,7 @@ GameObject:
   - component: {fileID: 1602551994}
   - component: {fileID: 1602551997}
   - component: {fileID: 1602551996}
-  - component: {fileID: 1602551995}
+  - component: {fileID: 1602551998}
   m_Layer: 5
   m_Name: MiniMapDisplay
   m_TagString: Untagged
@@ -1495,22 +1495,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1602551995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1602551993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af9c63863d3f4dd428024a27ef3870fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  terrain: {fileID: 0}
-  miniMapRaw: {fileID: 1602551996}
-  playerIcon: {fileID: 859372852}
-  player: {fileID: 1868632359}
 --- !u!114 &1602551996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1546,6 +1530,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1602551993}
   m_CullTransparentMesh: 1
+--- !u!114 &1602551998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1602551993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a29db4f44b3ee641bdfa66923fdb2f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrain: {fileID: 0}
+  miniMapRaw: {fileID: 1602551996}
+  playerIcon: {fileID: 859372852}
+  player: {fileID: 1868632359}
 --- !u!1 &1715897061
 GameObject:
   m_ObjectHideFlags: 0
