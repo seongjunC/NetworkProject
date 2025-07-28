@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class TestBattleManager : MonoBehaviourPun
@@ -21,7 +22,8 @@ public class TestBattleManager : MonoBehaviourPun
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-        _playerController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        _turnController.turnFinished();
+
     }
     private void PlayerAttacked()
     {

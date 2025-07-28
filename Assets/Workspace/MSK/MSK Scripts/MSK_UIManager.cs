@@ -11,7 +11,7 @@ public class MSK_UIManager : MonoBehaviourPun
     [SerializeField] private Slider _power_Slider;
     [SerializeField] private Slider _move_Slider;
 
-    [SerializeField] Button _turnEndButton;
+
 
     private PlayerController _player;
     private Fire _fire;
@@ -27,18 +27,9 @@ public class MSK_UIManager : MonoBehaviourPun
         _hp_Slider.maxValue = _player._hp;
         _move_Slider.maxValue = _player._movable;
     }
-    private void TestTurnEnd()
-    {
-        if (_player != null)
-            _player.EndPlayerTurn();
-        _player.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
-    }
+
 
     #region Unity MonoBehaviour
-    private void Start()
-    {
-        _turnEndButton.onClick.AddListener(TestTurnEnd);
-    }
     private void Update()
     {
         if (_player == null) return;

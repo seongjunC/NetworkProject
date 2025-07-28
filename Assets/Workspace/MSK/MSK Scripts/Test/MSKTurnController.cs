@@ -12,8 +12,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
     private Room room;
+    public PhotonView PhotonView { get; private set; }
 
-
+    private void Start()
+    {
+        PhotonView = GetComponent<PhotonView>();
+    }
     public void GameStart()
     {
         turnQueue.Clear();
@@ -86,6 +90,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
+    }
+
+    public void turnFinished() 
+    {
+        // if (photonView.IsMine)
+            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     [PunRPC]
