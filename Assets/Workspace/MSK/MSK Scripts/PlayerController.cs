@@ -44,7 +44,9 @@ public class PlayerController : MonoBehaviourPun
         }
         //  닉네임 초기화,
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
-        _textMeshPro.text = photonView.IsMine ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>" : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
+        _textMeshPro.text = photonView.IsMine 
+            ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>" 
+            : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
     }
 
     private void FixedUpdate()

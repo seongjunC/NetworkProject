@@ -58,13 +58,19 @@ public class TestBattleManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    private void RPC_SpawnTank(Vector3 spawnPos, int tankTypeIndex)
+    //    private void RPC_SpawnTank(Vector3 spawnPos, int tankTypeIndex)
+    private void RPC_SpawnTank(Vector3 spawnPos)
     {
+
+        PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
+        /*
+         * TODO : 탱크 로비설정에 따라서 생성하기
         TankType tankType = (TankType)tankTypeIndex;
         if (_tankPrefabPaths.TryGetValue(tankType, out string prefabPath))
         {
             PhotonNetwork.Instantiate(prefabPath, spawnPos, Quaternion.identity);
         }
+        */
     }
 
     private readonly Dictionary<TankType, string> _tankPrefabPaths = new()
