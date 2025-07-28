@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private Transform player;
     [SerializeField] private float _maxMove = 5f;  // 최대 이동거리
     [SerializeField] private int _hp = 100;         // hp
-    
+
     [SerializeField] private TextMeshProUGUI _textMeshPro;
     private float _movable;
     private bool _isDead = false;                   // 사망여부
@@ -37,9 +37,15 @@ public class PlayerController : MonoBehaviourPun
             {
                 battleManager.RegisterPlayer(this);
             }
+            PlayerSetUp();
         }
         //  닉네임 초기화
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
+    }
+
+    private void PlayerSetUp()
+    {
+        myInfo = new PlayerInfo(photonView.Owner);
     }
 
     private void FixedUpdate()

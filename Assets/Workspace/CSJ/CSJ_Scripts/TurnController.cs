@@ -118,6 +118,7 @@ public class TurnController : MonoBehaviourPunCallbacks
         }
     }
 
+    // TODO : 추후 UI, FireBase와 연결
     [PunRPC]
     private void RPC_GameEnded()
     {
@@ -141,13 +142,11 @@ public class TurnController : MonoBehaviourPunCallbacks
         {
             Debug.Log("턴 시작");
             EnableCurrentPlayer();
-
         }
     }
 
     void EnableCurrentPlayer()
     {
-
         foreach (PlayerController player in tanks)
         {
             PhotonView view = player.GetComponent<PhotonView>();
