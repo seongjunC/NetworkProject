@@ -27,6 +27,7 @@ public class CouponController : MonoBehaviour
     private IEnumerator CheckRoutine()
     {
         bool isUse = false;
+        bool isSame = false;
 
         checkButton.interactable = false;
 
@@ -34,6 +35,7 @@ public class CouponController : MonoBehaviour
         {
             if (coupon.CouponKey == couponKey.text)
             {
+                isSame = true;
 
                 Manager.Database.userRef.Child(couponKey.text).GetValueAsync().ContinueWithOnMainThread(task =>
                 {
@@ -66,6 +68,12 @@ public class CouponController : MonoBehaviour
 
                 break;
             }
+        }
+
+        if (!isSame)
+        {
+            checkButton.interactable = true;
+            yield break;
         }
 
         yield return new WaitForSeconds(.5f);

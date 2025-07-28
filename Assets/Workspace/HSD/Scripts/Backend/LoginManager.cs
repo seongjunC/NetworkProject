@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -186,12 +187,11 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         Manager.Database.Init();
 
-        var task = Manager.Database.userRef.GetValueAsync();
+        var task = Manager.Database.root.Child("UserData").Child(user.UserId).GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
-
         bool connected = false;
 
-        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
+        Manager.Database.root.Child("UserData").Child(user.UserId).Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
