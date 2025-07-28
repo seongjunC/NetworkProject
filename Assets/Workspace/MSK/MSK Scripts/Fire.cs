@@ -15,6 +15,7 @@ public class Fire : MonoBehaviourPun
     [SerializeField] private float chargingSpeed = 10f;    // 차지속도
 
     [SerializeField] public float maxPower = 20f;         // 폭탄 발사 속도
+
     public float powerCharge = 0f;         // 차지
     private bool isCharging = false;        // 차지 중인지 여부
 

@@ -10,7 +10,7 @@ public class TestBattleManager : MonoBehaviourPun
     [SerializeField] private MSKTurnController _turnController;
     private PlayerController _playerController;
     private TestNetworkManager _networkManager;
-
+    
     private void Start()
     {
         _turnEndButton.onClick.AddListener(TestTurnEnd);
@@ -52,6 +52,8 @@ public class TestBattleManager : MonoBehaviourPun
             Vector3 spawnPos = _spawnPoint[i].position;
             photonView.RPC("RPC_SpawnTank", players[i], spawnPos);
             // TODO : 로비 설정에 따른 다른 플레이어 탱크 스폰
+            // 방법 1 스폰 시 탱크의 정보를 가져와서 스폰
+            // 방법 2 프리팹 자식으로 4개의 탱크를 가지고, 플레이어가 선택한 탱크만 활성화
         }
     }
 
