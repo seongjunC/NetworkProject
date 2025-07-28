@@ -59,10 +59,11 @@ public class GameSetting : MonoBehaviour
     {
         if (value <= 0.0001f)
             return -80f;
-        return Mathf.Log10(value) * 20f;
+        return Mathf.Log10(value) * 20f;    // 슬라이더 0 ~ 1기준
     }
     private float DecibelToSliderValue(float db)
     {
+
         return Mathf.Pow(10f, db / 20f);
     }
 }
