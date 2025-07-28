@@ -17,19 +17,16 @@ public class TestBattleManager : MonoBehaviourPun
         PlayerSpawn();
         _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
     }
-
-    private void PlayerAttacked()
-    {
-        _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
-    }
-
     private void TestTurnEnd()
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
+        _playerController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+    private void PlayerAttacked()
+    {
         _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
-
 
     public void RegisterPlayer(PlayerController playerController)
     {

@@ -1,16 +1,21 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MSK_UIManager : MonoBehaviour
+public class MSK_UIManager : MonoBehaviourPun
 {
+    [Header("Bars")]
     [SerializeField] private Slider _hp_Slider;
     [SerializeField] private Slider _power_Slider;
     [SerializeField] private Slider _move_Slider;
 
+    [SerializeField] Button _turnEndButton;
+
     private PlayerController _player;
     private Fire _fire;
+
     public void RegisterPlayer(PlayerController playerController)
     {
         _player = playerController;
@@ -22,7 +27,18 @@ public class MSK_UIManager : MonoBehaviour
         _hp_Slider.maxValue = _player._hp;
         _move_Slider.maxValue = _player._movable;
     }
+    private void TestTurnEnd()
+    {
+        if (_player != null)
+            _player.EndPlayerTurn();
+        _player.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+    }
 
+    #region Unity MonoBehaviour
+    private void Start()
+    {
+        _turnEndButton.onClick.AddListener(TestTurnEnd);
+    }
     private void Update()
     {
         if (_player == null) return;
@@ -33,4 +49,5 @@ public class MSK_UIManager : MonoBehaviour
         if (_fire != null)
             _power_Slider.value = _fire.powerCharge;
     }
+    #endregion
 }
