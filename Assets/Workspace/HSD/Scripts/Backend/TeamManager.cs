@@ -7,7 +7,7 @@ public class TeamManager : MonoBehaviour
 {
     private int team;
 
-    public void ChangeTeam()
+    public void ChangeTeam(Team _team)
     {
         team = (int)PhotonNetwork.LocalPlayer.GetTeam();
 
@@ -16,12 +16,7 @@ public class TeamManager : MonoBehaviour
 
         GetPlayerTeamCount(out red, out blue);
 
-        if (team + 1 >= (int)Team.Length)
-            team = 0;
-        else
-            team++;
-
-        Team tempTeam = (Team)team;
+        Team tempTeam = _team;
 
         if (tempTeam == Team.Red)
         {
@@ -47,6 +42,7 @@ public class TeamManager : MonoBehaviour
     {
         int red = 0;
         int blue = 0;
+
         Team team = Team.Red;
 
         GetPlayerTeamCount(out red, out blue);
@@ -54,7 +50,7 @@ public class TeamManager : MonoBehaviour
         if (red >= PhotonNetwork.CurrentRoom.MaxPlayers / 2)
             team = Team.Blue;
         else if (blue >= PhotonNetwork.CurrentRoom.MaxPlayers / 2)
-            team = Team.Red;
+            team = Team.Red;        
 
         this.team = (int)team;
 
@@ -74,5 +70,18 @@ public class TeamManager : MonoBehaviour
                 else if ((Team)value == Team.Blue) blue++;
             }
         }
+    }
+
+    public int GetWaitPlayerCount()
+    {
+        int count = 0;
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.CustomProperties.TryGetValue("Team", out object value))
+            {
+                if ((Team)((int)value) == Team.Wait) count++;
+            }
+        }
+        return count;
     }
 }

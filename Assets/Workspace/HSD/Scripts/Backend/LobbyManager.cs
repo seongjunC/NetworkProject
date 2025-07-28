@@ -286,6 +286,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetMap(0);
         PhotonNetwork.CurrentRoom.SetTurnRandom(true);
         PhotonNetwork.CurrentRoom.SetFull(false);
+        PhotonNetwork.CurrentRoom.SetDamageType(false);
 
         if (isPassword.isOn)
         {
@@ -340,7 +341,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         room.SetActive(false);
         roomManager.OnLeftRoom();
         isRoomCreate = false;
-        Debug.Log("¹æ ³ª°¨");              
     }
 
     public override void OnConnectedToMaster()
