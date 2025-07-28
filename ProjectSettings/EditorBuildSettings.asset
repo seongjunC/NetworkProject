@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Workspace/MSK/Test Scene/MSK Test Scene.unity
     guid: 5d456d8f4f88dab48bdf97f182ead989
+  - enabled: 1
+    path: Assets/Workspace/PSH/Scene/Test Battle.unity
+    guid: d2e3ab0d03cca464b99b479533782876
   m_configObjects: {}
