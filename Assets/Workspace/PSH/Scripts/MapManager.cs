@@ -1,42 +1,47 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class MapManager : MonoBehaviour
+public class MapManager : MonoBehaviourPunCallbacks
 {
-    public SpriteRenderer mapSpriteRenderer;
+    [SerializeField] private SpriteRenderer mapSpriteRenderer;
+    // 미리 정의해 둔 경로 배열
+    private readonly string[] mapPaths = {
+        "Maps/Map1",
+        "Maps/Map2",
+        "Maps/Map3"
+    };
 
     private void Start()
     {
-        if (mapSpriteRenderer == null)
+        mapSpriteRenderer = GetComponent<SpriteRenderer>();
+        LoadMapByIndex();
+    }
+
+    private void LoadMapByIndex()
+    {
+        if (!PhotonNetwork.InRoom) return;
+
+        var props = PhotonNetwork.CurrentRoom.CustomProperties;
+        if (props.TryGetValue("Map", out object idxObj))
         {
-            Debug.LogError("mapSpriteRenderer 할당안됨");
-            return;
-        }
-
-        var roomProps = PhotonNetwork.CurrentRoom.CustomProperties;
-
-        if (roomProps.ContainsKey("map"))
-        {
-            string mapSpritePath = (string)roomProps["map"];
-            Debug.Log($"로드할 맵 경로 {mapSpritePath}");
-
-            Sprite mapSprite = Resources.Load<Sprite>(mapSpritePath);
-
-            if (mapSprite != null)
+            int idx = Convert.ToInt32(idxObj);
+            if (idx >= 0 && idx < mapPaths.Length)
             {
-                mapSpriteRenderer.sprite = mapSprite;
-                Debug.Log("맵 스프라이트 할당 성공");
+                Sprite spr = Resources.Load<Sprite>(mapPaths[idx]);
+                if (spr != null)
+                    mapSpriteRenderer.sprite = spr;
+                else
+                    Debug.LogError($"스프라이트 못 찾음: {mapPaths[idx]}");
             }
             else
             {
-                Debug.LogError($"해당 경로에서 스프라이트를 못찾음 {mapSprite}");
+                Debug.LogError($"유효하지 않은 Map 인덱스: {idx}");
             }
         }
         else
         {
-            Debug.LogError("룸 프로퍼티에서 맵 정보를 못찾음");
+            Debug.LogError("룸 프로퍼티에 Map 키가 없음");
         }
     }
 }
