@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class InputFieldTabManager : MonoBehaviour
 {
-    [SerializeField] TMP_InputField[] fields;    
+    [SerializeField] TMP_InputField[] fields;
+    public AudioClip typing;
     private int idx;
 
     private void Update()
@@ -23,6 +24,7 @@ public class InputFieldTabManager : MonoBehaviour
                 idx = 0;
 
             fields[idx].ActivateInputField();
+            Manager.Audio.PlaySFX(typing, Vector3.zero, 1);
         }
     }
 

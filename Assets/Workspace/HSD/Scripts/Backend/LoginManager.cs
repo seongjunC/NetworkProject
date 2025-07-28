@@ -1,3 +1,4 @@
+using Database;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
@@ -23,6 +24,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject signupPanel;
     [SerializeField] GameObject loginPanel;
     [SerializeField] GameObject lobbyPanel;
+    [SerializeField] GameObject loginMessage;
 
     [SerializeField] bool isTest;
     private FirebaseUser user;
@@ -33,6 +35,10 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
         Manager.UI.FadeScreen.FadeOut(1);
+        Manager.Game.State = Game.State.Login;
+
+        loginMessage.SetActive(false);
+        loginPanel.SetActive(true);
         Init();
         Subscribe();
         loginButton.interactable = true;
@@ -128,6 +134,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         if (isLogin) return;
         isLogin = true;
         loginButton.interactable = false;
+        loginMessage.SetActive(true);
+        loginPanel.SetActive(false);
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted)
@@ -136,6 +144,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 Manager.UI.PopUpUI.Show("Login Failed");
                 isLogin = false;
                 loginButton.interactable = true;
+                loginMessage.SetActive(false);
+                loginPanel.SetActive(true);
                 return;
             }
 
@@ -155,6 +165,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
                         Debug.Log("이메일 재전송");
                     });
+                    loginMessage.SetActive(false);
+                    loginPanel.SetActive(true);
 
                     Manager.UI.PopUpUI.Show("이메일 인증이 필요합니다. 메일을 확인해주세요.", Color.yellow);
                     FirebaseManager.Auth.SignOut();
@@ -164,7 +176,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 }
 
                 Debug.Log($"로그인 성공: {task.Result.User.Email}");
-
                 PhotonNetwork.ConnectUsingSettings();
                 Manager.UI.FadeScreen.FadeIn(1);
             });
@@ -178,6 +189,44 @@ public class LoginManager : MonoBehaviourPunCallbacks
         var task = Manager.Database.userRef.GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
 
+        bool connected = false;
+
+        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Firebase 오류: " + task.Exception);
+            }
+            else if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
+                if (snapshot.Exists)
+                {
+                    Debug.Log("Exists");
+                    connected = (bool)snapshot.Value;
+                }
+                else
+                {
+                    Debug.Log("Not Exists");
+                    Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(false);                    
+                }
+            }
+        });
+
+        yield return new WaitForSeconds(.5f);
+
+        if(connected)
+        {
+            Manager.UI.PopUpUI.Show("이미 접속중인 계정입니다.",Color.red);
+            isLogin = false;
+            loginButton.interactable = true;
+            loginMessage.SetActive(false);
+            loginPanel.SetActive(true);
+            Manager.UI.FadeScreen.FadeOut(1);
+            yield break;
+        }
+
+        
         if (task.IsFaulted || task.IsCanceled)
         {
             Debug.LogError("Firebase 데이터 가져오기 실패");
@@ -213,6 +262,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         lobbyPanel.SetActive(true);
         PhotonNetwork.JoinLobby();
         Manager.UI.FadeScreen.FadeOut(1);
+        Manager.Game.State = Game.State.Lobby;
+        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
     }
     #endregion
 
