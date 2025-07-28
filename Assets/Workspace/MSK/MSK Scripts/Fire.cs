@@ -12,15 +12,16 @@ public class Fire : MonoBehaviourPun
     [Header("Controls")]
     [SerializeField] private float angle = 45f;         // 포신의 현재 각도
     [SerializeField] private float angleStep = 0.5f;      // 각도 변화량
-    [SerializeField] private float maxPower = 20f;         // 폭탄 발사 속도
     [SerializeField] private float chargingSpeed = 10f;    // 차지속도
 
-    private float powerCharge = 0f;         // 차지
+    [SerializeField] public float maxPower = 20f;         // 폭탄 발사 속도
+    public float powerCharge = 0f;         // 차지
     private bool isCharging = false;        // 차지 중인지 여부
 
 
     private MSKTurnController _turnController;
     private PlayerController _playerController;
+
     private void Awake()
     {
         _playerController = GetComponentInParent<PlayerController>();
