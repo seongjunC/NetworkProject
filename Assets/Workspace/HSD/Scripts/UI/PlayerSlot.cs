@@ -48,7 +48,10 @@ public class PlayerSlot : MonoBehaviour
     {   
         this.player = player;
 
-        playerCloseConnectionButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+        if (player != PhotonNetwork.MasterClient)
+            playerCloseConnectionButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+        else
+            playerCloseConnectionButton.gameObject.SetActive(false);
 
         playerName.text = player.NickName;
 
@@ -56,6 +59,7 @@ public class PlayerSlot : MonoBehaviour
         masterPanel.color = PhotonNetwork.MasterClient == player ? Color.white : Color.clear;        
         
         Team team =player.GetTeam();
+        Debug.Log(team);
         switch (team)
         {
             case Team.Red: 
@@ -68,6 +72,7 @@ public class PlayerSlot : MonoBehaviour
                 teamPanel.color = waitColor;
                 break;
         }
+        Debug.Log(teamPanel.color);
         readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
     }
 

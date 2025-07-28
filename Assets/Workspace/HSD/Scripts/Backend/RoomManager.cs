@@ -34,6 +34,8 @@ public class RoomManager : MonoBehaviourPun
     [SerializeField] Button turnSwitchButton;
     [SerializeField] Button exitButton;
     [SerializeField] Button damageTypeButton;
+    [SerializeField] Button gameSettingButton;
+    [SerializeField] Button gameSettingCloseButton;
     [SerializeField] TMP_Text turnType;
     [SerializeField] TMP_Text damageType;
     [SerializeField] TMP_Text readyCount;
@@ -47,6 +49,7 @@ public class RoomManager : MonoBehaviourPun
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
+    [SerializeField] GameObject gameSettingPanel;
 
     [Header("Chat")]
     [SerializeField] Chat chat;
@@ -65,6 +68,8 @@ public class RoomManager : MonoBehaviourPun
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
+        gameSettingButton.onClick.AddListener(() => GameSettingPanelActive(true));
+        gameSettingCloseButton.onClick.AddListener(() => GameSettingPanelActive(false));
     }
     private void OnEnable()
     {
@@ -178,9 +183,8 @@ public class RoomManager : MonoBehaviourPun
 
     private void SetButtonInteractable()
     {
-        mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;        
-        turnSwitchButton.interactable   = PhotonNetwork.IsMasterClient;
-        damageTypeButton.interactable   = PhotonNetwork.IsMasterClient;
+        mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;
+        gameSettingButton.interactable  = PhotonNetwork.IsMasterClient;
 
         if(PhotonNetwork.IsMasterClient)
         {
@@ -274,7 +278,7 @@ public class RoomManager : MonoBehaviourPun
         if(player.CustomProperties.TryGetValue("Ready", out object value))
         {
             playerSlotDic[player.ActorNumber].SetUp(player);
-            UpdateReadyCountText();           
+            UpdateReadyCountText();
         }
     }
 
@@ -366,6 +370,8 @@ public class RoomManager : MonoBehaviourPun
     }
     #endregion
 
+    private void GameSettingPanelActive(bool isActive) => gameSettingPanel.SetActive(isActive);
+
     private void GameStart()
     {
         if(currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
@@ -417,7 +423,6 @@ public class RoomManager : MonoBehaviourPun
     public void OnPlayerPropertiesUpdate(Player target)
     {
         ReadyCheck(target);
-        playerSlotDic[target.ActorNumber].SetUp(target);
         PlayerSlotSetParent(target);
     }
 

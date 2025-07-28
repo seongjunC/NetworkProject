@@ -202,6 +202,7 @@ MonoBehaviour:
   defaultSprite: {fileID: 21300000, guid: 719db591f18339b428572a7810768ceb, type: 3}
   redColor: {r: 1, g: 0.24056602, b: 0.24056602, a: 1}
   blueColor: {r: 0.21226418, g: 0.82968223, b: 1, a: 1}
+  waitColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
 --- !u!1 &5874238185350786929
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +385,6 @@ GameObject:
   - component: {fileID: 3638935828854303326}
   - component: {fileID: 6744818771423432352}
   - component: {fileID: 915331265168048948}
-  - component: {fileID: 6910007497165289294}
   m_Layer: 5
   m_Name: Bar
   m_TagString: Untagged
@@ -472,7 +472,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 3
+  m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -511,27 +511,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonSelectClip: {fileID: 8300000, guid: ecc58bd60f2ad4c7a9c63cd635c147e5, type: 3}
   buttonHighlightClip: {fileID: 8300000, guid: e6403f00f8f6b451b94ac5b2edcb185e, type: 3}
---- !u!95 &6910007497165289294
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8349968802444923851}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d78fcd2595c2c204d8c01151e288178f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8521685484819435649
 GameObject:
   m_ObjectHideFlags: 0
