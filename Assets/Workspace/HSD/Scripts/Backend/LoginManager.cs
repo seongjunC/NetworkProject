@@ -1,3 +1,4 @@
+using Database;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
@@ -173,7 +174,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 }
 
                 Debug.Log($"로그인 성공: {task.Result.User.Email}");
-
                 PhotonNetwork.ConnectUsingSettings();
                 Manager.UI.FadeScreen.FadeIn(1);
             });
@@ -187,6 +187,45 @@ public class LoginManager : MonoBehaviourPunCallbacks
         var task = Manager.Database.userRef.GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
 
+        bool connected = false;
+
+        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("Firebase 오류: " + task.Exception);
+            }
+            else if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
+                if (snapshot.Exists)
+                {
+                    Debug.Log("Exists");
+                    connected = (bool)snapshot.Value;
+                }
+                else
+                {
+                    Debug.Log("Not Exists");
+                    Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(false);                    
+                }
+            }
+        });
+
+        yield return new WaitForSeconds(.5f);
+
+        Debug.Log(connected);
+        if(connected)
+        {
+            Manager.UI.PopUpUI.Show("이미 접속중인 계정입니다.",Color.red);
+            isLogin = false;
+            loginButton.interactable = true;
+            loginMessage.SetActive(false);
+            loginPanel.SetActive(true);
+            Manager.UI.FadeScreen.FadeOut(1);
+            yield break;
+        }
+
+        
         if (task.IsFaulted || task.IsCanceled)
         {
             Debug.LogError("Firebase 데이터 가져오기 실패");
@@ -222,6 +261,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         lobbyPanel.SetActive(true);
         PhotonNetwork.JoinLobby();
         Manager.UI.FadeScreen.FadeOut(1);
+
+        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
     }
     #endregion
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Database;
 using UnityEngine;
 using System;
+using Firebase.Auth;
 
 public class DatabaseManager : Singleton<DatabaseManager>
 {   

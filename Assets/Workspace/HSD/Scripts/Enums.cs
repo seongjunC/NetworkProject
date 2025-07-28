@@ -1,7 +1,7 @@
 
 namespace Database
 {
-    public enum UserDataType { Name, Win, Lose }
+    public enum UserDataType { Name, Win, Lose, Connected }
 }
 
 namespace Game
