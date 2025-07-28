@@ -1,18 +1,22 @@
+using Firebase.Auth;
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoomManager : MonoBehaviour
+[RequireComponent(typeof(PhotonView))]
+public class RoomManager : MonoBehaviourPun
 {
     [Header("Player")]
     [SerializeField] GameObject playerSlotPrefab;
     [SerializeField] Transform redPlayerContent;
     [SerializeField] Transform bluePlayerContent;
+    [SerializeField] Transform waitPlayerContent;
     private Dictionary<int, PlayerSlot> playerSlotDic = new Dictionary<int, PlayerSlot>();
 
     [Header("Map")]
@@ -29,16 +33,23 @@ public class RoomManager : MonoBehaviour
     [SerializeField] Button startButton;
     [SerializeField] Button turnSwitchButton;
     [SerializeField] Button exitButton;
+    [SerializeField] Button damageTypeButton;
+    [SerializeField] Button gameSettingButton;
+    [SerializeField] Button gameSettingCloseButton;
     [SerializeField] TMP_Text turnType;
+    [SerializeField] TMP_Text damageType;
     [SerializeField] TMP_Text readyCount;
 
     [Header("Team")]
     public TeamManager teamManager;
-    [SerializeField] Button teamSwitchButton;
+    [SerializeField] Button blueTeamChangeButton;
+    [SerializeField] Button redTeamChangeButton;
+    [SerializeField] Button waitTeamChangeButton;
 
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
+    [SerializeField] GameObject gameSettingPanel;
 
     [Header("Chat")]
     [SerializeField] Chat chat;
@@ -54,6 +65,11 @@ public class RoomManager : MonoBehaviour
     private void Start()
     {
         CreateMapSlot();
+        redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
+        blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
+        waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
+        gameSettingButton.onClick.AddListener(() => GameSettingPanelActive(true));
+        gameSettingCloseButton.onClick.AddListener(() => GameSettingPanelActive(false));
     }
     private void OnEnable()
     {
@@ -73,8 +89,8 @@ public class RoomManager : MonoBehaviour
         startButton.onClick     .AddListener(GameStart);
         mapCloseButton.onClick  .AddListener(CloseMapPanel);
         mapChangeButton.onClick .AddListener(OpenMapPanel);
-        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
-        teamSwitchButton.onClick.AddListener(teamManager.ChangeTeam);
+        damageTypeButton.onClick.AddListener(ChangeDamageType);
+        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);        
     }
 
     private void UnSubscribe()
@@ -84,8 +100,8 @@ public class RoomManager : MonoBehaviour
         startButton.onClick     .RemoveListener(GameStart);
         mapCloseButton.onClick  .RemoveListener(CloseMapPanel);
         mapChangeButton.onClick .RemoveListener(OpenMapPanel);
+        damageTypeButton.onClick.RemoveListener(ChangeDamageType);
         turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
-        teamSwitchButton.onClick.RemoveListener(teamManager.ChangeTeam);
     }
     #endregion
 
@@ -97,16 +113,55 @@ public class RoomManager : MonoBehaviour
 
     private void LeaveRoom()
     {
+        StartCoroutine(LeaveRoomRoutine());
+    }
+    private IEnumerator LeaveRoomRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+
+        yield return new WaitForSeconds(.5f);
+
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             Destroy(playerSlotDic[player.ActorNumber].gameObject);
         }
 
         playerSlotDic.Clear();
-
         PhotonNetwork.LeaveRoom();
+
+        yield return new WaitForSeconds(.5f);
+
+        Manager.UI.FadeScreen.FadeOut(.5f);
     }
-       
+
+    private void Kick(Player player)
+    {
+        photonView.RPC(nameof(Kick_RPC), player);
+    }
+    [PunRPC]
+    private void Kick_RPC()
+    {        
+        StartCoroutine(KickRoutine());
+    }
+    private IEnumerator KickRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+
+        yield return new WaitForSeconds(.5f);
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            Destroy(playerSlotDic[player.ActorNumber].gameObject);
+        }
+
+        playerSlotDic.Clear();
+        PhotonNetwork.LeaveRoom();
+
+        yield return new WaitForSeconds(.5f);
+        Manager.UI.PopUpUI.Show("방에서 강퇴 되었습니다.");
+        Manager.UI.FadeScreen.FadeOut(.5f);
+    }
+
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
     {        
@@ -115,6 +170,7 @@ public class RoomManager : MonoBehaviour
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
+            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         else
@@ -127,7 +183,8 @@ public class RoomManager : MonoBehaviour
 
     private void SetButtonInteractable()
     {
-        mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;        
+        mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;
+        gameSettingButton.interactable  = PhotonNetwork.IsMasterClient;
 
         if(PhotonNetwork.IsMasterClient)
         {
@@ -138,9 +195,7 @@ public class RoomManager : MonoBehaviour
         {
             startButton.gameObject.SetActive(false);
             readyButton.gameObject.SetActive(true);
-        }
-        
-        turnSwitchButton.interactable   = PhotonNetwork.IsMasterClient;
+        }        
     }
 
     private void CreatePlayerSlot()
@@ -157,6 +212,7 @@ public class RoomManager : MonoBehaviour
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
+            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         SetButtonInteractable();
@@ -176,6 +232,7 @@ public class RoomManager : MonoBehaviour
         if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
         {
             Destroy(panel.gameObject);
+            panel.OnKick -= Kick;
             playerSlotDic.Remove(player.ActorNumber);
         }
         else
@@ -186,7 +243,13 @@ public class RoomManager : MonoBehaviour
 
     private Transform GetPlayerTeamContent(Player player)
     {
-        return player.GetTeam() == Team.Red ? redPlayerContent : bluePlayerContent;
+        Team team = player.GetTeam();
+        if (team == Team.Red)
+            return redPlayerContent;
+        else if (team == Team.Blue)
+            return bluePlayerContent;
+        else 
+            return waitPlayerContent;
     }
     private void PlayerSlotSetParent(Player player)
     {
@@ -222,7 +285,9 @@ public class RoomManager : MonoBehaviour
     private void ReadyPropertyUpdate()
     {
         PhotonNetwork.LocalPlayer.SetReady(isReady);
+        CheckButtons();
     }
+
     private void UpdateReadyCountText()
     {
         currentReadyCount = 0;
@@ -235,6 +300,23 @@ public class RoomManager : MonoBehaviour
         }
 
         readyCount.text = $"{currentReadyCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
+    }
+    private void CheckButtons()
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            redTeamChangeButton.interactable = true;
+            blueTeamChangeButton.interactable = true;
+            waitTeamChangeButton.interactable = true;
+        }          
+        else
+        {
+            redTeamChangeButton.interactable = !isReady;
+            blueTeamChangeButton.interactable = !isReady;
+            waitTeamChangeButton.interactable = !isReady;
+        }            
+
+        startButton.interactable = currentReadyCount == PhotonNetwork.CurrentRoom.MaxPlayers;
     }
     #endregion
 
@@ -277,11 +359,30 @@ public class RoomManager : MonoBehaviour
     }
     #endregion
 
+    #region TeamDamageType
+    private void ChangeDamageType()
+    {
+        PhotonNetwork.CurrentRoom.SetDamageType(!PhotonNetwork.CurrentRoom.GetDamageType());        
+    }
+    private void ChangeDamageTypeText()
+    {
+        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "팀 데미지 허용" : "팀 데미지 금지";
+    }
+    #endregion
+
+    private void GameSettingPanelActive(bool isActive) => gameSettingPanel.SetActive(isActive);
+
     private void GameStart()
     {
         if(currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             Debug.Log("방에 인원이 부족하거나 모든 플레이어가 레디하지 않았습니다.");
+            return;
+        }
+
+        if(teamManager.GetWaitPlayerCount() > 0)
+        {
+            Manager.UI.PopUpUI.Show("누군가가 대기자에 포함되어 있습니다.");
             return;
         }
 
@@ -293,6 +394,7 @@ public class RoomManager : MonoBehaviour
     {        
         PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         roomName.text = PhotonNetwork.CurrentRoom.Name;
+        Manager.UI.FadeScreen.FadeOut(.5f);
         Init();
         CreatePlayerSlot();
         UpdateAllPlayerSlot();
@@ -315,6 +417,7 @@ public class RoomManager : MonoBehaviour
     {
         MapChange();
         UpdateTurnType();
+        ChangeDamageTypeText();
     }
 
     public void OnPlayerPropertiesUpdate(Player target)
