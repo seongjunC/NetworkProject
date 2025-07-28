@@ -23,6 +23,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject signupPanel;
     [SerializeField] GameObject loginPanel;
     [SerializeField] GameObject lobbyPanel;
+    [SerializeField] GameObject loginMessage;
 
     [SerializeField] bool isTest;
     private FirebaseUser user;
@@ -33,6 +34,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
         Manager.UI.FadeScreen.FadeOut(1);
+        loginMessage.SetActive(false);
+        loginPanel.SetActive(true);
         Init();
         Subscribe();
         loginButton.interactable = true;
@@ -128,6 +131,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         if (isLogin) return;
         isLogin = true;
         loginButton.interactable = false;
+        loginMessage.SetActive(true);
+        loginPanel.SetActive(false);
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted)
@@ -136,6 +141,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 Manager.UI.PopUpUI.Show("Login Failed");
                 isLogin = false;
                 loginButton.interactable = true;
+                loginMessage.SetActive(false);
+                loginPanel.SetActive(true);
                 return;
             }
 
@@ -155,6 +162,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
                         Debug.Log("이메일 재전송");
                     });
+                    loginMessage.SetActive(false);
+                    loginPanel.SetActive(true);
 
                     Manager.UI.PopUpUI.Show("이메일 인증이 필요합니다. 메일을 확인해주세요.", Color.yellow);
                     FirebaseManager.Auth.SignOut();

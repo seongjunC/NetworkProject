@@ -57,6 +57,10 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
     private IEnumerator LogOutRoutine()
     {
+        Manager.UI.FadeScreen.FadeIn(1);
+
+        yield return new WaitForSeconds(1);
+
         if (PhotonNetwork.InLobby)
         {
             PhotonNetwork.LeaveLobby();
@@ -72,7 +76,9 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
             yield return new WaitUntil(() => !PhotonNetwork.IsConnected);
         }
+        yield return new WaitForSeconds(1);
 
+        Manager.UI.FadeScreen.FadeOut(1);
         Auth.SignOut();
         OnLogOut?.Invoke();
 

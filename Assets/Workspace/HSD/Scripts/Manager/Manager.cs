@@ -11,6 +11,8 @@ public static class Manager
     public static DataManager Data => DataManager.Instance;
     public static ResourcesManager Resources => ResourcesManager.Instance;
     public static PoolManager Pool => PoolManager.Instance;
+    public static AudioManager Audio => AudioManager.Instance;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Init()
     {
@@ -20,5 +22,6 @@ public static class Manager
         DataManager.CreateInstance();
         ResourcesManager.CreateInstance();
         PoolManager.CreateInstance();
+        AudioManager.CreateInstance();
     }
 }

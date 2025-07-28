@@ -48,6 +48,7 @@ MonoBehaviour:
   - RPC_TurnFinished
   - SendChating
   - StartTurnForPlayer
+  - RPC_CycleEnd
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

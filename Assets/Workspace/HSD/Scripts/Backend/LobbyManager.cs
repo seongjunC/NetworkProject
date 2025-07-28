@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -43,8 +44,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Button roomCreateCloseButton;
     [SerializeField] Button roomCreateButton;
     [SerializeField] Button fastJoinButton;
+    [SerializeField] Button roomLeftButton;
+    [SerializeField] Button roomRightButton;
 
+    [Header("Room Max Idx")]
+    [SerializeField] int roomMax = 8;
     private bool isRoomCreate;
+    private int _currentRoomSelectIdx = 1;
+    public int currentRoomSelectIdx { get => _currentRoomSelectIdx; set { _currentRoomSelectIdx = value; ChangeCurrentRoomIdx(); RoomSelectButtonActiveCheck(); } }
 
     #region LifeCycle
     public override void OnEnable()
@@ -67,6 +74,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Manager.Firebase.OnLogOut += GoTitle;
 
+        roomRightButton.onClick .AddListener(RoomIndexPlus);
+        roomLeftButton.onClick  .AddListener(RoomIndexMinus);
+
         optionButton.onClick    .AddListener(Manager.UI.SettingPanel.Show);
         gameOutButton.onClick   .AddListener(GameOut);
 
@@ -87,6 +97,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     private void UnSubscribe()
     {
+        Manager.Firebase.OnLogOut -= GoTitle;
+
+        roomRightButton.onClick .RemoveListener(RoomIndexPlus);
+        roomLeftButton.onClick  .RemoveListener(RoomIndexMinus);
+
         optionButton.onClick    .RemoveListener(Manager.UI.SettingPanel.Show);
         gameOutButton.onClick   .RemoveListener(GameOut);
 
@@ -142,12 +157,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         isRoomCreate = true;
 
-        RoomOptions option = new RoomOptions();
-        option.MaxPlayers = maxPlayer;
-        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password", "Full"};               
-        PhotonNetwork.CreateRoom(roomNameField.text, option);        
-        roomNameField.text = "";
-        maxPlayerField.text = "";
+        StartCoroutine(RoomCreateRoutine(maxPlayer));
     }
     private void EnterCreateRoom(string s)
     {
@@ -171,7 +181,28 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomCreatePanel.SetActive(false);
         title.SetActive(true);
     }
+    private IEnumerator RoomCreateRoutine(int maxPlayer)
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+        yield return new WaitForSeconds(.5f);
+        RoomOptions option = new RoomOptions();
+        option.MaxPlayers = maxPlayer;
+        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password", "Full" };
+        PhotonNetwork.CreateRoom(roomNameField.text, option);
+        roomNameField.text = "";
+        maxPlayerField.text = "";
+        
+    }
+    private IEnumerator RandomRoomJoinRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+        yield return new WaitForSeconds(.5f);
 
+        PhotonNetwork.JoinRandomRoom();
+
+        yield return new WaitForSeconds(1f);
+        Manager.UI.FadeScreen.FadeOut(.5f);
+    }
     #region ButtonEvent
     private void OpenRoomCreatePanel()
     {
@@ -189,12 +220,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     private void RandomMatching()
     {
-        PhotonNetwork.JoinRandomOrCreateRoom();
+        StartCoroutine(RandomRoomJoinRoutine());
     }
     private void LogOut()
     {
-        title.SetActive(true);
-        lobby.SetActive(false);        
+        Manager.Firebase.LogOut();       
     }
     private void GameOut() => Application.Quit();
     private void ActiveRoomSelectPanel(bool isActive)
@@ -203,8 +233,52 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(!isActive);
     }
     private void OpenRoomSelectPanel() => ActiveRoomSelectPanel(true);
-    private void CloseRoomSelectPanel() => ActiveRoomSelectPanel(false);    
+    private void CloseRoomSelectPanel() => ActiveRoomSelectPanel(false);
+    private void ChangeCurrentRoomIdx()
+    {
+        int start = (currentRoomSelectIdx - 1) * roomMax;
+        int end = currentRoomSelectIdx * roomMax;
+
+        int count = 0;
+
+        foreach (RoomSlot slot in roomListDic.Values)
+        {
+            if (count >= start && count < end)
+            {
+                slot.gameObject.SetActive(true);
+            }
+            else
+            {
+                slot.gameObject.SetActive(false);
+            }
+
+            count++;
+        }
+    }
+    private void RoomIndexPlus()
+    {
+        int maxPage = Mathf.CeilToInt((float)roomListDic.Count / roomMax);
+
+        if (currentRoomSelectIdx < maxPage)
+        {
+            currentRoomSelectIdx++;
+        }
+    }
+    private void RoomIndexMinus()
+    {
+        if (currentRoomSelectIdx > 1)
+        {
+            currentRoomSelectIdx--;
+        }
+    }
     #endregion
+    private void RoomSelectButtonActiveCheck()
+    {
+        int maxPage = Mathf.CeilToInt((float)roomListDic.Count / roomMax);
+
+        roomRightButton.interactable = maxPage > currentRoomSelectIdx;
+        roomLeftButton.interactable = 1 < currentRoomSelectIdx;        
+    }
 
     #region PhotonCallbacks
     public override void OnCreatedRoom()
@@ -219,7 +293,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }        
 
         passwordField.text = "";
-        Debug.Log("방 생성 완료");        
+        Debug.Log("방 생성 완료");
+        Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -232,6 +307,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         lobby.SetActive(false);
 
         Debug.Log("로비에 접속함");
+    }
+
+    public override void OnJoinedLobby()
+    {
+        currentRoomSelectIdx = 1;        
     }
 
     public override void OnJoinedRoom()
@@ -247,6 +327,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             Manager.UI.NickNameSelectPanel.Show();
 
         roomManager.OnJoinedRoom();
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Manager.UI.PopUpUI.Show("접속 가능한 방이 없습니다.", Color.red);
     }
 
     public override void OnLeftRoom()    
@@ -303,7 +388,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 RoomSlot slot = Instantiate(roomPrefab, roomContent).GetComponent<RoomSlot>();
                 slot.SetUp(room);
                 roomListDic.Add(room.Name, slot);
-                roomListDic[room.Name].OnPasswordRoomSelected += OpenPasswordPanel;
+                roomListDic[room.Name].OnPasswordRoomSelected += OpenPasswordPanel;                
             }
             else
             {

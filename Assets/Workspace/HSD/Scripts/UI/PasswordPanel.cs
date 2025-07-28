@@ -44,9 +44,8 @@ public class PasswordPanel : MonoBehaviour
     {
         if (PasswordCheck())
         {
-            PhotonNetwork.JoinRoom(roomName);
-            applyButton.onClick.RemoveListener(JoinRoomCheck);
-            gameObject.SetActive(false);
+            applyButton.onClick.RemoveListener(JoinRoomCheck);            
+            StartCoroutine(JoinRoomRoutine());
         }
         else
             Manager.UI.PopUpUI.Show("비밀번호가 일치하지 않습니다.");
@@ -60,6 +59,19 @@ public class PasswordPanel : MonoBehaviour
     private void Close()
     {
         applyButton.onClick.RemoveListener(JoinRoomCheck);
+        gameObject.SetActive(false);
+    }
+    private IEnumerator JoinRoomRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+
+        yield return new WaitForSeconds(.5f);
+
+        PhotonNetwork.JoinRoom(roomName);
+
+        yield return new WaitForSeconds(.5f);
+
+        Manager.UI.FadeScreen.FadeOut(.5f);
         gameObject.SetActive(false);
     }
 }
