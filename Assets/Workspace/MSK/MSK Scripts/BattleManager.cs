@@ -22,12 +22,14 @@ public class TestBattleManager : MonoBehaviourPun
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-        _turnController.turnFinished();
+        _turnController.TurnFinished();
 
     }
     private void PlayerAttacked()
     {
         _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        if (_playerController._hp <= 0) 
+            _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.All);
     }
 
     public void RegisterPlayer(PlayerController playerController)

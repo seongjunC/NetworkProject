@@ -92,7 +92,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
 
-    public void turnFinished() 
+    public void TurnFinished() 
     {
         // if (photonView.IsMine)
             photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
