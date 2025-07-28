@@ -21,6 +21,9 @@ public class DeformableTerrain : MonoBehaviour
         // 새로운 스프라이트를 생성
         Sprite newSprite = Sprite.Create(deformableTexture, spriteRenderer.sprite.rect, new Vector2(0.5f, 0.5f), spriteRenderer.sprite.pixelsPerUnit);
         spriteRenderer.sprite = newSprite;
+
+        // 콜라이더 갱신
+        UpdateCollider();
     }
 
 
@@ -67,7 +70,7 @@ public class DeformableTerrain : MonoBehaviour
                 if (Mathf.Pow(radiusy, 2)*Mathf.Pow(x - px, 2) + Mathf.Pow(radiusx, 2)* Mathf.Pow(y - py, 2) 
                     < Mathf.Pow(radiusx, 2)* Mathf.Pow(radiusy, 2))
                 {
-                    if (x > 0 && x < deformableTexture.width && y > 0 && y < deformableTexture.height)
+                    if (x >= 0 && x <= deformableTexture.width && y >= 0 && y <= deformableTexture.height)
                     {
                         deformableTexture.SetPixel(x, y, Color.clear);
                     }
