@@ -144,7 +144,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3875376416540874787}
   - component: {fileID: 70905381868313850}
-  - component: {fileID: 5152965029094376439}
   - component: {fileID: 2243080303147446684}
   m_Layer: 5
   m_Name: JoinPlayerPanel
@@ -181,36 +180,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4398182311349774773}
   m_CullTransparentMesh: 1
---- !u!114 &5152965029094376439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4398182311349774773}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.3426486, g: 0.9433962, b: 0.55430883, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 06e3d25b5cb2418409a5a6036e2d3ae9, type: 3}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &2243080303147446684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,7 +196,6 @@ MonoBehaviour:
   readyPanel: {fileID: 47024698015446509}
   teamPanel: {fileID: 3638935828854303326}
   masterPanel: {fileID: 7606666942958220525}
-  myPanel: {fileID: 5152965029094376439}
   infoButton: {fileID: 6744818771423432352}
   playerCloseConnectionButton: {fileID: 6474156104870440022}
   readySpite: {fileID: 21300000, guid: e593aa48f1252b943bd98c7364e67039, type: 3}

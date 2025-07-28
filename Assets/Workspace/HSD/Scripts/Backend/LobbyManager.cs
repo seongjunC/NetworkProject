@@ -341,7 +341,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         room.SetActive(false);
         roomManager.OnLeftRoom();
         isRoomCreate = false;
-        Debug.Log("¹æ ³ª°¨");              
     }
 
     public override void OnConnectedToMaster()

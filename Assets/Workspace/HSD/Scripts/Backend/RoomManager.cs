@@ -9,12 +9,14 @@ using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoomManager : MonoBehaviour
+[RequireComponent(typeof(PhotonView))]
+public class RoomManager : MonoBehaviourPun
 {
     [Header("Player")]
     [SerializeField] GameObject playerSlotPrefab;
     [SerializeField] Transform redPlayerContent;
     [SerializeField] Transform bluePlayerContent;
+    [SerializeField] Transform waitPlayerContent;
     private Dictionary<int, PlayerSlot> playerSlotDic = new Dictionary<int, PlayerSlot>();
 
     [Header("Map")]
@@ -38,7 +40,9 @@ public class RoomManager : MonoBehaviour
 
     [Header("Team")]
     public TeamManager teamManager;
-    [SerializeField] Button teamChangeButton;
+    [SerializeField] Button blueTeamChangeButton;
+    [SerializeField] Button redTeamChangeButton;
+    [SerializeField] Button waitTeamChangeButton;
 
     [Header("Panel")]
     [SerializeField] GameObject lobby;
@@ -58,6 +62,9 @@ public class RoomManager : MonoBehaviour
     private void Start()
     {
         CreateMapSlot();
+        redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
+        blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
+        waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
     }
     private void OnEnable()
     {
@@ -78,8 +85,7 @@ public class RoomManager : MonoBehaviour
         mapCloseButton.onClick  .AddListener(CloseMapPanel);
         mapChangeButton.onClick .AddListener(OpenMapPanel);
         damageTypeButton.onClick.AddListener(ChangeDamageType);
-        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
-        teamChangeButton.onClick.AddListener(teamManager.ChangeTeam);
+        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);        
     }
 
     private void UnSubscribe()
@@ -91,7 +97,6 @@ public class RoomManager : MonoBehaviour
         mapChangeButton.onClick .RemoveListener(OpenMapPanel);
         damageTypeButton.onClick.RemoveListener(ChangeDamageType);
         turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
-        teamChangeButton.onClick.RemoveListener(teamManager.ChangeTeam);
     }
     #endregion
 
@@ -124,6 +129,34 @@ public class RoomManager : MonoBehaviour
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
+    private void Kick(Player player)
+    {
+        photonView.RPC(nameof(Kick_RPC), player);
+    }
+    [PunRPC]
+    private void Kick_RPC()
+    {        
+        StartCoroutine(KickRoutine());
+    }
+    private IEnumerator KickRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+
+        yield return new WaitForSeconds(.5f);
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            Destroy(playerSlotDic[player.ActorNumber].gameObject);
+        }
+
+        playerSlotDic.Clear();
+        PhotonNetwork.LeaveRoom();
+
+        yield return new WaitForSeconds(.5f);
+        Manager.UI.PopUpUI.Show("방에서 강퇴 되었습니다.");
+        Manager.UI.FadeScreen.FadeOut(.5f);
+    }
+
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
     {        
@@ -132,6 +165,7 @@ public class RoomManager : MonoBehaviour
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
+            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         else
@@ -145,6 +179,8 @@ public class RoomManager : MonoBehaviour
     private void SetButtonInteractable()
     {
         mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;        
+        turnSwitchButton.interactable   = PhotonNetwork.IsMasterClient;
+        damageTypeButton.interactable   = PhotonNetwork.IsMasterClient;
 
         if(PhotonNetwork.IsMasterClient)
         {
@@ -155,9 +191,7 @@ public class RoomManager : MonoBehaviour
         {
             startButton.gameObject.SetActive(false);
             readyButton.gameObject.SetActive(true);
-        }
-        
-        turnSwitchButton.interactable   = PhotonNetwork.IsMasterClient;
+        }        
     }
 
     private void CreatePlayerSlot()
@@ -174,6 +208,7 @@ public class RoomManager : MonoBehaviour
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
+            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         SetButtonInteractable();
@@ -193,6 +228,7 @@ public class RoomManager : MonoBehaviour
         if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
         {
             Destroy(panel.gameObject);
+            panel.OnKick -= Kick;
             playerSlotDic.Remove(player.ActorNumber);
         }
         else
@@ -203,7 +239,13 @@ public class RoomManager : MonoBehaviour
 
     private Transform GetPlayerTeamContent(Player player)
     {
-        return player.GetTeam() == Team.Red ? redPlayerContent : bluePlayerContent;
+        Team team = player.GetTeam();
+        if (team == Team.Red)
+            return redPlayerContent;
+        else if (team == Team.Blue)
+            return bluePlayerContent;
+        else 
+            return waitPlayerContent;
     }
     private void PlayerSlotSetParent(Player player)
     {
@@ -232,15 +274,16 @@ public class RoomManager : MonoBehaviour
         if(player.CustomProperties.TryGetValue("Ready", out object value))
         {
             playerSlotDic[player.ActorNumber].SetUp(player);
-            UpdateReadyCountText();
-            CheckButtons((bool)value);
+            UpdateReadyCountText();           
         }
     }
 
     private void ReadyPropertyUpdate()
     {
         PhotonNetwork.LocalPlayer.SetReady(isReady);
+        CheckButtons();
     }
+
     private void UpdateReadyCountText()
     {
         currentReadyCount = 0;
@@ -254,9 +297,21 @@ public class RoomManager : MonoBehaviour
 
         readyCount.text = $"{currentReadyCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
     }
-    private void CheckButtons(bool isReady)
+    private void CheckButtons()
     {
-        teamChangeButton.interactable = !isReady;
+        if(PhotonNetwork.IsMasterClient)
+        {
+            redTeamChangeButton.interactable = true;
+            blueTeamChangeButton.interactable = true;
+            waitTeamChangeButton.interactable = true;
+        }          
+        else
+        {
+            redTeamChangeButton.interactable = !isReady;
+            blueTeamChangeButton.interactable = !isReady;
+            waitTeamChangeButton.interactable = !isReady;
+        }            
+
         startButton.interactable = currentReadyCount == PhotonNetwork.CurrentRoom.MaxPlayers;
     }
     #endregion
@@ -319,6 +374,12 @@ public class RoomManager : MonoBehaviour
             return;
         }
 
+        if(teamManager.GetWaitPlayerCount() > 0)
+        {
+            Manager.UI.PopUpUI.Show("누군가가 대기자에 포함되어 있습니다.");
+            return;
+        }
+
         //PhotonNetwork.LoadLevel(""); // 씬이동
     }
 
@@ -356,6 +417,7 @@ public class RoomManager : MonoBehaviour
     public void OnPlayerPropertiesUpdate(Player target)
     {
         ReadyCheck(target);
+        playerSlotDic[target.ActorNumber].SetUp(target);
         PlayerSlotSetParent(target);
     }
 

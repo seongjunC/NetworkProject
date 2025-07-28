@@ -68,7 +68,7 @@ public static class CustomProperty
         { 
             return (Team)value;
         }
-        return Team.Length;
+        return Team.Wait;
     }
     #endregion
 

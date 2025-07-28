@@ -1,7 +1,9 @@
 using Firebase.Database;
 using Firebase.Extensions;
+using Game;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,7 +16,6 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
     [SerializeField] Image masterPanel;
-    [SerializeField] Image myPanel;
     [SerializeField] Button infoButton;
     [SerializeField] Button playerCloseConnectionButton;
 
@@ -25,12 +26,15 @@ public class PlayerSlot : MonoBehaviour
     [Header("TeamColor")]
     [SerializeField] Color redColor;
     [SerializeField] Color blueColor;
+    [SerializeField] Color waitColor;
 
     private Player player;
+    public event Action<Player> OnKick;
 
     #region LifeCycle
     private void OnEnable()
     {
+        PhotonNetwork.EnableCloseConnection = true;
         infoButton.onClick.AddListener(ViewPlayerInfo);
     }
 
@@ -41,16 +45,29 @@ public class PlayerSlot : MonoBehaviour
     #endregion
 
     public void SetUp(Player player)
-    {
+    {   
         this.player = player;
 
         playerCloseConnectionButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
 
         playerName.text = player.NickName;
 
-        myPanel.color = PhotonNetwork.LocalPlayer == player ? Color.green : Color.clear;
-        masterPanel.color = PhotonNetwork.IsMasterClient ? Color.white : Color.clear;
-        teamPanel.color = player.GetTeam() == Game.Team.Red ? redColor : blueColor;
+        playerName.color = PhotonNetwork.LocalPlayer == player ? Color.green : Color.white;
+        masterPanel.color = PhotonNetwork.MasterClient == player ? Color.white : Color.clear;        
+        
+        Team team =player.GetTeam();
+        switch (team)
+        {
+            case Team.Red: 
+                teamPanel.color = redColor;
+                break;
+            case Team.Blue:
+                teamPanel.color = blueColor;
+                break;
+            case Team.Wait:
+                teamPanel.color = waitColor;
+                break;
+        }
         readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
     }
 
@@ -66,7 +83,7 @@ public class PlayerSlot : MonoBehaviour
 
     private void CloseConnection()
     {
-        PhotonNetwork.CloseConnection(player);
+        OnKick?.Invoke(player);
     }
 
     public void UpdateReady(Color color)
