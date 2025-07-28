@@ -10,14 +10,15 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private float _speed = 2f; // 속도
     [SerializeField] private Transform player;
     [SerializeField] private float _maxMove = 5f;  // 최대 이동거리
-    [SerializeField] private int _hp = 100;         // hp
-    
+    [SerializeField] private float _maxhp = 100;         // hp
     [SerializeField] private TextMeshProUGUI _textMeshPro;
-    private float _movable;
+
     private bool _isDead = false;                   // 사망여부
     // 안계셔서 일단 임시로 추가했습니다. 
     // 추후 myInfo에 플레이어정보를 넣어야합니다.
     public PlayerInfo myInfo;
+    public float _hp;
+    public float _movable;
 
     public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
@@ -27,15 +28,18 @@ public class PlayerController : MonoBehaviourPun
 
     private void Awake()
     {
-        //이동 가능한 거리를 이동 최대거리로 설정
-        _movable = _maxMove;
-
         if (photonView.IsMine) // 내 캐릭터일 때만 등록
         {
+            //이동 가능한 거리를 이동 최대거리로 설정
+            _movable = _maxMove;
+            _hp = _maxhp;
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
+            MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
+
             if (battleManager != null)
             {
                 battleManager.RegisterPlayer(this);
+                uiManager.RegisterPlayer(this);
             }
         }
         //  닉네임 초기화,
