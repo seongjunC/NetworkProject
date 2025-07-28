@@ -51,6 +51,7 @@ public class TestBattleManager : MonoBehaviourPun
 
             Vector3 spawnPos = _spawnPoint[i].position;
             photonView.RPC("RPC_SpawnTank", players[i], spawnPos);
+            // TODO : 로비 설정에 따른 다른 플레이어 탱크 스폰
         }
     }
 

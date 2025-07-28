@@ -13,6 +13,22 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private PlayerInfo currentPlayer;
     private Room room;
 
+    [SerializeField] float turnLimit = 30f;
+    private float turnTimer = 0f;
+    private bool isTurnRunning = false;
+
+    void Update()
+    {
+        if (!PhotonNetwork.IsMasterClient || !isTurnRunning) return;
+
+        turnTimer += Time.deltaTime;
+
+        if (turnTimer >= turnLimit)
+        {
+            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        }
+    }
+
     public void GameStart()
     {
         turnQueue.Clear();
@@ -71,16 +87,22 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             }
             else
             {
+                photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
                 turnQueue = new Queue<PlayerInfo>(nextCycle);
                 nextCycle.Clear();
             }
         }
         currentPlayer = turnQueue.Dequeue();
+
         if (currentPlayer.isDead)
         {
-            StartNextTurn();
             return;
         }
+
+        turnTimer = 0f;
+        isTurnRunning = true;
+        photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
+
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
@@ -96,6 +118,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (currentPlayer != null && currentPlayer.ActorNumber == actorNumber)
         {
+            isTurnRunning = false;
             nextCycle.Add(currentPlayer);
             StartNextTurn();
         }

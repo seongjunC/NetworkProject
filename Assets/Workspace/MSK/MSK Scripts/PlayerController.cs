@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviourPun
                 battleManager.RegisterPlayer(this);
             }
         }
-        //  닉네임 초기화
+        //  닉네임 초기화,
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
     }
 
@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviourPun
     //  피격 처리
     public void OnHit(int damage)
     {
+        // TODO : 플레이어 피격 처리 시 방 설정에 따른 피격여부
         _hp -= damage;
         Debug.Log("피격");
         if (_hp <= 0)
