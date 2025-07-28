@@ -898,7 +898,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPrefabs:
   - {fileID: 8841352257447635857, guid: 0066107ec5992824282c2d52025816bc, type: 3}
-  - {fileID: 8841352257447635857, guid: c26c2b6a435af784499bb2454c66941f, type: 3}
+  - {fileID: 8841352257447635857, guid: 18401f01f52828b40b4a72873643c8f7, type: 3}
   - {fileID: 8841352257447635857, guid: 6693348eb106ab74a9957bad476a89b8, type: 3}
 --- !u!4 &1191921330
 Transform:
