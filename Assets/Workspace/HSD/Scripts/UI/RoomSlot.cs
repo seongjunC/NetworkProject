@@ -77,10 +77,6 @@ public class RoomSlot : MonoBehaviour
 
         yield return new WaitForSeconds(.5f);
 
-        PhotonNetwork.JoinRoom(roomName);
-
-        yield return new WaitForSeconds(.5f);
-
-        Manager.UI.FadeScreen.FadeOut(.5f);
+        PhotonNetwork.JoinRoom(roomName);       
     }
 }

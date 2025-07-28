@@ -14,7 +14,9 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
     [SerializeField] Image masterPanel;
+    [SerializeField] Image myPanel;
     [SerializeField] Button infoButton;
+    [SerializeField] Button playerCloseConnectionButton;
 
     [Header("ReadyColor")]
     [SerializeField] Sprite readySpite;
@@ -42,18 +44,29 @@ public class PlayerSlot : MonoBehaviour
     {
         this.player = player;
 
+        playerCloseConnectionButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+
         playerName.text = player.NickName;
 
+        myPanel.color = PhotonNetwork.LocalPlayer == player ? Color.green : Color.clear;
         masterPanel.color = PhotonNetwork.IsMasterClient ? Color.white : Color.clear;
-
-        readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
-
         teamPanel.color = player.GetTeam() == Game.Team.Red ? redColor : blueColor;
+        readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
     }
 
     public void ViewPlayerInfo()
     {
         Manager.UI.PlayerInfoPanel.Show(player);
+    }
+
+    public void TryCloseConnection()
+    {
+        Manager.UI.PopUpUI_Action.Show($"정말로 {player.NickName} 플레이어를 강퇴 하시겠습니까?", CloseConnection);
+    }
+
+    private void CloseConnection()
+    {
+        PhotonNetwork.CloseConnection(player);
     }
 
     public void UpdateReady(Color color)

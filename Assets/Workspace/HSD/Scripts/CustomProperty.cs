@@ -14,6 +14,7 @@ public static class CustomProperty
     private const string PASSWORD = "Password";
     private const string TURNRANDOM = "TurnRandom";
     private const string FULL = "Full";
+    private const string DAMAGETYPE = "DamageType";
     #endregion
 
     #region PlayerProperty
@@ -126,6 +127,21 @@ public static class CustomProperty
     public static bool GetFull(this Room room)
     {
         if (room.CustomProperties.TryGetValue(FULL, out object value))
+        {
+            return (bool)value;
+        }
+        return false;
+    }
+
+    public static void SetDamageType(this Room room, bool isTeamDamageApply)
+    {
+        hash[DAMAGETYPE] = isTeamDamageApply;
+        room.SetCustomProperties(hash);
+    }
+
+    public static bool GetDamageType(this Room room)
+    {
+        if(room.CustomProperties.TryGetValue(DAMAGETYPE, out object value))
         {
             return (bool)value;
         }
