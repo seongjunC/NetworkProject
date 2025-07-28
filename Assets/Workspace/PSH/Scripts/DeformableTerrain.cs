@@ -70,7 +70,7 @@ public class DeformableTerrain : MonoBehaviour
                 if (Mathf.Pow(radiusy, 2)*Mathf.Pow(x - px, 2) + Mathf.Pow(radiusx, 2)* Mathf.Pow(y - py, 2) 
                     < Mathf.Pow(radiusx, 2)* Mathf.Pow(radiusy, 2))
                 {
-                    if (x > 0 && x < deformableTexture.width && y > 0 && y < deformableTexture.height)
+                    if (x >= 0 && x <= deformableTexture.width && y >= 0 && y <= deformableTexture.height)
                     {
                         deformableTexture.SetPixel(x, y, Color.clear);
                     }
