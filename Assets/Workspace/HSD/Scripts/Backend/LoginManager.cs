@@ -35,6 +35,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         base.OnEnable();
         Manager.UI.FadeScreen.FadeOut(1);
+        Manager.Game.State = Game.State.Login;
+
         loginMessage.SetActive(false);
         loginPanel.SetActive(true);
         Init();
@@ -213,7 +215,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(.5f);
 
-        Debug.Log(connected);
         if(connected)
         {
             Manager.UI.PopUpUI.Show("이미 접속중인 계정입니다.",Color.red);
@@ -261,7 +262,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         lobbyPanel.SetActive(true);
         PhotonNetwork.JoinLobby();
         Manager.UI.FadeScreen.FadeOut(1);
-
+        Manager.Game.State = Game.State.Lobby;
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
     }
     #endregion

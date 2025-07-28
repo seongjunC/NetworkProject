@@ -96,4 +96,18 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
         Manager.UI.PopUpUI.Show("성공적으로 로그아웃 하였습니다.");
     }
+
+    private void OnApplicationQuit()
+    {
+        if (Manager.Game.State == Game.State.Login) return;
+
+        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(false).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.Log("로그아웃 시 커넥트 false 세팅 실패");
+                return;
+            }
+        });
+    }
 }
