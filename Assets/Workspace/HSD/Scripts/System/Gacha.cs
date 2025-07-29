@@ -8,7 +8,8 @@ public class Gacha : MonoBehaviour
     [SerializeField] int[] ints;
     [SerializeField] float[] chance;
     [SerializeField] bool isTen;
-    [SerializeField] private List<TankGroupData> gachaList = new();
+    [SerializeField] private TankData[] model;
+    [SerializeField] private List<TankData> gachaList = new();
 
     [ContextMenu("Gacha")]
     public void TryGacha()
@@ -26,12 +27,12 @@ public class Gacha : MonoBehaviour
             gachaList.Add(GetRandomTank());
     }
 
-    private TankGroupData GetRandomTank()
+    private TankData GetRandomTank()
     {
         float rand = Random.Range(0, ints.Length);
 
-        TankGroupData[] randomData = Manager.Data.InventoryData.tankGroups.Values.
-            Where(t => (int)t.Rank == (int)rand).ToArray();
+        TankData[] randomData = model.
+            Where(t => (int)t.rank == (int)rand).ToArray();
 
         rand = Random.Range(0, 100);
 
@@ -49,6 +50,10 @@ public class Gacha : MonoBehaviour
             }
         }
 
-        return randomData[select];
+        TankData selectTank = randomData[select];
+
+        Manager.Data.InventoryData.AddTank(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
+
+        return selectTank;
     }
 }
