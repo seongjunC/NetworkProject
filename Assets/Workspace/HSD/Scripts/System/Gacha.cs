@@ -5,11 +5,32 @@ using UnityEngine;
 
 public class Gacha : MonoBehaviour
 {
+    [Header("Setting")]
     [SerializeField] int[] ints;
     [SerializeField] float[] chance;
     [SerializeField] bool isTen;
-    [SerializeField] private TankData[] model;
-    [SerializeField] private List<TankData> gachaList = new();
+    [SerializeField] TankData[] model;
+
+    [Header("List")]
+    [SerializeField] List<Transform> cardTransform = new();
+    [SerializeField] List<TankData> gachaList = new();
+
+    [Header("Cards")]
+    [SerializeField] List<Card> cards = new();
+    [SerializeField] Transform cradContent;
+    [SerializeField] Transform cardSpawnTransform;
+    [SerializeField] GameObject cardPrefab;
+
+    [Header("Move")]
+    [SerializeField] float moveTime;
+    [SerializeField] float cardDelay;
+
+    private YieldInstruction delay;
+
+    private void Start()
+    {
+        delay = new WaitForSeconds(cardDelay);
+    }
 
     [ContextMenu("Gacha")]
     public void TryGacha()
@@ -52,8 +73,18 @@ public class Gacha : MonoBehaviour
 
         TankData selectTank = randomData[select];
 
+        GameObject cardPosObj = new GameObject("Card");
+        cardPosObj.transform.SetParent(cradContent, false);
+
+        cardTransform.Add(cardPosObj.transform);
+
         Manager.Data.InventoryData.AddTank(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
 
         return selectTank;
+    }
+
+    private void SetUpCard()
+    {
+
     }
 }

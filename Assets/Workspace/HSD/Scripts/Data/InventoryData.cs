@@ -9,11 +9,6 @@ public enum TankRank
     S, A, B, C
 }
 
-public class TankData
-{
-
-}
-
 // 레벨에 따른 탱크 갯수를 관리하는 클래스 (데이터 베이스 저장용 데이터)
 [Serializable]
 public class TankGroupData
