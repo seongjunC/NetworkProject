@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapIcon: {fileID: 6597362250269606502}
-  button: {fileID: 0}
+  button: {fileID: 7616701921621143080}
 --- !u!114 &7616701921621143080
 MonoBehaviour:
   m_ObjectHideFlags: 0

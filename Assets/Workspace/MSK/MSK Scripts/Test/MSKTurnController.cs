@@ -38,7 +38,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             List<int> randNumList = new();
             for (int i = 0; i < playerCount; i++)
             {
-                randNumList.Add(i + 1);
+                randNumList.Add(i);
             }
             for (int i = playerCount - 1; i > 0; i--)
             {
