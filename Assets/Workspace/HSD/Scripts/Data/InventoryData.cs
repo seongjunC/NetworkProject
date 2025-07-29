@@ -132,40 +132,66 @@ public class InventoryData
 
     public Task AddTank(string tankName, int level, int count)
     {
-        int current = 0;
-        if (tankGroups.TryGetValue(tankName, out var group) &&
-            group.Levels.TryGetValue(level, out var levelData))
+        var countRef = tankRef.Child(tankName).Child("Levels").Child(level.ToString()).Child("Count");
+        return countRef.RunTransaction(mutableData =>
         {
-            current = levelData.Count;
-        }
-
-        int newCount = current + count;
-        return tankRef.Child(tankName).Child("Levels").Child(level.ToString())
-            .Child("Count").SetValueAsync(newCount);
+            int current = 0;
+            if (mutableData.Value != null)
+            {
+                int.TryParse(mutableData.Value.ToString(), out current);
+            }
+            mutableData.Value = current + count;
+            return TransactionResult.Success(mutableData);
+        });
     }
 
     public Task RemoveTank(string tankName, int level, int count)
     {
-        int current = 0;
-        if (tankGroups.TryGetValue(tankName, out var group) &&
-            group.Levels.TryGetValue(level, out var levelData))
-        {
-            current = levelData.Count;
-        }
+        var countRef = tankRef.Child(tankName).Child("Levels").Child(level.ToString()).Child("Count");
 
-        int newCount = Mathf.Max(0, current - count);
-        return tankRef.Child(tankName).Child("Levels").Child(level.ToString())
-            .Child("Count").SetValueAsync(newCount);
+        return countRef.RunTransaction(mutableData =>
+        {
+            int current = 0;
+            if (mutableData.Value != null)
+                int.TryParse(mutableData.Value.ToString(), out current);
+
+            int newCount = Mathf.Max(0, current - count);
+            mutableData.Value = newCount;
+
+            return TransactionResult.Success(mutableData);
+        });
     }
 
     public Task UpgradeTank(string tankName, int currentLevel)
     {
-        return RemoveTank(tankName, currentLevel, needUpgradeCount).ContinueWithOnMainThread(task =>
+        var currentLevelRef = tankRef.Child(tankName).Child("Levels").Child(currentLevel.ToString()).Child("Count");
+
+        return currentLevelRef.RunTransaction(mutableData =>
         {
-            if (task.IsCompleted)
+            int current = 0;
+            if (mutableData.Value != null)
+                int.TryParse(mutableData.Value.ToString(), out current);
+
+            if (current < needUpgradeCount)
+                return TransactionResult.Abort();
+
+            mutableData.Value = current - needUpgradeCount;
+            return TransactionResult.Success(mutableData);
+
+        }).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted && !task.IsFaulted && !task.IsCanceled)
             {
-                int nextLevel = currentLevel + 1;
-                AddTank(tankName, nextLevel, 1);
+                var nextLevelRef = tankRef.Child(tankName).Child("Levels").Child((currentLevel + 1).ToString()).Child("Count");
+                nextLevelRef.RunTransaction(mutableData =>
+                {
+                    int nextLevelCount = 0;
+                    if (mutableData.Value != null)
+                        int.TryParse(mutableData.Value.ToString(), out nextLevelCount);
+
+                    mutableData.Value = nextLevelCount + 1;
+                    return TransactionResult.Success(mutableData);
+                });
             }
         });
     }
