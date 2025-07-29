@@ -22,6 +22,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         turnQueue.Clear();
         nextCycle.Clear();
+
         tanks = FindObjectsOfType<PlayerController>();
 
         foreach (var tank in tanks)
@@ -38,7 +39,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             List<int> randNumList = new();
             for (int i = 0; i < playerCount; i++)
             {
-                randNumList.Add(i + 1);
+                randNumList.Add(i);
             }
             for (int i = playerCount - 1; i > 0; i--)
             {
@@ -71,7 +72,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             if (nextCycle.Count <= 1)
             {
-                //photonView.RPC("RPC_GameEnded", RpcTarget.All, currentPlayer.ActorNumber);
+                photonView.RPC("RPC_GameEnded", RpcTarget.All, currentPlayer.ActorNumber);
                 return;
             }
             else

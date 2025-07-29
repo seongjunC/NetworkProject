@@ -5,18 +5,37 @@ using UnityEngine.UI;
 
 public class TestBattleManager : MonoBehaviourPun
 {
-    [SerializeField] private List<Transform> _spawnPoint;
+    // [SerializeField] private List<Transform> _spawnPoint;
     [SerializeField] Button _turnEndButton;
     [SerializeField] private MSKTurnController _turnController;
     private PlayerController _playerController;
     private TestNetworkManager _networkManager;
-    
+
+
+    #region Unity LifeCycle
     private void Start()
     {
         _turnEndButton.onClick.AddListener(TestTurnEnd);
-        PlayerSpawn();
+       // PlayerSpawn();
+
+    }
+    private void OnEnable()
+    {
+        MapManager.OnMapLoaded += OnMapGenerated;
+    }
+
+    private void OnDisable()
+    {
+        MapManager.OnMapLoaded -= OnMapGenerated;
+    }
+
+    #endregion
+    //  맵 생성이후 플레이어를 등록하도록
+    private void OnMapGenerated(DeformableTerrain terrain)
+    {
         _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
     }
+
     private void TestTurnEnd()
     {
         if (_playerController != null)
@@ -37,6 +56,7 @@ public class TestBattleManager : MonoBehaviourPun
         _playerController.OnPlayerAttacked += PlayerAttacked;
     }
 
+    /*
     private void PlayerSpawn()
     {
         if (!PhotonNetwork.IsMasterClient)
@@ -55,7 +75,7 @@ public class TestBattleManager : MonoBehaviourPun
             // 방법 1 스폰 시 탱크의 정보를 가져와서 스폰
             // 방법 2 프리팹 자식으로 4개의 탱크를 가지고, 플레이어가 선택한 탱크만 활성화
         }
-    }
+    }*/
 
     [PunRPC]
     //    private void RPC_SpawnTank(Vector3 spawnPos, int tankTypeIndex)
