@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -186,12 +187,11 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         Manager.Database.Init();
 
-        var task = Manager.Database.userRef.GetValueAsync();
+        var task = Manager.Database.root.Child("UserData").Child(user.UserId).Child("Data").GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
-
         bool connected = false;
 
-        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
+        Manager.Database.root.Child("UserData").Child(user.UserId).Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
@@ -237,19 +237,19 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         var snapshot = task.Result;
         string json = snapshot?.GetRawJsonValue();
-        Debug.Log("Firebase 유저 데이터: " + json);
+        PlayerData newData = JsonUtility.FromJson<PlayerData>(json);
 
-        if (string.IsNullOrEmpty(json))
+        if (newData == null || string.IsNullOrEmpty(newData.Name))
         {
-            var newData = new PlayerData();
+            newData = new PlayerData();
             Manager.Data.PlayerData = newData;
 
             string saveJson = JsonUtility.ToJson(newData);
-            Manager.Database.userRef.SetRawJsonValueAsync(saveJson);
+            Manager.Database.root.Child("UserData").Child(user.UserId).Child("Data").SetRawJsonValueAsync(saveJson);
         }
         else
         {
-            Manager.Data.PlayerData = JsonUtility.FromJson<PlayerData>(json);
+            Manager.Data.PlayerData = newData;
         }
 
         PhotonNetwork.LocalPlayer.SetUID(user.UserId);
@@ -264,6 +264,10 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Manager.UI.FadeScreen.FadeOut(1);
         Manager.Game.State = Game.State.Lobby;
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
+        Manager.Data.InventoryData = new();
+
+        if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
+            Manager.UI.NickNameSelectPanel.Show();
     }
     #endregion
 

@@ -32,13 +32,13 @@ public class PlayerInfo
             }
         }
 
-        items[items.Length] = item;
         int itemNum = ItemRemove();
         if (itemNum == 0 || itemNum == 1)
         {
             items[itemNum] = item;
         }
     }
+
     public int ItemRemove()
     {
         // TODO : 삭제할 item 위치에 따라 다른 값을 리턴 

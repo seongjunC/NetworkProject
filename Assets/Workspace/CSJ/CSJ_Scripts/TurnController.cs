@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Firebase.Database;
+using Firebase.Extensions;
+using Game;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -8,13 +11,19 @@ using UnityEngine.Events;
 
 public class TurnController : MonoBehaviourPunCallbacks
 {
+    [Header("보상")]
+    [SerializeField] int winnerTeamReward = 100;
+    [SerializeField] int loserTeamReward = 50;
+    [Header("턴 제한")]
+    [SerializeField] float turnLimit = 30f;
     private Queue<PlayerInfo> turnQueue = new();
     private List<PlayerInfo> nextCycle = new();
+    private int blueRemain;
+    private int redRemain;
     PlayerController[] tanks;
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
     private Room room;
-    [SerializeField] float turnLimit = 30f;
     private float turnTimer = 0f;
     private bool isTurnRunning = false;
 
@@ -38,7 +47,6 @@ public class TurnController : MonoBehaviourPunCallbacks
 
         int playerCount = PhotonNetwork.CountOfPlayers;
         room = PhotonNetwork.CurrentRoom;
-        // 추후 연계하여 조절
         if (CustomProperty.GetTurnRandom(room))
         {
             List<int> randNumList = new();
@@ -57,6 +65,8 @@ public class TurnController : MonoBehaviourPunCallbacks
             {
                 Player nowPlayer = PhotonNetwork.PlayerList[randNumList[i]];
                 turnQueue.Enqueue(new PlayerInfo(nowPlayer));
+                if (CustomProperty.GetTeam(nowPlayer) == Game.Team.Red) redRemain++;
+                else blueRemain++;
             }
         }
         else
@@ -72,21 +82,19 @@ public class TurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
-        // TODO : 로직에서 turnQueue가 1, nextCycle이 0일때 문제 발생 -> 수정 예정 
-        if (turnQueue.Count == 0)
+        if (blueRemain <= 0 || redRemain <= 0)
         {
-            if (nextCycle.Count <= 1)
-            {
-                Debug.Log("게임 종료");
-                photonView.RPC("RPC_GameEnded", RpcTarget.All);
-                return;
-            }
-            else
-            {
-                photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
-                turnQueue = new Queue<PlayerInfo>(nextCycle);
-                nextCycle.Clear();
-            }
+            Team winnerTeam = blueRemain == 0 ? Team.Blue : Team.Red;
+            Debug.Log($"게임 종료!\n {(winnerTeam == Team.Red ? "레드" : "블루")}팀의 승리");
+            photonView.RPC("RPC_GameEnded", RpcTarget.All, winnerTeam);
+            return;
+        }
+
+        if (turnQueue.Count <= 0)
+        {
+            photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
+            turnQueue = new Queue<PlayerInfo>(nextCycle);
+            nextCycle.Clear();
         }
 
         currentPlayer = turnQueue.Dequeue();
@@ -101,6 +109,8 @@ public class TurnController : MonoBehaviourPunCallbacks
 
     }
 
+
+    // TODO: 추후 아이템 생성 등과 연결
     [PunRPC]
     private void RPC_CycleEnd()
     {
@@ -118,16 +128,42 @@ public class TurnController : MonoBehaviourPunCallbacks
         }
     }
 
+    // TODO : 추후 UI, FireBase와 연결
     [PunRPC]
-    private void RPC_GameEnded()
+    private void RPC_GameEnded(Team winnerTeam)
     {
         Debug.Log("게임 종료!");
+        Team myTeam = CustomProperty.GetTeam(PhotonNetwork.LocalPlayer);
+        int reward = 0;
+        if (myTeam == winnerTeam)
+        {
+            reward = winnerTeamReward;
+        }
+        else
+        {
+            reward = loserTeamReward;
+        }
+
+        PlayerData data = Manager.Data.PlayerData;
+        Manager.Database.userRef.Child("gem")
+        .SetValueAsync(data.Gem + reward).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                data.Gem += reward;
+            }
+            else
+            {
+                Debug.LogError("저장 실패");
+            }
+        });
 
         // UI 교체
         // 게임 오버 UI 출력
         // Firebase에 게임 결과를 업로드
     }
 
+    // 이부분 실제로 RPC 받는지 확인
     [PunRPC]
     private void RPC_PlayerDead()
     {
@@ -141,13 +177,11 @@ public class TurnController : MonoBehaviourPunCallbacks
         {
             Debug.Log("턴 시작");
             EnableCurrentPlayer();
-
         }
     }
 
     void EnableCurrentPlayer()
     {
-
         foreach (PlayerController player in tanks)
         {
             PhotonView view = player.GetComponent<PhotonView>();
