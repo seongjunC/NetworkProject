@@ -41,12 +41,17 @@ public class PlayerController : MonoBehaviourPun
                 battleManager.RegisterPlayer(this);
                 uiManager.RegisterPlayer(this);
             }
+            PlayerSetUp();
         }
         //  닉네임 초기화,
         _textMeshPro.text = photonView.IsMine ? PhotonNetwork.NickName : photonView.Owner.NickName;
-        _textMeshPro.text = photonView.IsMine 
-            ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>" 
+        _textMeshPro.text = photonView.IsMine
+            ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>"
             : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
+    }
+    private void PlayerSetUp()
+    {
+        myInfo = new PlayerInfo(photonView.Owner);
     }
 
     private void FixedUpdate()
@@ -129,6 +134,7 @@ public class PlayerController : MonoBehaviourPun
     {
         Destroy(gameObject);
         OnPlayerAttacked -= OnPlayerAttacked;
+        photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         _isDead = true;
     }
 
