@@ -118,7 +118,6 @@ public class PlayerController : MonoBehaviourPun
     public void PlayerDead()
     {
         if (_isDead) return;
-
         _isDead = true;
         OnPlayerAttacked = null;
         OnPlayerDied?.Invoke();

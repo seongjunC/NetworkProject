@@ -1,4 +1,5 @@
 using Firebase.Database;
+using Firebase.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ public class PlayerData
     public string Name;
     public int Win;
     public int Lose;
-    public int Gem;
+    public int Gem { get; private set; }
 
     public event Action<string> OnNameChanged;
     public event Action<int> OnWinChanged;
@@ -80,5 +81,24 @@ public class PlayerData
                 OnGemChanged?.Invoke(Gem);
             }
         }
+    }
+
+    // 전역적으로 젬 획득 관련 메서드가 필요해보여서 추가했습니다.
+    // 추후 논의 후 이전 가능성이 있습니다.
+    public void GemGain(int amount)
+    {
+        Manager.Database.userRef.Child("gem")
+        .SetValueAsync(Gem + amount).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                Gem += amount;
+                Debug.Log($"{amount}만큼의 Gem을 획득하였습니다.\n 현재 Gem의 개수 {Gem}");
+            }
+            else
+            {
+                Debug.LogError("저장 실패");
+            }
+        });
     }
 }
