@@ -93,7 +93,32 @@ public class InventoryData
     }
 
     private void OnTankGroupAdded(object sender, ChildChangedEventArgs args) => UpdateTankGroup(args.Snapshot);
-    private void OnTankGroupChanged(object sender, ChildChangedEventArgs args) => UpdateTankGroup(args.Snapshot);
+    private void OnTankGroupChanged(object sender, ChildChangedEventArgs args)
+    {
+        string tankName = args.Snapshot.Key;
+        if (!tankGroups.TryGetValue(tankName, out var groupData))
+        {
+            UpdateTankGroup(args.Snapshot);
+            return;
+        }
+
+        var rankStr = args.Snapshot.Child("Rank")?.Value?.ToString();
+        if (!string.IsNullOrEmpty(rankStr) && Enum.TryParse(rankStr, out TestTankRank rank))
+        {
+            groupData.Rank = rank;
+        }
+
+        foreach (var levelSnap in args.Snapshot.Child("Levels").Children)
+        {
+            if (int.TryParse(levelSnap.Key, out int level))
+            {
+                int count = int.TryParse(levelSnap.Child("Count")?.Value?.ToString(), out int cnt) ? cnt : 0;
+                groupData.Levels[level] = new TankLevelData { Count = count };
+
+                OnTankCountUpdated?.Invoke(tankName, level, count);
+            }
+        }
+    }
     private void OnTankGroupRemoved(object sender, ChildChangedEventArgs args)
     {
         string tankName = args.Snapshot.Key;
