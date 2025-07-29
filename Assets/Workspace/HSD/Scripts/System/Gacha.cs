@@ -6,7 +6,6 @@ using UnityEngine;
 public class Gacha : MonoBehaviour
 {
     [Header("Setting")]
-    [SerializeField] int[] ints;
     [SerializeField] float[] chance;
     [SerializeField] bool isTen;
     [SerializeField] TankData[] model;
@@ -32,10 +31,18 @@ public class Gacha : MonoBehaviour
         delay = new WaitForSeconds(cardDelay);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            StartCoroutine(SetUpCardRoutine());
+    }
+
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
+        cardTransform.Clear();
         gachaList.Clear();
+        cards.Clear();
 
         if (isTen)
         {
@@ -50,12 +57,7 @@ public class Gacha : MonoBehaviour
 
     private TankData GetRandomTank()
     {
-        float rand = Random.Range(0, ints.Length);
-
-        TankData[] randomData = model.
-            Where(t => (int)t.rank == (int)rand).ToArray();
-
-        rand = Random.Range(0, 100);
+        float rand = Random.Range(0, 100);
 
         int select = 0;
 
@@ -71,20 +73,30 @@ public class Gacha : MonoBehaviour
             }
         }
 
-        TankData selectTank = randomData[select];
+        TankData[] randomData = model.
+            Where(t => (int)t.rank == select).ToArray();
+
+        TankData selectTank = randomData[Random.Range(0, randomData.Length)];
 
         GameObject cardPosObj = new GameObject("Card");
         cardPosObj.transform.SetParent(cradContent, false);
 
         cardTransform.Add(cardPosObj.transform);
 
+        Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity).GetComponent<Card>();        
+        cards.Add(card);
+
         Manager.Data.InventoryData.AddTank(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
 
         return selectTank;
     }
 
-    private void SetUpCard()
+    private IEnumerator SetUpCardRoutine()
     {
-
+        for (int i = 0;i < cards.Count; i++)
+        {
+            cards[i].SetUp(gachaList[i], cardTransform[i], moveTime);
+            yield return delay;
+        }
     }
 }
