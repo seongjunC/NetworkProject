@@ -55,7 +55,7 @@ public class Card : MonoBehaviour
         float timer = 0;
         Vector2 start = transform.position;
 
-        while (timer > _moveTime)
+        while (timer < _moveTime)
         {
             Vector2.Lerp(start, _transform.position, timer / _moveTime);
             timer += Time.deltaTime;
