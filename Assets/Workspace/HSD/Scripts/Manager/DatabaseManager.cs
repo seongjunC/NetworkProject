@@ -10,6 +10,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
 {   
     public DatabaseReference root {  get; private set; }
     public DatabaseReference userRef { get; private set; }
+    public DatabaseReference userDataRef { get; private set; }
 
     #region LifeCycle
 
@@ -19,12 +20,13 @@ public class DatabaseManager : Singleton<DatabaseManager>
     {
         root    = FirebaseManager.Database.RootReference;
         userRef = root.Child("UserData").Child(FirebaseManager.Auth.CurrentUser.UserId);
+        userDataRef = root.Child("UserData").Child(FirebaseManager.Auth.CurrentUser.UserId).Child("Data");
     }
 
     #region EventHandler
     public void RegisterUserDataEvent(UserDataType dataType, EventHandler<ValueChangedEventArgs> eventHandler)
     {
-        DatabaseReference dataRef = userRef.Child(dataType.ToString());
+        DatabaseReference dataRef = userDataRef.Child(dataType.ToString());
 
         if (dataRef == null) return;
 
@@ -33,7 +35,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
     public void UnRegisterUserDataEvent(UserDataType dataType, EventHandler<ValueChangedEventArgs> eventHandler)
     {
-        DatabaseReference dataRef = userRef.Child(dataType.ToString());
+        DatabaseReference dataRef = userDataRef.Child(dataType.ToString());
 
         if (dataRef == null) return;
 
