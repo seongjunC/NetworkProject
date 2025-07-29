@@ -21,15 +21,15 @@ public class Card : MonoBehaviour
     [SerializeField] Color bColor;
     [SerializeField] Color cColor;
 
-    public void SetUp(TankData _tankData, Transform _transform, float _moveTime)
+    public void SetUp(TankData tankData, Transform targetTransform, float moveTime)
     {
-        tankData = _tankData;
+        this.tankData = tankData;
 
-        tankName.text = tankData.tankName;
-        tankIcon.sprite = tankData.icon;
-        rankImage.color = GetRankColor(tankData.rank);
+        tankName.text = this.tankData.tankName;
+        tankIcon.sprite = this.tankData.icon;
+        rankImage.color = GetRankColor(this.tankData.rank);
 
-        StartCoroutine(MoveRoutine(_transform, _moveTime));
+        StartCoroutine(MoveRoutine(targetTransform, moveTime));
     }
 
     private Color GetRankColor(TankRank rank)
@@ -50,17 +50,20 @@ public class Card : MonoBehaviour
         card.interactable = false;
     }
 
-    private IEnumerator MoveRoutine(Transform _transform, float _moveTime)
+    private IEnumerator MoveRoutine(Transform targetTransform, float moveTime)
     {
         float timer = 0;
         Vector2 start = transform.position;
+        Vector3 end = targetTransform.position;
 
-        while (timer < _moveTime)
+        while (timer < moveTime)
         {
-            Vector2.Lerp(start, _transform.position, timer / _moveTime);
+            transform.position = Vector2.Lerp(start, end, timer / moveTime);
             timer += Time.deltaTime;
 
             yield return null;
         }
+
+        transform.position = end;
     }
 }
