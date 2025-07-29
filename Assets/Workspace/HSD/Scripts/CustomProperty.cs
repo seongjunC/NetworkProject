@@ -64,8 +64,8 @@ public static class CustomProperty
 
     public static Team GetTeam(this Player player)
     {
-        if(player.CustomProperties.TryGetValue(TEAM, out object value))
-        { 
+        if (player.CustomProperties.TryGetValue(TEAM, out object value))
+        {
             return (Team)value;
         }
         return Team.Wait;

@@ -10,16 +10,19 @@ public class PlayerData
     public string Name;
     public int Win;
     public int Lose;
+    public int Gem;
 
     public event Action<string> OnNameChanged;
     public event Action<int> OnWinChanged;
     public event Action<int> OnLoseChanged;
+    public event Action<int> OnGemChanged;
 
     public PlayerData()
     {
         Name = default;
         Win = 0;
         Lose = 0;
+        Gem = 0;
     }
 
     public void Init()
@@ -27,6 +30,7 @@ public class PlayerData
         Manager.Database.RegisterUserDataEvent(Database.UserDataType.Name, UpdateName);
         Manager.Database.RegisterUserDataEvent(Database.UserDataType.Win, UpdateWin);
         Manager.Database.RegisterUserDataEvent(Database.UserDataType.Lose, UpdateLose);
+        Manager.Database.RegisterUserDataEvent(Database.UserDataType.Gem, UpdateGem);
     }
 
     private void UpdateName(object sender, ValueChangedEventArgs arg)
@@ -39,7 +43,7 @@ public class PlayerData
     }
     private void UpdateWin(object sender, ValueChangedEventArgs arg)
     {
-        if(arg.Snapshot.Exists)
+        if (arg.Snapshot.Exists)
         {
             object value = arg.Snapshot.Value;
 
@@ -52,14 +56,28 @@ public class PlayerData
     }
     private void UpdateLose(object sender, ValueChangedEventArgs arg)
     {
-        if(arg.Snapshot.Exists)
+        if (arg.Snapshot.Exists)
         {
             object value = arg.Snapshot.Value;
 
-            if(value is long longValue)
+            if (value is long longValue)
             {
                 Lose = (int)longValue;
                 OnLoseChanged?.Invoke(Lose);
+            }
+        }
+    }
+
+    private void UpdateGem(object sender, ValueChangedEventArgs arg)
+    {
+        if (arg.Snapshot.Exists)
+        {
+            object value = arg.Snapshot.Value;
+
+            if (value is long longValue)
+            {
+                Lose = (int)longValue;
+                OnGemChanged?.Invoke(Gem);
             }
         }
     }

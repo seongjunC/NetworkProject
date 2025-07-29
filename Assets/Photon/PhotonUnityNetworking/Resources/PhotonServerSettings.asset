@@ -50,6 +50,7 @@ MonoBehaviour:
   - StartTurnForPlayer
   - RPC_CycleEnd
   - Kick_RPC
+  - OnHit
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

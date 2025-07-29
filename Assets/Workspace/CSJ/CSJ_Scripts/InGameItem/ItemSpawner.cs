@@ -44,8 +44,6 @@ public class ItemSpawner : MonoBehaviourPun
             i++;
         }
         return itemList[--i];
-
-
     }
 
 

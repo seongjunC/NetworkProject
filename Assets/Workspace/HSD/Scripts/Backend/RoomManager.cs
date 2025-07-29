@@ -5,7 +5,6 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -84,22 +83,22 @@ public class RoomManager : MonoBehaviourPun
     #region EventSubscribe
     private void Subscribe()
     {
-        exitButton.onClick      .AddListener(LeaveRoom);
-        readyButton.onClick     .AddListener(Ready);
-        startButton.onClick     .AddListener(GameStart);
-        mapCloseButton.onClick  .AddListener(CloseMapPanel);
-        mapChangeButton.onClick .AddListener(OpenMapPanel);
+        exitButton.onClick.AddListener(LeaveRoom);
+        readyButton.onClick.AddListener(Ready);
+        startButton.onClick.AddListener(GameStart);
+        mapCloseButton.onClick.AddListener(CloseMapPanel);
+        mapChangeButton.onClick.AddListener(OpenMapPanel);
         damageTypeButton.onClick.AddListener(ChangeDamageType);
-        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);        
+        turnSwitchButton.onClick.AddListener(TurnTypeSwitch);
     }
 
     private void UnSubscribe()
     {
-        exitButton.onClick      .RemoveListener(LeaveRoom);
-        readyButton.onClick     .RemoveListener(Ready);
-        startButton.onClick     .RemoveListener(GameStart);
-        mapCloseButton.onClick  .RemoveListener(CloseMapPanel);
-        mapChangeButton.onClick .RemoveListener(OpenMapPanel);
+        exitButton.onClick.RemoveListener(LeaveRoom);
+        readyButton.onClick.RemoveListener(Ready);
+        startButton.onClick.RemoveListener(GameStart);
+        mapCloseButton.onClick.RemoveListener(CloseMapPanel);
+        mapChangeButton.onClick.RemoveListener(OpenMapPanel);
         damageTypeButton.onClick.RemoveListener(ChangeDamageType);
         turnSwitchButton.onClick.RemoveListener(TurnTypeSwitch);
     }
@@ -140,7 +139,7 @@ public class RoomManager : MonoBehaviourPun
     }
     [PunRPC]
     private void Kick_RPC()
-    {        
+    {
         StartCoroutine(KickRoutine());
     }
     private IEnumerator KickRoutine()
@@ -164,7 +163,7 @@ public class RoomManager : MonoBehaviourPun
 
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
-    {        
+    {
         if (!playerSlotDic.ContainsKey(player.ActorNumber))
         {
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
@@ -183,10 +182,10 @@ public class RoomManager : MonoBehaviourPun
 
     private void SetButtonInteractable()
     {
-        mapChangeButton.interactable    = PhotonNetwork.IsMasterClient;
-        gameSettingButton.interactable  = PhotonNetwork.IsMasterClient;
+        mapChangeButton.interactable = PhotonNetwork.IsMasterClient;
+        gameSettingButton.interactable = PhotonNetwork.IsMasterClient;
 
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             startButton.gameObject.SetActive(true);
             readyButton.gameObject.SetActive(false);
@@ -195,7 +194,7 @@ public class RoomManager : MonoBehaviourPun
         {
             startButton.gameObject.SetActive(false);
             readyButton.gameObject.SetActive(true);
-        }        
+        }
     }
 
     private void CreatePlayerSlot()
@@ -248,7 +247,7 @@ public class RoomManager : MonoBehaviourPun
             return redPlayerContent;
         else if (team == Team.Blue)
             return bluePlayerContent;
-        else 
+        else
             return waitPlayerContent;
     }
     private void PlayerSlotSetParent(Player player)
@@ -275,7 +274,7 @@ public class RoomManager : MonoBehaviourPun
 
     private void ReadyCheck(Player player)
     {
-        if(player.CustomProperties.TryGetValue("Ready", out object value))
+        if (player.CustomProperties.TryGetValue("Ready", out object value))
         {
             playerSlotDic[player.ActorNumber].SetUp(player);
             UpdateReadyCountText();
@@ -303,18 +302,18 @@ public class RoomManager : MonoBehaviourPun
     }
     private void CheckButtons()
     {
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             redTeamChangeButton.interactable = true;
             blueTeamChangeButton.interactable = true;
             waitTeamChangeButton.interactable = true;
-        }          
+        }
         else
         {
             redTeamChangeButton.interactable = !isReady;
             blueTeamChangeButton.interactable = !isReady;
             waitTeamChangeButton.interactable = !isReady;
-        }            
+        }
 
         startButton.interactable = currentReadyCount == PhotonNetwork.CurrentRoom.MaxPlayers;
     }
@@ -324,17 +323,17 @@ public class RoomManager : MonoBehaviourPun
     private void MapChange()
     {
         mapIdx = PhotonNetwork.CurrentRoom.GetMap();
-        mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}"); 
+        mapImage.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)mapIdx).ToString()}");
     }
 
     private void CreateMapSlot()
     {
-        for (int i = 0; i <= (int)MapType.Length-1; i ++)
+        for (int i = 0; i <= (int)MapType.Length - 1; i++)
         {
             GameObject obj = Instantiate(mapPrefab, mapContent);
             MapSlot slot = obj.GetComponent<MapSlot>();
             slot.SetUp((MapType)i);
-        }        
+        }
     }
     private void OpenMapPanel()
     {
@@ -362,7 +361,7 @@ public class RoomManager : MonoBehaviourPun
     #region TeamDamageType
     private void ChangeDamageType()
     {
-        PhotonNetwork.CurrentRoom.SetDamageType(!PhotonNetwork.CurrentRoom.GetDamageType());        
+        PhotonNetwork.CurrentRoom.SetDamageType(!PhotonNetwork.CurrentRoom.GetDamageType());
     }
     private void ChangeDamageTypeText()
     {
@@ -374,13 +373,13 @@ public class RoomManager : MonoBehaviourPun
 
     private void GameStart()
     {
-        if(currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
+        if (currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             Debug.Log("방에 인원이 부족하거나 모든 플레이어가 레디하지 않았습니다.");
             return;
         }
 
-        if(teamManager.GetWaitPlayerCount() > 0)
+        if (teamManager.GetWaitPlayerCount() > 0)
         {
             Manager.UI.PopUpUI.Show("누군가가 대기자에 포함되어 있습니다.");
             return;
@@ -391,7 +390,7 @@ public class RoomManager : MonoBehaviourPun
 
     #region PhotonCallbacks
     public void OnJoinedRoom()
-    {        
+    {
         PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         roomName.text = PhotonNetwork.CurrentRoom.Name;
         Manager.UI.FadeScreen.FadeOut(.5f);
@@ -400,12 +399,12 @@ public class RoomManager : MonoBehaviourPun
         UpdateAllPlayerSlot();
         UpdateReadyCountText();
         ReadyPropertyUpdate();
-        UpdateTurnType();        
+        UpdateTurnType();
     }
 
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
-        CreatePlayerSlot(newPlayer);        
+        CreatePlayerSlot(newPlayer);
     }
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
