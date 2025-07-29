@@ -90,7 +90,6 @@ public class InventoryData
         });
 
     }
-
     private void OnTankGroupAdded(object sender, ChildChangedEventArgs args) => UpdateTankGroup(args.Snapshot);
     private void OnTankGroupChanged(object sender, ChildChangedEventArgs args)
     {
@@ -225,10 +224,13 @@ public class InventoryData
             int current = 0;
             if (mutableData.Value != null)
                 int.TryParse(mutableData.Value.ToString(), out current);
-            Debug.Log(mutableData.Value);
+
             mutableData.Value = current + count;
             return TransactionResult.Success(mutableData);
-        });
+        }).ContinueWithOnMainThread(task =>
+        {
+            return UpgradeTank(tankName);
+        });        
     }
 
     public Task RemoveTank(string tankName, int level, int count)
@@ -250,37 +252,58 @@ public class InventoryData
         });
     }
 
-    public Task UpgradeTank(string tankName, int currentLevel)
+    public Task UpgradeTank(string tankName)
     {
-        var currentLevelRef = tankRef.Child(tankName).Child("Levels").Child(currentLevel.ToString()).Child("Count");
-
-        return currentLevelRef.RunTransaction(mutableData =>
+        return tankRef.Child(tankName).Child("Levels").GetValueAsync().ContinueWithOnMainThread(task =>
         {
-            int current = 0;
-            if (mutableData.Value != null)
-                int.TryParse(mutableData.Value.ToString(), out current);
+            if (!task.IsCompleted || task.IsFaulted || task.IsCanceled)
+                return;
 
-            if (current < needUpgradeCount)
-                return TransactionResult.Abort();
+            var snapshot = task.Result;
+            if (!snapshot.Exists) return;
 
-            mutableData.Value = current - needUpgradeCount;
-            return TransactionResult.Success(mutableData);
-
-        }).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted && !task.IsFaulted && !task.IsCanceled)
+            foreach (var levelNode in snapshot.Children)
             {
-                var nextLevelRef = tankRef.Child(tankName).Child("Levels").Child((currentLevel + 1).ToString()).Child("Count");
-                nextLevelRef.RunTransaction(mutableData =>
-                {
-                    int nextLevelCount = 0;
-                    if (mutableData.Value != null)
-                        int.TryParse(mutableData.Value.ToString(), out nextLevelCount);
+                if (!int.TryParse(levelNode.Key, out int level))
+                    continue;
 
-                    mutableData.Value = nextLevelCount + 1;
+                int currentLevel = level; // 고유값
+
+                var currentRef = tankRef.Child(tankName).Child("Levels").Child(currentLevel.ToString()).Child("Count");
+
+                currentRef.RunTransaction(mutableData =>
+                {
+                    int count = 0;
+                    if (mutableData.Value != null)
+                        int.TryParse(mutableData.Value.ToString(), out count);
+
+                    if (count < needUpgradeCount)
+                        return TransactionResult.Abort();
+
+                    mutableData.Value = count - needUpgradeCount;
                     return TransactionResult.Success(mutableData);
+
+                }).ContinueWithOnMainThread(txTask =>
+                {
+                    if (txTask.IsCompleted && !txTask.IsFaulted && !txTask.IsCanceled)
+                    {
+                        // 성공적으로 감소했으면 다음 레벨 증가
+                        int nextLevel = currentLevel + 1;
+                        var nextRef = tankRef.Child(tankName).Child("Levels").Child(nextLevel.ToString()).Child("Count");
+
+                        nextRef.RunTransaction(mutableData =>
+                        {
+                            int nextCount = 0;
+                            if (mutableData.Value != null)
+                                int.TryParse(mutableData.Value.ToString(), out nextCount);
+
+                            mutableData.Value = nextCount + 1;
+                            return TransactionResult.Success(mutableData);
+                        });
+                    }
                 });
             }
+            UpgradeTank(tankName);
         });
     }
 }

@@ -9,9 +9,6 @@ public class DataManager : Singleton<DataManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
-            InventoryData = new();
-
         if (Input.GetKeyDown(KeyCode.V))
             InventoryData.AddTank("A_Tank",1,1);
     }
