@@ -4,18 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-public enum TestTankRank
+public enum TankRank
 {
     S, A, B, C
 }
 
+public class TankData
+{
 
-// 레벨에 따른 탱크 갯수를 관리하는 클래스
+}
+
+// 레벨에 따른 탱크 갯수를 관리하는 클래스 (데이터 베이스 저장용 데이터)
 [Serializable]
 public class TankGroupData
 {
     public string TankName;
-    public TestTankRank Rank;
+    public TankRank Rank;
     public Dictionary<int, int> Levels = new();
 }
 
@@ -54,14 +58,6 @@ public class InventoryData
 
         InitData().ContinueWithOnMainThread(task =>
         {
-            Manager.Database.userRef.Child("Tanks").GetValueAsync().ContinueWithOnMainThread(task =>
-            {
-                if (task.IsFaulted || task.IsCanceled)
-                {
-                    tankRef = Manager.Database.userRef.Child("Tanks");
-                    InitInventory();
-                }
-            });
             InitInventory();
         });
     }
@@ -101,7 +97,7 @@ public class InventoryData
         }
 
         var rankStr = args.Snapshot.Child("Rank")?.Value?.ToString();
-        if (!string.IsNullOrEmpty(rankStr) && Enum.TryParse(rankStr, out TestTankRank rank))
+        if (!string.IsNullOrEmpty(rankStr) && Enum.TryParse(rankStr, out TankRank rank))
         {
             groupData.Rank = rank;
         }
@@ -132,7 +128,7 @@ public class InventoryData
         string tankName = snapshot.Key; // 탱크 이름 가져옴
 
         var rankStr = snapshot.Child("Rank")?.Value?.ToString();    // 랭크 가져옴
-        var rankParsed = Enum.TryParse(rankStr, out TestTankRank rank) ? rank : TestTankRank.C;
+        var rankParsed = Enum.TryParse(rankStr, out TankRank rank) ? rank : TankRank.C;
 
         // 가져온 데이터를 기반으로 그룹을 만들어줌
         var groupData = new TankGroupData
@@ -161,7 +157,7 @@ public class InventoryData
     private Task CreateTankGroupData(string tankName, int level)
     {
         // 랭크는 추후 프리팹에서 key값으로 가져옴
-        TestTankRank rank = TestTankRank.C;
+        TankRank rank = TankRank.C;
 
         return tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
@@ -195,7 +191,7 @@ public class InventoryData
         });
     }
 
-    public Task AddTank(string tankName, int level, int count, TestTankRank rank = TestTankRank.C)
+    public Task AddTank(string tankName, int level, int count, TankRank rank = TankRank.C)
     {
         var countRef = tankRef.Child(tankName).Child("Levels").Child(level.ToString()).Child("Count");
 

@@ -7,7 +7,8 @@ using UnityEngine;
 public class TankData
 {
     public string tankName;
-    public int count;
-    public int rank;
+    public TankRank rank;
+    public Sprite icon;
     public int level;
+    public int count;
 }
