@@ -37,7 +37,7 @@ public class CouponController : MonoBehaviour
             {
                 isSame = true;
 
-                Manager.Database.userRef.Child(couponKey.text).GetValueAsync().ContinueWithOnMainThread(task =>
+                Manager.Database.userRef.Child("Coupons").Child(couponKey.text).GetValueAsync().ContinueWithOnMainThread(task =>
                 {
                     if (task.Result.Exists)
                     {
@@ -51,7 +51,7 @@ public class CouponController : MonoBehaviour
                     }
                     else
                     {
-                        Manager.Database.userRef.Child(couponKey.text).SetRawJsonValueAsync(JsonUtility.ToJson(coupon)).ContinueWithOnMainThread(task =>
+                        Manager.Database.userRef.Child("Coupons").Child(couponKey.text).SetRawJsonValueAsync(JsonUtility.ToJson(coupon)).ContinueWithOnMainThread(task =>
                         {
                             if (task.IsCanceled || task.IsFaulted)
                             {
@@ -88,7 +88,7 @@ public class CouponController : MonoBehaviour
         Debug.Log($"쿠폰을 입력하여 {newCoupon.Amount} 만큼의 재화를 획득하였습니다!");
         newCoupon.IsUse = true;
 
-        Manager.Database.userRef.Child(newCoupon.CouponKey).SetRawJsonValueAsync(JsonUtility.ToJson(newCoupon)).ContinueWithOnMainThread(task =>
+        Manager.Database.userRef.Child("Coupons").Child(newCoupon.CouponKey).SetRawJsonValueAsync(JsonUtility.ToJson(newCoupon)).ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted)
             {
