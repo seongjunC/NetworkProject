@@ -11,11 +11,19 @@ using UnityEngine.Events;
 
 public class TurnController : MonoBehaviourPunCallbacks
 {
+    // 배틀 씬 내부에서 전역 접근 설계
+    public static TurnController Instance { get; private set; }
+
     [Header("보상")]
     [SerializeField] int winnerTeamReward = 100;
     [SerializeField] int loserTeamReward = 50;
     [Header("턴 제한")]
     [SerializeField] float turnLimit = 30f;
+    [Header("아이템 생성기")]
+    [SerializeField] ItemSpawner itemSpawner;
+    [Header("사이클 종료시 생성할 아이템의 개수")]
+    [SerializeField] int itemCount;
+
     private Queue<PlayerInfo> turnQueue = new();
     private List<PlayerInfo> nextCycle = new();
     private int blueRemain;
@@ -26,6 +34,25 @@ public class TurnController : MonoBehaviourPunCallbacks
     private Room room;
     private float turnTimer = 0f;
     private bool isTurnRunning = false;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     void Update()
     {
@@ -114,7 +141,10 @@ public class TurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_CycleEnd()
     {
-
+        for (int i = 0; i < itemCount; i++)
+        {
+            itemSpawner.SpawnRandomItem();
+        }
     }
 
     [PunRPC]
@@ -134,7 +164,8 @@ public class TurnController : MonoBehaviourPunCallbacks
     {
         Debug.Log("게임 종료!");
         Team myTeam = CustomProperty.GetTeam(PhotonNetwork.LocalPlayer);
-        int reward = 0;
+        PlayerData data = Manager.Data.PlayerData;
+        int reward;
         if (myTeam == winnerTeam)
         {
             reward = winnerTeamReward;
@@ -143,25 +174,13 @@ public class TurnController : MonoBehaviourPunCallbacks
         {
             reward = loserTeamReward;
         }
+        data.GemGain(reward);
 
-        PlayerData data = Manager.Data.PlayerData;
-        Manager.Database.userRef.Child("gem")
-        .SetValueAsync(data.Gem + reward).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted)
-            {
-                data.Gem += reward;
-            }
-            else
-            {
-                Debug.LogError("저장 실패");
-            }
-        });
-
-        // UI 교체
+        // TODO : UI 교체
         // 게임 오버 UI 출력
         // Firebase에 게임 결과를 업로드
     }
+
 
     // 이부분 실제로 RPC 받는지 확인
     [PunRPC]
@@ -198,5 +217,7 @@ public class TurnController : MonoBehaviourPunCallbacks
             }
         }
     }
+
+
 
 }

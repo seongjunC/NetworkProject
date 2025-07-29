@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Realtime;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -32,17 +33,35 @@ public class PlayerInfo
             }
         }
 
-        int itemNum = ItemRemove();
-        if (itemNum == 0 || itemNum == 1)
+        // 인게임 UI에서 Item을 선택받아 오기
+        ItemData removeItem;
+        // removeItem = 
+        // 임시 지정
+        removeItem = new ItemData();
+
+        int itemNum = ItemRemove(removeItem);
+        if (itemNum < items.Length)
         {
             items[itemNum] = item;
         }
     }
 
-    public int ItemRemove()
+    public int ItemRemove(ItemData removeItem)
     {
         // TODO : 삭제할 item 위치에 따라 다른 값을 리턴 
-        return 2;
+        // UI와 연계
+        // 코루틴을 사용해서 선택을 받을때 까지 대기
+        // 삭제할 아이템을 선택받으면 해당 아이템을 전달
+
+        if (items.Contains(removeItem))
+        {
+            for (int i = 0; i < items.Length; i++)
+            {
+                if (items[i] == removeItem) return i + 1;
+            }
+        }
+
+        return items.Length;
     }
 
     public void ItemRemove(int order)

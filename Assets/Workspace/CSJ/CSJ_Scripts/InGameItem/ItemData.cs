@@ -5,15 +5,23 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Battle/ItemData")]
 public class ItemData : ScriptableObject
 {
+    [Header("아이템 설명")]
     public string itemName;
+    public string description;
+
+    [Header("아이템 모습")]
     public Sprite icon;
     public GameObject prefab;
-    public string description;
+
+    [Header("드롭율")]
     public int appearRate = 1;
-    public IActivatable Effect;
+
+    [Header("아이템 스크립트")]
+    public ItemEffectSO Effect;
 
     public void UseItem()
     {
+
         Effect.Activate();
     }
 
