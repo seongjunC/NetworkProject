@@ -3590,10 +3590,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ededb9452c34934c9cab01b24d36ad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnPoint:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   _turnEndButton: {fileID: 1190335539}
   _turnController: {fileID: 1495371545}
 --- !u!114 &1495371543
