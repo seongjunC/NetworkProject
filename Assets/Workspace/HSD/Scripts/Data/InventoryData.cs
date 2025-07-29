@@ -130,20 +130,35 @@ public class InventoryData
         tankGroups[tankName] = groupData;
     }
 
-    public Task AddTank(string tankName, int level, int count)
+    public Task AddTank(string tankName, int level, int count, TestTankRank rank = TestTankRank.C)
     {
         var countRef = tankRef.Child(tankName).Child("Levels").Child(level.ToString()).Child("Count");
+
         return countRef.RunTransaction(mutableData =>
         {
             int current = 0;
+
             if (mutableData.Value != null)
-            {
                 int.TryParse(mutableData.Value.ToString(), out current);
-            }
+
             mutableData.Value = current + count;
+
             return TransactionResult.Success(mutableData);
+        }).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted && !task.IsFaulted && !task.IsCanceled)
+            {
+                tankRef.Child(tankName).Child("Rank").GetValueAsync().ContinueWithOnMainThread(rankTask =>
+                {
+                    if (rankTask.IsCompleted && !rankTask.Result.Exists)
+                    {
+                        tankRef.Child(tankName).Child("Rank").SetValueAsync(rank.ToString());
+                    }
+                });
+            }
         });
     }
+
 
     public Task RemoveTank(string tankName, int level, int count)
     {
