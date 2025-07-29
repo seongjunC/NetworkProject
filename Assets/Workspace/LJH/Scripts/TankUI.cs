@@ -7,16 +7,18 @@ public class TankUI : MonoBehaviour
 {
     [SerializeField] private Button gachaButton;
     [SerializeField] private Button outButton;
+    [SerializeField] private Button promotionButton;
 
     [Header("연결할 패널")]
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject gachaPanel;
+    [SerializeField] private GameObject promotionPanel;
     // Start is called before the first frame update
     void Start()
     {
         gachaButton.onClick.AddListener(OnClickGacha);
         outButton.onClick.AddListener(OnClickOut);
-
+        promotionButton.onClick.AddListener(OnClickPromotion);
     }
 
     private void OnClickGacha()
@@ -28,5 +30,10 @@ public class TankUI : MonoBehaviour
     {
         gameObject.SetActive(false);         // 탱크 패널 닫기
         mainMenuPanel.SetActive(true);       // 메인 메뉴 패널 열기
+    }
+    private void OnClickPromotion()
+    {
+        gameObject.SetActive(false);         // 탱크 패널 닫기
+        promotionPanel.SetActive(true);      // 프로모션 패널 열기
     }
 }
