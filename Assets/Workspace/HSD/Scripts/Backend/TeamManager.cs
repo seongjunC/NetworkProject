@@ -15,6 +15,7 @@ public class TeamManager : MonoBehaviour
         int blue = 0;
 
         GetPlayerTeamCount(out red, out blue);
+        int wait = GetWaitPlayerCount();
 
         Team tempTeam = _team;
 
@@ -31,6 +32,14 @@ public class TeamManager : MonoBehaviour
             if (blue >= PhotonNetwork.CurrentRoom.MaxPlayers / 2)
             {
                 Manager.UI.PopUpUI.Show("블루팀에 반이상의 인원이 참여할 수는 없습니다.");
+                return;
+            }
+        }
+        else if (tempTeam == Team.Wait)
+        {
+            if (wait >= PhotonNetwork.CurrentRoom.MaxPlayers / 2)
+            {
+                Manager.UI.PopUpUI.Show("대기자에 반이상의 인원이 참여할 수는 없습니다.");
                 return;
             }
         }
