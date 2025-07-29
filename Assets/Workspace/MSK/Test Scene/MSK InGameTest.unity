@@ -3552,12 +3552,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1495371541}
-  - component: {fileID: 1495371545}
   - component: {fileID: 1495371544}
-  - component: {fileID: 1495371542}
   - component: {fileID: 1495371543}
+  - component: {fileID: 1495371546}
+  - component: {fileID: 1495371545}
   m_Layer: 0
-  m_Name: TestNetworkManager
+  m_Name: TestManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3578,20 +3578,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1495371542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1495371539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ededb9452c34934c9cab01b24d36ad8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _turnEndButton: {fileID: 1190335539}
-  _turnController: {fileID: 1495371545}
 --- !u!114 &1495371543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3630,6 +3616,20 @@ MonoBehaviour:
   _power_Slider: {fileID: 253768957}
   _move_Slider: {fileID: 1354747981}
 --- !u!114 &1495371545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1495371539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ededb9452c34934c9cab01b24d36ad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _turnEndButton: {fileID: 1190335539}
+  _turnController: {fileID: 1495371546}
+--- !u!114 &1495371546
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
