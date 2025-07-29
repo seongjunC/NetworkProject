@@ -52,7 +52,7 @@ public class NickNameSelectPanel : MonoBehaviour
         FirebaseUser user = FirebaseManager.Auth.CurrentUser;
         UserProfile profile = new UserProfile { DisplayName = nickName.text };
 
-        Manager.Database.userRef.Child("Name").SetValueAsync(nickName.text).ContinueWithOnMainThread(task =>
+        Manager.Database.userDataRef.Child("Name").SetValueAsync(nickName.text).ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted || task.IsCanceled)
                 return;

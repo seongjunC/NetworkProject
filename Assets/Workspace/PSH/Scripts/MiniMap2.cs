@@ -83,8 +83,8 @@ public class MiniMap2 : MonoBehaviourPunCallbacks
         Image iconImage = newIcon.GetComponent<Image>();
         if (iconImage != null)
         {
-            bool isMyTeam = player.photonView.Owner.GetTeam() == PhotonNetwork.LocalPlayer.GetTeam();
-            iconImage.color = isMyTeam ? Color.green : Color.red;
+            Game.Team team = player.photonView.Owner.GetTeam();
+            iconImage.color = team == Game.Team.Blue ? Color.blue : Color.red;
             if (player.photonView.IsMine)
             {
                 iconImage.color = Color.yellow;

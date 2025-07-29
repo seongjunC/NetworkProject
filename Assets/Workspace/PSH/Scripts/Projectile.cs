@@ -1,5 +1,8 @@
+using Game;
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
+using static Photon.Pun.UtilityScripts.PunTeams;
 
 public class Projectile : MonoBehaviour
 {
@@ -18,6 +21,9 @@ public class Projectile : MonoBehaviour
     [SerializeField] float delay = 2f;
 
     private Rigidbody2D rb;
+
+    private bool isTeamDamage;//팀킬가능한지
+    private Game.Team myTeam;
 
     [Header("기즈모")]
     private Vector2 gizmoCenter;
@@ -41,6 +47,9 @@ public class Projectile : MonoBehaviour
         worldPerPixel = sr.bounds.size.x / tex.width;
 
         Debug.Log($"worldPerPixel = {worldPerPixel}");
+
+        isTeamDamage = PhotonNetwork.CurrentRoom.GetDamageType();
+        myTeam = PhotonNetwork.LocalPlayer.GetTeam();
     }
 
     private void Update()
@@ -100,7 +109,7 @@ public class Projectile : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         if (CameraController.Instance != null)
-            CameraController.Instance.ReturnToPlayerCam();   
+            CameraController.Instance.ReturnToPlayerCam();
 
         Destroy(gameObject);
     }
@@ -114,12 +123,21 @@ public class Projectile : MonoBehaviour
 
         foreach (var hit in colliders)
         {
-            if (hit.CompareTag("Player"))
-            {
-                var player = hit.GetComponent<PlayerController>();
-                player.OnHit(damage);
-                Debug.Log($"플레이어에게 {damage} 데미지");
-            }
+            if (!hit.CompareTag("Player"))
+                continue;
+
+            // PhotonView 통해 다른 플레이어 Actor 얻기
+            var pv = hit.GetComponent<PhotonView>();
+            if (pv == null) continue;
+
+            Game.Team otherTeam = pv.Owner.GetTeam();  // 상대 팀
+            if (!isTeamDamage && otherTeam == myTeam)
+                continue;  // 같은 팀이면 스킵!
+
+            var player = hit.GetComponent<PlayerController>();
+            player.OnHit(damage);
+            Debug.Log($"플레이어에게 {damage} 데미지");
+
         }
     }
     private void OnDrawGizmos()
