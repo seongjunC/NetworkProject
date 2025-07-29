@@ -32,8 +32,7 @@ public class InventoryData
 
     public InventoryData()
     {
-        InitTanks();
-        
+        InitTanks();        
     }
 
     private void InitInventory()
@@ -56,17 +55,45 @@ public class InventoryData
 
     private void InitTanks()
     {
-        Manager.Database.userRef.SetValueAsync("Tanks");
         tankRef = Manager.Database.userRef.Child("Tanks");
-        Manager.Database.userRef.Child("Tanks").GetValueAsync().ContinueWithOnMainThread(task =>
+
+        InitData().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted || task.IsCanceled)
+            Manager.Database.userRef.Child("Tanks").GetValueAsync().ContinueWithOnMainThread(task =>
             {
-                Manager.Database.userRef.SetValueAsync("Tanks");
-                tankRef = Manager.Database.userRef.Child("Tanks");
-                InitInventory();
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                    tankRef = Manager.Database.userRef.Child("Tanks");
+                    InitInventory();
+                }
+            });
+            InitInventory();
+        });      
+    }
+
+    private Task InitData()
+    {
+        return tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            foreach (var tank in task.Result.Children)
+            {
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                    Debug.Log($"{tank.Value}");
+                    return;
+                }
+
+                tankRef.Child((string)tank.Value).GetValueAsync().ContinueWithOnMainThread(task =>
+                {
+                    DataSnapshot snapshot = task.Result;
+
+                    string json = snapshot.GetRawJsonValue();
+                    TankGroupData group = JsonUtility.FromJson<TankGroupData>(json);
+                    tankGroups.Add(group.TankName, group);
+                });
             }
         });
+        
     }
 
     private void OnTankGroupAdded(object sender, ChildChangedEventArgs args) => UpdateTankGroup(args.Snapshot);
@@ -193,21 +220,8 @@ public class InventoryData
             mutableData.Value = current + count;
 
             return TransactionResult.Success(mutableData);
-        }).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCompleted && !task.IsFaulted && !task.IsCanceled)
-            {
-                tankRef.Child(tankName).Child("Rank").GetValueAsync().ContinueWithOnMainThread(rankTask =>
-                {
-                    if (rankTask.IsCompleted && !rankTask.Result.Exists)
-                    {
-                        tankRef.Child(tankName).Child("Rank").SetValueAsync(rank.ToString());
-                    }
-                });
-            }
         });
     }
-
 
     public Task RemoveTank(string tankName, int level, int count)
     {
