@@ -11,7 +11,7 @@ public class Gacha : MonoBehaviour
     [SerializeField] TankData[] model;
 
     [Header("List")]
-    [SerializeField] List<Transform> cardTransform = new();
+    [SerializeField] List<Transform> cardTransforms = new();
     [SerializeField] List<TankData> gachaList = new();
 
     [Header("Cards")]
@@ -40,9 +40,9 @@ public class Gacha : MonoBehaviour
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
-        cardTransform.Clear();
+        SetUpCardTransformList();
+        ClearCards();
         gachaList.Clear();
-        cards.Clear();
 
         if (isTen)
         {
@@ -78,11 +78,6 @@ public class Gacha : MonoBehaviour
 
         TankData selectTank = randomData[Random.Range(0, randomData.Length)];
 
-        GameObject cardPosObj = new GameObject("Card");
-        cardPosObj.transform.SetParent(cradContent, false);
-
-        cardTransform.Add(cardPosObj.transform);
-
         Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity, cardSpawnTransform).GetComponent<Card>();
         cards.Add(card);
 
@@ -91,11 +86,40 @@ public class Gacha : MonoBehaviour
         return selectTank;
     }
 
+    private void SetUpCardTransformList()
+    {
+        if(isTen)
+        {
+            foreach(Transform t in cardTransforms)
+            {
+                t.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            for(int i = 0; i < cardTransforms.Count; i++)
+            {
+                if(i == 0)
+                    cardTransforms[i].gameObject.SetActive(true);
+                else
+                    cardTransforms[i].gameObject.SetActive(false);
+            }
+        }
+    }
+    private void ClearCards()
+    {
+        foreach (Card c in cards)
+        {
+            Destroy(c.gameObject);
+        }
+        cards.Clear();
+    }
+
     private IEnumerator SetUpCardRoutine()
     {
         for (int i = 0;i < cards.Count; i++)
         {
-            cards[i].SetUp(gachaList[i], cardTransform[i], moveTime);
+            cards[i].SetUp(gachaList[i], cardTransforms[i], moveTime);
             yield return delay;
         }
     }
