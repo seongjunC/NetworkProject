@@ -35,6 +35,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private bool isTurnRunning = false;
 
     private bool isGameStart = false;
+    private int spawnedCount = 0;
+    private int expectedPlayerCount => PhotonNetwork.CurrentRoom.PlayerCount;
 
     private void Awake()
     {
@@ -85,7 +87,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
 
-        int playerCount = PhotonNetwork.CountOfPlayers;
         room = PhotonNetwork.CurrentRoom;
         InitializePlayerEvents();
         if (CustomProperty.GetTurnRandom(room))
@@ -109,19 +110,18 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             foreach (Player p in PhotonNetwork.PlayerList)
             {
+                Debug.Log($"{p.NickName} 큐에 추가됨");
                 turnQueue.Enqueue(new PlayerInfo(p));
                 if (CustomProperty.GetTeam(p) == Game.Team.Red) redRemain++;
                 else blueRemain++;
             }
         }
         isGameStart = true;
-        Debug.Log($"[GameStart] 레드 팀: {redRemain}, 블루 팀: {blueRemain}, 플레이어 수: {PhotonNetwork.CountOfPlayers}");
         StartNextTurn();
     }
 
     private void StartNextTurn()
     {
-        Debug.Log("StartNextTurn 시작됨");
         if (blueRemain <= 0 || redRemain <= 0)
         {
             Team winnerTeam = blueRemain == 0 ? Team.Blue : Team.Red;
@@ -136,13 +136,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             turnQueue = new Queue<PlayerInfo>(nextCycle);
             nextCycle.Clear();
         }
-
         currentPlayer = turnQueue.Dequeue();
+
+        Debug.Log($" - {currentPlayer.player.NickName} / {currentPlayer.ActorNumber}");
 
         PlayerController currentTank = GetPlayerController(currentPlayer.player);
         if (currentTank == null)
         {
-            Debug.LogWarning("currentPlayer 탐색 불가.");
             StartNextTurn();
             return;
         }
@@ -152,6 +152,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             StartNextTurn();
             return;
         }
+
         turnTimer = 0f;
         isTurnRunning = true;
 
@@ -227,8 +228,23 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             EnableCurrentPlayer();
         }
     }
-
     void EnableCurrentPlayer()
+    {
+        PlayerController playerCon = GetPlayerController(currentPlayer.player);
+
+        // 내 로컬 플레이어만 처리
+        if (playerCon != null && playerCon.photonView.IsMine)
+        {
+            playerCon.ResetTurn();
+        }
+        else
+        {
+            playerCon?.EndPlayerTurn();
+        }
+    }
+
+    /*
+     * void EnableCurrentPlayer()
     {
         PlayerController currentTank = GetPlayerController(currentPlayer.player);
         if (currentTank == null)
@@ -251,15 +267,30 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             }
         }
     }
-
+     
+*/
     public PlayerController GetPlayerController(Player player)
     {
         foreach (var tank in tanks)
         {
+            if (tank == null) continue;
             PhotonView view = tank.GetComponent<PhotonView>();
-            if (view != null && view.Owner != null && view.Owner.ActorNumber == player.ActorNumber)
+            if (view == null)
             {
-                Debug.Log($"{tank}");
+                Debug.LogWarning($"{tank.name} : PhotonView 없음");
+                continue;
+            }
+
+            if (view.Owner == null)
+            {
+                Debug.LogWarning($"{tank.name} : PhotonView.Owner가 null임");
+                continue;
+            }
+
+            Debug.Log($"탐색 중: {tank.name}, Owner.ActorNumber = {view.Owner.ActorNumber}, 찾는 ActorNumber = {player.ActorNumber}");
+
+            if (view.Owner.ActorNumber == player.ActorNumber)
+            {
                 return tank;
             }
         }
@@ -308,7 +339,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         else blueRemain--;
 
         Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
-
+        tanks.RemoveAll(t => t == null);
+        tanks.Remove(player);
         if (redRemain <= 0 || blueRemain <= 0)
         {
             Team winner = redRemain <= 0 ? Team.Blue : Team.Red;
@@ -319,7 +351,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     public void TurnFinished()
     {
         if (photonView.IsMine)
-            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+            photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     [PunRPC]
@@ -349,9 +381,33 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
+    private void RPC_NotifySpawned()
+    {
+        spawnedCount++;
+        Debug.Log($"[MSKTurnController] 플레이어 스폰 완료 수: {spawnedCount}/{PhotonNetwork.CurrentRoom.PlayerCount}");
+
+        if (spawnedCount >= PhotonNetwork.CurrentRoom.PlayerCount)
+        {
+            Debug.Log("[MSKTurnController] 모든 플레이어가 스폰 완료됨 → GameStart()");
+            GameStart();
+        }
+    }
+
+    [PunRPC]
     public void RPC_Spawned()
     {
-        GameStart();
+        foreach (var t in tanks)
+        {
+            var view = t.GetComponent<PhotonView>();
+            Debug.Log($"탱크 탐색: {t.name}, ActorNumber: {view?.Owner?.ActorNumber}");
+        }
+
+        spawnedCount++;
+        if (spawnedCount == PhotonNetwork.CurrentRoom.PlayerCount)
+        {
+            Debug.Log("모든 플레이어 탱크 생성 완료, 게임 시작");
+            GameStart();
+        }
     }
     #endregion
 }

@@ -52,6 +52,7 @@ MonoBehaviour:
   - Kick_RPC
   - OnHit
   - RPC_InitTank
+  - RPC_NotifySpawned
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

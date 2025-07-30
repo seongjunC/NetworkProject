@@ -33,7 +33,7 @@ public class TestBattleManager : MonoBehaviourPun
     //  맵 생성이후 플레이어를 등록하도록
     private void OnMapGenerated(DeformableTerrain terrain)
     {
-        _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
+        // _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
     }
 
     private void TestTurnEnd()
@@ -45,7 +45,7 @@ public class TestBattleManager : MonoBehaviourPun
     }
     private void PlayerAttacked()
     {
-        _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        _turnController.TurnFinished();
         if (_playerController._hp <= 0)
             _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.All);
     }
