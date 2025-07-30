@@ -278,6 +278,7 @@ public class RoomManager : MonoBehaviourPun
         {
             playerSlotDic[player.ActorNumber].SetUp(player);
             UpdateReadyCountText();
+            CheckButtons();
         }
     }
 
