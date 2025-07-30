@@ -40,14 +40,28 @@ public class TestBattleManager : MonoBehaviourPun
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-        _turnController.TurnFinished();
 
+        if (_turnController.IsMyTurn())
+            _turnController.TurnFinished();
     }
     private void PlayerAttacked()
     {
-        _turnController.TurnFinished();
         if (_playerController._hp <= 0)
+        {
+            // 사망 처리
             _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.All);
+            // 죽은 유저가 자신의 턴이었다면, 턴도 종료
+            if (_turnController.IsMyTurn())
+            {
+                _turnController.TurnFinished();
+            }
+            return;
+        }
+        // 살아있고 내 턴이면 턴 종료
+        if (_turnController.IsMyTurn())
+        {
+            _turnController.TurnFinished();
+        }
     }
 
     public void RegisterPlayer(PlayerController playerController)

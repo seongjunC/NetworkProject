@@ -50,7 +50,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     void Update()
     {   
-        
+        /*
         if (!isGameStart)
             return;
 
@@ -61,7 +61,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (turnTimer >= turnLimit)
         {
             photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
-        }
+        }*/
     }
 
     public void GameStart()
@@ -168,8 +168,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_TurnFinished(int actorNumber)
     {
+        if (!photonView.IsMine) return;
         Debug.Log("RPC_TurnFinished 호출됨");
-
+        Debug.Log($"currentPlayer : {currentPlayer.ActorNumber}");
+        Debug.Log($"actorNumber : {actorNumber}");
         if (currentPlayer != null && currentPlayer.ActorNumber == actorNumber)
         {
             Debug.Log("RPC_TurnFinished 조건문 실행됨");
@@ -410,6 +412,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Debug.Log("모든 플레이어 탱크 생성 완료, 게임 시작");
             GameStart();
         }
+    }
+    public bool IsMyTurn()
+    {
+        return currentPlayer != null && currentPlayer.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber;
     }
     #endregion
 }
