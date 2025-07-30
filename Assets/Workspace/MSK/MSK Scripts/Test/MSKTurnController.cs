@@ -37,6 +37,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private bool isGameStart = false;
     private int spawnedCount = 0;
     private int expectedPlayerCount => PhotonNetwork.CurrentRoom.PlayerCount;
+    Dictionary<int, PlayerInfo> allPlayers = new Dictionary<int, PlayerInfo>();
 
     private void Awake()
     {
@@ -177,7 +178,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Debug.Log("RPC_TurnFinished 조건문 실행됨");
             isTurnRunning = false;
             photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
-            nextCycle.Add(currentPlayer);
+            if (turnQueue.Count == 0 && nextCycle.Count > 0)
+            {
+                foreach (var player in nextCycle)
+                    turnQueue.Enqueue(player);
+                nextCycle.Clear();
+            }
             StartNextTurn();
         }
     }
@@ -324,14 +330,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #region MSK added
     private void InitializePlayerEvents()
     {
-        foreach (var tank in tanks)
+        foreach (Player player in PhotonNetwork.PlayerList)
         {
-            //  중복 이벤트 등록 방지
-            tank.OnPlayerDied = null;
-            if (!tank.photonView.IsMine)
-            {
-                tank.OnPlayerDied += () => OnPlayerDied(tank);
-            }
+            var info = new PlayerInfo(player);
+            allPlayers[player.ActorNumber] = info;
+            turnQueue.Enqueue(info);
         }
     }
     private void OnPlayerDied(PlayerController player)
