@@ -19,7 +19,8 @@ public class SpawnPlayer : MonoBehaviour
         }
 
         // 0부터 spawnCount-1까지 랜덤 인덱스
-        int index = Random.Range(0, spawnCount);
+        //int index = Random.Range(0, spawnCount);
+        int index = PhotonNetwork.LocalPlayer.ActorNumber - 1;
         Transform chosenPoint = transform.GetChild(index);
 
         // 플레이어 스폰
