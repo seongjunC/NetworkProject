@@ -9,7 +9,6 @@ public class TestBattleManager : MonoBehaviourPun
     [SerializeField] Button _turnEndButton;
     [SerializeField] private MSKTurnController _turnController;
     private PlayerController _playerController;
-    private TestNetworkManager _networkManager;
 
 
     #region Unity LifeCycle
