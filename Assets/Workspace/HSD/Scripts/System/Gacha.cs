@@ -6,8 +6,9 @@ using UnityEngine;
 public class Gacha : MonoBehaviour
 {
     [Header("Setting")]
+    public int needGem;
+    public bool isTen;
     [SerializeField] float[] chance;
-    [SerializeField] bool isTen;
     [SerializeField] TankData[] model;
 
     [Header("List")]
@@ -45,6 +46,7 @@ public class Gacha : MonoBehaviour
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
+        gameObject.SetActive(true);
         StartCoroutine(GachaRoutine());
     }
 
