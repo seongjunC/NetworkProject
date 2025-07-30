@@ -144,7 +144,7 @@ public class TurnController : MonoBehaviourPunCallbacks
 
         currentPlayer = turnQueue.Dequeue();
 
-        if (currentPlayer.isDead)
+        if (GetPlayerController(currentPlayer.player))
         {
             return;
         }
@@ -205,7 +205,7 @@ public class TurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_PlayerDead()
     {
-        currentPlayer.isDead = true;
+
     }
 
     [PunRPC]
@@ -230,7 +230,7 @@ public class TurnController : MonoBehaviourPunCallbacks
             }
             else
             {
-                playerCon.EnableControl(false);
+                player.EnableControl(false);
             }
             PhotonView view = player.GetComponent<PhotonView>();
             // if (view != null && view.Owner != null)

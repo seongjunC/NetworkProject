@@ -8,6 +8,7 @@ public class TestBattleManager : MonoBehaviourPun
     // [SerializeField] private List<Transform> _spawnPoint;
     [SerializeField] Button _turnEndButton;
     [SerializeField] private MSKTurnController _turnController;
+    
     private PlayerController _playerController;
 
 
