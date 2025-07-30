@@ -26,6 +26,7 @@ public class TankInventoryData
     private DatabaseReference tankRef;
 
     private const int needUpgradeCount = 3;
+    private const int maxLevel = 3;
 
     public event Action<string, int, int> OnTankCountUpdated; // (TankName, Level, NewCount)
     public event Action<string, int> OnTankLevelRemoved;
@@ -271,6 +272,9 @@ public class TankInventoryData
 
                 int currentLevel = level;
 
+                if (currentLevel >= maxLevel)
+                    return;
+
                 var currentRef = tankRef.Child(tankName).Child("Levels").Child(currentLevel.ToString());
 
                 currentRef.RunTransaction(mutableData =>
@@ -308,5 +312,4 @@ public class TankInventoryData
             UpgradeTank(tankName);
         });
     }
-
 }

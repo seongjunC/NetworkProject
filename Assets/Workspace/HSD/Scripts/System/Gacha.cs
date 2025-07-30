@@ -54,10 +54,7 @@ public class Gacha : MonoBehaviour
         ClearCards();
         gachaList.Clear();
 
-
-        Utils.Fade(image, 0, 1);
-
-        yield return new WaitForSeconds(1);
+        yield return Utils.Fade(image, 0, 1);        
 
         if (isTen)
         {

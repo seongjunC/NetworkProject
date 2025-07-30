@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TankInventoryUI : MonoBehaviour
 {
     [SerializeField] GameObject tankSlotPrefab;
     [SerializeField] Transform slotContent;
     [SerializeField] TankToolTip tankToolTip;
+
+    [Header("Button")]
+    [SerializeField] Button exitButton;
 
     [Header("Color")]
     [SerializeField] Color sColor;
@@ -16,6 +20,11 @@ public class TankInventoryUI : MonoBehaviour
     [SerializeField] Color cColor;
 
     private Dictionary<TankData, TankSlot> tankSlotDic = new Dictionary<TankData, TankSlot>();
+
+    private void Start()
+    {
+        exitButton.onClick.AddListener(() => gameObject.SetActive(false));
+    }
 
     private void OnEnable()
     {
