@@ -37,7 +37,6 @@ public class TankInventoryData
 
     private void InitInventory()
     {
-        Debug.Log("1");
         RegisterTankListeners();
     }
 
@@ -52,20 +51,34 @@ public class TankInventoryData
     {
         tankRef = Manager.Database.userRef.Child("Tanks");
 
-        tankRef.SetValueAsync("");
-
-        InitInventory();
-        Debug.Log("Init");
-        InitData().ContinueWithOnMainThread(task =>
+        Debug.Log("Run");
+        Manager.Database.userRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
-            InitInventory();
-            Debug.Log("Init2");
+            Debug.Log("Run1");
+
+            var snapShot = task.Result;
+
+            bool exists = false;
+
+            foreach (var child in snapShot.Children)
+            {
+                if(child.Key == "Tanks")
+                {
+                    exists = true;
+                    break;
+                }
+            }
+            Debug.Log(exists);
+            if (!exists)
+                tankRef.SetValueAsync("");
+
+            InitData();
         });
     }
 
-    private Task InitData()
+    private void InitData()
     {
-        return tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
+        tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
             foreach (var tank in task.Result.Children)
             {
@@ -84,6 +97,7 @@ public class TankInventoryData
                     tankGroups.Add(group.TankName, group);
                 });
             }
+            InitInventory();
         });
 
     }
