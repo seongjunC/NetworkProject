@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[System.Serializable]
-public class TankData
+[CreateAssetMenu(fileName = "TankStat", menuName = "Data/TankStat")]
+public class TankData : ScriptableObject
 {
+    [Header("Stat")]
+    public float damage;
+    public float maxMove;
+    public float speed;
+    public float maxHp;
+
+    [Header("MetaData")]
     public string tankName;
     public TankRank rank;
     public Sprite icon;

@@ -58,7 +58,7 @@ public class Gacha : MonoBehaviour
             for (int i = 0; i < 10; i++)
             {
                 gachaList.Add(GetRandomTank());
-                yield return new WaitForSeconds(gachaAddDelay);
+                yield return addDelay;
             }
         }
         else

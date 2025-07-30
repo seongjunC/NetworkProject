@@ -30,7 +30,7 @@ public class TankInventoryData
     public event Action<string, int, int> OnTankCountUpdated; // (TankName, Level, NewCount)
     public event Action<string, int> OnTankLevelRemoved;
 
-    public TankInventoryData()
+    public void Init()
     {
         InitTanks();
     }
