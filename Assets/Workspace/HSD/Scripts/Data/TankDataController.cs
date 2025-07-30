@@ -19,6 +19,7 @@ public class TankDataController
         TankData[] tankDatas = Resources.LoadAll<TankData>("Data/Tank");
         foreach (var tankData in tankDatas)
         {
+            tankData.count = 0;
             this.TankDatas.Add($"{tankData.tankName}_{tankData.level}", tankData);
         }
     }
