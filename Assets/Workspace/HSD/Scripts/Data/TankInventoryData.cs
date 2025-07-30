@@ -25,8 +25,8 @@ public class TankInventoryData
     public Dictionary<string, TankGroupData> tankGroups = new();
     private DatabaseReference tankRef;
 
-    private const int needUpgradeCount = 3;
-    private const int maxLevel = 3;
+    public int needUpgradeCount = 3;
+    public int maxLevel = 3;
 
     public event Action<string, int, int> OnTankCountUpdated; // (TankName, Level, NewCount)
     public event Action<string, int> OnTankLevelRemoved;
