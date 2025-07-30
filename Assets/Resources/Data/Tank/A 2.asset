@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: A 2
   m_EditorClassIdentifier: 
-  damage: 0
-  maxMove: 0
-  speed: 0
-  maxHp: 0
+  damage: 3
+  maxMove: 3
+  speed: 3
+  maxHp: 3
   tankName: A
   rank: 1
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ae8a5bdf1b3a4f646b47c8aeebd9d598, type: 3}
   level: 3
   count: 0

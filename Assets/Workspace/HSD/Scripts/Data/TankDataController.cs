@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class TankDataController
 { 
     public Dictionary<string, TankData> TankDatas = new Dictionary<string, TankData>();
@@ -24,6 +25,7 @@ public class TankDataController
 
     public void UpdateCount(string tankName, int level, int count)
     {
+        Debug.Log(tankName);
         TankDatas[$"{tankName}_{level}"].count = count;
         OnTankDataChanged?.Invoke(TankDatas[$"{tankName}_{level}"]);
     }

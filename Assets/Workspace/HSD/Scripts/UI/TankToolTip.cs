@@ -15,12 +15,14 @@ public class TankToolTip : MonoBehaviour
     [SerializeField] TMP_Text maxMoveText;
     [SerializeField] TMP_Text hpText;
 
-    public void ShowToolTip(TankData data)
+    public void ShowToolTip(TankData data, Color rankColor, Vector2 pos)
     {
+        transform.position = pos;
         gameObject.SetActive(true);
 
         hpText.text = data.maxHp.ToString();
         rankText.text = data.rank.ToString();
+        rankText.color = rankColor;
         tankIcon.sprite = data.icon;
         damageText.text = data.damage.ToString();
         maxMoveText.text = data.maxMove.ToString();

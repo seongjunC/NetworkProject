@@ -33,6 +33,7 @@ public class Gacha : MonoBehaviour
     {
         delay = new WaitForSeconds(cardDelay);
         addDelay = new WaitForSeconds(gachaAddDelay);
+        model = Manager.Data.TankDataController.TankDatas.Values.ToArray();
     }
 
     private void Update()
@@ -91,7 +92,7 @@ public class Gacha : MonoBehaviour
         Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity, cardSpawnTransform).GetComponent<Card>();
         cards.Add(card);
 
-        Manager.Data.TankInventoryData.AddTankEvent(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
+        Manager.Data.TankInventoryData.AddTankEvent(selectTank.tankName, selectTank.level, 1, selectTank.rank);
 
         return selectTank;
     }

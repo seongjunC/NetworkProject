@@ -16,7 +16,7 @@ public class TankGroupData
 {
     public string TankName;
     public TankRank Rank;
-    public Dictionary<int, int> Levels = new();
+    public Dictionary<string, int> Levels = new();
 }
 
 [Serializable]
@@ -35,11 +35,6 @@ public class TankInventoryData
         InitTanks();
     }
 
-    private void InitInventory()
-    {
-        RegisterTankListeners();
-    }
-
     private void RegisterTankListeners()
     {
         tankRef.ChildAdded += OnTankGroupAdded;
@@ -50,6 +45,7 @@ public class TankInventoryData
     private void InitTanks()
     {
         tankRef = Manager.Database.userRef.Child("Tanks");
+        RegisterTankListeners();
 
         Debug.Log("Run");
         Manager.Database.userRef.GetValueAsync().ContinueWithOnMainThread(task =>
@@ -71,7 +67,7 @@ public class TankInventoryData
             Debug.Log(exists);
             if (!exists)
                 tankRef.SetValueAsync("");
-
+            
             InitData();
         });
     }
@@ -80,27 +76,29 @@ public class TankInventoryData
     {
         tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError("Firebase 실패");
+                return;
+            }
+
+            int count = 0;
             foreach (var tank in task.Result.Children)
             {
-                if (task.IsFaulted || task.IsCanceled)
-                {
-                    Debug.Log($"{tank.Value}");
-                    return;
-                }
+                Debug.Log("추가");
 
-                tankRef.Child((string)tank.Value).GetValueAsync().ContinueWithOnMainThread(task =>
-                {
-                    DataSnapshot snapshot = task.Result;
-
-                    string json = snapshot.GetRawJsonValue();
-                    TankGroupData group = JsonUtility.FromJson<TankGroupData>(json);
-                    tankGroups.Add(group.TankName, group);
-                });
+                string json = tank.GetRawJsonValue();
+                Debug.Log(json);
+                TankGroupData group = JsonUtility.FromJson<TankGroupData>(json);
+                tankGroups.Add(group.TankName, group);
+                Debug.Log(group.TankName);
+                count++;
             }
-            InitInventory();
+            Debug.Log($"{count}");
+            Debug.Log("끝");
         });
-
     }
+
     private void OnTankGroupAdded(object sender, ChildChangedEventArgs args) => UpdateTankGroup(args.Snapshot);
     private void OnTankGroupChanged(object sender, ChildChangedEventArgs args)
     {
@@ -121,9 +119,10 @@ public class TankInventoryData
         {
             if (int.TryParse(levelSnap.Key, out int level)) // key를 int로 변환
             {
-                int count = int.TryParse(levelSnap.Child("Count")?.Value?.ToString(), out int cnt) ? cnt : 0; // db의 count를 파싱
-                groupData.Levels[level] = count;  // dictionary에 실제 값 반영
+                int count = int.TryParse(levelSnap?.Value?.ToString(), out int cnt) ? cnt : 0;
+                groupData.Levels[level.ToString()] = count;  // dictionary에 실제 값 반영
 
+                Debug.Log(groupData.TankName);
                 OnTankCountUpdated?.Invoke(tankName, level, count);
             }
         }
@@ -149,17 +148,17 @@ public class TankInventoryData
         {
             TankName = tankName,
             Rank = rank,
-            Levels = new Dictionary<int, int>()
+            Levels = new Dictionary<string, int>()
         };
 
-        var levelsSnapshot = snapshot.Child(tankName).Child("Levels");
+        var levelsSnapshot = snapshot.Child("Levels");
 
         foreach (var levelSnap in levelsSnapshot.Children)
         {
             if (int.TryParse(levelSnap.Key, out int level))
             {
                 int count = int.TryParse(levelSnap.Value?.ToString(), out int cnt) ? cnt : 0;
-                groupData.Levels[level] = count;
+                groupData.Levels[level.ToString()] = count;
 
                 OnTankCountUpdated?.Invoke(tankName, level, count);
             }
@@ -169,6 +168,7 @@ public class TankInventoryData
 
     public void AddTankEvent(string tankName, int level, int count, TankRank rank = TankRank.C)
     {
+        Debug.Log($"{tankName}_레벨 : {level}_{count}개 추가 완료");
         tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted || task.IsCanceled)
@@ -214,7 +214,7 @@ public class TankInventoryData
         {   
             TankName = name,
             Rank = rank,
-            Levels = new Dictionary<int, int> { { level, 0 } } 
+            Levels = new Dictionary<string, int> { { level.ToString(), 0 } } 
         };
 
         tankRef.Child(name).SetRawJsonValueAsync(JsonUtility.ToJson(data)).ContinueWithOnMainThread(_ => onComplete?.Invoke());
@@ -222,9 +222,9 @@ public class TankInventoryData
 
     private void AddCountAndUpgrade(string name, int level, int count)
     {
-        var countRef = tankRef.Child(name).Child("Levels").Child(level.ToString());
-
-        countRef.RunTransaction(mutableData =>
+        var Ref = tankRef.Child(name).Child("Levels").Child(level.ToString());
+        Debug.Log(Ref);
+        Ref.RunTransaction(mutableData =>
         {
             int current = mutableData.Value != null ? Convert.ToInt32(mutableData.Value) : 0;
             mutableData.Value = current + count;
