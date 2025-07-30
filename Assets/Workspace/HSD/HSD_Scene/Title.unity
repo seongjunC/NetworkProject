@@ -1963,6 +1963,7 @@ MonoBehaviour:
   messageField: {fileID: 254444597}
   chatContent: {fileID: 1795996672}
   chatPrefab: {fileID: 2380134647262137451, guid: aff4845d7669b9943acce245f92daeab, type: 3}
+  whisperColor: {r: 1, g: 0.6367924, b: 0.98558706, a: 1}
 --- !u!114 &90391379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11348,7 +11349,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 6493164010157632658, guid: 181f46ebb22e6bd41b1a5a847c958fce, type: 3}
   moveTime: 0.5
   cardDelay: 0.2
-  gachaAddDelay: 0.5
+  gachaAddDelay: 0.1
 --- !u!1 &607988202
 GameObject:
   m_ObjectHideFlags: 0
