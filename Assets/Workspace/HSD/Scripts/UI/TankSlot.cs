@@ -33,7 +33,7 @@ public class TankSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (tankData == null) return;
-        Vector2 pos = (Vector2)transform.position + new Vector2(-rectTransform.rect.width / 2, rectTransform.rect.height / 2);
+        Vector2 pos = (Vector2)transform.position;
 
         tankToolTip.ShowToolTip(tankData, color, pos);
     }

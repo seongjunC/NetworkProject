@@ -15,22 +15,58 @@ public class TankToolTip : MonoBehaviour
     [SerializeField] TMP_Text maxMoveText;
     [SerializeField] TMP_Text hpText;
 
+    [SerializeField] bool isMousePos;
+    [Header("Offset_Limit")]
+    [SerializeField] private float xLimit = 960;
+    [SerializeField] private float yLimit = 540;
+    [SerializeField] private float xOffset = 150;
+    [SerializeField] private float yOffset = 150;
+
     public void ShowToolTip(TankData data, Color rankColor, Vector2 pos)
     {
-        transform.position = pos;
+        AdjustPosition(pos);
+
         gameObject.SetActive(true);
 
+        // ½ºÅÝ
         hpText.text = data.maxHp.ToString();
+        damageText.text = data.damage.ToString();
+        maxMoveText.text = data.maxMove.ToString();
+
         rankText.text = data.rank.ToString();
         rankText.color = rankColor;
         tankIcon.sprite = data.icon;
-        damageText.text = data.damage.ToString();
-        maxMoveText.text = data.maxMove.ToString();
         tankNameText.text = data.tankName;
     }
 
     public void CloseToolTip()
     {
         gameObject.SetActive(false);
+    }
+    
+
+    public virtual void AdjustPosition(Vector2 _pos)
+    {
+        Vector2 pos = Vector2.zero;
+        if (isMousePos)
+            pos = Input.mousePosition;
+        else
+            pos = _pos;
+
+
+        float newXoffset = 0;
+        float newYoffset = 0;
+
+        if (pos.x > xLimit)
+            newXoffset = -xOffset;
+        else
+            newXoffset = xOffset;
+
+        if (pos.y > yLimit)
+            newYoffset = -yOffset;
+        else
+            newYoffset = yOffset;
+
+        transform.position = new Vector2(pos.x + newXoffset, pos.y + newYoffset);
     }
 }

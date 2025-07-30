@@ -28626,6 +28626,11 @@ MonoBehaviour:
   damageText: {fileID: 660150477}
   maxMoveText: {fileID: 1821256110}
   hpText: {fileID: 1559696517}
+  isMousePos: 0
+  xLimit: 960
+  yLimit: 540
+  xOffset: 250
+  yOffset: 150
 --- !u!114 &2094005818
 MonoBehaviour:
   m_ObjectHideFlags: 0
