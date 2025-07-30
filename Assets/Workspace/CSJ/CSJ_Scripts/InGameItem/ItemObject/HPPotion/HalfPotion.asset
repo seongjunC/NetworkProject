@@ -12,16 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b9bff6f7ca8d249adb20bead3a6c44, type: 3}
   m_Name: HalfPotion
   m_EditorClassIdentifier: 
-  itemName: 
-  description: 
+  itemName: HalfPotion
+  description: "Hp\uC758 \uC808\uBC18\uC744 \uD68C\uBCF5\uC2DC\uCF1C\uC8FC\uB294
+    \uD3EC\uC158, \uD558\uC9C0\uB9CC \uC0AC\uC6A9 \uD6C4 \uD574\uB2F9 \uD134\uC744
+    \uB118\uAE34\uB2E4."
   icon: {fileID: 0}
   prefab: {fileID: 0}
   appearRate: 1
-  Effect:
-    rid: 6289441369876070400
-  references:
-    version: 2
-    RefIds:
-    - rid: 6289441369876070400
-      type: {class: DefaultEffect, ns: , asm: Assembly-CSharp}
-      data: 
+  Effect: {fileID: 11400000, guid: f21c411972df87d4b8d434625a4257ed, type: 2}
