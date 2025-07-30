@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private TankData _data;
 
     private bool _isDead = false;
+    public bool OnBarrier { get; private set; } = false;
 
     public PlayerInfo myInfo;
     public float _hp;
@@ -81,6 +82,16 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void OnHit(int damage)
     {
+        if (OnBarrier)
+        {
+            if (damage > 100000)
+            {
+                PlayerDead();
+            }
+            OnBarrier = false;
+            Debug.Log("배리어로 1회 피격 방어");
+            return;
+        }
         _hp -= damage;
         Debug.Log("피격");
 
@@ -133,5 +144,22 @@ public class PlayerController : MonoBehaviourPun
     public void EnableControl(bool enable)
     {
         isControllable = enable;
+    }
+    public void ApplyBarrier()
+    {
+        OnBarrier = true;
+    }
+
+    public void FixedHealToPlayer(int Amount)
+    {
+        float beforeHp = _hp;
+        _hp = MathF.Min(_hp + Amount, _maxhp);
+        Debug.Log($"{_hp - beforeHp} 만큼 체력 회복");
+    }
+    public void RatioHealToPlayer(int Amount)
+    {
+        float beforeHp = _hp;
+        _hp = MathF.Min(_hp + _maxhp * Amount / 100, _maxhp);
+        Debug.Log($"{_hp - beforeHp} 만큼 체력 회복");
     }
 }

@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5b9bff6f7ca8d249adb20bead3a6c44, type: 3}
-  m_Name: QuarterPotion
+  m_Name: Barrier
   m_EditorClassIdentifier: 
-  itemName: 
-  description: "HP\uC758 1/4\uC744 \uCC44\uC6CC\uC8FC\uB294 \uD3EC\uC158\uC774\uB2E4."
+  itemName: "\uBC30\uB9AC\uC5B4"
+  description: "\uB2E4\uC74C \uD53C\uACA9 1\uD68C\uC758 \uB370\uBBF8\uC9C0\uB97C
+    \uBB34\uD6A8\uB85C \uD55C\uB2E4."
   icon: {fileID: 0}
   prefab: {fileID: 0}
   appearRate: 1
-  Effect: {fileID: 11400000, guid: db8d9b3f94cfb1a499f2baf152b56aac, type: 2}
+  Effect: {fileID: 11400000, guid: 1114fbb59cdf98141b38d0c3ed7c621e, type: 2}

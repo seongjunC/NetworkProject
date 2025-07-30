@@ -1,6 +1,7 @@
 using Game;
 using Photon.Pun;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using static Photon.Pun.UtilityScripts.PunTeams;
 
@@ -11,6 +12,7 @@ public class Projectile : MonoBehaviour
     public Texture2D explosionMask;
     public float explosionScale = 1f;
     public int damage = 50;
+    private int realDamage;
 
     private float worldPerPixel; // Terrain 기준
     private DeformableTerrain terrain;
@@ -135,8 +137,9 @@ public class Projectile : MonoBehaviour
                 continue;  // 같은 팀이면 스킵!
 
             var player = hit.GetComponent<PlayerController>();
-            player.OnHit(damage);
-            Debug.Log($"플레이어에게 {damage} 데미지");
+            player.OnHit(realDamage);
+            Debug.Log($"플레이어에게 {realDamage} 데미지");
+            realDamage = damage;
 
         }
     }
@@ -147,5 +150,20 @@ public class Projectile : MonoBehaviour
 
         // 2) 2D용 원 그리기
         Gizmos.DrawWireSphere(gizmoCenter, gizmoRadius);
+    }
+
+    public void ApplyDamageBuff(List<float?> DamageBuff)
+    {
+        float Fixed = 0;
+        float Ratio = 1;
+        if (DamageBuff[0] != null)
+        {
+            Fixed = (float)DamageBuff[0];
+        }
+        if (DamageBuff[1] != null)
+        {
+            Ratio = (float)DamageBuff[1];
+        }
+        realDamage = (int)(damage * Ratio + Fixed);
     }
 }

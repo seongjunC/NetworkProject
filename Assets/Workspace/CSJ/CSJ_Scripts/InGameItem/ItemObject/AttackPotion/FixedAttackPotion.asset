@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5b9bff6f7ca8d249adb20bead3a6c44, type: 3}
-  m_Name: QuarterPotion
+  m_Name: FixedAttackPotion
   m_EditorClassIdentifier: 
   itemName: 
-  description: "HP\uC758 1/4\uC744 \uCC44\uC6CC\uC8FC\uB294 \uD3EC\uC158\uC774\uB2E4."
+  description: 
   icon: {fileID: 0}
   prefab: {fileID: 0}
   appearRate: 1
-  Effect: {fileID: 11400000, guid: db8d9b3f94cfb1a499f2baf152b56aac, type: 2}
+  Effect: {fileID: 0}
