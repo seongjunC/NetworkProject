@@ -114,7 +114,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         StartNextTurn();
     }
 
-    private void StartNextTurn()
+    public void StartNextTurn()
     {
         if (blueRemain <= 0 || redRemain <= 0)
         {
@@ -135,6 +135,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         if (GetPlayerController(currentPlayer.player.ActorNumber)._isDead)
         {
+            StartNextTurn();
             return;
         }
 
@@ -234,12 +235,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     void StartTurnForPlayer(int actorNumber)
     {
-        Debug.Log("StartTurnForPlayer");
         Debug.Log($"[StartTurnForPlayer] 내 ActorNumber: {PhotonNetwork.LocalPlayer.ActorNumber}, 턴 대상: {actorNumber}");
 
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            Debug.Log("턴 시작");
             EnableCurrentPlayer(); // 내 턴인 경우만 실행
         }
     }
@@ -249,17 +248,19 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         foreach (var playerCon in tanks)
         {
+            if (playerCon.photonView.IsMine)
+            {
+                Debug.Log($"[EnableCurrentPlayer] 내 탱크: {(IsMyTurn() ? "조작 가능" : "조작 불가")}");
+            }
             if (IsMyTurn() && playerCon.photonView.IsMine)
             {
                 playerCon.EnableControl(true);
                 playerCon.ResetTurn();
-                Debug.Log("내 턴 시작: 조작 가능 상태로 전환");
             }
             else
             {
                 playerCon.EnableControl(false);
                 playerCon.EndPlayerTurn();
-                Debug.Log("다른 플레이어 턴: 조작 불가 상태");
             }
         }
     }
@@ -359,14 +360,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     public void TurnFinished()
     {
-        if (photonView.IsMine)
             photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     [PunRPC]
     void RPC_SetCameraTarget(int actorNumber)
     {
-        Debug.Log("플레이어를 따라갑니다.");
         foreach (var player in tanks)
         {
             PhotonView view = player.GetComponent<PhotonView>();
@@ -382,7 +381,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPC_SetBulletTarget(int bulletViewID)
     {
-        Debug.Log("생성된 탄을 따라갑니다.");
         PhotonView bulletView = PhotonView.Find(bulletViewID);
         if (bulletView != null)
         {
@@ -410,7 +408,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         foreach (var t in tanks)
         {
             var view = t.GetComponent<PhotonView>();
-            Debug.Log($"탱크 탐색: {t.name}, ActorNumber: {view?.Owner?.ActorNumber}");
         }
 
         spawnedCount++;
