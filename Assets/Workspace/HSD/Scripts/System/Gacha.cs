@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,7 +44,6 @@ public class Gacha : MonoBehaviour
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
-        image.color = Color.clear;
         gameObject.SetActive(true);
         StartCoroutine(GachaRoutine());
     }
@@ -53,8 +53,18 @@ public class Gacha : MonoBehaviour
         SetUpCardTransformList();
         ClearCards();
         gachaList.Clear();
+        
+        float progress = 0;
+        float time = .5f;
 
-        yield return Utils.Fade(image, 0, 1);        
+        while(progress < time)
+        {
+            progress += Time.deltaTime;
+            Color color = image.color;
+            color.a = Mathf.Lerp(0, 1, progress / time);
+            image.color = color;
+            yield return null;
+        }        
 
         if (isTen)
         {

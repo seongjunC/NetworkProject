@@ -55,7 +55,10 @@ public class TankInventoryUI : MonoBehaviour
             else
             {
                 if (data.count == 0)
+                {
                     Destroy(tankSlotDic[data].gameObject);
+                    tankSlotDic.Remove(data);
+                }
             }
         }
     }
@@ -74,7 +77,10 @@ public class TankInventoryUI : MonoBehaviour
         else
         {
             if (data.count == 0)
+            {
                 Destroy(tankSlotDic[data].gameObject);
+                tankSlotDic.Remove(data);
+            }
         }
     }
 
