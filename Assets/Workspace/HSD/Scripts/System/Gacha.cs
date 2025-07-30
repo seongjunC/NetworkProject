@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gacha : MonoBehaviour
 {
+    [SerializeField] Image image;
+
     [Header("Setting")]
     public int needGem;
     public bool isTen;
@@ -35,17 +38,12 @@ public class Gacha : MonoBehaviour
         delay = new WaitForSeconds(cardDelay);
         addDelay = new WaitForSeconds(gachaAddDelay);
         model = Manager.Data.TankDataController.TankDatas.Values.ToArray();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            StartCoroutine(SetUpCardRoutine());
-    }
+    }    
 
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
+        image.color = Color.clear;
         gameObject.SetActive(true);
         StartCoroutine(GachaRoutine());
     }
@@ -55,6 +53,11 @@ public class Gacha : MonoBehaviour
         SetUpCardTransformList();
         ClearCards();
         gachaList.Clear();
+
+
+        Utils.Fade(image, 0, 1);
+
+        yield return new WaitForSeconds(1);
 
         if (isTen)
         {
@@ -66,6 +69,10 @@ public class Gacha : MonoBehaviour
         }
         else
             gachaList.Add(GetRandomTank());
+
+        yield return new WaitForSeconds(.5f);
+
+        StartCoroutine(SetUpCardRoutine());
     }
 
     private TankData GetRandomTank()

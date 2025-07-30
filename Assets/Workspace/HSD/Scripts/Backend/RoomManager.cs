@@ -48,7 +48,7 @@ public class RoomManager : MonoBehaviourPun
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
-    [SerializeField] GameObject gameSettingPanel;
+    [SerializeField] GameObject gameSettingPanel;    
 
     [Header("Chat")]
     [SerializeField] Chat chat;
@@ -114,6 +114,7 @@ public class RoomManager : MonoBehaviourPun
     {
         StartCoroutine(LeaveRoomRoutine());
     }
+
     private IEnumerator LeaveRoomRoutine()
     {
         Manager.UI.FadeScreen.FadeIn(.5f);

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GachaPanel : MonoBehaviour
 {
     [SerializeField] Gacha gacha;
+    [SerializeField] Button gachaExitButton;
 
     [Header("GachaButtons")]
     [SerializeField] Button oneGachaButton;
@@ -26,6 +27,7 @@ public class GachaPanel : MonoBehaviour
 
     private void OnEnable()
     {
+        gachaExitButton.onClick.AddListener(GachaExit);
         oneGachaButton.onClick.AddListener(OneGacha);
         tenGachaButton.onClick.AddListener(TenGacha);
 
@@ -38,6 +40,7 @@ public class GachaPanel : MonoBehaviour
 
     private void OnDisable()
     {
+        gachaExitButton.onClick.RemoveListener(GachaExit);
         oneGachaButton.onClick.RemoveListener(OneGacha);
         tenGachaButton.onClick.RemoveListener(TenGacha);
 
@@ -82,5 +85,17 @@ public class GachaPanel : MonoBehaviour
     {
         lobby.SetActive(true);
         gameObject.SetActive(false);
+    }
+
+    private void GachaExit() => StartCoroutine(GachaExitRoutine());
+
+    private IEnumerator GachaExitRoutine()
+    {
+        Manager.UI.FadeScreen.FadeIn(.5f);
+        
+        yield return new WaitForSeconds(1);
+        gacha.gameObject.SetActive(false);
+
+        Manager.UI.FadeScreen.FadeOut(.5f);
     }
 }
