@@ -8,7 +8,7 @@ public class TestBattleManager : MonoBehaviourPun
     // [SerializeField] private List<Transform> _spawnPoint;
     [SerializeField] Button _turnEndButton;
     [SerializeField] private MSKTurnController _turnController;
-    
+
     private PlayerController _playerController;
 
 
@@ -16,7 +16,7 @@ public class TestBattleManager : MonoBehaviourPun
     private void Start()
     {
         _turnEndButton.onClick.AddListener(TestTurnEnd);
-       // PlayerSpawn();
+        // PlayerSpawn();
 
     }
     private void OnEnable()
@@ -30,7 +30,7 @@ public class TestBattleManager : MonoBehaviourPun
     }
 
     #endregion
-    //  ¸Ê »ý¼ºÀÌÈÄ ÇÃ·¹ÀÌ¾î¸¦ µî·ÏÇÏµµ·Ï
+    //  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½
     private void OnMapGenerated(DeformableTerrain terrain)
     {
         // _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
@@ -71,9 +71,9 @@ public class TestBattleManager : MonoBehaviourPun
 
             Vector3 spawnPos = _spawnPoint[i].position;
             photonView.RPC("RPC_SpawnTank", players[i], spawnPos);
-            // TODO : ·Îºñ ¼³Á¤¿¡ µû¸¥ ´Ù¸¥ ÇÃ·¹ÀÌ¾î ÅÊÅ© ½ºÆù
-            // ¹æ¹ý 1 ½ºÆù ½Ã ÅÊÅ©ÀÇ Á¤º¸¸¦ °¡Á®¿Í¼­ ½ºÆù
-            // ¹æ¹ý 2 ÇÁ¸®ÆÕ ÀÚ½ÄÀ¸·Î 4°³ÀÇ ÅÊÅ©¸¦ °¡Áö°í, ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÑ ÅÊÅ©¸¸ È°¼ºÈ­
+            // TODO : ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ È°ï¿½ï¿½È­
         }
     }*/
 
@@ -84,7 +84,7 @@ public class TestBattleManager : MonoBehaviourPun
 
         PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
         /*
-         * TODO : ÅÊÅ© ·Îºñ¼³Á¤¿¡ µû¶ó¼­ »ý¼ºÇÏ±â
+         * TODO : ï¿½ï¿½Å© ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
         TankType tankType = (TankType)tankTypeIndex;
         if (_tankPrefabPaths.TryGetValue(tankType, out string prefabPath))
         {

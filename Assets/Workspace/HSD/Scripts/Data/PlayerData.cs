@@ -101,4 +101,34 @@ public class PlayerData
             }
         });
     }
+    public void RaiseWinCount()
+    {
+        Manager.Database.userDataRef.Child("Win")
+        .SetValueAsync(Win + 1).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                Win += 1;
+            }
+            else
+            {
+                Debug.LogError("승리 저장 실패");
+            }
+        });
+    }
+    public void RaiseLoseCount()
+    {
+        Manager.Database.userDataRef.Child("Lose")
+        .SetValueAsync(Lose + 1).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                Lose += 1;
+            }
+            else
+            {
+                Debug.LogError("패배 저장 실패");
+            }
+        });
+    }
 }
