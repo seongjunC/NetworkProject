@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Photon.Pun;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Fire : MonoBehaviourPun
@@ -18,6 +20,9 @@ public class Fire : MonoBehaviourPun
 
     public float powerCharge = 0f;         // 차지
     private bool isCharging = false;        // 차지 중인지 여부
+    private bool isDoubleAttack = false;
+    private bool OnDamageBuff = false;
+    private List<float?> DamageBuff = new List<float?>(2);
 
 
     private MSKTurnController _turnController;
@@ -27,6 +32,7 @@ public class Fire : MonoBehaviourPun
     {
         _playerController = GetComponentInParent<PlayerController>();
         _turnController = FindObjectOfType<MSKTurnController>();
+        InitBuff();
     }
 
 
@@ -54,13 +60,18 @@ public class Fire : MonoBehaviourPun
         if (isCharging && Input.GetKeyUp(KeyCode.Space))
         {
             Shoot();
+            if (isDoubleAttack)
+            {
+                Invoke(nameof(Shoot), 1f);
+                isDoubleAttack = false;
+            }
             powerCharge = 0f;
             isCharging = false;
             _playerController.SetAttacked(true);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
 
-        
+
     }
 
     private void Aim()
@@ -84,6 +95,12 @@ public class Fire : MonoBehaviourPun
     private void Shoot()
     {
         GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePoint.position, firePoint.rotation);
+        if (OnDamageBuff)
+        {
+            Projectile bulletScripts = bullet.GetComponent<Projectile>();
+            bulletScripts.ApplyDamageBuff(DamageBuff);
+            InitDamageBuff();
+        }
         PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
         _turnController.photonView.RPC("RPC_SetBulletTarget", RpcTarget.All, bulletPhotonView.ViewID);
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
@@ -92,4 +109,36 @@ public class Fire : MonoBehaviourPun
             rb.velocity = firePoint.up * powerCharge;
         }
     }
+
+    public void SetDoubleAttack()
+    {
+        isDoubleAttack = true;
+        Debug.Log("더블 어택 활성화");
+    }
+
+    public void SetRatioDamageBuff(float Amount)
+    {
+        OnDamageBuff = true;
+        DamageBuff[1] += Amount;
+    }
+    public void SetFixedDamageBuff(float Amount)
+    {
+        OnDamageBuff = true;
+        DamageBuff[0] += Amount;
+    }
+    public void InitBuff()
+    {
+        isDoubleAttack = false;
+        InitDamageBuff();
+    }
+    public void InitDamageBuff()
+    {
+        OnDamageBuff = false;
+        DamageBuff.Clear();
+        for (int i = 0; i < DamageBuff.Count; i++)
+        {
+            DamageBuff.Add(null);
+        }
+    }
+
 }

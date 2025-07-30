@@ -28,7 +28,8 @@ public class TurnController : MonoBehaviourPunCallbacks
     private List<PlayerInfo> nextCycle = new();
     private int blueRemain;
     private int redRemain;
-    PlayerController[] tanks;
+    List<PlayerController> tanks = new();
+    private Dictionary<PlayerController, Fire> fireMap = new();
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
     private Room room;
@@ -70,7 +71,23 @@ public class TurnController : MonoBehaviourPunCallbacks
     {
         turnQueue.Clear();
         nextCycle.Clear();
-        tanks = FindObjectsOfType<PlayerController>();
+        tanks.Clear();
+        fireMap.Clear();
+
+        foreach (var controller in FindObjectsOfType<PlayerController>())
+        {
+            tanks.Add(controller);
+
+            Fire fire = controller.GetComponent<Fire>();
+            if (fire != null)
+            {
+                fireMap[controller] = fire;
+            }
+            else
+            {
+                Debug.LogError("Fire 를 찾을 수 없습니다.");
+            }
+        }
 
         int playerCount = PhotonNetwork.CountOfPlayers;
         room = PhotonNetwork.CurrentRoom;
@@ -103,6 +120,7 @@ public class TurnController : MonoBehaviourPunCallbacks
                 turnQueue.Enqueue(new PlayerInfo(p));
             }
         }
+
 
         StartNextTurn();
     }
@@ -153,6 +171,7 @@ public class TurnController : MonoBehaviourPunCallbacks
         if (currentPlayer != null && currentPlayer.ActorNumber == actorNumber)
         {
             isTurnRunning = false;
+            InitTank();
             nextCycle.Add(currentPlayer);
             StartNextTurn();
         }
@@ -201,21 +220,65 @@ public class TurnController : MonoBehaviourPunCallbacks
 
     void EnableCurrentPlayer()
     {
+        PlayerController playerCon = GetPlayerController(currentPlayer.player);
+        playerCon.EnableControl(true);
         foreach (PlayerController player in tanks)
         {
-            PhotonView view = player.GetComponent<PhotonView>();
-            if (view != null && view.Owner != null)
+            if (player == playerCon)
             {
-                if (view.Owner.ActorNumber == currentPlayer.ActorNumber)
-                {
-                    player.EnableControl(true);
-                }
-                else
-                {
-                    player.EnableControl(false);
-                }
+                player.EnableControl(true);
+            }
+            else
+            {
+                playerCon.EnableControl(false);
+            }
+            PhotonView view = player.GetComponent<PhotonView>();
+            // if (view != null && view.Owner != null)
+            // {
+            //     if (view.Owner.ActorNumber == currentPlayer.ActorNumber)
+            //     {
+            //         player.EnableControl(true);
+            //     }
+            //     else
+            //     {
+            //         player.EnableControl(false);
+            //     }
+            // }
+        }
+    }
+
+    public PlayerController GetPlayerController(Player player)
+    {
+        foreach (var tank in tanks)
+        {
+            PhotonView view = tank.GetComponent<PhotonView>();
+            if (view != null && view.Owner != null && view.Owner.ActorNumber == player.ActorNumber)
+            {
+                return tank;
             }
         }
+        Debug.LogError(" 플레이어 컨트롤러 탐색 실패");
+        return null;
+    }
+
+    public PlayerController GetLocalPlayerController()
+    {
+        return GetPlayerController(PhotonNetwork.LocalPlayer);
+    }
+
+    public Fire GetFireMap(PlayerController controller)
+    {
+        return fireMap[controller];
+    }
+
+    public Fire GetLocalPlayerFire()
+    {
+        return GetFireMap(GetLocalPlayerController());
+    }
+
+    public void InitTank()
+    {
+        GetLocalPlayerFire().InitBuff();
     }
 
 

@@ -9,12 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5b9bff6f7ca8d249adb20bead3a6c44, type: 3}
-  m_Name: AttackPotion
+  m_Script: {fileID: 11500000, guid: e5acb4f4fa335a042a8ce6f27f7b1f53, type: 3}
+  m_Name: FixedPotionEffect
   m_EditorClassIdentifier: 
-  itemName: 
-  description: 
-  icon: {fileID: 0}
-  prefab: {fileID: 0}
-  appearRate: 1
-  Effect: {fileID: 0}
+  BuffAmount: 0
+  isFixed: 0
