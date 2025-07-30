@@ -69,7 +69,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         int playerCount = PhotonNetwork.CountOfPlayers;
         room = PhotonNetwork.CurrentRoom;
-
+        InitializePlayerEvents();
         if (CustomProperty.GetTurnRandom(room))
         {
             List<int> randNumList = new();
@@ -182,6 +182,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private void RPC_PlayerDead()
     {
         currentPlayer.isDead = true;
+        var tank = System.Array.Find(tanks, t => t.photonView.Owner.ActorNumber == currentPlayer.ActorNumber);
+        if (tank != null)
+        {
+            OnPlayerDied(tank);
+        }
     }
 
 

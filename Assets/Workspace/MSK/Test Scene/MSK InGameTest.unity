@@ -6936,6 +6936,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93044c97b1805d24cbdefc9d6b9b95a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winnerTeamReward: 100
+  loserTeamReward: 50
+  turnLimit: 30
+  itemSpawner: {fileID: 0}
+  itemCount: 0
 --- !u!1 &1528314178
 GameObject:
   m_ObjectHideFlags: 0
@@ -7191,9 +7196,9 @@ MonoBehaviour:
   flagImage: {fileID: 902914302}
   item1Button: {fileID: 718079426}
   item2Button: {fileID: 2045418933}
-  endTurnButton: {fileID: 0}
-  item1Icon: {fileID: 0}
-  item2Icon: {fileID: 0}
+  endTurnButton: {fileID: 1225509752}
+  item1Icon: {fileID: 718079427}
+  item2Icon: {fileID: 2045418934}
   healthPointText: {fileID: 847118187}
 --- !u!114 &1574390736
 MonoBehaviour:
