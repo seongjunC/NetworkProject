@@ -141,7 +141,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         currentPlayer = turnQueue.Dequeue();
         Debug.Log($"{currentPlayer.NickName} 큐에서 방출됨");
 
-        if (GetPlayerController(currentPlayer.player)._isDead)
+        if (GetPlayerController(currentPlayer.player.ActorNumber)._isDead)
         {
             return;
         }
@@ -235,19 +235,26 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     void EnableCurrentPlayer()
     {
-        PlayerController playerCon = GetPlayerController(currentPlayer.player);
+        var actorNumber = currentPlayer.ActorNumber;
+        PlayerController playerCon = GetPlayerController(actorNumber);
 
-        Debug.Log("EnableCurrentPlayer");
-        // 내 로컬 플레이어만 처리
-        if (playerCon != null && playerCon.photonView.IsMine)
+        if (playerCon == null)
         {
-            Debug.Log("EnableCurrentPlayer ResetTurn 호출됨");
+            Debug.LogError("[EnableCurrentPlayer] playerCon이 null입니다.");
+            return;
+        }
+
+        Debug.Log($"[EnableCurrentPlayer] playerCon.Owner.ActorNumber: {playerCon.photonView.Owner?.ActorNumber}, Local: {PhotonNetwork.LocalPlayer.ActorNumber}");
+
+        if (playerCon.photonView.IsMine)
+        {
+            Debug.Log("[EnableCurrentPlayer] ResetTurn 실행");
             playerCon.ResetTurn();
         }
         else
         {
-            Debug.Log("EndPlayerTurn 호출됨");
-            playerCon?.EndPlayerTurn();
+            Debug.Log("[EnableCurrentPlayer] 내 턴이 아니므로 EndPlayerTurn 실행");
+            playerCon.EndPlayerTurn();
         }
     }
 
@@ -277,27 +284,15 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
      
 */
-    public PlayerController GetPlayerController(Player player)
+    public PlayerController GetPlayerController(int actorNumber)
     {
         foreach (var tank in tanks)
         {
             if (tank == null) continue;
             PhotonView view = tank.GetComponent<PhotonView>();
-            if (view == null)
-            {
-                Debug.LogWarning($"{tank.name} : PhotonView 없음");
-                continue;
-            }
+            if (view == null || view.Owner == null) continue;
 
-            if (view.Owner == null)
-            {
-                Debug.LogWarning($"{tank.name} : PhotonView.Owner가 null임");
-                continue;
-            }
-
-            Debug.Log($"탐색 중: {tank.name}, Owner.ActorNumber = {view.Owner.ActorNumber}, 찾는 ActorNumber = {player.ActorNumber}");
-
-            if (view.Owner.ActorNumber == player.ActorNumber)
+            if (view.Owner.ActorNumber == actorNumber)
             {
                 return tank;
             }
@@ -307,7 +302,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     public PlayerController GetLocalPlayerController()
     {
-        return GetPlayerController(PhotonNetwork.LocalPlayer);
+        return GetPlayerController(PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     public Fire GetFireMap(PlayerController controller)
