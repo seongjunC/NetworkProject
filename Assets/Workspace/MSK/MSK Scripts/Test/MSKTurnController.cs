@@ -247,26 +247,20 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     void EnableCurrentPlayer()
     {
-        var actorNumber = currentPlayer.ActorNumber;
-        PlayerController playerCon = GetPlayerController(actorNumber);
-
-        if (playerCon == null)
+        foreach (var playerCon in tanks)
         {
-            Debug.LogError("[EnableCurrentPlayer] playerCon이 null입니다.");
-            return;
-        }
-
-        Debug.Log($"[EnableCurrentPlayer] playerCon.Owner.ActorNumber: {playerCon.photonView.Owner?.ActorNumber}, Local: {PhotonNetwork.LocalPlayer.ActorNumber}");
-
-        if (playerCon.photonView.IsMine)
-        {
-            Debug.Log("[EnableCurrentPlayer] ResetTurn 실행");
-            playerCon.ResetTurn();
-        }
-        else
-        {
-            Debug.Log("[EnableCurrentPlayer] 내 턴이 아니므로 EndPlayerTurn 실행");
-            playerCon.EndPlayerTurn();
+            if (IsMyTurn() && playerCon.photonView.IsMine)
+            {
+                playerCon.EnableControl(true);
+                playerCon.ResetTurn();
+                Debug.Log("내 턴 시작: 조작 가능 상태로 전환");
+            }
+            else
+            {
+                playerCon.EnableControl(false);
+                playerCon.EndPlayerTurn();
+                Debug.Log("다른 플레이어 턴: 조작 불가 상태");
+            }
         }
     }
 
