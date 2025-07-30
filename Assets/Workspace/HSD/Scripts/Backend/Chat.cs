@@ -23,18 +23,30 @@ public class Chat : MonoBehaviourPun
     void Start()
     {
         messageField.onEndEdit.AddListener(OnMessageSubmitted);
-        messageField.onValueChanged.AddListener(CheckBeforeWhisper);
     }
-    
-    private void CheckBeforeWhisper(string text)
-    {
-        if (text.Length > 3) return;
 
-        if (text.StartsWith("/r"))
+    void Update()
+    {
+        // 마지막 메시지 불러오기
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (!string.IsNullOrEmpty(beforeMessage))
+            {
+                messageField.text = beforeMessage;
+                messageField.caretPosition = messageField.text.Length; // 커서 맨 끝으로
+                messageField.ActivateInputField(); // 다시 포커스
+            }
+        }
+
+        if (messageField.text.Length > 3)
+            return;
+
+        if (messageField.isFocused && messageField.text.StartsWith("/r") && Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!string.IsNullOrEmpty(beforeWhisperPlayerName))
             {
                 messageField.text = $"/귓 {beforeWhisperPlayerName} ";
+                messageField.caretPosition = messageField.text.Length;
             }
         }
     }
@@ -54,6 +66,7 @@ public class Chat : MonoBehaviourPun
             photonView.RPC(nameof(SendChat), RpcTarget.All, PhotonNetwork.LocalPlayer, PhotonNetwork.NickName, text);
         }
 
+        beforeMessage = messageField.text;
         messageField.text = "";
         messageField.ActivateInputField();
     }
@@ -118,6 +131,8 @@ public class Chat : MonoBehaviourPun
     private void ReceiveWhisper(string sender, string message)
     {
         AddLocalMessage($"[귓속말 ← {sender}] {message}");
+
+        beforeWhisperPlayerName = sender;
     }
 
     public void ResetChat()
