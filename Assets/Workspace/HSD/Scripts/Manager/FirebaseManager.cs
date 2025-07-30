@@ -49,7 +49,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 Debug.LogError("파베 설정이 충족되지 않음");
             }
             OnAuthSettingComplated?.Invoke();
-        });
+        });        
     }
 
     public void LogOut()
