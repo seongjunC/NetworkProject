@@ -265,7 +265,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Manager.Game.State = Game.State.Lobby;
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).OnDisconnect().SetValue(false);
-        Manager.Data.InventoryData = new();
+        Manager.Data.TankInventoryData = new();
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
             Manager.UI.NickNameSelectPanel.Show();

@@ -7827,7 +7827,7 @@ MonoBehaviour:
   - 20
   - 25
   - 50
-  isTen: 0
+  isTen: 1
   model:
   - tankName: S_Tank
     rank: 0
@@ -7867,6 +7867,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 6493164010157632658, guid: 181f46ebb22e6bd41b1a5a847c958fce, type: 3}
   moveTime: 0.5
   cardDelay: 0.2
+  gachaAddDelay: 1
 --- !u!1 &607988202
 GameObject:
   m_ObjectHideFlags: 0

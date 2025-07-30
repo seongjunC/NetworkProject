@@ -24,11 +24,15 @@ public class Gacha : MonoBehaviour
     [SerializeField] float moveTime;
     [SerializeField] float cardDelay;
 
+    [Header("Delay")]
+    [SerializeField] float gachaAddDelay;
     private YieldInstruction delay;
+    private YieldInstruction addDelay;
 
     private void Start()
     {
         delay = new WaitForSeconds(cardDelay);
+        addDelay = new WaitForSeconds(gachaAddDelay);
     }
 
     private void Update()
@@ -40,6 +44,11 @@ public class Gacha : MonoBehaviour
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
+        StartCoroutine(GachaRoutine());
+    }
+
+    private IEnumerator GachaRoutine()
+    {
         SetUpCardTransformList();
         ClearCards();
         gachaList.Clear();
@@ -49,6 +58,7 @@ public class Gacha : MonoBehaviour
             for (int i = 0; i < 10; i++)
             {
                 gachaList.Add(GetRandomTank());
+                yield return new WaitForSeconds(gachaAddDelay);
             }
         }
         else
@@ -81,7 +91,7 @@ public class Gacha : MonoBehaviour
         Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity, cardSpawnTransform).GetComponent<Card>();
         cards.Add(card);
 
-        Manager.Data.InventoryData.AddTank(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
+        Manager.Data.TankInventoryData.AddTankEvent(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
 
         return selectTank;
     }

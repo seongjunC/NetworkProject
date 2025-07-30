@@ -41,5 +41,9 @@ public static class Utils
     {
         yield return Fade(() => target.color, c => target.color = c, start, end, fadeTime, delay, action);
     }
+    public static bool Contain(this LayerMask layerMask, int layer)
+    {
+        return ((1 << layer) & layerMask) != 0;
+    }
     #endregion
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 public enum TankRank
 {
     S, A, B, C
@@ -19,7 +20,7 @@ public class TankGroupData
 }
 
 [Serializable]
-public class InventoryData
+public class TankInventoryData
 {
     public Dictionary<string, TankGroupData> tankGroups = new();
     private DatabaseReference tankRef;
@@ -29,7 +30,7 @@ public class InventoryData
     public event Action<string, int, int> OnTankCountUpdated; // (TankName, Level, NewCount)
     public event Action<string, int> OnTankLevelRemoved;
 
-    public InventoryData()
+    public TankInventoryData()
     {
         InitTanks();
     }
@@ -51,9 +52,14 @@ public class InventoryData
     {
         tankRef = Manager.Database.userRef.Child("Tanks");
 
+        tankRef.SetValueAsync("");
+
+        InitInventory();
+        Debug.Log("Init");
         InitData().ContinueWithOnMainThread(task =>
         {
             InitInventory();
+            Debug.Log("Init2");
         });
     }
 
@@ -117,7 +123,6 @@ public class InventoryData
     // 데이터 베이스에 추가가 되면 런타임 중 Dictionary에 추가하는 로직
     private void UpdateTankGroup(DataSnapshot snapshot)
     {
-        Debug.Log("UpdateTankGroup");
         if (!snapshot.Exists) return;
 
         string tankName = snapshot.Key; // 탱크 이름 가져옴
@@ -139,94 +144,86 @@ public class InventoryData
         {
             if (int.TryParse(levelSnap.Key, out int level))
             {
-                int count = int.TryParse(levelSnap.Child("Count")?.Value?.ToString(), out int cnt) ? cnt : 0;
+                int count = int.TryParse(levelSnap.Value?.ToString(), out int cnt) ? cnt : 0;
                 groupData.Levels[level] = count;
 
                 OnTankCountUpdated?.Invoke(tankName, level, count);
             }
         }
-        Debug.Log("UpdateTankGroup End");
         tankGroups[tankName] = groupData;
     }
 
-    private Task CreateTankGroupData(string tankName, int level)
+    public void AddTankEvent(string tankName, int level, int count, TankRank rank = TankRank.C)
     {
-        // 랭크는 추후 프리팹에서 key값으로 가져옴
-        TankRank rank = TankRank.C;
-
-        return tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
+        tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
-            var snapShot = task.Result;
-
-            if (snapShot == null || (string)snapShot.Value != tankName)
+            if (task.IsFaulted || task.IsCanceled)
             {
-                DatabaseReference groupRef = tankRef.Child(tankName);
+                Debug.LogError("Firebase 요청 실패");
+                return;
+            }
 
-                TankGroupData groupData = new TankGroupData
+            var snapshot = task.Result;
+
+            bool exists = false;
+
+            if (snapshot.Exists)
+            {
+                foreach (var child in snapshot.Children)
                 {
-                    TankName = tankName,
-                    Rank = rank,
-                    Levels = new Dictionary<int, int> { {level, 1 } }
-                };
-
-                if (task.IsCompleted)
-                {
-                    Debug.Log("Complated");
-
-                    groupRef.SetRawJsonValueAsync(JsonUtility.ToJson(groupData)).ContinueWithOnMainThread(task =>
+                    if (child.Key == tankName)
                     {
-                        if (task.IsCanceled || task.IsFaulted)
-                            return;
-
-                        if (task.IsCompleted)
-                            Debug.Log("Complated2");
-                    });
+                        exists = true;
+                        break;
+                    }
                 }
+            }
+
+            if (!exists)
+            {
+                Debug.Log($"새 탱크 생성 : {tankName}");
+                CreateTankGroupData(tankName, level, rank, () =>
+                {
+                    AddCountAndUpgrade(tankName, level, count);
+                });
+            }
+            else
+            {
+                AddCountAndUpgrade(tankName, level, count);
             }
         });
     }
 
-    public Task AddTank(string tankName, int level, int count, TankRank rank = TankRank.C)
+    private void CreateTankGroupData(string name, int level, TankRank rank, Action onComplete)
     {
-        var countRef = tankRef.Child(tankName).Child("Levels").Child(level.ToString()).Child("Count");
+        var data = new TankGroupData 
+        {   
+            TankName = name,
+            Rank = rank,
+            Levels = new Dictionary<int, int> { { level, 0 } } 
+        };
 
-        if (!tankGroups.ContainsKey(tankName))
+        tankRef.Child(name).SetRawJsonValueAsync(JsonUtility.ToJson(data)).ContinueWithOnMainThread(_ => onComplete?.Invoke());
+    }
+
+    private void AddCountAndUpgrade(string name, int level, int count)
+    {
+        var countRef = tankRef.Child(name).Child("Levels").Child(level.ToString());
+
+        countRef.RunTransaction(mutableData =>
         {
-            return CreateTankGroupData(tankName, level).ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCompleted)
-                {
-                    Debug.Log("데이터 저장 완료");
-                    countRef.RunTransaction(mutableData =>
-                    {
-                        int current = 0;
-                        if (mutableData.Value != null)
-                            int.TryParse(mutableData.Value.ToString(), out current);
-                        Debug.Log(mutableData.Value);
-                        mutableData.Value = current + count;
-                        return TransactionResult.Success(mutableData);
-                    });
-                }
-            });            
-        }        
-
-        return countRef.RunTransaction(mutableData =>
-        {
-            int current = 0;
-            if (mutableData.Value != null)
-                int.TryParse(mutableData.Value.ToString(), out current);
-
+            int current = mutableData.Value != null ? Convert.ToInt32(mutableData.Value) : 0;
             mutableData.Value = current + count;
             return TransactionResult.Success(mutableData);
-        }).ContinueWithOnMainThread(task =>
+        }).ContinueWithOnMainThread(_ =>
         {
-            return UpgradeTank(tankName);
-        });        
+            UpgradeTank(name);
+        });
     }
 
     public Task RemoveTank(string tankName, int level, int count)
     {
-        var countRef = tankRef.Child(tankName).Child("Levels").Child(level.ToString()).Child("Count");
+        var countRef = tankRef.Child(tankName).Child("Levels").Child(level.ToString());
 
         return countRef.RunTransaction(mutableData =>
         {
@@ -243,9 +240,9 @@ public class InventoryData
         });
     }
 
-    public Task UpgradeTank(string tankName)
+    public void UpgradeTank(string tankName)
     {
-        return tankRef.Child(tankName).Child("Levels").GetValueAsync().ContinueWithOnMainThread(task =>
+        tankRef.Child(tankName).Child("Levels").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (!task.IsCompleted || task.IsFaulted || task.IsCanceled)
                 return;
@@ -258,9 +255,9 @@ public class InventoryData
                 if (!int.TryParse(levelNode.Key, out int level))
                     continue;
 
-                int currentLevel = level; // 고유값
+                int currentLevel = level;
 
-                var currentRef = tankRef.Child(tankName).Child("Levels").Child(currentLevel.ToString()).Child("Count");
+                var currentRef = tankRef.Child(tankName).Child("Levels").Child(currentLevel.ToString());
 
                 currentRef.RunTransaction(mutableData =>
                 {
@@ -280,7 +277,7 @@ public class InventoryData
                     {
                         // 성공적으로 감소했으면 다음 레벨 증가
                         int nextLevel = currentLevel + 1;
-                        var nextRef = tankRef.Child(tankName).Child("Levels").Child(nextLevel.ToString()).Child("Count");
+                        var nextRef = tankRef.Child(tankName).Child("Levels").Child(nextLevel.ToString());
 
                         nextRef.RunTransaction(mutableData =>
                         {
@@ -297,4 +294,5 @@ public class InventoryData
             UpgradeTank(tankName);
         });
     }
+
 }
