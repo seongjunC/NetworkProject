@@ -16,7 +16,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [SerializeField] int winnerTeamReward = 100;
     [SerializeField] int loserTeamReward = 50;
     [Header("턴 제한")]
-    //[SerializeField] float turnLimit = 30f;
+    [SerializeField] float turnLimit = 30f;
     [Header("아이템 생성기")]
     [SerializeField] ItemSpawner itemSpawner;
     [Header("사이클 종료시 생성할 아이템의 개수")]
@@ -31,10 +31,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private UnityEvent OnGameEnded;
     private PlayerInfo currentPlayer;
     private Room room;
-    //private float turnTimer = 0f;
-    //private bool isTurnRunning = false;
+    private float turnTimer = 0f;
+    private bool isTurnRunning = false;
 
-    //private bool isGameStart = false;
+    private bool isGameStart = false;
     private int spawnedCount = 0;
     private int expectedPlayerCount => PhotonNetwork.CurrentRoom.PlayerCount;
 
@@ -50,7 +50,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     void Update()
     {   
-        /*
+        
         if (!isGameStart)
             return;
 
@@ -61,7 +61,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (turnTimer >= turnLimit)
         {
             photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
-        }*/
+        }
     }
 
     public void GameStart()
@@ -117,7 +117,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 else blueRemain++;
             }
         }
-        //isGameStart = true;
+        isGameStart = true;
         StartNextTurn();
     }
 
@@ -145,8 +145,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             return;
         }
 
-        // turnTimer = 0f;
-        // isTurnRunning = true;
+        turnTimer = 0f;
+        isTurnRunning = true;
 
         Debug.Log("이 아래 다음 턴 있다.");
 
@@ -173,7 +173,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (currentPlayer != null && currentPlayer.ActorNumber == actorNumber)
         {
             Debug.Log("RPC_TurnFinished 조건문 실행됨");
-            // isTurnRunning = false;
+            isTurnRunning = false;
             photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
             nextCycle.Add(currentPlayer);
             StartNextTurn();
