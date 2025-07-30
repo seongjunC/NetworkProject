@@ -4,6 +4,7 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Chat : MonoBehaviourPun
@@ -12,25 +13,41 @@ public class Chat : MonoBehaviourPun
     [SerializeField] Transform chatContent;
     [SerializeField] ChatText chatPrefab;
 
-    private ChatType chatType = ChatType.All;
-
     [Header("Color")]
     [SerializeField] Color whisperColor;
+
+    private ChatType chatType = ChatType.All;
+    private string beforeMessage;
+    private string beforeWhisperPlayerName;
 
     void Start()
     {
         messageField.onEndEdit.AddListener(OnMessageSubmitted);
+        messageField.onValueChanged.AddListener(CheckBeforeWhisper);
+    }
+    
+    private void CheckBeforeWhisper(string text)
+    {
+        if (text.Length > 3) return;
+
+        if (text.StartsWith("/r"))
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                messageField.text = $"/귓 {beforeWhisperPlayerName} ";
+            }
+        }
     }
 
     private void OnMessageSubmitted(string text)
     {
-        if (string.IsNullOrWhiteSpace(text)) return;
+        if (string.IsNullOrWhiteSpace(text)) return;       
 
         // 귓속말 체크
         if (text.StartsWith("/w ") || text.StartsWith("/귓 "))
         {
             HandleWhisper(text);
-        }
+        }        
         else
         {
             // 일반 채팅
@@ -71,6 +88,8 @@ public class Chat : MonoBehaviourPun
             AddLocalMessage($"[시스템] '{targetName}' 닉네임의 플레이어를 찾을 수 없습니다.");
             return;
         }
+
+        beforeWhisperPlayerName = targetName;
 
         // 본인 화면에도 표시
         AddLocalMessage($"[귓속말 → {targetName}] {message}");
