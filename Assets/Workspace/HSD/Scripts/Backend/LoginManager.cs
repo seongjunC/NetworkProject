@@ -264,6 +264,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Manager.UI.FadeScreen.FadeOut(1);
         Manager.Game.State = Game.State.Lobby;
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
+        Manager.Database.userRef.Child(UserDataType.Connected.ToString()).OnDisconnect().SetValue(false);
         Manager.Data.InventoryData = new();
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))

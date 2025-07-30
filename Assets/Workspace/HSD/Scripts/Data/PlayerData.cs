@@ -87,7 +87,7 @@ public class PlayerData
     // 추후 논의 후 이전 가능성이 있습니다.
     public void GemGain(int amount)
     {
-        Manager.Database.userRef.Child("gem")
+        Manager.Database.userDataRef.Child("Gem")
         .SetValueAsync(Gem + amount).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)

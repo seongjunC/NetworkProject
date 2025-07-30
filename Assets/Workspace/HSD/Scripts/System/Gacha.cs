@@ -5,14 +5,43 @@ using UnityEngine;
 
 public class Gacha : MonoBehaviour
 {
-    [SerializeField] int[] ints;
+    [Header("Setting")]
     [SerializeField] float[] chance;
     [SerializeField] bool isTen;
-    [SerializeField] private List<TankGroupData> gachaList = new();
+    [SerializeField] TankData[] model;
+
+    [Header("List")]
+    [SerializeField] List<Transform> cardTransforms = new();
+    [SerializeField] List<TankData> gachaList = new();
+
+    [Header("Cards")]
+    [SerializeField] List<Card> cards = new();
+    [SerializeField] Transform cradContent;
+    [SerializeField] Transform cardSpawnTransform;
+    [SerializeField] GameObject cardPrefab;
+
+    [Header("Move")]
+    [SerializeField] float moveTime;
+    [SerializeField] float cardDelay;
+
+    private YieldInstruction delay;
+
+    private void Start()
+    {
+        delay = new WaitForSeconds(cardDelay);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            StartCoroutine(SetUpCardRoutine());
+    }
 
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
+        SetUpCardTransformList();
+        ClearCards();
         gachaList.Clear();
 
         if (isTen)
@@ -26,14 +55,9 @@ public class Gacha : MonoBehaviour
             gachaList.Add(GetRandomTank());
     }
 
-    private TankGroupData GetRandomTank()
+    private TankData GetRandomTank()
     {
-        float rand = Random.Range(0, ints.Length);
-
-        TankGroupData[] randomData = Manager.Data.InventoryData.tankGroups.Values.
-            Where(t => (int)t.Rank == (int)rand).ToArray();
-
-        rand = Random.Range(0, 100);
+        float rand = Random.Range(0, 100);
 
         int select = 0;
 
@@ -49,6 +73,54 @@ public class Gacha : MonoBehaviour
             }
         }
 
-        return randomData[select];
+        TankData[] randomData = model.
+            Where(t => (int)t.rank == select).ToArray();
+
+        TankData selectTank = randomData[Random.Range(0, randomData.Length)];
+
+        Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity, cardSpawnTransform).GetComponent<Card>();
+        cards.Add(card);
+
+        Manager.Data.InventoryData.AddTank(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
+
+        return selectTank;
+    }
+
+    private void SetUpCardTransformList()
+    {
+        if(isTen)
+        {
+            foreach(Transform t in cardTransforms)
+            {
+                t.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            for(int i = 0; i < cardTransforms.Count; i++)
+            {
+                if(i == 0)
+                    cardTransforms[i].gameObject.SetActive(true);
+                else
+                    cardTransforms[i].gameObject.SetActive(false);
+            }
+        }
+    }
+    private void ClearCards()
+    {
+        foreach (Card c in cards)
+        {
+            Destroy(c.gameObject);
+        }
+        cards.Clear();
+    }
+
+    private IEnumerator SetUpCardRoutine()
+    {
+        for (int i = 0;i < cards.Count; i++)
+        {
+            cards[i].SetUp(gachaList[i], cardTransforms[i], moveTime);
+            yield return delay;
+        }
     }
 }
