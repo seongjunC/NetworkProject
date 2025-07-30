@@ -10,7 +10,6 @@ public class PlayerInfo
 {
     public Player player;
     public string NickName => player.NickName;
-    public bool isDead;
     public int ActorNumber;
     public ItemData[] items = new ItemData[2];
 
@@ -18,7 +17,6 @@ public class PlayerInfo
     {
         player = _player;
         ActorNumber = _player.ActorNumber;
-        isDead = false;
     }
 
     public void ItemAcquire(ItemData item)
