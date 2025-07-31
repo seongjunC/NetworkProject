@@ -101,10 +101,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionRadiusx: 200
   explosionRadiusy: 200
-  explosionMask: {fileID: 2800000, guid: 3f04701bb1d65804bac7d5a80f0ffc48, type: 3}
+  explosionMask: {fileID: 2800000, guid: b9769404f94542048b6ba76a030f526f, type: 3}
   explosionScale: 3
   damage: 100
-  explosionEffect: {fileID: 739683856073798810, guid: 7841814d350503a4e8bd5f49a48ea62b, type: 3}
+  explosionEffect: {fileID: 739683856073798810, guid: 6538bb1ec2794034f87d90690d5be8ae, type: 3}
   delay: 2
 --- !u!50 &2398114623178038475
 Rigidbody2D:
