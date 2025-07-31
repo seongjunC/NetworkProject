@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private TextMeshProUGUI _textMeshPro;
     public TankData _data;
 
-    private bool _isDead = false;
+    public bool _isDead { get; private set; } = false;
     public bool OnBarrier { get; private set; } = false;
 
     public PlayerInfo myInfo;

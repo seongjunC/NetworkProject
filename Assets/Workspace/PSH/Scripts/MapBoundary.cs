@@ -14,9 +14,17 @@ public class MapBoundary : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
 
     }
-    private void Start()
+
+    private void OnEnable()
     {
-        DeformableTerrain terrain = FindObjectOfType<DeformableTerrain>();
+        MapManager.OnMapLoaded += HandleMapLoaded;
+    }
+    private void OnDisable()
+    {
+        MapManager.OnMapLoaded -= HandleMapLoaded;
+    }
+    private void HandleMapLoaded(DeformableTerrain terrain)
+    {
         if (terrain != null)
         {
             mapSpriteRenderer = terrain.GetComponent<SpriteRenderer>();
@@ -26,13 +34,13 @@ public class MapBoundary : MonoBehaviour
                 Debug.Log("spriterenderer 없음");
                 return;
             }
+
+            ResizeCollider();
         }
         else
         {
             Debug.Log("deformableterrian 없음");
         }
-
-        ResizeCollider();
     }
     private void OnTriggerExit2D(Collider2D collision)
     {

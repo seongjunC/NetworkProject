@@ -53,6 +53,7 @@ MonoBehaviour:
   - OnHit
   - ReceiveWhisper
   - SendChat
+  - RPC_InitTank
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

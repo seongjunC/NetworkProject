@@ -24,6 +24,9 @@ public class TurnController : MonoBehaviourPunCallbacks
     [Header("사이클 종료시 생성할 아이템의 개수")]
     [SerializeField] int itemCount;
 
+    [SerializeField]
+    ResultUI ResultPanel;
+
     private Queue<PlayerInfo> turnQueue = new();
     private List<PlayerInfo> nextCycle = new();
     private int blueRemain;
@@ -35,6 +38,7 @@ public class TurnController : MonoBehaviourPunCallbacks
     private Room room;
     private float turnTimer = 0f;
     private bool isTurnRunning = false;
+    private bool isGameStart = false;
 
     private void Awake()
     {
@@ -57,6 +61,9 @@ public class TurnController : MonoBehaviourPunCallbacks
 
     void Update()
     {
+        if (!isGameStart)
+            return;
+
         if (!PhotonNetwork.IsMasterClient || !isTurnRunning) return;
 
         turnTimer += Time.deltaTime;
@@ -87,27 +94,23 @@ public class TurnController : MonoBehaviourPunCallbacks
             {
                 Debug.LogError("Fire 를 찾을 수 없습니다.");
             }
+            PhotonView view = controller.GetComponent<PhotonView>();
+            string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
 
-        int playerCount = PhotonNetwork.CountOfPlayers;
         room = PhotonNetwork.CurrentRoom;
         if (CustomProperty.GetTurnRandom(room))
         {
-            List<int> randNumList = new();
-            for (int i = 0; i < playerCount; i++)
-            {
-                randNumList[i] = i + 1;
-            }
-            for (int i = playerCount - 1; i > 0; i--)
+            List<Player> shuffledPlayerList = PhotonNetwork.PlayerList.ToList();
+            for (int i = shuffledPlayerList.Count - 1; i > 0; i--)
             {
                 int index = Random.Range(0, i + 1);
-                int temp = randNumList[i];
-                randNumList[i] = randNumList[index];
-                randNumList[index] = temp;
+                Player temp = shuffledPlayerList[i];
+                shuffledPlayerList[i] = shuffledPlayerList[index];
+                shuffledPlayerList[index] = temp;
             }
-            for (int i = 0; i < playerCount; i++)
+            foreach (var nowPlayer in shuffledPlayerList)
             {
-                Player nowPlayer = PhotonNetwork.PlayerList[randNumList[i]];
                 turnQueue.Enqueue(new PlayerInfo(nowPlayer));
                 if (CustomProperty.GetTeam(nowPlayer) == Game.Team.Red) redRemain++;
                 else blueRemain++;
@@ -118,10 +121,12 @@ public class TurnController : MonoBehaviourPunCallbacks
             foreach (Player p in PhotonNetwork.PlayerList)
             {
                 turnQueue.Enqueue(new PlayerInfo(p));
+                if (CustomProperty.GetTeam(p) == Game.Team.Red) redRemain++;
+                else blueRemain++;
             }
         }
 
-
+        isGameStart = true;
         StartNextTurn();
     }
 
@@ -144,12 +149,15 @@ public class TurnController : MonoBehaviourPunCallbacks
 
         currentPlayer = turnQueue.Dequeue();
 
-        if (currentPlayer.isDead)
+        if (GetPlayerController(currentPlayer.player)._isDead)
         {
+            StartNextTurn();
             return;
         }
         turnTimer = 0f;
         isTurnRunning = true;
+        photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
+
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
 
     }
@@ -197,15 +205,37 @@ public class TurnController : MonoBehaviourPunCallbacks
 
         // TODO : UI 교체
         // 게임 오버 UI 출력
+        List<Player> winners = new();
+        List<Player> losers = new();
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.GetTeam() == winnerTeam)
+            {
+                winners.Add(player);
+
+            }
+            else
+            {
+                losers.Add(player);
+            }
+        }
+        ResultPanel.UpdateResult(winnerTeam, winners, losers);
+        ResultPanel.gameObject.SetActive(true);
         // Firebase에 게임 결과를 업로드
     }
 
 
     // 이부분 실제로 RPC 받는지 확인
     [PunRPC]
-    private void RPC_PlayerDead()
+    private void RPC_PlayerDead(int actorNumber)
     {
-        currentPlayer.isDead = true;
+        var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
+        if (tank != null)
+        {
+            OnPlayerDied(tank);
+            tanks.Remove(tank);
+        }
     }
 
     [PunRPC]
@@ -221,18 +251,19 @@ public class TurnController : MonoBehaviourPunCallbacks
     void EnableCurrentPlayer()
     {
         PlayerController playerCon = GetPlayerController(currentPlayer.player);
-        playerCon.EnableControl(true);
         foreach (PlayerController player in tanks)
         {
+            PhotonView view = player.GetComponent<PhotonView>();
+            if (view == null || view.Owner == null) continue;
+
             if (player == playerCon)
             {
-                player.EnableControl(true);
+                player.ResetTurn();
             }
             else
             {
-                playerCon.EnableControl(false);
+                player.EndPlayerTurn();
             }
-            PhotonView view = player.GetComponent<PhotonView>();
             // if (view != null && view.Owner != null)
             // {
             //     if (view.Owner.ActorNumber == currentPlayer.ActorNumber)
@@ -279,6 +310,71 @@ public class TurnController : MonoBehaviourPunCallbacks
     public void InitTank()
     {
         GetLocalPlayerFire().InitBuff();
+    }
+
+    private void InitializePlayerEvents()
+    {
+        foreach (var tank in tanks)
+        {
+            //  중복 이벤트 등록 방지
+            tank.OnPlayerDied = null;
+            if (!tank.photonView.IsMine)
+            {
+                tank.OnPlayerDied += () => OnPlayerDied(tank);
+            }
+        }
+    }
+    private void OnPlayerDied(PlayerController player)
+    {
+        Team team = CustomProperty.GetTeam(player.photonView.Owner);
+        if (team == Team.Red) redRemain--;
+        else blueRemain--;
+
+        Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
+
+        if (redRemain <= 0 || blueRemain <= 0)
+        {
+            Team winner = redRemain <= 0 ? Team.Blue : Team.Red;
+            photonView.RPC("RPC_GameEnded", RpcTarget.All, winner);
+        }
+    }
+
+    public void TurnFinished()
+    {
+        if (photonView.IsMine)
+            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+
+    [PunRPC]
+    void RPC_SetCameraTarget(int actorNumber)
+    {
+        foreach (var player in tanks)
+        {
+            PhotonView view = player.GetComponent<PhotonView>();
+            if (view != null && view.Owner != null && view.Owner.ActorNumber == actorNumber)
+            {
+                CameraController.Instance.vcamPlayer.Follow = player.transform;
+                CameraController.Instance.vcamPlayer.Priority = 20;
+                break;
+            }
+        }
+    }
+
+    [PunRPC]
+    void RPC_SetBulletTarget(int bulletViewID)
+    {
+        PhotonView bulletView = PhotonView.Find(bulletViewID);
+        if (bulletView != null)
+        {
+            CameraController.Instance.vcamBullet.Follow = bulletView.transform;
+            CameraController.Instance.vcamBullet.Priority = 20;
+        }
+    }
+
+    [PunRPC]
+    public void RPC_Spawned()
+    {
+        GameStart();
     }
 
 

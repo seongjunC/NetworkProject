@@ -421,9 +421,10 @@ MonoBehaviour:
   _textMeshPro: {fileID: 736693573828537321}
   _data:
     tankName: TankA
-    count: 0
     rank: 0
+    icon: {fileID: 0}
     level: 0
+    count: 0
   _hp: 200
   _movable: 0
 --- !u!114 &8488200785960515094

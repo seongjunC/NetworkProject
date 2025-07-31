@@ -279,6 +279,7 @@ public class RoomManager : MonoBehaviourPun
         {
             playerSlotDic[player.ActorNumber].SetUp(player);
             UpdateReadyCountText();
+            CheckButtons();
         }
     }
 
@@ -315,7 +316,8 @@ public class RoomManager : MonoBehaviourPun
             blueTeamChangeButton.interactable = !isReady;
             waitTeamChangeButton.interactable = !isReady;
         }
-
+        Debug.Log(currentReadyCount);
+        Debug.Log(PhotonNetwork.CurrentRoom.MaxPlayers);
         startButton.interactable = currentReadyCount == PhotonNetwork.CurrentRoom.MaxPlayers;
     }
     #endregion
@@ -393,7 +395,7 @@ public class RoomManager : MonoBehaviourPun
             return;
         }
 
-        //PhotonNetwork.LoadLevel(""); // æ¿¿Ãµø
+        PhotonNetwork.LoadLevel("MSK InGameTest"); // æ¿¿Ãµø
     }
 
     #region PhotonCallbacks
