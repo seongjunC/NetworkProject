@@ -241,8 +241,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 losers.Add(player);
             }
         }
-        //ResultPanel.UpdateResult(winnerTeam, winners, losers);
-        ResultPanel.gameObject.SetActive(true);
+        ResultPanel.UpdateResult(winnerTeam);
     }
 
     // 이부분 실제로 RPC 받는지 확인
