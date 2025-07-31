@@ -243,9 +243,15 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         Debug.Log($"[StartTurnForPlayer] 내 ActorNumber: {PhotonNetwork.LocalPlayer.ActorNumber}, 턴 대상: {actorNumber}");
 
+        // 현재 턴 대상 강제 지정
+        if (allPlayers.TryGetValue(actorNumber, out var info))
+        {
+            currentPlayer = info;
+        }
+
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            EnableCurrentPlayer(); // 내 턴인 경우만 실행
+            EnableCurrentPlayer();
         }
     }
 
@@ -424,7 +430,18 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     public bool IsMyTurn()
     {
-        return currentPlayer != null && currentPlayer.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber;
+        if (currentPlayer == null)
+        {
+            Debug.LogWarning("[IsMyTurn] currentPlayer가 null입니다.");
+            return false;
+        }
+
+        int localActor = PhotonNetwork.LocalPlayer.ActorNumber;
+        int currentActor = currentPlayer.ActorNumber;
+
+        Debug.Log($"[IsMyTurn] LocalActor: {localActor}, CurrentTurnActor: {currentActor}");
+
+        return currentActor == localActor;
     }
     #endregion
 }
