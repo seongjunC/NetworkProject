@@ -22,6 +22,9 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [Header("사이클 종료시 생성할 아이템의 개수")]
     [SerializeField] int itemCount;
 
+
+    [SerializeField] ResultUI ResultPanel;
+
     private Queue<PlayerInfo> turnQueue = new();
     private List<PlayerInfo> nextCycle = new();
     private int blueRemain = 0;
@@ -223,7 +226,23 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         // TODO : UI 교체
         // 게임 오버 UI 출력
-        // Firebase에 게임 결과를 업로드
+        List<Player> winners = new();
+        List<Player> losers = new();
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.GetTeam() == winnerTeam)
+            {
+                winners.Add(player);
+
+            }
+            else
+            {
+                losers.Add(player);
+            }
+        }
+        //ResultPanel.UpdateResult(winnerTeam, winners, losers);
+        ResultPanel.gameObject.SetActive(true);
     }
 
     // 이부분 실제로 RPC 받는지 확인
