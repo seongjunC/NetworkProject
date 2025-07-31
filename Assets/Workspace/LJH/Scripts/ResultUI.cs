@@ -32,7 +32,7 @@ public class ResultUI : MonoBehaviour
         gameObject.SetActive(false);
         okButton.onClick.AddListener(OnClickOK);
     }
-    public void UpdateResult(Team winnerTeam, Team winners, Team losers)
+    public void UpdateResult(Team winnerTeam)
     {
 
         // 결과 패널 표시
