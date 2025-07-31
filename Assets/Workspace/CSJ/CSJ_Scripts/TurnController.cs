@@ -220,7 +220,7 @@ public class TurnController : MonoBehaviourPunCallbacks
                 losers.Add(player);
             }
         }
-        ResultPanel.UpdateResult(winnerTeam, winners, losers);
+        //ResultPanel.UpdateResult(winnerTeam, winners, losers);
         ResultPanel.gameObject.SetActive(true);
         // Firebase에 게임 결과를 업로드
     }

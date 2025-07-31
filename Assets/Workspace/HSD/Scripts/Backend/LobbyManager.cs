@@ -178,20 +178,24 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         StartCoroutine(RoomCreateRoutine(maxPlayer));
     }
+
     private void EnterCreateRoom(string s)
     {
         if (Input.GetKeyDown(KeyCode.Return))
             CreateRoom();
     }
+
     private void PasswordToggleChanged(bool isPassword)
     {
         passwordField.interactable = isPassword;        
     }
+
     private void OpenPasswordPanel(RoomInfo room)
     {
         passwordPanel.SetUp(room);
         passwordPanel.gameObject.SetActive(true);
     }
+
     private void GoTitle()
     {
         lobby.SetActive(false);
@@ -200,6 +204,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomCreatePanel.SetActive(false);
         title.SetActive(true);
     }
+
     private IEnumerator RoomCreateRoutine(int maxPlayer)
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
@@ -209,9 +214,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password", "Full" };
         PhotonNetwork.CreateRoom(roomNameField.text, option);
         roomNameField.text = "";
-        maxPlayerField.text = "";
-        
+        maxPlayerField.text = "";       
     }
+
     private IEnumerator RandomRoomJoinRoutine()
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
