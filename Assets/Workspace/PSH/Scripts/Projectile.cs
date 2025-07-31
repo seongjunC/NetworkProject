@@ -52,6 +52,7 @@ public class Projectile : MonoBehaviour
 
         isTeamDamage = PhotonNetwork.CurrentRoom.GetDamageType();
         myTeam = PhotonNetwork.LocalPlayer.GetTeam();
+        realDamage = damage;
     }
 
     private void Update()
@@ -134,13 +135,15 @@ public class Projectile : MonoBehaviour
 
             Game.Team otherTeam = pv.Owner.GetTeam();  // 상대 팀
             if (!isTeamDamage && otherTeam == myTeam)
+            {
+                Debug.Log("아군이다 사격 중지!");
                 continue;  // 같은 팀이면 스킵!
-
+            }
             var player = hit.GetComponent<PlayerController>();
+            // TODO : 데미지 적용 공식 추가하기
             player.OnHit(realDamage);
             Debug.Log($"플레이어에게 {realDamage} 데미지");
-            realDamage = damage;
-
+            realDamage = damage;    //데미지 초기화
         }
     }
     private void OnDrawGizmos()
