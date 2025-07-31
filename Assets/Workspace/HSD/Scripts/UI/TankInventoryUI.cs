@@ -24,6 +24,7 @@ public class TankInventoryUI : MonoBehaviour
     private void Start()
     {
         exitButton.onClick.AddListener(() => gameObject.SetActive(false));
+        Manager.Firebase.OnLogOut += ClearSlots;
     }
 
     private void OnEnable()
@@ -94,5 +95,14 @@ public class TankInventoryUI : MonoBehaviour
             TankRank.C => cColor,
             _ => cColor
         };
+    }
+
+    private void ClearSlots()
+    {
+        foreach (var kvp in tankSlotDic)
+        {
+            Destroy(kvp.Value.gameObject);
+        }
+        tankSlotDic.Clear();
     }
 }
