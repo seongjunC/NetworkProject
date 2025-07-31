@@ -34,11 +34,11 @@ public class PopUpUI : MonoBehaviour
 
     private IEnumerator ShowRoutine()
     {
-        StartCoroutine(Utils.Fade(message, 0, 1));
-        yield return StartCoroutine(Utils.Fade(message, 0, .9f));
+        StartCoroutine(Utils.Fade(image, 0, .9f));
+        yield return StartCoroutine(Utils.Fade(message, 0, 1));
         yield return delay;
-        StartCoroutine(Utils.Fade(message, 1, 0));
-        yield return StartCoroutine(Utils.Fade(message, .9f, 0));
+        StartCoroutine(Utils.Fade(image, .9f, 0));
+        yield return StartCoroutine(Utils.Fade(message, 1, 0));
         message.color = Color.white;
         gameObject.SetActive(false);
     }

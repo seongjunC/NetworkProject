@@ -146,8 +146,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        if (int.TryParse(maxPlayerField.text, out int maxPlayer))
+        if(string.IsNullOrWhiteSpace(maxPlayerField.text))
         {
+            Manager.UI.PopUpUI.Show("인원을 입력해주세요.\n(뛰어쓴 공간이 있어서는 안됩니다.)", Color.red);
+            return;
+        }
+
+        if (int.TryParse(maxPlayerField.text, out int maxPlayer))
+        {            
             if (maxPlayer <= 0)
             {
                 Manager.UI.PopUpUI.Show("0보다 큰 값을 입력해 주세요.");
