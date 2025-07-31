@@ -146,8 +146,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        if (int.TryParse(maxPlayerField.text, out int maxPlayer))
+        if(string.IsNullOrWhiteSpace(maxPlayerField.text))
         {
+            Manager.UI.PopUpUI.Show("인원을 입력해주세요.\n(뛰어쓴 공간이 있어서는 안됩니다.)", Color.red);
+            return;
+        }
+
+        if (int.TryParse(maxPlayerField.text, out int maxPlayer))
+        {            
             if (maxPlayer <= 0)
             {
                 Manager.UI.PopUpUI.Show("0보다 큰 값을 입력해 주세요.");
@@ -178,20 +184,24 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         StartCoroutine(RoomCreateRoutine(maxPlayer));
     }
+
     private void EnterCreateRoom(string s)
     {
         if (Input.GetKeyDown(KeyCode.Return))
             CreateRoom();
     }
+
     private void PasswordToggleChanged(bool isPassword)
     {
         passwordField.interactable = isPassword;        
     }
+
     private void OpenPasswordPanel(RoomInfo room)
     {
         passwordPanel.SetUp(room);
         passwordPanel.gameObject.SetActive(true);
     }
+
     private void GoTitle()
     {
         lobby.SetActive(false);
@@ -200,23 +210,24 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         roomCreatePanel.SetActive(false);
         title.SetActive(true);
     }
+
     private IEnumerator RoomCreateRoutine(int maxPlayer)
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
         yield return new WaitForSeconds(.5f);
         RoomOptions option = new RoomOptions();
         option.MaxPlayers = maxPlayer;
-        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password", "Full" };
+        option.CustomRoomPropertiesForLobby = new string[] { "Map", "Password", "Full", "GameStart" };
         PhotonNetwork.CreateRoom(roomNameField.text, option);
         roomNameField.text = "";
-        maxPlayerField.text = "";
-        
+        maxPlayerField.text = "";       
     }
+
     private IEnumerator RandomRoomJoinRoutine()
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
         yield return new WaitForSeconds(.5f);
-
+        
         PhotonNetwork.JoinRandomRoom();
 
         yield return new WaitForSeconds(1f);
@@ -313,6 +324,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetTurnRandom(true);
         PhotonNetwork.CurrentRoom.SetFull(false);
         PhotonNetwork.CurrentRoom.SetDamageType(false);
+        PhotonNetwork.CurrentRoom.SetGameStart(false);
+
+        StartCoroutine(TestCoroutine());
 
         if (isPassword.isOn)
         {
@@ -323,7 +337,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Debug.Log("방 생성 완료");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
-
+    private IEnumerator TestCoroutine()
+    {
+        yield return new WaitForSeconds(2);
+        Debug.Log(PhotonNetwork.CurrentRoom.GetGameStart());
+    }
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         isRoomCreate = false;
@@ -338,7 +356,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        currentRoomSelectIdx = 1;        
+        currentRoomSelectIdx = 1;
     }
 
     public override void OnJoinedRoom()

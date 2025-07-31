@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class TeamManager : MonoBehaviour
 {
-    private int team;
+    private int curTeam;
 
     public void ChangeTeam(Team _team)
     {
-        team = (int)PhotonNetwork.LocalPlayer.GetTeam();
+        curTeam = (int)PhotonNetwork.LocalPlayer.GetTeam();
 
         int red = 0;
         int blue = 0;
@@ -55,14 +55,23 @@ public class TeamManager : MonoBehaviour
         Team team = Team.Red;
 
         GetPlayerTeamCount(out red, out blue);
+        Debug.Log($"·¹µåÆÀ : {red}, ºí·çÆÀ : {blue}");
+
+        if(PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object value))
+        {
+            if ((Team)value == Team.Red)
+                red--;
+            else if ((Team)value == Team.Blue)
+                blue--;           
+        }
 
         if (red >= PhotonNetwork.CurrentRoom.MaxPlayers / 2)
             team = Team.Blue;
         else if (blue >= PhotonNetwork.CurrentRoom.MaxPlayers / 2)
-            team = Team.Red;        
+            team = Team.Red;  
 
-        this.team = (int)team;
-
+        curTeam = (int)team;
+        Debug.Log(team);
         return team;
     }
 
