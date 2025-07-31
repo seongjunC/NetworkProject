@@ -1,192 +1,245 @@
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEditor.UIElements;
+using Editor;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine.UIElements;
+using UnityEngine;
+using System;
 
 namespace Editor
 {
+    /// <summary>메인 에디터 윈도우 - 의존성 주입으로 구성된 컨트롤러</summary>
     public class SO_Management : EditorWindow
     {
-        [SerializeField]
-        private VisualTreeAsset m_VisualTreeAsset = default;
-        private List<TankData> tankDataList;
-        private ScrollView scrollView;
+        #region Dependencies
+        private ISODataProvider dataProvider;
+        private ISOUIRenderer uiRenderer;
+        private ISOGroupManager groupManager;
+        private ISOSpriteManager spriteManager;
+        #endregion
 
-        [MenuItem("TankEditor/TankData")]
+        #region UI Elements
+        private ScrollView scrollView;
+        private List<Type> soTypes;
+        private DropdownField soDropdown;
+        private Type selectedType;
+        private Toggle groupToggle;
+        private Toggle viewIconToggle;
+        private DropdownField groupByFieldDropdown;
+        private string selectedGroupFieldName;
+
+        // 이전 상태 추적용
+        private Type previousSelectedType;
+        private bool isTypeChanged = false;
+        #endregion
+
+        #region Data
+        private List<ScriptableObject> loadedAssets = new List<ScriptableObject>();
+        #endregion
+
+        [MenuItem("Scriptable Editor/Scriptable Management")]
         public static void ShowEditor()
         {
             var window = GetWindow<SO_Management>();
-            window.titleContent = new GUIContent("TankData_Editor");
+            window.titleContent = new GUIContent("Scriptable Management");
+        }
+
+        private void InitializeDependencies()
+        {
+            spriteManager = new SOSpriteManager();
+            dataProvider = new SODataProvider();
+            groupManager = new SOGroupManager(spriteManager);
+            uiRenderer = new SOUIRenderer();
+
+            ((SOUIRenderer)uiRenderer).SetManagers(groupManager);
         }
 
         public void CreateGUI()
         {
+            InitializeDependencies();
+
+            var mainContainer = new VisualElement();
+            mainContainer.style.flexGrow = 1;
+            mainContainer.style.paddingTop = 10;
+            mainContainer.style.paddingLeft = 10;
+            mainContainer.style.paddingRight = 10;
+            mainContainer.style.paddingBottom = 10;
+
+            var controlsArea = new VisualElement();
+            controlsArea.style.marginBottom = 15;
+
+            SetupGroupOptionsUI(controlsArea);
+            PopulateSOTypeDropdown(controlsArea);
+
             scrollView = new ScrollView();
-            rootVisualElement.Add(scrollView);
+            scrollView.style.flexDirection = FlexDirection.Column;
+            scrollView.style.flexGrow = 1;
 
-            LoadTankData();
-            CreateTankEditors();
+            mainContainer.Add(controlsArea);
+            mainContainer.Add(scrollView);
+            rootVisualElement.Add(mainContainer);
         }
 
-        void LoadTankData()
+        void SetupGroupOptionsUI(VisualElement parent)
         {
-            tankDataList = new List<TankData>();
-            string[] guids = AssetDatabase.FindAssets("t:TankData");
+            var controlsContainer = new VisualElement();
+            controlsContainer.style.flexDirection = FlexDirection.Row;
+            controlsContainer.style.paddingBottom = 10;
 
-            foreach (var guid in guids)
+            groupToggle = new Toggle("Enable Grouping");
+            groupToggle.RegisterValueChangedCallback(evt =>
             {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-                TankData data = AssetDatabase.LoadAssetAtPath<TankData>(path);
-                tankDataList.Add(data);
-            }
+                viewIconToggle.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None;
+                if (selectedType != null && scrollView != null)
+                {
+                    isTypeChanged = true; // 그룹 모드 변경 시 완전 재생성
+                    LoadAndRenderSOInstances();
+                }
+            });
+
+            viewIconToggle = new Toggle("View Icons");
+            viewIconToggle.style.display = DisplayStyle.None;
+            viewIconToggle.RegisterValueChangedCallback(evt =>
+            {
+                if (selectedType != null && groupToggle.value && scrollView != null)
+                {
+                    isTypeChanged = true; // 뷰 모드 변경 시 완전 재생성
+                    LoadAndRenderSOInstances();
+                }
+            });
+
+            groupByFieldDropdown = new DropdownField("Group By Field", new List<string>(), 0);
+            groupByFieldDropdown.RegisterValueChangedCallback(evt =>
+            {
+                selectedGroupFieldName = evt.newValue;
+                if (selectedType != null && groupToggle.value && scrollView != null)
+                {
+                    isTypeChanged = true; // 그룹 기준 변경 시 완전 재생성
+                    LoadAndRenderSOInstances();
+                }
+            });
+
+            controlsContainer.Add(groupToggle);
+            controlsContainer.Add(viewIconToggle);
+            parent.Add(controlsContainer);
+            parent.Add(groupByFieldDropdown);
         }
 
-        void CreateTankEditors()
+        void PopulateSOTypeDropdown(VisualElement parent)
         {
-            var groupedData = new Dictionary<string, List<TankData>>();
+            soTypes = dataProvider.GetAvailableSOTypes();
+            var typeNames = soTypes.Select(t => t.Name).ToList();
+            soDropdown = new DropdownField("ScriptableObject Type", typeNames, 0);
 
-            foreach (var tank in tankDataList)
+            parent.Add(soDropdown);
+
+            if (soTypes.Count > 0)
             {
-                if (!groupedData.ContainsKey(tank.tankName))
-                    groupedData[tank.tankName] = new List<TankData>();
+                selectedType = soTypes[0];
+                previousSelectedType = selectedType;
+                soDropdown.value = soTypes[0].Name;
 
-                groupedData[tank.tankName].Add(tank);
-            }
-
-            foreach (var kvp in groupedData)
-            {
-                string tankName = kvp.Key;
-                List<TankData> tanks = kvp.Value.OrderBy(t => t.level).ToList();
-                TankData mainTank = tanks[0];
-
-                var groupBox = new Box();
-                groupBox.style.flexDirection = FlexDirection.Row;   // Box의 정렬 방향 설정
-                groupBox.style.marginBottom = 16;
-                groupBox.style.paddingBottom = 8;
-                groupBox.style.height = 200;
-
-                // 왼쪽 아이콘 미리보기
-                var iconImage = new Image
+                soDropdown.RegisterValueChangedCallback(evt =>
                 {
-                    style =
-                    {
-                        width = 128,
-                        height = 128,
-                        marginRight = 16
-                    },
-                    image = mainTank.icon ? mainTank.icon.texture : null
-                };
-
-                // 왼쪽 아이콘 ObjectField (InspectorField)
-                var iconField = new ObjectField
-                {
-                    objectType = typeof(Sprite),
-                    value = mainTank.icon,
-                    allowSceneObjects = false
-                };
-
-                // 값 변환 이벤트 구독
-                iconField.RegisterValueChangedCallback(evt =>
-                {
-                    Sprite newIcon = (Sprite)evt.newValue;
-
-                    foreach (var tank in tanks) // 해당 그룹에만 적용
-                    {
-                        tank.icon = newIcon;
-                        EditorUtility.SetDirty(tank);
-                    }
-
-                    iconImage.image = newIcon != null ? newIcon.texture : null;
+                    var newSelectedType = soTypes[typeNames.IndexOf(evt.newValue)];
+                    isTypeChanged = (newSelectedType != selectedType);
+                    selectedType = newSelectedType;
+                    PopulateGroupByFields();
+                    LoadAndRenderSOInstances();
                 });
 
-
-                var iconContainer = new VisualElement();
-                iconContainer.style.flexDirection = FlexDirection.Column; // 방향
-                iconContainer.Add(iconImage);
-                iconContainer.Add(iconField);
-
-                groupBox.Add(iconContainer);
-
-                // 오른쪽 패널
-                var rightPanel = new VisualElement();
-                rightPanel.style.flexDirection = FlexDirection.Row; // 방향
-                rightPanel.style.flexGrow = 1;
-                rightPanel.Add(new Label($"TANK NAME: {tankName}"));
-
-                foreach (var tank in tanks)
+                PopulateGroupByFields();
+                rootVisualElement.schedule.Execute(() =>
                 {
-                    var tankBox = new Box();
-                    tankBox.style.marginBottom = 8;
-                    tankBox.style.paddingBottom = 4;
-                    tankBox.style.borderBottomWidth = 1;
-                    tankBox.style.flexShrink = 0;
-                    tankBox.style.width = 320;
-                    tankBox.style.height = 320;
-                    tankBox.style.borderBottomColor = new Color(0.3f, 0.3f, 0.3f);
+                    isTypeChanged = true; // 초기 로드 시에는 완전 재생성
+                    LoadAndRenderSOInstances();
+                });
+            }
+            else
+            {
+                parent.Add(new Label("Resources 폴더에 존재하는 ScriptableObject 타입이 없습니다."));
+            }
+        }
 
-                    var titleLabel = new Label($"{tank.tankName} - Level {tank.level}");
-                    titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-                    titleLabel.style.color = Color.cyan;
-                    titleLabel.style.marginBottom = 4;
-                    tankBox.Add(titleLabel);
+        void PopulateGroupByFields()
+        {
+            if (selectedType == null || groupByFieldDropdown == null)
+                return;
 
-                    // 각 필드 생성 및 필드의 ChangeEvent 등록
-                    var damageField = new FloatField("Damage") { value = tank.damage };
-                    damageField.RegisterValueChangedCallback(evt => { tank.damage = evt.newValue; EditorUtility.SetDirty(tank); });
-                    tankBox.Add(damageField);
+            var fields = dataProvider.GetGroupableFields(selectedType);
+            var fieldNames = fields.Select(f => f.Name).ToList();
+            groupByFieldDropdown.choices = fieldNames;
 
-                    var maxMoveField = new FloatField("Max Move") { value = tank.maxMove };
-                    maxMoveField.RegisterValueChangedCallback(evt => { tank.maxMove = evt.newValue; EditorUtility.SetDirty(tank); });
-                    tankBox.Add(maxMoveField);
+            if (fieldNames.Count > 0)
+            {
+                groupByFieldDropdown.value = fieldNames[0];
+                selectedGroupFieldName = fieldNames[0];
+            }
+            else
+            {
+                groupByFieldDropdown.value = null;
+                selectedGroupFieldName = null;
+            }
+        }
 
-                    var speedField = new FloatField("Speed") { value = tank.speed };
-                    speedField.RegisterValueChangedCallback(evt => { tank.speed = evt.newValue; EditorUtility.SetDirty(tank); });
-                    tankBox.Add(speedField);
+        void LoadAndRenderSOInstances()
+        {
+            if (scrollView == null) return;
 
-                    var hpField = new FloatField("Max HP") { value = tank.maxHp };
-                    hpField.RegisterValueChangedCallback(evt => { tank.maxHp = evt.newValue; EditorUtility.SetDirty(tank); });
-                    tankBox.Add(hpField);
-
-                    var rankField = new EnumField("Rank", tank.rank);
-                    rankField.RegisterValueChangedCallback(evt => { tank.rank = (TankRank)evt.newValue; EditorUtility.SetDirty(tank); });
-                    tankBox.Add(rankField);
-
-                    var tankIconField = new ObjectField("Icon")
-                    {
-                        objectType = typeof(Sprite),
-                        value = tank.icon,
-                        allowSceneObjects = false
-                    };
-                    tankIconField.RegisterValueChangedCallback(evt =>
-                    {
-                        tank.icon = (Sprite)evt.newValue;
-                        EditorUtility.SetDirty(tank);
-                    });
-                    tankBox.Add(tankIconField);
-
-                    var levelField = new IntegerField("Level") { value = tank.level };
-                    levelField.RegisterValueChangedCallback(evt =>
-                    {
-                        tank.level = evt.newValue;
-                        EditorUtility.SetDirty(tank);
-                    });
-                    tankBox.Add(levelField);
-
-                    var countField = new IntegerField("Count") { value = tank.count };
-                    countField.RegisterValueChangedCallback(evt =>
-                    {
-                        tank.count = evt.newValue;
-                        EditorUtility.SetDirty(tank);
-                    });
-                    tankBox.Add(countField);
-
-                    rightPanel.Add(tankBox);
+            // 타입이 변경되었거나 UI 모드가 변경된 경우에만 완전히 Clear
+            if (isTypeChanged)
+            {
+                scrollView.Clear();
+                loadedAssets.Clear();
+                // UIRenderer의 캐시도 초기화
+                if (uiRenderer is SOUIRenderer renderer)
+                {
+                    // 리플렉션으로 private 메서드 호출하거나, public 메서드로 만들어야 함
+                    var clearCacheMethod = typeof(SOUIRenderer).GetMethod("ClearUICache",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    clearCacheMethod?.Invoke(renderer, null);
                 }
+                isTypeChanged = false;
+            }
 
-                groupBox.Add(rightPanel);
-                scrollView.Add(groupBox);
+            if (selectedType == null) return;
+
+            loadedAssets = dataProvider.LoadAssetsOfType(selectedType);
+            Debug.Log(loadedAssets.Count);
+
+            if (loadedAssets == null || loadedAssets.Count == 0)
+            {
+                scrollView.Add(new Label("Resources 폴더 내에 해당 타입의 에셋이 없습니다."));
+                return;
+            }
+
+            if (groupToggle.value && !string.IsNullOrEmpty(selectedGroupFieldName))
+            {
+                var grouped = groupManager.GroupAssets(loadedAssets, selectedGroupFieldName, selectedType);
+                uiRenderer.RenderGroupedUI(scrollView, grouped, selectedType, viewIconToggle.value,
+                                         new Color[] {
+                                             new Color(0.8f, 0.4f, 0.4f), new Color(0.4f, 0.8f, 0.4f),
+                                             new Color(0.4f, 0.4f, 0.8f), new Color(0.8f, 0.8f, 0.4f)
+                                         }, selectedGroupFieldName, LoadAndRenderSOInstances);
+            }
+            else
+            {
+                uiRenderer.RenderFlatUI(scrollView, loadedAssets, selectedType);
+            }
+
+            previousSelectedType = selectedType;
+        }
+
+        [MenuItem("Scriptable Editor/Refresh Scriptable Cache")]
+        public static void RefreshCache()
+        {
+            var window = GetWindow<SO_Management>();
+            window.dataProvider?.RefreshCache();
+            if (window.selectedType != null)
+            {
+                window.isTypeChanged = true; // 캐시 리프레시 시 완전 재생성
+                window.LoadAndRenderSOInstances();
             }
         }
     }
