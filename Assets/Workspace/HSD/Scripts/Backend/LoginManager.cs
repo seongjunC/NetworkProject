@@ -256,16 +256,18 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
         Manager.Data.PlayerData.Init();
+
         yield return new WaitForSeconds(1);
 
-        gameObject.SetActive(false);
-        lobbyPanel.SetActive(true);
-        PhotonNetwork.JoinLobby();
-        Manager.UI.FadeScreen.FadeOut(1);
         Manager.Game.State = Game.State.Lobby;
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).OnDisconnect().SetValue(false);
         Manager.Data.Init();
+
+        PhotonNetwork.JoinLobby();
+        Manager.UI.FadeScreen.FadeOut(1);
+        gameObject.SetActive(false);
+        lobbyPanel.SetActive(true);        
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
             Manager.UI.NickNameSelectPanel.Show();
