@@ -47,6 +47,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Button roomLeftButton;
     [SerializeField] Button roomRightButton;
 
+    [Header("Gacha")]
+    [SerializeField] GameObject gachaPanel;
+    [SerializeField] Button gachaButton;
+
+    [Header("Tank")]
+    [SerializeField] GameObject tankInventory;
+    [SerializeField] Button tankInventoryButton;
+
     [Header("Room Max Idx")]
     [SerializeField] int roomMax = 8;
     private bool isRoomCreate;
@@ -74,6 +82,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Manager.Firebase.OnLogOut += GoTitle;
 
+        tankInventoryButton.onClick.AddListener(OpenTankInventory);
+
+        gachaButton.onClick     .AddListener(GachaOpen);
         roomRightButton.onClick .AddListener(RoomIndexPlus);
         roomLeftButton.onClick  .AddListener(RoomIndexMinus);
 
@@ -99,6 +110,9 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Manager.Firebase.OnLogOut -= GoTitle;
 
+        tankInventoryButton.onClick.RemoveListener(OpenTankInventory);
+
+        gachaButton.onClick     .RemoveListener(GachaOpen);
         roomRightButton.onClick .RemoveListener(RoomIndexPlus);
         roomLeftButton.onClick  .RemoveListener(RoomIndexMinus);
 
@@ -208,6 +222,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1f);
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
+
     #region ButtonEvent
     private void OpenRoomCreatePanel()
     {
@@ -276,6 +291,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             currentRoomSelectIdx--;
         }
     }
+    private void GachaOpen()
+    {
+        lobby.SetActive(false);
+        gachaPanel.SetActive(true);
+    }
+    private void OpenTankInventory() => tankInventory.SetActive(true);
     #endregion
     private void RoomSelectButtonActiveCheck()
     {

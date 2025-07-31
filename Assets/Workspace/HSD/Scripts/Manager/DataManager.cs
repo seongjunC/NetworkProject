@@ -1,16 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
     public PlayerData PlayerData;
-    public InventoryData InventoryData;
+    public TankInventoryData TankInventoryData;
 
-    private void Update()
+    [Header("Cached")]
+    public TankDataController TankDataController = new();
+
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.V))
-            InventoryData.AddTank("A_Tank",1,1);
+        Manager.Firebase.OnLogOut += () => TankDataController.TankDatas.Clear();
     }
 
+    public void Init()
+    {
+        TankInventoryData = new();
+        TankDataController.Init();
+        TankInventoryData.OnTankCountUpdated += TankDataController.UpdateCount;
+        TankInventoryData.Init();
+    }
 }

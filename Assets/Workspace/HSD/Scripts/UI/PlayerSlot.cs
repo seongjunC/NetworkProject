@@ -59,7 +59,6 @@ public class PlayerSlot : MonoBehaviour
         masterPanel.color = PhotonNetwork.MasterClient == player ? Color.white : Color.clear;        
         
         Team team =player.GetTeam();
-        Debug.Log(team);
         switch (team)
         {
             case Team.Red: 
@@ -72,7 +71,6 @@ public class PlayerSlot : MonoBehaviour
                 teamPanel.color = waitColor;
                 break;
         }
-        Debug.Log(teamPanel.color);
         readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
     }
 

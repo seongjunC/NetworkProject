@@ -43,6 +43,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 database = FirebaseDatabase.DefaultInstance;
                 database.GoOnline();
                 database.SetPersistenceEnabled(false);
+                FirebaseApp.CheckAndFixDependenciesAsync();
             }
             else
             {

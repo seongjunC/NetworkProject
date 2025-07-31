@@ -48,7 +48,7 @@ public class RoomManager : MonoBehaviourPun
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
-    [SerializeField] GameObject gameSettingPanel;
+    [SerializeField] GameObject gameSettingPanel;    
 
     [Header("Chat")]
     [SerializeField] Chat chat;
@@ -114,6 +114,7 @@ public class RoomManager : MonoBehaviourPun
     {
         StartCoroutine(LeaveRoomRoutine());
     }
+
     private IEnumerator LeaveRoomRoutine()
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
@@ -371,6 +372,13 @@ public class RoomManager : MonoBehaviourPun
     }
     #endregion
 
+    private void CheckFull()
+    {
+        bool isFull = PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
+
+        PhotonNetwork.CurrentRoom.SetFull(isFull);
+    }
+
     private void GameSettingPanelActive(bool isActive) => gameSettingPanel.SetActive(isActive);
 
     private void GameStart()
@@ -407,12 +415,14 @@ public class RoomManager : MonoBehaviourPun
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
         CreatePlayerSlot(newPlayer);
+        CheckFull();
     }
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
         DestroyPlayerSlot(otherPlayer);
         UpdateReadyCountText();
         UpdateAllPlayerSlot();
+        CheckFull();
     }
     public void OnRoomPropertiesUpdate()
     {
