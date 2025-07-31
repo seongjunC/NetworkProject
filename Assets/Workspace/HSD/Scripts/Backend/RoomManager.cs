@@ -370,6 +370,13 @@ public class RoomManager : MonoBehaviourPun
     }
     #endregion
 
+    private void CheckFull()
+    {
+        bool isFull = PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
+
+        PhotonNetwork.CurrentRoom.SetFull(isFull);
+    }
+
     private void GameSettingPanelActive(bool isActive) => gameSettingPanel.SetActive(isActive);
 
     private void GameStart()
@@ -406,12 +413,14 @@ public class RoomManager : MonoBehaviourPun
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
         CreatePlayerSlot(newPlayer);
+        CheckFull();
     }
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
         DestroyPlayerSlot(otherPlayer);
         UpdateReadyCountText();
         UpdateAllPlayerSlot();
+        CheckFull();
     }
     public void OnRoomPropertiesUpdate()
     {
