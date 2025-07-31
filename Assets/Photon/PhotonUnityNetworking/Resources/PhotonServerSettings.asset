@@ -53,6 +53,8 @@ MonoBehaviour:
   - OnHit
   - RPC_InitTank
   - RPC_NotifySpawned
+  - EndPlayerTurn
+  - ResetTurn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
