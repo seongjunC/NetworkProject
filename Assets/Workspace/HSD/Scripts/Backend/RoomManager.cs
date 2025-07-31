@@ -316,8 +316,6 @@ public class RoomManager : MonoBehaviourPun
             blueTeamChangeButton.interactable = !isReady;
             waitTeamChangeButton.interactable = !isReady;
         }
-        Debug.Log(currentReadyCount);
-        Debug.Log(PhotonNetwork.CurrentRoom.MaxPlayers);
         startButton.interactable = currentReadyCount == PhotonNetwork.CurrentRoom.MaxPlayers;
     }
     #endregion

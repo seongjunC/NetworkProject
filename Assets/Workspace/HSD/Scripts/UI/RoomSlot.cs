@@ -61,13 +61,13 @@ public class RoomSlot : MonoBehaviour
 
     public void JoinRoom()
     {
-        if ((bool)room.CustomProperties["Full"] == true)
+        if ((bool)room.CustomProperties["Full"])
         {
             Manager.UI.PopUpUI.Show("방 인원이 가득 찼습니다.");
             return;
         }
 
-        if ((bool)room.CustomProperties["GameStart"] == true)
+        if (room.GetGameStart())
         {
             Manager.UI.PopUpUI.Show("이미 게임이 시작된 방입니다.");
             return;

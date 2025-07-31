@@ -24,7 +24,8 @@ public static class CustomProperty
     private const string TEAM = "Team";
     #endregion
 
-    private static ExitGames.Client.Photon.Hashtable hash = new ExitGames.Client.Photon.Hashtable();
+    private static ExitGames.Client.Photon.Hashtable playerHash = new ExitGames.Client.Photon.Hashtable();
+    private static ExitGames.Client.Photon.Hashtable roomHash = new ExitGames.Client.Photon.Hashtable();
 
     #region Player
     public static bool GetReady(this Player player)
@@ -38,14 +39,14 @@ public static class CustomProperty
 
     public static void SetReady(this Player player, bool isReady)
     {
-        hash[READY] = isReady;
-        player.SetCustomProperties(hash);
+        playerHash[READY] = isReady;
+        player.SetCustomProperties(playerHash);
     }
 
     public static void SetUID(this Player player, string _uid)
     {
-        hash[UID] = _uid;
-        player.SetCustomProperties(hash);
+        playerHash[UID] = _uid;
+        player.SetCustomProperties(playerHash);
     }
 
     public static string GetUID(this Player player)
@@ -59,8 +60,8 @@ public static class CustomProperty
 
     public static void SetTeam(this Player player, Team team)
     {
-        hash[TEAM] = team;
-        player.SetCustomProperties(hash);
+        playerHash[TEAM] = team;
+        player.SetCustomProperties(playerHash);
     }
 
     public static Team GetTeam(this Player player)
@@ -85,15 +86,15 @@ public static class CustomProperty
 
     public static void SetMap(this Room room, int mapType)
     {
-        hash[MAP] = (MapType)(mapType);
-        room.SetCustomProperties(hash);
+        roomHash[MAP] = (MapType)(mapType);
+        room.SetCustomProperties(roomHash);
     }
 
 
     public static void SetPassword(this Room room, string value)
     {
-        hash[PASSWORD] = value;
-        room.SetCustomProperties(hash);
+        roomHash[PASSWORD] = value;
+        room.SetCustomProperties(roomHash);
     }
     public static string GetPassword(this Room room)
     {
@@ -106,8 +107,8 @@ public static class CustomProperty
 
     public static void SetTurnRandom(this Room room, bool isRandom)
     {
-        hash[TURNRANDOM] = isRandom;
-        room.SetCustomProperties(hash);
+        roomHash[TURNRANDOM] = isRandom;
+        room.SetCustomProperties(roomHash);
     }
 
     public static bool GetTurnRandom(this Room room)
@@ -121,8 +122,8 @@ public static class CustomProperty
 
     public static void SetFull(this Room room, bool isFull)
     {
-        hash[FULL] = isFull;
-        room.SetCustomProperties(hash);
+        roomHash[FULL] = isFull;
+        room.SetCustomProperties(roomHash);
     }
 
     public static bool GetFull(this Room room)
@@ -136,8 +137,8 @@ public static class CustomProperty
 
     public static void SetDamageType(this Room room, bool isTeamDamageApply)
     {
-        hash[DAMAGETYPE] = isTeamDamageApply;
-        room.SetCustomProperties(hash);
+        roomHash[DAMAGETYPE] = isTeamDamageApply;
+        room.SetCustomProperties(roomHash);
     }
 
     public static bool GetDamageType(this Room room)
@@ -151,13 +152,29 @@ public static class CustomProperty
 
     public static void SetGameStart(this Room room, bool isGameStart)
     {
-        hash[GAMESTART] = isGameStart;
-        room.SetCustomProperties(hash);
+        roomHash[GAMESTART] = isGameStart;
+        room.SetCustomProperties(roomHash);
     }
-    public static bool GetGawmeStart(this Room room)
+    public static void SetGameStart(this RoomInfo room, bool isGameStart)
+    {        
+        room.CustomProperties[GAMESTART] = isGameStart;
+    }
+
+    public static bool GetGameStart(this Room room)
     {
         if(room.CustomProperties.TryGetValue(GAMESTART, out object value))
         {
+            Debug.Log(value);
+            return (bool)value;
+        }
+        return false;
+    }
+
+    public static bool GetGameStart(this RoomInfo room)
+    {
+        if (room.CustomProperties.TryGetValue(GAMESTART, out object value))
+        {            
+            Debug.Log((bool)value);
             return (bool)value;
         }
         return false;
