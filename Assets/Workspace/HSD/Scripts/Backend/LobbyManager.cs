@@ -221,7 +221,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
         yield return new WaitForSeconds(.5f);
-
+        
         PhotonNetwork.JoinRandomRoom();
 
         yield return new WaitForSeconds(1f);
