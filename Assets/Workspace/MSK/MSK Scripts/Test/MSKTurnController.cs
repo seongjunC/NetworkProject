@@ -468,7 +468,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             tank.OnPlayerDied += () =>
             {
-                photonView.RPC("RPC_PlayerDead", RpcTarget.All);
+                photonView.RPC("RPC_PlayerDead", RpcTarget.All, tank.photonView.Owner.ActorNumber);
             };
         }
     }
