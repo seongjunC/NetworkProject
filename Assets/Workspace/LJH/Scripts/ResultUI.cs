@@ -157,5 +157,6 @@ public class ResultUI : MonoBehaviour
 
         // ¾À ·Îµå
         SceneManager.LoadScene("Title");
+        lobbyPanel.SetActive(true);
     }
 }
