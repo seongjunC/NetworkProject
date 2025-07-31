@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Game;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +13,10 @@ public class ResultUI : MonoBehaviour
 
     [Header("연결할 패널")]
     [SerializeField] private GameObject lobbyPanel;
+
+    private Team Winner;
+    private List<Player> winnerTeam;
+    private List<Player> loserTeam;
 
     // Start is called before the first frame update
     void Start()
@@ -26,5 +32,12 @@ public class ResultUI : MonoBehaviour
     {
         gameObject.SetActive(false);         // 옵션 패널 닫기
         lobbyPanel.SetActive(true);       // 메인 메뉴 패널 열기
+    }
+
+    public void UpdateResult(Team _winner, List<Player> _winnerTeam, List<Player> _loserTeam)
+    {
+        Winner = _winner;
+        winnerTeam = _winnerTeam;
+        loserTeam = _loserTeam;
     }
 }

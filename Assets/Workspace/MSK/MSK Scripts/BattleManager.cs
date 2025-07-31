@@ -8,15 +8,15 @@ public class TestBattleManager : MonoBehaviourPun
     // [SerializeField] private List<Transform> _spawnPoint;
     [SerializeField] Button _turnEndButton;
     [SerializeField] private MSKTurnController _turnController;
+
     private PlayerController _playerController;
-    private TestNetworkManager _networkManager;
 
 
     #region Unity LifeCycle
     private void Start()
     {
         _turnEndButton.onClick.AddListener(TestTurnEnd);
-       // PlayerSpawn();
+        // PlayerSpawn();
 
     }
     private void OnEnable()
@@ -33,7 +33,7 @@ public class TestBattleManager : MonoBehaviourPun
     //  맵 생성이후 플레이어를 등록하도록
     private void OnMapGenerated(DeformableTerrain terrain)
     {
-        _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
+        _turnController.photonView.RPC("RPC_Spawned", RpcTarget.MasterClient);
     }
 
     private void TestTurnEnd()

@@ -148,6 +148,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         if (int.TryParse(maxPlayerField.text, out int maxPlayer))
         {
+            if (maxPlayer <= 0)
+            {
+                Manager.UI.PopUpUI.Show("0보다 큰 값을 입력해 주세요.");
+                return;
+            }
             if (maxPlayer % 2 != 0)
             {
                 Manager.UI.PopUpUI.Show("짝수를 입력해 주세요.");
