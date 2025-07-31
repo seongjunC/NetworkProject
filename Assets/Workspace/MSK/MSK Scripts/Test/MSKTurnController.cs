@@ -39,8 +39,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     private bool isGameStart = false;
     private int spawnedCount = 0;
-    private int expectedPlayerCount => PhotonNetwork.CurrentRoom.PlayerCount;
-    Dictionary<int, PlayerInfo> allPlayers = new Dictionary<int, PlayerInfo>();
+    private Dictionary<int, PlayerInfo> allPlayers = new Dictionary<int, PlayerInfo>();
 
     private void Awake()
     {
@@ -74,6 +73,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         nextCycle.Clear();
         tanks.Clear();
         fireMap.Clear();
+        room = PhotonNetwork.CurrentRoom;
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
         {
@@ -91,24 +91,32 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             // turn 순서를 셔플할지 여부 결정
             IEnumerable<PlayerInfo> players = allPlayers.Values;
 
-            if (CustomProperty.GetTurnRandom(room))
+            if (room == null)
+            {
+                Debug.Log("room = null 입니다!!!");
+            }
+
+            if (room.GetTurnRandom())
             {
                 players = players.OrderBy(_ => Random.value); // 셔플
             }
 
-            foreach (var playerInfo in players)
+            foreach (var playerInfo in PhotonNetwork.PlayerList)
             {
                 // 카운트는 한 번만 초기화하고 재계산
-                var team = CustomProperty.GetTeam(playerInfo.player);
-                if (team == Team.Red) redRemain++;
-                else blueRemain++;
+                var team = playerInfo.GetTeam();
+
+              
+                if (team == Team.Red) 
+                    redRemain++;
+                else 
+                    blueRemain++;
             }
+            Debug.Log($"[QueueAdd] turnQueue 갱신 완료: redRemain={redRemain}, blueRemain={blueRemain}");
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
 
         }
-
-        room = PhotonNetwork.CurrentRoom;
         InitializePlayerEvents();
         QueueAdd();
         isGameStart = true;
