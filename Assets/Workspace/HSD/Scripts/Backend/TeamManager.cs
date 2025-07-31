@@ -55,6 +55,15 @@ public class TeamManager : MonoBehaviour
         Team team = Team.Red;
 
         GetPlayerTeamCount(out red, out blue);
+        Debug.Log($"·¹µåÆÀ : {red}, ºí·çÆÀ : {blue}");
+
+        if(PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object value))
+        {
+            if ((Team)value == Team.Red)
+                red--;
+            else if ((Team)value == Team.Blue)
+                blue--;           
+        }
 
         if (red >= PhotonNetwork.CurrentRoom.MaxPlayers / 2)
             team = Team.Blue;
@@ -62,7 +71,7 @@ public class TeamManager : MonoBehaviour
             team = Team.Red;  
 
         curTeam = (int)team;
-
+        Debug.Log(team);
         return team;
     }
 
