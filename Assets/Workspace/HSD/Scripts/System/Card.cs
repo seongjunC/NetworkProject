@@ -9,7 +9,7 @@ public class Card : MonoBehaviour
     [Header("UI")]
     [SerializeField] Image tankIcon;
     [SerializeField] Image rankImage;
-    [SerializeField] Button card;
+    [SerializeField] Button cardButton;
     [SerializeField] TMP_Text tankName;
     [SerializeField] Animator anim;
 
@@ -46,8 +46,7 @@ public class Card : MonoBehaviour
 
     private void Open()
     {
-        anim.SetTrigger("Open");
-        card.interactable = false;
+        cardButton.interactable = false;
     }
 
     private IEnumerator MoveRoutine(Transform targetTransform, float moveTime)

@@ -51,6 +51,8 @@ MonoBehaviour:
   - RPC_CycleEnd
   - Kick_RPC
   - OnHit
+  - ReceiveWhisper
+  - SendChat
   - RPC_InitTank
   - RPC_NotifySpawned
   - EndPlayerTurn

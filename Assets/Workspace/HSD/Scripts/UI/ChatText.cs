@@ -7,8 +7,12 @@ public class ChatText : MonoBehaviour
 {
     [SerializeField] TMP_Text chat;
 
-    public void SetUp(string message)
+    public void SetUp(string message, Color color = default)
     {
+        if(color == default)
+            color = Color.white;
+
+        chat.color = color;
         chat.text = message;
     }
 }

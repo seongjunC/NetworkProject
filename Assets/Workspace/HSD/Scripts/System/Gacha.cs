@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gacha : MonoBehaviour
 {
+    [SerializeField] Image image;
+
     [Header("Setting")]
+    public int needGem;
+    public bool isTen;
     [SerializeField] float[] chance;
-    [SerializeField] bool isTen;
     [SerializeField] TankData[] model;
 
     [Header("List")]
@@ -24,35 +29,57 @@ public class Gacha : MonoBehaviour
     [SerializeField] float moveTime;
     [SerializeField] float cardDelay;
 
+    [Header("Delay")]
+    [SerializeField] float gachaAddDelay;
     private YieldInstruction delay;
+    private YieldInstruction addDelay;
 
     private void Start()
     {
         delay = new WaitForSeconds(cardDelay);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            StartCoroutine(SetUpCardRoutine());
-    }
+        addDelay = new WaitForSeconds(gachaAddDelay);
+        model = Manager.Data.TankDataController.TankDatas.Values.ToArray();
+    }    
 
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
+        gameObject.SetActive(true);
+        StartCoroutine(GachaRoutine());
+    }
+
+    private IEnumerator GachaRoutine()
+    {
         SetUpCardTransformList();
         ClearCards();
         gachaList.Clear();
+        
+        float progress = 0;
+        float time = .5f;
+
+        while(progress < time)
+        {
+            progress += Time.deltaTime;
+            Color color = image.color;
+            color.a = Mathf.Lerp(0, 1, progress / time);
+            image.color = color;
+            yield return null;
+        }        
 
         if (isTen)
         {
             for (int i = 0; i < 10; i++)
             {
                 gachaList.Add(GetRandomTank());
+                yield return addDelay;
             }
         }
         else
             gachaList.Add(GetRandomTank());
+
+        yield return new WaitForSeconds(.5f);
+
+        StartCoroutine(SetUpCardRoutine());
     }
 
     private TankData GetRandomTank()
@@ -81,7 +108,7 @@ public class Gacha : MonoBehaviour
         Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity, cardSpawnTransform).GetComponent<Card>();
         cards.Add(card);
 
-        Manager.Data.InventoryData.AddTank(selectTank.tankName, selectTank.level, selectTank.count, selectTank.rank);
+        Manager.Data.TankInventoryData.AddTankEvent(selectTank.tankName, selectTank.level, 1, selectTank.rank);
 
         return selectTank;
     }

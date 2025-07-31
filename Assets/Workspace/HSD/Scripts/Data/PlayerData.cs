@@ -101,6 +101,10 @@ public class PlayerData
             }
         });
     }
+
+
+    public bool IsBuy(int amount) => Gem >= amount;    
+
     public void RaiseWinCount()
     {
         Manager.Database.userDataRef.Child("Win")

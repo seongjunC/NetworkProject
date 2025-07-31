@@ -5,12 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviourPun
 {
     [SerializeField] private Rigidbody2D _rigidbody;
-    [SerializeField] private float _speed = 2f;
     [SerializeField] private Transform player;
-    [SerializeField] private float _maxMove = 5f;
-    [SerializeField] private float _maxhp = 200;
     [SerializeField] private TextMeshProUGUI _textMeshPro;
-    [SerializeField] private TankData _data;
+    public TankData _data;
 
     public bool _isDead { get; private set; } = false;
     public bool OnBarrier { get; private set; } = false;
@@ -29,8 +26,8 @@ public class PlayerController : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            _movable = _maxMove;
-            _hp = _maxhp;
+            _movable = _data.maxMove;
+            _hp = _data.maxHp;
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
 
@@ -65,11 +62,11 @@ public class PlayerController : MonoBehaviourPun
 
         if (horizontal != 0)
         {
-            _movable -= Mathf.Abs(horizontal) * _speed * Time.deltaTime;
+            _movable -= Mathf.Abs(horizontal) * _data.speed * Time.deltaTime;
             player.localScale = new Vector3(-horizontal, 1f, 1f);
 
             Vector2 velocity = _rigidbody.velocity;
-            velocity.x = horizontal * _speed;
+            velocity.x = horizontal * _data.speed;
             _rigidbody.velocity = velocity;
 
             // 이동 중일 때만 회전 제한
@@ -108,7 +105,7 @@ public class PlayerController : MonoBehaviourPun
 
     public void ResetTurn()
     {
-        _movable = _maxMove;
+        _movable = _data.maxMove;
         SetAttacked(false);
         isControllable = true;
     }
@@ -153,13 +150,13 @@ public class PlayerController : MonoBehaviourPun
     public void FixedHealToPlayer(int Amount)
     {
         float beforeHp = _hp;
-        _hp = MathF.Min(_hp + Amount, _maxhp);
+        _hp = MathF.Min(_hp + Amount, _data.maxHp);
         Debug.Log($"{_hp - beforeHp} 만큼 체력 회복");
     }
     public void RatioHealToPlayer(int Amount)
     {
         float beforeHp = _hp;
-        _hp = MathF.Min(_hp + _maxhp * Amount / 100, _maxhp);
+        _hp = MathF.Min(_hp + _data.maxHp * Amount / 100, _data.maxHp);
         Debug.Log($"{_hp - beforeHp} 만큼 체력 회복");
     }
 }
