@@ -99,8 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c2a549feff03f4e819a282153e833c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionRadiusx: 200
-  explosionRadiusy: 200
+  explosionRadiusx: 120
+  explosionRadiusy: 120
   explosionMask: {fileID: 2800000, guid: b9769404f94542048b6ba76a030f526f, type: 3}
   explosionScale: 3
   damage: 100
