@@ -395,6 +395,7 @@ public class RoomManager : MonoBehaviourPun
             return;
         }
 
+        PhotonNetwork.CurrentRoom.SetGameStart(true);
         PhotonNetwork.LoadLevel("MSK InGameTest"); // æ¿¿Ãµø
     }
 

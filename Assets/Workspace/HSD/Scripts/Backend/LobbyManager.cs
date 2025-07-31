@@ -318,6 +318,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetTurnRandom(true);
         PhotonNetwork.CurrentRoom.SetFull(false);
         PhotonNetwork.CurrentRoom.SetDamageType(false);
+        PhotonNetwork.CurrentRoom.SetGameStart(false);
 
         if (isPassword.isOn)
         {
