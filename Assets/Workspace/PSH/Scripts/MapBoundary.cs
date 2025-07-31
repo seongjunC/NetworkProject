@@ -9,6 +9,8 @@ public class MapBoundary : MonoBehaviour
     public float padding = 2f;
 
     private BoxCollider2D boxCollider;
+
+    public Vector2 mapSize;
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
@@ -31,7 +33,7 @@ public class MapBoundary : MonoBehaviour
 
             if (mapSpriteRenderer == null)
             {
-                Debug.Log("spriterenderer ¾øÀ½");
+                Debug.Log("spriterenderer ì—†ìŒ");
                 return;
             }
 
@@ -39,19 +41,19 @@ public class MapBoundary : MonoBehaviour
         }
         else
         {
-            Debug.Log("deformableterrian ¾øÀ½");
+            Debug.Log("deformableterrian ì—†ìŒ");
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        //ÇÃ·¹ÀÌ¾î°¡ ¸Ê ¹ÛÀ» ³ª°¥ °æ¿ì
+        //í”Œë ˆì´ì–´ê°€ ë§µ ë°–ì„ ë‚˜ê°ˆ ê²½ìš°
         if (collision.CompareTag("Player"))
         {
-            //Å« µ¥¹ÌÁö¸¦ Áà¼­ ³«»ç
+            //í° ë°ë¯¸ì§€ë¥¼ ì¤˜ì„œ ë‚™ì‚¬
             var p = collision.GetComponent<PlayerController>();
             p.OnHit(9999999);
         }
-        //Åõ»çÃ¼°¡ ¸Ê ¹ÛÀ» ³ª°¥ °æ¿ì
+        //íˆ¬ì‚¬ì²´ê°€ ë§µ ë°–ì„ ë‚˜ê°ˆ ê²½ìš°
         else if (collision.CompareTag("Bullet"))
         {
             Projectile p = collision.GetComponent<Projectile>();
@@ -59,7 +61,7 @@ public class MapBoundary : MonoBehaviour
             if (p != null)
             {
                 p.BeginDestroyRoutine(false);
-                Debug.Log("Åõ»çÃ¼°¡ ¸Ê ¹ÛÀ¸·Î ³ª°¨");
+                Debug.Log("íˆ¬ì‚¬ì²´ê°€ ë§µ ë°–ìœ¼ë¡œ ë‚˜ê°");
             }
 
         }
@@ -68,28 +70,28 @@ public class MapBoundary : MonoBehaviour
     public void ResizeCollider()
     {
         transform.position = mapSpriteRenderer.transform.position;
-        Vector2 mapSize = mapSpriteRenderer.bounds.size;
+        mapSize = mapSpriteRenderer.bounds.size;
         boxCollider.size = mapSize + new Vector2(padding,padding);
         boxCollider.offset = Vector2.zero;
-        Debug.Log("¸Ê Å©±â¿¡ ¸Â°Ô Æ®¸®°Å ¿µ¿ª ¼³Á¤ ¿Ï·á");
+        Debug.Log("ë§µ í¬ê¸°ì— ë§ê²Œ íŠ¸ë¦¬ê±° ì˜ì—­ ì„¤ì • ì™„ë£Œ");
     }
     private void OnDrawGizmos()
     {
         if (mapSpriteRenderer == null)
             return;
 
-        // ÄÃ¶óÀÌ´õ Å©±â/¿ÀÇÁ¼ÂÀÌ ÃÖ½ÅÀÌ¶ó¸é, Awake/Start¿¡¼­ ResizeCollider()¸¦ ÇÑ ¹ø È£ÃâÇØµÎ¼¼¿ä
+        // ì»¬ë¼ì´ë” í¬ê¸°/ì˜¤í”„ì…‹ì´ ìµœì‹ ì´ë¼ë©´, Awake/Startì—ì„œ ResizeCollider()ë¥¼ í•œ ë²ˆ í˜¸ì¶œí•´ë‘ì„¸ìš”
         if (boxCollider == null)
             boxCollider = GetComponent<BoxCollider2D>();
 
-        // Gizmo »ö»ó
+        // Gizmo ìƒ‰ìƒ
         Gizmos.color = Color.green;
 
-        // ¿ùµå À§Ä¡ °è»ê (Transform À§Ä¡ + Äİ¶óÀÌ´õ offset)
+        // ì›”ë“œ ìœ„ì¹˜ ê³„ì‚° (Transform ìœ„ì¹˜ + ì½œë¼ì´ë” offset)
         Vector2 center = (Vector2)transform.position + boxCollider.offset;
         Vector2 size = boxCollider.size;
 
-        // 2D ¹Ú½º ±×¸®±â
+        // 2D ë°•ìŠ¤ ê·¸ë¦¬ê¸°
         Gizmos.DrawWireCube(center, size);
     }
 }
