@@ -7,21 +7,20 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class FirebaseManager : Singleton<FirebaseManager>
 {
     #region Firebase
-    private static FirebaseAuth     auth;
-    public static FirebaseAuth      Auth { get { return auth; } }
+    private static FirebaseAuth auth;
+    public static FirebaseAuth Auth { get { return auth; } }
 
-    private static FirebaseApp      app;
-    public static FirebaseApp       App { get { return app; } }
+    private static FirebaseApp app;
+    public static FirebaseApp App { get { return app; } }
 
     private static FirebaseDatabase database;
-    public static FirebaseDatabase  Database { get { return database; } }
+    public static FirebaseDatabase Database { get { return database; } }
     #endregion
 
     public event Action OnAuthSettingComplated;
@@ -50,7 +49,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 Debug.LogError("파베 설정이 충족되지 않음");
             }
             OnAuthSettingComplated?.Invoke();
-        });        
+        });
     }
 
     public void LogOut()
@@ -86,7 +85,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
             {
                 Debug.Log("로그아웃 시 커넥트 false 세팅 실패");
                 return;
-            }            
+            }
         });
 
         yield return new WaitForSeconds(1);

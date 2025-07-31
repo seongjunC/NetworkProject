@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 public enum TankRank
 {
     S, A, B, C
@@ -59,7 +58,7 @@ public class TankInventoryData
 
             foreach (var child in snapShot.Children)
             {
-                if(child.Key == "Tanks")
+                if (child.Key == "Tanks")
                 {
                     exists = true;
                     break;
@@ -68,7 +67,7 @@ public class TankInventoryData
             Debug.Log(exists);
             if (!exists)
                 tankRef.SetValueAsync("");
-            
+
             InitData();
         });
     }
@@ -211,11 +210,11 @@ public class TankInventoryData
 
     private void CreateTankGroupData(string name, int level, TankRank rank, Action onComplete)
     {
-        var data = new TankGroupData 
-        {   
+        var data = new TankGroupData
+        {
             TankName = name,
             Rank = rank,
-            Levels = new Dictionary<string, int> { { level.ToString(), 0 } } 
+            Levels = new Dictionary<string, int> { { level.ToString(), 0 } }
         };
 
         tankRef.Child(name).SetRawJsonValueAsync(JsonUtility.ToJson(data)).ContinueWithOnMainThread(_ => onComplete?.Invoke());

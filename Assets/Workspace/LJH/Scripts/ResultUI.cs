@@ -32,9 +32,9 @@ public class ResultUI : MonoBehaviour
         gameObject.SetActive(false);
         okButton.onClick.AddListener(OnClickOK);
     }
-    public void UpdateResult(Team winnerTeam, Team winners, Team losers)
+    public void UpdateResult(Team winnerTeam)
     {
-        
+
         // °á°ú ÆÐ³Î Ç¥½Ã
         resultPanel.SetActive(true);
         winnerText.text = $"½Â¸®: {(winnerTeam == Team.Red ? "RED ÆÀ" : "BLUE ÆÀ")}";
@@ -74,7 +74,7 @@ public class ResultUI : MonoBehaviour
         // º¸»ó ¼ýÀÚ Text
         TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
         if (rewardText != null)
-            rewardText.text = $"+{reward}";        
+            rewardText.text = $"+{reward}";
     }
 
     ///// <summary>
