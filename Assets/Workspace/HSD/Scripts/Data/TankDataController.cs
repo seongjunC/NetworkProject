@@ -29,5 +29,5 @@ public class TankDataController
         Debug.Log(tankName);
         TankDatas[$"{tankName}_{level}"].count = count;
         OnTankDataChanged?.Invoke(TankDatas[$"{tankName}_{level}"]);
-    }
+    }    
 }

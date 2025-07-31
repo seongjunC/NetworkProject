@@ -9,7 +9,12 @@ public class DataManager : Singleton<DataManager>
     public TankInventoryData TankInventoryData;
 
     [Header("Cached")]
-    public TankDataController TankDataController = new(); 
+    public TankDataController TankDataController = new();
+
+    private void Start()
+    {
+        Manager.Firebase.OnLogOut += () => TankDataController.TankDatas.Clear();
+    }
 
     public void Init()
     {
@@ -17,5 +22,5 @@ public class DataManager : Singleton<DataManager>
         TankDataController.Init();
         TankInventoryData.OnTankCountUpdated += TankDataController.UpdateCount;
         TankInventoryData.Init();
-    }    
+    }
 }
