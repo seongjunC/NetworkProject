@@ -91,25 +91,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         room = PhotonNetwork.CurrentRoom;
         InitializePlayerEvents();
-        if (CustomProperty.GetTurnRandom(room))
-        {
-            List<PlayerInfo> shuffledPlayerList = turnQueue.OrderBy(_ => Random.value).ToList();
-            turnQueue.Clear();
-            foreach (var playerInfo in shuffledPlayerList)
-            {
-                turnQueue.Enqueue(playerInfo);
-                if (CustomProperty.GetTeam(playerInfo.player) == Game.Team.Red) redRemain++;
-                else blueRemain++;
-            }
-        }
-        else
-        {
-            foreach (var playerInfo in turnQueue)
-            {
-                if (CustomProperty.GetTeam(playerInfo.player) == Game.Team.Red) redRemain++;
-                else blueRemain++;
-            }
-        }
+        QueueAdd();
         isGameStart = true;
         StartNextTurn();
     }
@@ -126,12 +108,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         if (turnQueue.Count <= 0)
         {
+            Debug.Log("새로운 턴이 시작됩니다.");
             photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
-            turnQueue = new Queue<PlayerInfo>(nextCycle);
-            nextCycle.Clear();
+            turnQueue.Clear();
+            QueueAdd();
         }
+
         currentPlayer = turnQueue.Dequeue();
-        Debug.Log($"{currentPlayer.NickName} 큐에서 방출됨");
 
         if (GetPlayerController(currentPlayer.player.ActorNumber)._isDead)
         {
@@ -148,7 +131,30 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
+    private void QueueAdd()
+    {
+        turnQueue.Clear(); // 항상 새로 구성
 
+        // turn 순서를 셔플할지 여부 결정
+        IEnumerable<PlayerInfo> players = allPlayers.Values;
+
+        if (CustomProperty.GetTurnRandom(room))
+        {
+            players = players.OrderBy(_ => Random.value); // 셔플
+        }
+
+        foreach (var playerInfo in players)
+        {
+            turnQueue.Enqueue(playerInfo);
+
+            // 카운트는 한 번만 초기화하고 재계산
+            var team = CustomProperty.GetTeam(playerInfo.player);
+            if (team == Team.Red) redRemain++;
+            else blueRemain++;
+        }
+
+        Debug.Log($"[QueueAdd] turnQueue 갱신 완료: {turnQueue.Count}명 / redRemain={redRemain}, blueRemain={blueRemain}");
+    }
     // TODO: 추후 아이템 생성 등과 연결
     [PunRPC]
     private void RPC_CycleEnd()
@@ -332,12 +338,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #region MSK added
     private void InitializePlayerEvents()
     {
-        turnQueue.Clear();
+        allPlayers.Clear();
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             var info = new PlayerInfo(player);
             allPlayers[player.ActorNumber] = info;
-            turnQueue.Enqueue(info);
         }
     }
     private void OnPlayerDied(PlayerController player)
