@@ -28,5 +28,8 @@ public class SpawnPlayer : MonoBehaviour
          "Prefabs/Test Tank", chosenPoint.position, chosenPoint.rotation);
 
         Debug.Log($"SpawnPlayer: '{chosenPoint.name}' 위치에 스폰 완료! 인덱스 = {index}");
+
+        var turnController = FindObjectOfType<MSKTurnController>();
+        turnController.photonView.RPC("RPC_NotifySpawned", RpcTarget.All);
     }
 }

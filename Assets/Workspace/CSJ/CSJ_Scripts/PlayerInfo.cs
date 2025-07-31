@@ -10,13 +10,12 @@ public class PlayerInfo
 {
     public Player player;
     public string NickName => player.NickName;
-    public int ActorNumber;
+    public int ActorNumber => player.ActorNumber;
     public ItemData[] items = new ItemData[2];
 
     public PlayerInfo(Player _player)
     {
         player = _player;
-        ActorNumber = _player.ActorNumber;
     }
 
     public void ItemAcquire(ItemData item)
@@ -83,7 +82,7 @@ public class PlayerInfo
             Debug.LogError("잘못된 슬롯 번호입니다.");
             return;
         }
-        if (items[order] = null)
+        if (items[order] == null)
         {
             Debug.LogError($"해당 위치 {order + 1} 칸에 아이템이 없습니다.");
             return;

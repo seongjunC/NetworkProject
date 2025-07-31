@@ -30,24 +30,38 @@ public class TestBattleManager : MonoBehaviourPun
     }
 
     #endregion
-    //  ¸Ê »ý¼ºÀÌÈÄ ÇÃ·¹ÀÌ¾î¸¦ µî·ÏÇÏµµ·Ï
+    //  ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½
     private void OnMapGenerated(DeformableTerrain terrain)
     {
-        _turnController.photonView.RPC("RPC_Spawned", RpcTarget.MasterClient);
+        // _turnController.photonView.RPC("RPC_Spawned", RpcTarget.All);
     }
 
     private void TestTurnEnd()
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-        _turnController.TurnFinished();
 
+        if (_turnController.IsMyTurn())
+            _turnController.TurnFinished();
     }
     private void PlayerAttacked()
     {
-        _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         if (_playerController._hp <= 0)
+        {
+            // ì‚¬ë§ ì²˜ë¦¬
             _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.All);
+            // ì£½ì€ ìœ ì €ê°€ ìžì‹ ì˜ í„´ì´ì—ˆë‹¤ë©´, í„´ë„ ì¢…ë£Œ
+            if (_turnController.IsMyTurn())
+            {
+                _turnController.TurnFinished();
+            }
+            return;
+        }
+        // ì‚´ì•„ìžˆê³  ë‚´ í„´ì´ë©´ í„´ ì¢…ë£Œ
+        if (_turnController.IsMyTurn())
+        {
+            _turnController.TurnFinished();
+        }
     }
 
     public void RegisterPlayer(PlayerController playerController)
@@ -71,9 +85,9 @@ public class TestBattleManager : MonoBehaviourPun
 
             Vector3 spawnPos = _spawnPoint[i].position;
             photonView.RPC("RPC_SpawnTank", players[i], spawnPos);
-            // TODO : ·Îºñ ¼³Á¤¿¡ µû¸¥ ´Ù¸¥ ÇÃ·¹ÀÌ¾î ÅÊÅ© ½ºÆù
-            // ¹æ¹ý 1 ½ºÆù ½Ã ÅÊÅ©ÀÇ Á¤º¸¸¦ °¡Á®¿Í¼­ ½ºÆù
-            // ¹æ¹ý 2 ÇÁ¸®ÆÕ ÀÚ½ÄÀ¸·Î 4°³ÀÇ ÅÊÅ©¸¦ °¡Áö°í, ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÑ ÅÊÅ©¸¸ È°¼ºÈ­
+            // TODO : ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ 2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½ È°ï¿½ï¿½È­
         }
     }*/
 
@@ -84,7 +98,7 @@ public class TestBattleManager : MonoBehaviourPun
 
         PhotonNetwork.Instantiate("Prefabs/Test Tank", spawnPos, Quaternion.identity);
         /*
-         * TODO : ÅÊÅ© ·Îºñ¼³Á¤¿¡ µû¶ó¼­ »ý¼ºÇÏ±â
+         * TODO : ï¿½ï¿½Å© ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
         TankType tankType = (TankType)tankTypeIndex;
         if (_tankPrefabPaths.TryGetValue(tankType, out string prefabPath))
         {
