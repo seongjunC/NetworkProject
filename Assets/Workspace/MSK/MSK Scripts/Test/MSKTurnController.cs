@@ -122,6 +122,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
+
         if (blueRemain <= 0 || redRemain <= 0)
         {
             Team winnerTeam = blueRemain == 0 ? Team.Blue : Team.Red;
@@ -146,7 +147,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         turnTimer = 0f;
         isTurnRunning = true;
-
+        photonView.RPC("TurnNotice", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
@@ -165,11 +166,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         foreach (var playerCon in tanks)
         {
-            if (playerCon ==  null) continue;
+            if (playerCon == null) continue;
             if (IsMyTurn() && playerCon.photonView.IsMine)
             {
                 playerCon.EnableControl(true);
                 playerCon.ResetTurn();
+                Debug.Log($"{playerCon.photonView} 턴턴턴턴");
             }
             else
             {
@@ -286,6 +288,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartTurnForPlayer(int actorNumber)
     {
+
         // 현재 턴 대상 강제 지정
         if (allPlayers.TryGetValue(actorNumber, out var info))
         {
@@ -306,6 +309,20 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #endregion
 
     #region MSK added
+
+    [PunRPC]
+    private void TurnNotice(int actorNumber)
+    {
+        foreach (var player in tanks)
+        {
+            PhotonView view = player.GetComponent<PhotonView>();
+            if (view != null && view.Owner != null && view.Owner.ActorNumber == actorNumber)
+            {
+                Debug.Log($"[TurnNotice] 턴: {view.Owner.ActorNumber}");
+                break;
+            }
+        }
+    }
     private void InitializePlayerEvents()
     {
         allPlayers.Clear();
