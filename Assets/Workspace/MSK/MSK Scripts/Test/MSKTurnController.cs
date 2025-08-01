@@ -148,7 +148,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         turnTimer = 0f;
         isTurnRunning = true;
-        photonView.RPC("TurnNotice", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
@@ -311,22 +310,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #endregion
 
     #region MSK added
-
-    [PunRPC]
-    private void TurnNotice(int actorNumber)
-    {
-        //TODO : 턴 시작 공지 부분으로 UI와 연결하는 작업이 필요합니다.
-        foreach (var player in tanks)
-        {
-            PhotonView view = player.GetComponent<PhotonView>();
-            if (view != null && view.Owner != null && view.Owner.ActorNumber == actorNumber)
-            {
-                Debug.Log($"[TurnNotice] 턴: {view.Owner.ActorNumber}");
-                Manager.UI.PopUpUI.Show($"{view.Owner.NickName}님의 턴입니다.", Color.green);
-                break;
-            }
-        }
-    }
     private void InitializePlayerEvents()
     {
         allPlayers.Clear();
