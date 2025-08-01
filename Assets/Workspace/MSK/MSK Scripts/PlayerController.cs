@@ -129,12 +129,11 @@ public class PlayerController : MonoBehaviourPun
         _isDead = true;
         OnPlayerAttacked = null;
         Debug.Log("플레이어 사망");
-        photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         OnPlayerDied?.Invoke();
     }
 
     [PunRPC]
-    public void RPC_PlayerDead()
+    public void RPC_PCDead()
     {
         Destroy(gameObject);
     }
