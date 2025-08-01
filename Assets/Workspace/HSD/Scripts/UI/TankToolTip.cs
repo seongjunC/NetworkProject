@@ -44,11 +44,12 @@ public class TankToolTip : MonoBehaviour
         tankNameText.text = data.tankName;
 
         // 업그레이드
-        int upgradeCount = data.GetRequiredUpgradeCount(data.Level);
+        int required = data.GetRequiredCountForNextLevel();
+        int progress = data.GetProgressTowardsNextLevel();
 
-        upgradeCountText.text = $"{data.CurrentCount()} / {upgradeCount.ToString()}";
-        upgradeSlider.maxValue = upgradeCount;
-        upgradeSlider.value = data.CurrentCount();
+        upgradeCountText.text = $"{progress} / {required}";
+        upgradeSlider.maxValue = required;
+        upgradeSlider.value = progress;   
     }
 
     public void CloseToolTip()

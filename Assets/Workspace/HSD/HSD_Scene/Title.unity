@@ -22163,7 +22163,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 192.06958, y: -399.3357}
+  m_AnchoredPosition: {x: 179, y: -399.3357}
   m_SizeDelta: {x: 376.4154, y: 244.286}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1244911007
@@ -22611,6 +22611,7 @@ MonoBehaviour:
   tankSlotPrefab: {fileID: 2110823643106775007, guid: 9cb28389b521a9544ae3454169529934, type: 3}
   slotContent: {fileID: 1482081596}
   tankToolTip: {fileID: 2094005817}
+  datas: []
   exitButton: {fileID: 1090600281}
   sColor: {r: 0.96470594, g: 0.7607844, b: 0.25882354, a: 1}
   aColor: {r: 0.20784315, g: 0.70980394, b: 0.9803922, a: 1}

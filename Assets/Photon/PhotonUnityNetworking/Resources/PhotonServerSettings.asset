@@ -57,6 +57,7 @@ MonoBehaviour:
   - RPC_NotifySpawned
   - EndPlayerTurn
   - ResetTurn
+  - RPC_PCDead
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

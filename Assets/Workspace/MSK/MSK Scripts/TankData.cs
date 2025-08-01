@@ -43,26 +43,49 @@ public class TankData : ScriptableObject
 
     public int CalculateLevelFromCount()
     {
-        if (count == 0)
-            return 1;
-
-        int c = count;
         int lvl = 1;
-        while (c >= GetRequiredUpgradeCount(lvl))
+        while (count >= GetTotalRequiredCount(lvl + 1))
         {
-            c -= GetRequiredUpgradeCount(lvl);
             lvl++;
         }
         return lvl;
     }
 
+    public int GetTotalRequiredCount(int level)
+    {
+        int total = 0;
+        for (int i = 1; i < level; i++)
+        {
+            total += GetRequiredUpgradeCount(i);
+        }
+        return total;
+    }
+
     public int GetRequiredUpgradeCount(int level)
     {
-        return needDefaultUpgradeCount + needUpgradeCount * (level - 1);
+        return needDefaultUpgradeCount + (needUpgradeCount * (level - 1));
     }
 
     public int CurrentCount()
     {
-        return Count + needDefaultUpgradeCount - GetRequiredUpgradeCount(Level);
+        return count - GetTotalRequiredCount(Level);
+    }
+
+    /// <summary>
+    /// 다음레벨 까지 가기위한 갯수
+    /// </summary>
+    /// <returns></returns>
+    public int GetRequiredCountForNextLevel()
+    {
+        return GetRequiredUpgradeCount(Level);
+    }
+
+    /// <summary>
+    /// 이번 레벨에서 얼마나 강화가 되었는지
+    /// </summary>
+    /// <returns></returns>
+    public int GetProgressTowardsNextLevel()
+    {
+        return count - GetTotalRequiredCount(Level);
     }
 }
