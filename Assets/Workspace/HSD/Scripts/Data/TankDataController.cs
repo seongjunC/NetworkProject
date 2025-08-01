@@ -6,7 +6,8 @@ using UnityEngine;
 [Serializable]
 public class TankDataController
 { 
-    public Dictionary<string, TankData> TankDatas = new Dictionary<string, TankData>();
+    public Dictionary<string, TankData> TankDatas = new Dictionary<string, TankData>();    
+
     public event Action<TankData> OnTankDataChanged;
 
     public void Init()
@@ -19,15 +20,17 @@ public class TankDataController
         TankData[] tankDatas = Resources.LoadAll<TankData>("Data/Tank");
         foreach (var tankData in tankDatas)
         {
-            tankData.count = 0;
-            this.TankDatas.Add($"{tankData.tankName}_{tankData.level}", tankData);
+            Debug.Log($"{tankData.tankName} 추가");
+            tankData.Level = 1;
+            tankData.Count = 0;
+            TankDatas.Add(tankData.tankName, tankData);
         }
     }
 
-    public void UpdateCount(string tankName, int level, int count)
+    public void UpdateCount(string tankName, int count)
     {
-        Debug.Log(tankName);
-        TankDatas[$"{tankName}_{level}"].count = count;
-        OnTankDataChanged?.Invoke(TankDatas[$"{tankName}_{level}"]);
+        Debug.Log($"{tankName}_{count}로 설정");
+        TankDatas[tankName].Count = count;
+        OnTankDataChanged?.Invoke(TankDatas[tankName]);
     }    
 }

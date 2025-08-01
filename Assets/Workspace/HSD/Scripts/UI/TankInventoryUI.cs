@@ -9,6 +9,7 @@ public class TankInventoryUI : MonoBehaviour
     [SerializeField] GameObject tankSlotPrefab;
     [SerializeField] Transform slotContent;
     [SerializeField] TankToolTip tankToolTip;
+    [SerializeField] TankData[] datas;
 
     [Header("Button")]
     [SerializeField] Button exitButton;
@@ -21,9 +22,14 @@ public class TankInventoryUI : MonoBehaviour
 
     private Dictionary<TankData, TankSlot> tankSlotDic = new Dictionary<TankData, TankSlot>();
 
+    private void Awake()
+    {
+        datas = Manager.Data.TankDataController.TankDatas.Values.ToArray();
+    }
+
     private void Start()
     {
-        exitButton.onClick.AddListener(() => gameObject.SetActive(false));
+        exitButton.onClick.AddListener(() => gameObject.SetActive(false));        
         Manager.Firebase.OnLogOut += ClearSlots;
     }
 
@@ -39,14 +45,12 @@ public class TankInventoryUI : MonoBehaviour
     }
 
     private void UpdateAllSlot()
-    {
-        TankData[] datas = Manager.Data.TankDataController.TankDatas.Values.ToArray();
-
+    {        
         foreach (var data in datas)
         {
             if(!tankSlotDic.ContainsKey(data))
             {
-                if (data.count == 0)
+                if (data.Count == 0)
                     continue;
 
                 TankSlot slot = Instantiate(tankSlotPrefab, slotContent).GetComponent<TankSlot>();
@@ -55,7 +59,7 @@ public class TankInventoryUI : MonoBehaviour
             }
             else
             {
-                if (data.count == 0)
+                if (data.Count == 0)
                 {
                     Destroy(tankSlotDic[data].gameObject);
                     tankSlotDic.Remove(data);
@@ -68,7 +72,7 @@ public class TankInventoryUI : MonoBehaviour
     {
         if (!tankSlotDic.ContainsKey(data))
         {
-            if (data.count == 0)
+            if (data.Count == 0)
                 return;
 
             TankSlot slot = Instantiate(tankSlotPrefab, slotContent).GetComponent<TankSlot>();
@@ -77,7 +81,7 @@ public class TankInventoryUI : MonoBehaviour
         }
         else
         {
-            if (data.count == 0)
+            if (data.Count == 0)
             {
                 Destroy(tankSlotDic[data].gameObject);
                 tankSlotDic.Remove(data);

@@ -108,7 +108,7 @@ public class Gacha : MonoBehaviour
         Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity, cardSpawnTransform).GetComponent<Card>();
         cards.Add(card);
 
-        Manager.Data.TankInventoryData.AddTankEvent(selectTank.tankName, selectTank.level, 1, selectTank.rank);
+        Manager.Data.TankInventoryData.AddTankEvent(selectTank.tankName, 1, selectTank.rank);
 
         return selectTank;
     }

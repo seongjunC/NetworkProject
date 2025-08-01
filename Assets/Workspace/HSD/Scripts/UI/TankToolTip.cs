@@ -26,11 +26,6 @@ public class TankToolTip : MonoBehaviour
     [SerializeField] private float xOffset = 150;
     [SerializeField] private float yOffset = 150;
 
-    private void Start()
-    {
-        upgradeSlider.maxValue = Manager.Data.TankInventoryData.needUpgradeCount;
-    }
-
     public void ShowToolTip(TankData data, Color rankColor, Vector2 pos)
     {
         AdjustPosition(pos);
@@ -49,8 +44,11 @@ public class TankToolTip : MonoBehaviour
         tankNameText.text = data.tankName;
 
         // 업그레이드
-        upgradeCountText.text = $"{data.count} / {Manager.Data.TankInventoryData.needUpgradeCount}";
-        upgradeSlider.value = data.count;
+        int upgradeCount = data.GetRequiredUpgradeCount(data.Level);
+
+        upgradeCountText.text = $"{data.CurrentCount()} / {upgradeCount.ToString()}";
+        upgradeSlider.maxValue = upgradeCount;
+        upgradeSlider.value = data.CurrentCount();
     }
 
     public void CloseToolTip()

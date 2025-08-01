@@ -196,6 +196,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             if (task.IsFaulted)
             {
                 Debug.LogError("Firebase 오류: " + task.Exception);
+                PhotonNetwork.Disconnect();
             }
             else if (task.IsCompleted)
             {
@@ -222,16 +223,19 @@ public class LoginManager : MonoBehaviourPunCallbacks
             loginButton.interactable = true;
             loginMessage.SetActive(false);
             loginPanel.SetActive(true);
+            PhotonNetwork.Disconnect();
             Manager.UI.FadeScreen.FadeOut(1);
             yield break;
         }
-
         
         if (task.IsFaulted || task.IsCanceled)
         {
             Debug.LogError("Firebase 데이터 가져오기 실패");
             isLogin = false;
+            loginMessage.SetActive(false);
+            loginPanel.SetActive(true);
             loginButton.interactable = true;
+            PhotonNetwork.Disconnect();
             yield break;
         }
 
@@ -253,8 +257,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.LocalPlayer.SetUID(user.UserId);
-
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
+
         Manager.Data.PlayerData.Init();
 
         yield return new WaitForSeconds(1);
@@ -284,8 +288,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         base.OnDisconnected(cause);
-        Debug.Log("Connected");
-        PhotonNetwork.ConnectUsingSettings();
+        Debug.Log("Disconnected");        
     }
     #endregion
 
