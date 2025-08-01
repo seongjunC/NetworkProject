@@ -108,11 +108,14 @@ public class GachaPanel : MonoBehaviour
     {
         foreach (var kvp in gacha.beforeLevel)
         {
-            if (kvp.Value != gacha.afterLevel[kvp.Key])
+            if(gacha.afterLevel.ContainsKey(kvp.Key))
             {
-                Instantiate(gachaResultPopUp, gachaResultContent).GetComponent<TankUpgradePopUp>().SetUp(kvp.Key);
-                yield return new WaitForSeconds(.1f);
-            }
+                if (kvp.Value != gacha.afterLevel[kvp.Key])
+                {
+                    Instantiate(gachaResultPopUp, gachaResultContent).GetComponent<TankUpgradePopUp>().SetUp(kvp.Key);
+                    yield return new WaitForSeconds(.1f);
+                }
+            }            
         }
     }
 }
