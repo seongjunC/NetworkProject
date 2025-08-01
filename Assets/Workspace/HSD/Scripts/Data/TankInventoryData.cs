@@ -27,7 +27,6 @@ public class TankInventoryData
     private DatabaseReference tankRef;
 
     public event Action<string, int> OnTankCountUpdated; // (TankName, NewCount)
-    public event Action<string, int> OnTankLevelRemoved;
 
     public void Init()
     {
@@ -162,7 +161,6 @@ public class TankInventoryData
 
     public void AddTankEvent(string tankName, int count, TankRank rank = TankRank.C)
     {
-        Debug.Log("AddTank");
         tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted || task.IsCanceled)

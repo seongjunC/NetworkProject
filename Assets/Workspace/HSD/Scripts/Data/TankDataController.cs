@@ -20,7 +20,6 @@ public class TankDataController
         TankData[] tankDatas = Resources.LoadAll<TankData>("Data/Tank");
         foreach (var tankData in tankDatas)
         {
-            Debug.Log($"{tankData.tankName} 추가");
             tankData.Level = 1;
             tankData.Count = 0;
             TankDatas.Add(tankData.tankName, tankData);
@@ -29,7 +28,6 @@ public class TankDataController
 
     public void UpdateCount(string tankName, int count)
     {
-        Debug.Log($"{tankName}_{count}로 설정");
         TankDatas[tankName].Count = count;
         OnTankDataChanged?.Invoke(TankDatas[tankName]);
     }    

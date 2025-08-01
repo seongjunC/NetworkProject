@@ -10735,7 +10735,7 @@ MonoBehaviour:
   cards: []
   cradContent: {fileID: 252119231}
   cardSpawnTransform: {fileID: 648520955}
-  cardPrefab: {fileID: 6493164010157632658, guid: 181f46ebb22e6bd41b1a5a847c958fce, type: 3}
+  cardPrefab: {fileID: 5572841210266857250, guid: 181f46ebb22e6bd41b1a5a847c958fce, type: 3}
   moveTime: 0.5
   cardDelay: 0.2
   gachaAddDelay: 0.1
