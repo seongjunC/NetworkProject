@@ -14,7 +14,8 @@ public class TankToolTip : MonoBehaviour
 
     [Header("Texts")]
     [SerializeField] TMP_Text tankNameText;
-    [SerializeField] TMP_Text rankText;    
+    [SerializeField] TMP_Text rankText;
+    [SerializeField] TMP_Text levelText;
     [SerializeField] TMP_Text damageText;
     [SerializeField] TMP_Text maxMoveText;
     [SerializeField] TMP_Text hpText;
@@ -38,6 +39,7 @@ public class TankToolTip : MonoBehaviour
         maxMoveText.text = data.maxMove.ToString();
 
         // µ•¿Ã≈Õ
+        levelText.text = $"Lv.{data.Level.ToString()}";
         rankText.text = data.rank.ToString();
         rankText.color = rankColor;
         tankIcon.sprite = data.icon;
