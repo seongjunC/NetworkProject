@@ -4791,7 +4791,7 @@ MonoBehaviour:
   winnerText: {fileID: 1911547190}
   resultPanel: {fileID: 920666499}
   okButton: {fileID: 5325141}
-  playersParent: {fileID: 312978511}
+  playersParent: {fileID: 2113503182}
   playerSlotPrefab: {fileID: 7406084352745847345, guid: b6422a9ae2745d544aed8b577ec78846, type: 3}
   redTeamColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   blueTeamColor: {r: 0.3, g: 0.3, b: 1, a: 1}
