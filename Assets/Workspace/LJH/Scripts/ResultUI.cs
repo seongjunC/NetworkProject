@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class ResultUI : MonoBehaviour
+public class ResultUI : MonoBehaviourPun
 {
     [SerializeField] private TextMeshProUGUI winnerText;
     [SerializeField] private GameObject resultPanel;
@@ -32,6 +32,8 @@ public class ResultUI : MonoBehaviour
         gameObject.SetActive(false);
         okButton.onClick.AddListener(OnClickOK);
     }
+
+    [PunRPC]
     public void UpdateResult(Team winnerTeam)
     {
 

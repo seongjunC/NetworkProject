@@ -269,7 +269,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             else
                 losers.Add(player);
         }
-        ResultPanel.UpdateResult(winnerTeam);
+        ResultPanel.photonView.RPC("UpdateResult", RpcTarget.All, winnerTeam);
     }
 
     // 이부분 실제로 RPC 받는지 확인
