@@ -7,7 +7,9 @@ public class ItemSpawner : MonoBehaviourPun
 {
     [Header("아이템 생성 지점")]
     [SerializeField]
-    private List<Transform> spawnPoints;
+    private int mapHorizontalLength;
+    [SerializeField]
+    private int mapVerticalLength;
     [Header("생성할 아이템 리스트")]
     [SerializeField]
     private List<ItemData> itemList;
@@ -15,11 +17,11 @@ public class ItemSpawner : MonoBehaviourPun
     public void SpawnRandomItem()
     {
         ItemData selectedItem = RandItem();
-        Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
+        Vector2 spawnPoint = new Vector2(Random.Range(0, mapHorizontalLength), mapVerticalLength);
 
         GameObject item = PhotonNetwork.Instantiate(
             selectedItem.prefab.name,
-            spawnPoint.position,
+            spawnPoint,
             Quaternion.identity
         );
 
