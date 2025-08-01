@@ -129,7 +129,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Debug.Log($"게임 종료!\n {(winnerTeam == Team.Red ? "레드" : "블루")}팀의 승리");
             photonView.RPC("RPC_GameEnded", RpcTarget.All, winnerTeam);
             return;
-        }*/
+        }
+        */
 
         if (turnQueue.Count <= 0)
         {
@@ -321,6 +322,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             if (view != null && view.Owner != null && view.Owner.ActorNumber == actorNumber)
             {
                 Debug.Log($"[TurnNotice] 턴: {view.Owner.ActorNumber}");
+                Manager.UI.PopUpUI.Show($"{view.Owner.NickName}님의 턴입니다.", Color.green);
                 break;
             }
         }
