@@ -165,7 +165,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         foreach (var playerCon in tanks)
         {
-            if (playerCon ==  null) continue;
+            if (playerCon == null) continue;
             if (IsMyTurn() && playerCon.photonView.IsMine)
             {
                 playerCon.EnableControl(true);
@@ -326,11 +326,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         tanks.Remove(player);
         tanks.RemoveAll(t => t == null);
-        if (redRemain <= 0 || blueRemain <= 0)
-        {
-            Team winner = redRemain <= 0 ? Team.Blue : Team.Red;
-            photonView.RPC("RPC_GameEnded", RpcTarget.All, winner);
-        }
     }
 
     public void TurnFinished()

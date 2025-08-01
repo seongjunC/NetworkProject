@@ -351,12 +351,6 @@ public class TurnController : MonoBehaviourPunCallbacks
         else blueRemain--;
 
         Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
-
-        if (redRemain <= 0 || blueRemain <= 0)
-        {
-            Team winner = redRemain <= 0 ? Team.Blue : Team.Red;
-            photonView.RPC("RPC_GameEnded", RpcTarget.All, winner);
-        }
     }
 
     public void TurnFinished()
