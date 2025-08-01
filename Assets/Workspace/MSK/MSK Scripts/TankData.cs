@@ -17,10 +17,11 @@ public class TankData : ScriptableObject
     public TankRank rank;
     public Sprite icon;
     private int level;
+    [field: SerializeField] 
     public int Level { get => level; set { level = value; } }
 
     private int count;
-    public int Count
+    [field : SerializeField] public int Count
     {
         get => count;
         set
@@ -30,6 +31,7 @@ public class TankData : ScriptableObject
             if (level <= 0) level = 1;
 
             level = CalculateLevelFromCount();
+            Debug.Log($"현재 레벨 {level}로 설정 됨");
         }
     }
 

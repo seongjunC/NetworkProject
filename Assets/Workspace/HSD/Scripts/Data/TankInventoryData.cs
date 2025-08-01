@@ -115,7 +115,7 @@ public class TankInventoryData
         }
 
         var countStr = args.Snapshot.Child("Count")?.Value?.ToString();
-        if (!string.IsNullOrEmpty(countStr) && int.TryParse(rankStr, out int count))
+        if (!string.IsNullOrEmpty(countStr) && int.TryParse(countStr, out int count))
         {
             groupData.Count = count;
         }
