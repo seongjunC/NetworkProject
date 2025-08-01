@@ -25,36 +25,27 @@ namespace Editor
 
         public List<ScriptableObject> LoadAssetsOfType(Type type)
         {
-            Debug.Log($"LoadAssetsOfType called for: {type.Name}");
-
             // 캐시에 있고 비어있지 않다면 반환
             if (typeInstanceCache.ContainsKey(type) && typeInstanceCache[type].Count > 0)
             {
                 var cached = typeInstanceCache[type];
-                Debug.Log($"Returning cached result: {cached.Count}");
                 return cached;
             }
 
-            Debug.Log("Loading from AssetDatabase...");
             var result = new List<ScriptableObject>();
             string[] guids = AssetDatabase.FindAssets($"t:{type.Name}");
-            Debug.Log($"Found GUIDs: {guids.Length}");
 
             foreach (string guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                Debug.Log($"Checking path: {path}");
                 if (!path.Contains("/Resources/")) continue;
 
                 var asset = AssetDatabase.LoadAssetAtPath(path, type) as ScriptableObject;
                 if (asset != null)
                 {
                     result.Add(asset);
-                    Debug.Log($"Added asset: {asset.name}");
                 }
             }
-
-            Debug.Log($"Final result count: {result.Count}");
 
             // 결과가 있을 때만 캐시에 저장
             if (result.Count > 0)
