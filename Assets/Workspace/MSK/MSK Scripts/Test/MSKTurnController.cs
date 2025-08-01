@@ -275,22 +275,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     public void RPC_PlayerDead(int actorNumber)
     {
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
-        var team = CustomProperty.GetTeam(tank.myInfo.player);
-        tank.OnPlayerDied = null;
-
-        if (team == Team.Red)
-        {
-            Debug.Log("레드팀 감소");
-            redRemain--;
-        }
-        else
-        {
-            Debug.Log("블루팀 감소");
-            blueRemain--;
-        }
         if (tank != null)
         {
-            tank.photonView.RPC("RPC_PCDead", RpcTarget.All);
             OnPlayerDied(tank);
             tanks.Remove(tank);
         }
@@ -331,6 +317,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     private void OnPlayerDied(PlayerController player)
     {
+        Team team = CustomProperty.GetTeam(player.photonView.Owner);
+        if (team == Team.Red) redRemain--;
+        else blueRemain--;
+
+        Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
+
         tanks.Remove(player);
         tanks.RemoveAll(t => t == null);
         if (redRemain <= 0 || blueRemain <= 0)

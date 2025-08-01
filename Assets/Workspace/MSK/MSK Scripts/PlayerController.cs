@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void RPC_PCDead()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void EnableControl(bool enable)
