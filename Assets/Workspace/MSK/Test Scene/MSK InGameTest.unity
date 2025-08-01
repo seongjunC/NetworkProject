@@ -4746,6 +4746,7 @@ GameObject:
   - component: {fileID: 920666503}
   - component: {fileID: 920666502}
   - component: {fileID: 920666501}
+  - component: {fileID: 920666504}
   m_Layer: 5
   m_Name: ResultPanel
   m_TagString: Untagged
@@ -4791,7 +4792,7 @@ MonoBehaviour:
   winnerText: {fileID: 1911547190}
   resultPanel: {fileID: 920666499}
   okButton: {fileID: 5325141}
-  playersParent: {fileID: 312978511}
+  playersParent: {fileID: 2113503182}
   playerSlotPrefab: {fileID: 7406084352745847345, guid: b6422a9ae2745d544aed8b577ec78846, type: 3}
   redTeamColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   blueTeamColor: {r: 0.3, g: 0.3, b: 1, a: 1}
@@ -4834,6 +4835,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920666499}
   m_CullTransparentMesh: 1
+--- !u!114 &920666504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920666499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &953161781
 GameObject:
   m_ObjectHideFlags: 0
@@ -6645,7 +6668,7 @@ GameObject:
   - component: {fileID: 1392346347}
   m_Layer: 0
   m_Name: MapBoundary
-  m_TagString: Untagged
+  m_TagString: MapBoundary
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

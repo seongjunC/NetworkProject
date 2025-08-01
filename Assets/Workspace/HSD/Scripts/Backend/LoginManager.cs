@@ -20,6 +20,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [Header("Buttons")]
     [SerializeField] Button loginButton;
     [SerializeField] Button signupButton;
+    [SerializeField] Button gameOutButton;
 
     [Header("Panels")]
     [SerializeField] GameObject signupPanel;
@@ -62,6 +63,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         email.onEndEdit.AddListener(EnterLogin);
         loginButton.onClick.AddListener(Login);
         signupButton.onClick.AddListener(SignUp);
+        gameOutButton.onClick.AddListener(GameOut);
         Manager.Firebase.OnAuthSettingComplated += StartRoutine;
     }
     private void UnSubscribe()
@@ -70,6 +72,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         email.onEndEdit.RemoveListener(EnterLogin);
         loginButton.onClick.RemoveListener(Login);
         signupButton.onClick.RemoveListener(SignUp);
+        gameOutButton.onClick.RemoveListener(GameOut);
         Manager.Firebase.OnAuthSettingComplated -= StartRoutine;
     }
     #endregion
@@ -102,7 +105,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
                     if (auth.CurrentUser != null && auth.CurrentUser.IsEmailVerified)
                     {
-                        Debug.Log("ÀÚµ¿ ·Î±×ÀÎ À¯È¿ÇÔ: " + auth.CurrentUser.Email);
+                        Debug.Log("ï¿½Úµï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½: " + auth.CurrentUser.Email);
                         user = auth.CurrentUser;
 
                         LoginSetActive(user == null);
@@ -114,14 +117,14 @@ public class LoginManager : MonoBehaviourPunCallbacks
                     }
                     else
                     {
-                        Debug.Log("ÀÚµ¿ ·Î±×ÀÎ ¾øÀ½");
+                        Debug.Log("ï¿½Úµï¿½ ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
                         return;
                     }
                 }
             }
             else
             {
-                Debug.LogError("ÆÄº£ ¼³Á¤ÀÌ ÃæÁ·µÇÁö ¾ÊÀ½");
+                Debug.LogError("ï¿½Äºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
             }
         });
     }
@@ -144,7 +147,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         {
             if (task.IsCanceled || task.IsFaulted)
             {
-                Debug.LogError($"·Î±×ÀÎ ½ÇÆÐ: {task.Exception}");
+                Debug.LogError($"ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {task.Exception}");
                 Manager.UI.PopUpUI.Show("Login Failed");
                 isLogin = false;
                 loginButton.interactable = true;
@@ -167,19 +170,19 @@ public class LoginManager : MonoBehaviourPunCallbacks
                         if (sendTaskEmail.IsCanceled || sendTaskEmail.IsFaulted)
                             return;
 
-                        Debug.Log("ÀÌ¸ÞÀÏ ÀçÀü¼Û");
+                        Debug.Log("ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                     });
                     loginMessage.SetActive(false);
                     loginPanel.SetActive(true);
 
-                    Manager.UI.PopUpUI.Show("ÀÌ¸ÞÀÏ ÀÎÁõÀÌ ÇÊ¿äÇÕ´Ï´Ù. ¸ÞÀÏÀ» È®ÀÎÇØÁÖ¼¼¿ä.", Color.yellow);
+                    Manager.UI.PopUpUI.Show("ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Õ´Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.", Color.yellow);
                     FirebaseManager.Auth.SignOut();
                     isLogin = false;
                     loginButton.interactable = true;
                     return;
                 }
 
-                Debug.Log($"·Î±×ÀÎ ¼º°ø: {task.Result.User.Email}");
+                Debug.Log($"ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½: {task.Result.User.Email}");
                 PhotonNetwork.ConnectUsingSettings();
                 Manager.UI.FadeScreen.FadeIn(1);
             });
@@ -198,7 +201,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         {
             if (task.IsFaulted)
             {
-                Debug.LogError("Firebase ¿À·ù: " + task.Exception);
+                Debug.LogError("Firebase ï¿½ï¿½ï¿½ï¿½: " + task.Exception);
                 PhotonNetwork.Disconnect();
             }
             else if (task.IsCompleted)
@@ -212,16 +215,16 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 else
                 {
                     Debug.Log("Not Exists");
-                    Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(false);                    
+                    Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(false);
                 }
             }
         });
 
         yield return new WaitForSeconds(.5f);
 
-        if(connected)
+        if (connected)
         {
-            Manager.UI.PopUpUI.Show("ÀÌ¹Ì Á¢¼ÓÁßÀÎ °èÁ¤ÀÔ´Ï´Ù.",Color.red);
+            Manager.UI.PopUpUI.Show("ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½.", Color.red);
             isLogin = false;
             loginButton.interactable = true;
             loginMessage.SetActive(false);
@@ -233,7 +236,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         
         if (task.IsFaulted || task.IsCanceled)
         {
-            Debug.LogError("Firebase µ¥ÀÌÅÍ °¡Á®¿À±â ½ÇÆÐ");
+            Debug.LogError("Firebase ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
             isLogin = false;
             loginMessage.SetActive(false);
             loginPanel.SetActive(true);
@@ -293,6 +296,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
         Debug.Log("Disconnected");        
     }
+    private void GameOut() => Application.Quit();
     #endregion
 
     private void LoginSetActive(bool active) => loginPanel.SetActive(active);

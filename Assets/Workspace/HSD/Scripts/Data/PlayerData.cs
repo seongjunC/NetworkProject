@@ -77,7 +77,7 @@ public class PlayerData
 
             if (value is long longValue)
             {
-                Lose = (int)longValue;
+                Gem = (int)longValue;
                 OnGemChanged?.Invoke(Gem);
             }
         }
@@ -103,7 +103,7 @@ public class PlayerData
     }
 
 
-    public bool IsBuy(int amount) => Gem >= amount;    
+    public bool IsBuy(int amount) => Gem >= amount;
 
     public void RaiseWinCount()
     {
