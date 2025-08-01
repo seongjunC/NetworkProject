@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,9 +32,9 @@ public class TankData : ScriptableObject
         {
             count = value;
 
-            if (level <= 0) level = 1;
+            if (Level <= 0) Level = 1;
 
-            level = CalculateLevelFromCount();
+            Level = CalculateLevelFromCount();
         }
     }
 

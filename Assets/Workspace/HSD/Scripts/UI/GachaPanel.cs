@@ -25,6 +25,9 @@ public class GachaPanel : MonoBehaviour
     [SerializeField] GameObject gachaRecordPanel;
     [SerializeField] GameObject lobby;
 
+    [Header("GachaResult")]
+    [SerializeField] GameObject gachaResultPopUp;
+    [SerializeField] Transform gachaResultContent;
     private void OnEnable()
     {
         gachaExitButton.onClick.AddListener(GachaExit);
@@ -79,7 +82,7 @@ public class GachaPanel : MonoBehaviour
     private void OpenComponent() => componentPanel.gameObject.SetActive(true);
     private void CloseComponent() => componentPanel.gameObject.SetActive(false);
     private void OpenGachaRecord() => gachaRecordPanel.gameObject.SetActive(true);
-    private void CloseGachaRecord() => gachaRecordPanel?.gameObject.SetActive(false);
+    private void CloseGachaRecord() => gachaRecordPanel.gameObject.SetActive(false);
 
     private void Exit()
     {
@@ -96,6 +99,20 @@ public class GachaPanel : MonoBehaviour
         yield return new WaitForSeconds(1);
         gacha.gameObject.SetActive(false);
 
+        StartCoroutine(CheckLevelUpRoutine());
+
         Manager.UI.FadeScreen.FadeOut(.5f);
+    }
+
+    public IEnumerator CheckLevelUpRoutine()
+    {
+        foreach (var kvp in gacha.beforeLevel)
+        {
+            if (kvp.Value != gacha.afterLevel[kvp.Key])
+            {
+                Instantiate(gachaResultPopUp, gachaResultContent).GetComponent<TankUpgradePopUp>().SetUp(kvp.Key);
+                yield return new WaitForSeconds(.1f);
+            }
+        }
     }
 }

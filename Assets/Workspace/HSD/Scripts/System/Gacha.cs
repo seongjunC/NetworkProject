@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Gacha : MonoBehaviour
 {
-    [SerializeField] Image image;
+    [SerializeField] Image image;    
 
     [Header("Setting")]
     public int needGem;
@@ -34,6 +34,9 @@ public class Gacha : MonoBehaviour
     private YieldInstruction delay;
     private YieldInstruction addDelay;
 
+    public Dictionary<TankData, int> beforeLevel = new();
+    public Dictionary<TankData, int> afterLevel = new();
+
     private void Start()
     {
         delay = new WaitForSeconds(cardDelay);
@@ -50,8 +53,11 @@ public class Gacha : MonoBehaviour
 
     private IEnumerator GachaRoutine()
     {
+        yield return null;
+
         SetUpCardTransformList();
         ClearCards();
+        SaveBeforeLevel();
         gachaList.Clear();
         
         float progress = 0;
@@ -78,6 +84,8 @@ public class Gacha : MonoBehaviour
             gachaList.Add(GetRandomTank());
 
         yield return new WaitForSeconds(.5f);
+
+        SaveAfterLevel();
 
         StartCoroutine(SetUpCardRoutine());
     }
@@ -148,6 +156,28 @@ public class Gacha : MonoBehaviour
         {
             cards[i].SetUp(gachaList[i], cardTransforms[i], moveTime);
             yield return delay;
+        }
+    }
+
+    private void SaveBeforeLevel()
+    {
+        beforeLevel.Clear();
+
+        foreach (var tank in model)
+        {
+            beforeLevel.Add(tank, tank.Level);
+        }
+    }
+
+    private void SaveAfterLevel()
+    {
+        afterLevel.Clear();
+
+        TankData[] tanks = gachaList.Distinct().ToArray();
+
+        foreach (var tank in tanks)
+        {
+            afterLevel.Add(tank, tank.Level);
         }
     }
 }
