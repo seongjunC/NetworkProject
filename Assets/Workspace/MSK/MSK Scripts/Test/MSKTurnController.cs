@@ -314,6 +314,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void TurnNotice(int actorNumber)
     {
+        //TODO : 턴 시작 공지 부분으로 UI와 연결하는 작업이 필요합니다.
         foreach (var player in tanks)
         {
             PhotonView view = player.GetComponent<PhotonView>();
