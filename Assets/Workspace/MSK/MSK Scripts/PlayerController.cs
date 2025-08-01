@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviourPun
         {
             _movable = _data.maxMove;
             _hp = _data.maxHp;
+            myInfo = new PlayerInfo(photonView.Owner);
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
 
@@ -129,14 +130,13 @@ public class PlayerController : MonoBehaviourPun
         _isDead = true;
         OnPlayerAttacked = null;
         Debug.Log("플레이어 사망");
-        photonView.RPC("RPC_PlayerDead", RpcTarget.All);
         OnPlayerDied?.Invoke();
     }
 
     [PunRPC]
-    public void RPC_PlayerDead()
+    public void RPC_PCDead()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void EnableControl(bool enable)
