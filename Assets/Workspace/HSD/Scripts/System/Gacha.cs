@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +11,7 @@ public class Gacha : MonoBehaviour
     [Header("Setting")]
     public int needGem;
     public bool isTen;
-    [SerializeField] float[] chance;
+    public float[] chance;
     [SerializeField] TankData[] model;
 
     [Header("List")]
@@ -47,6 +46,7 @@ public class Gacha : MonoBehaviour
     [ContextMenu("Gacha")]
     public void TryGacha()
     {
+        ClearCards();
         gameObject.SetActive(true);
         StartCoroutine(GachaRoutine());
     }
@@ -54,9 +54,7 @@ public class Gacha : MonoBehaviour
     private IEnumerator GachaRoutine()
     {
         yield return null;
-
         SetUpCardTransformList();
-        ClearCards();
         SaveBeforeLevel();
         gachaList.Clear();
         
@@ -92,7 +90,8 @@ public class Gacha : MonoBehaviour
 
     private TankData GetRandomTank()
     {
-        float rand = Random.Range(0, 100);
+        float max = chance.Sum();
+        float rand = Random.Range(0, max);
 
         int select = 0;
 

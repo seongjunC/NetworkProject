@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 
-namespace Editor
+namespace SOEditor
 {
     /// <summary>스프라이트 관리자</summary>
     public class SOSpriteManager : ISOSpriteManager

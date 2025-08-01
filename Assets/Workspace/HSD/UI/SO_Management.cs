@@ -1,4 +1,4 @@
-using Editor;
+using SOEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 using UnityEngine;
 using System;
 
-namespace Editor
+namespace SOEditor
 {
     /// <summary>메인 에디터 윈도우 - 의존성 주입으로 구성된 컨트롤러</summary>
     public class SO_Management : EditorWindow

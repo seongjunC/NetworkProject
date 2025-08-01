@@ -57,13 +57,13 @@ public class GachaPanel : MonoBehaviour
     private void OneGacha()
     {
         gacha.isTen = false;
-        Manager.UI.PopUpUI_Action.Show($"잼 {gacha.needGem} 만큼을 사용하여 1회 뽑기를 진행하시겠습니까?", () => GemConsumption(1));
+        Manager.UI.PopUpUI_Action.Show($"잼 {gacha.needGem} 만큼을 사용하여\n1회 뽑기를 진행하시겠습니까?", () => GemConsumption(1));
     }
 
     private void TenGacha()
     {
         gacha.isTen = true;
-        Manager.UI.PopUpUI_Action.Show($"잼 {gacha.needGem * 10} 만큼을 사용하여 10회 뽑기를 진행하시겠습니까?", () => GemConsumption(10));
+        Manager.UI.PopUpUI_Action.Show($"잼 {gacha.needGem * 10} 만큼을 사용하여\n10회 뽑기를 진행하시겠습니까?", () => GemConsumption(10));
     }
 
     private void GemConsumption(int count)

@@ -8,7 +8,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor
+namespace SOEditor
 {
     /// <summary>UI ·»´õ·¯</summary>
     public class SOUIRenderer : ISOUIRenderer

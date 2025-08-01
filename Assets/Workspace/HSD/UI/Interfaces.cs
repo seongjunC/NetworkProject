@@ -6,7 +6,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor
+namespace SOEditor
 {
     /// <summary>ScriptableObject 데이터 관리 인터페이스</summary>
     public interface ISODataProvider

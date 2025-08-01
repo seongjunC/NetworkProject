@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace SOEditor
 {
     public class SOGroupManager : ISOGroupManager
     {

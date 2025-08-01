@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 
-namespace Editor
+namespace SOEditor
 {
     public class SODataProvider : ISODataProvider
     {
