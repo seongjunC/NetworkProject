@@ -16,7 +16,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [SerializeField] int winnerTeamReward = 100;
     [SerializeField] int loserTeamReward = 50;
     [Header("턴 제한")]
-    [SerializeField] float turnLimit = 30f;
+    [SerializeField] float turnLimit = 3f;
     [Header("아이템 생성기")]
     [SerializeField] ItemSpawner itemSpawner;
     [Header("사이클 종료시 생성할 아이템의 개수")]
@@ -122,14 +122,14 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
-
+        /*
         if (blueRemain <= 0 || redRemain <= 0)
         {
             Team winnerTeam = blueRemain == 0 ? Team.Blue : Team.Red;
             Debug.Log($"게임 종료!\n {(winnerTeam == Team.Red ? "레드" : "블루")}팀의 승리");
             photonView.RPC("RPC_GameEnded", RpcTarget.All, winnerTeam);
             return;
-        }
+        }*/
 
         if (turnQueue.Count <= 0)
         {
@@ -345,6 +345,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         tanks.Remove(player);
         tanks.RemoveAll(t => t == null);
+        if (redRemain <= 0 || blueRemain <= 0)
+        {
+            Team winner = redRemain <= 0 ? Team.Blue : Team.Red;
+            photonView.RPC("RPC_GameEnded", RpcTarget.All, winner);
+        }
     }
 
     public void TurnFinished()
