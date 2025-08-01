@@ -44,7 +44,7 @@ public class MapBoundary : MonoBehaviour
             Debug.Log("deformableterrian 없음");
         }
     }
-    private void OnTriggerExit2D(Collider2D collision)
+   /* private void OnTriggerExit2D(Collider2D collision)
     {
         //플레이어가 맵 밖을 나갈 경우
         if (collision.CompareTag("Player"))
@@ -65,7 +65,7 @@ public class MapBoundary : MonoBehaviour
             }
 
         }
-    }
+    }*/
 
     public void ResizeCollider()
     {

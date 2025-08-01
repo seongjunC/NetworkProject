@@ -124,6 +124,12 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("MapBoundary"))
+            PlayerDead();
+    }
+
     public void PlayerDead()
     {
         if (_isDead) return;

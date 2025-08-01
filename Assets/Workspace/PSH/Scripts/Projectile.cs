@@ -1,20 +1,20 @@
 using Game;
+using ParrelSync.NonCore;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Photon.Pun.UtilityScripts.PunTeams;
 
 public class Projectile : MonoBehaviour
 {
-    public int explosionRadiusx = 100; // ÅØ½ºÃ³ ÇÈ¼¿ ´ÜÀ§
+    public int explosionRadiusx = 100; // í…ìŠ¤ì²˜ í”½ì…€ ë‹¨ìœ„
     public int explosionRadiusy = 100;
     public Texture2D explosionMask;
     public float explosionScale = 1f;
     public int damage = 50;
     private int realDamage;
 
-    private float worldPerPixel; // Terrain ±âÁØ
+    private float worldPerPixel; // Terrain ê¸°ì¤€
     private DeformableTerrain terrain;
 
     private bool hasCollided = false;
@@ -24,10 +24,10 @@ public class Projectile : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    private bool isTeamDamage;//ÆÀÅ³°¡´ÉÇÑÁö
+    private bool isTeamDamage;//íŒ€í‚¬ê°€ëŠ¥í•œì§€
     private Game.Team myTeam;
 
-    [Header("±âÁî¸ğ")]
+    [Header("ê¸°ì¦ˆëª¨")]
     private Vector2 gizmoCenter;
     private float gizmoRadius;
     private void Awake()
@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
-            Debug.LogError("Projectile¿¡ Rigidbody2D ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù!");
+            Debug.LogError("Projectileì— Rigidbody2D ì»´í¬ë„ŒíŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤!");
         }
     }
 
@@ -43,7 +43,7 @@ public class Projectile : MonoBehaviour
     {
         terrain = FindObjectOfType<DeformableTerrain>();
 
-        // TerrainÀÇ ½ºÇÁ¶óÀÌÆ®/ÅØ½ºÃ³ ±âÁØÀ¸·Î °è»ê
+        // Terrainì˜ ìŠ¤í”„ë¼ì´íŠ¸/í…ìŠ¤ì²˜ ê¸°ì¤€ìœ¼ë¡œ ê³„ì‚°
         var sr = terrain.GetComponent<SpriteRenderer>();
         var tex = sr.sprite.texture;
         worldPerPixel = sr.bounds.size.x / tex.width;
@@ -57,38 +57,48 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        // ¼Óµµ°¡ 0¿¡ °¡±î¿ï Á¤µµ·Î ÀÛÁö ¾ÊÀ» ¶§¸¸ ¹æÇâÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
+        // ì†ë„ê°€ 0ì— ê°€ê¹Œìš¸ ì •ë„ë¡œ ì‘ì§€ ì•Šì„ ë•Œë§Œ ë°©í–¥ì„ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
         if (rb != null && rb.velocity.sqrMagnitude > 0.01f)
         {
-            // ¼Óµµ º¤ÅÍÀÇ ¹æÇâÀ» °¢µµ·Î º¯È¯ÇÕ´Ï´Ù.
-            // Atan2´Â y, x ¼ø¼­·Î ÀÎÀÚ¸¦ ¹Ş½À´Ï´Ù.
+            // ì†ë„ ë²¡í„°ì˜ ë°©í–¥ì„ ê°ë„ë¡œ ë³€í™˜í•©ë‹ˆë‹¤.
+            // Atan2ëŠ” y, x ìˆœì„œë¡œ ì¸ìë¥¼ ë°›ìŠµë‹ˆë‹¤.
             float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
 
-            // ZÃàÀ» ±âÁØÀ¸·Î È¸ÀüÇÏ´Â ÄõÅÍ´Ï¾ğÀ» »ı¼ºÇÕ´Ï´Ù.
-            // ÀÌ ÄÚµå´Â ½ºÇÁ¶óÀÌÆ®°¡ ±âº»ÀûÀ¸·Î ¿À¸¥ÂÊ(¡æ)À» ÇâÇÏ°í ÀÖÀ» ¶§¸¦ °¡Á¤ÇÕ´Ï´Ù.
-            // ¸¸¾à ½ºÇÁ¶óÀÌÆ®°¡ À§ÂÊ(¡è)À» ÇâÇÏ°í ÀÖ´Ù¸é 'angle - 90f'·Î ¼öÁ¤ÇØ¾ß ÇÕ´Ï´Ù.
+            // Zì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ íšŒì „í•˜ëŠ” ì¿¼í„°ë‹ˆì–¸ì„ ìƒì„±í•©ë‹ˆë‹¤.
+            // ì´ ì½”ë“œëŠ” ìŠ¤í”„ë¼ì´íŠ¸ê°€ ê¸°ë³¸ì ìœ¼ë¡œ ì˜¤ë¥¸ìª½(â†’)ì„ í–¥í•˜ê³  ìˆì„ ë•Œë¥¼ ê°€ì •í•©ë‹ˆë‹¤.
+            // ë§Œì•½ ìŠ¤í”„ë¼ì´íŠ¸ê°€ ìœ„ìª½(â†‘)ì„ í–¥í•˜ê³  ìˆë‹¤ë©´ 'angle - 90f'ë¡œ ìˆ˜ì •í•´ì•¼ í•©ë‹ˆë‹¤.
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
-
         Vector2 explosionPoint = collision.contacts[0].point;
 
-        // Terrain ÆÄ±«
+        // Terrain íŒŒê´´
         if (explosionMask == null)
             terrain.DestroyTerrain(explosionPoint, explosionRadiusx, explosionRadiusy);
         else
             terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
 
-        // µ¥¹ÌÁö Ã³¸®
+        // ë°ë¯¸ì§€ ì²˜ë¦¬
         float pixelRadius = Mathf.Max(explosionRadiusx, explosionRadiusy);
         float worldRadius = pixelRadius * worldPerPixel;
 
         DetectPlayerInCircle(explosionPoint, worldRadius);
 
         BeginDestroyRoutine(true);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("MapBoundary"))
+        {
+            if (!hasCollided)
+            {
+                Debug.Log("í¬íƒ„ì´ ë§µ ë°–ìœ¼ë¡œ ë‚˜ê°");
+                BeginDestroyRoutine(false);
+            }
+        }
     }
     public void BeginDestroyRoutine(bool hasExplosionEffect)
     {
@@ -98,17 +108,17 @@ public class Projectile : MonoBehaviour
     }
     private IEnumerator DestroyRoutine(bool hasExplosionEffect)
     {
-        //Åõ»çÃ¼ ºñÈ°¼ºÈ­
+        //íˆ¬ì‚¬ì²´ ë¹„í™œì„±í™”
         GetComponent<SpriteRenderer>().enabled = false;
         GetComponent<Collider2D>().enabled = false;
         GetComponent<Rigidbody2D>().simulated = false;
 
-        //Æø¹ßÀÌÆåÆ®
+        //í­ë°œì´í™íŠ¸
         if (explosionEffect != null && hasExplosionEffect)
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
 
 
-        //¸îÃÊÈÄ Ä«¸Ş¶ó ¹«ºê
+        //ëª‡ì´ˆí›„ ì¹´ë©”ë¼ ë¬´ë¸Œ
         yield return new WaitForSeconds(delay);
 
         if (CameraController.Instance != null)
@@ -129,29 +139,29 @@ public class Projectile : MonoBehaviour
             if (!hit.CompareTag("Player"))
                 continue;
 
-            // PhotonView ÅëÇØ ´Ù¸¥ ÇÃ·¹ÀÌ¾î Actor ¾ò±â
+            // PhotonView í†µí•´ ë‹¤ë¥¸ í”Œë ˆì´ì–´ Actor ì–»ê¸°
             var pv = hit.GetComponent<PhotonView>();
             if (pv == null) continue;
 
-            Game.Team otherTeam = pv.Owner.GetTeam();  // »ó´ë ÆÀ
+            Game.Team otherTeam = pv.Owner.GetTeam();  // ìƒëŒ€ íŒ€
             if (!isTeamDamage && otherTeam == myTeam)
             {
-                Debug.Log("¾Æ±ºÀÌ´Ù »ç°İ ÁßÁö!");
-                continue;  // °°Àº ÆÀÀÌ¸é ½ºÅµ!
+                Debug.Log("ì•„êµ°ì´ë‹¤ ì‚¬ê²© ì¤‘ì§€!");
+                continue;  // ê°™ì€ íŒ€ì´ë©´ ìŠ¤í‚µ!
             }
             var player = hit.GetComponent<PlayerController>();
-            // TODO : µ¥¹ÌÁö Àû¿ë °ø½Ä Ãß°¡ÇÏ±â
+            // TODO : ë°ë¯¸ì§€ ì ìš© ê³µì‹ ì¶”ê°€í•˜ê¸°
             player.OnHit(realDamage);
-            Debug.Log($"ÇÃ·¹ÀÌ¾î¿¡°Ô {realDamage} µ¥¹ÌÁö");
-            realDamage = damage;    //µ¥¹ÌÁö ÃÊ±âÈ­
+            Debug.Log($"í”Œë ˆì´ì–´ì—ê²Œ {realDamage} ë°ë¯¸ì§€");
+            realDamage = damage;    //ë°ë¯¸ì§€ ì´ˆê¸°í™”
         }
     }
     private void OnDrawGizmos()
     {
-        // 1) »ö»ó ¼³Á¤
+        // 1) ìƒ‰ìƒ ì„¤ì •
         Gizmos.color = Color.red;
 
-        // 2) 2D¿ë ¿ø ±×¸®±â
+        // 2) 2Dìš© ì› ê·¸ë¦¬ê¸°
         Gizmos.DrawWireSphere(gizmoCenter, gizmoRadius);
     }
 
