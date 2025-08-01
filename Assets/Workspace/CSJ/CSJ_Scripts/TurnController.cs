@@ -311,6 +311,27 @@ public class TurnController : MonoBehaviourPunCallbacks
         GetLocalPlayerFire().InitBuff();
     }
 
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+
+        Debug.Log($"플레이어 퇴장 : ActorNumber = {otherPlayer.ActorNumber}");
+        foreach (var tank in tanks)
+        {
+            if (tank.myInfo.player.ActorNumber == otherPlayer.ActorNumber)
+            {
+                tanks.Remove(tank);
+                break;
+            }
+        }
+        var controller = GetPlayerController(otherPlayer);
+        if (controller != null)
+        {
+            controller.PlayerDead();
+        }
+
+    }
+
     private void InitializePlayerEvents()
     {
         foreach (var tank in tanks)
