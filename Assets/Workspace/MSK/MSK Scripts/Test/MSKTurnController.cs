@@ -269,6 +269,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             else
                 losers.Add(player);
         }
+        photonView.RPC("ResultActivate", RpcTarget.All);
         ResultPanel.photonView.RPC("UpdateResult", RpcTarget.All, winnerTeam);
     }
 
@@ -354,7 +355,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
-
+    [PunRPC]
+    private void ResultActivate()
+    {
+        ResultPanel.gameObject.SetActive(true);
+    }
     [PunRPC]
     private void RPC_SetCameraTarget(int actorNumber)
     {

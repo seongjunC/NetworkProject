@@ -32,13 +32,11 @@ public class ResultUI : MonoBehaviourPun
         gameObject.SetActive(false);
         okButton.onClick.AddListener(OnClickOK);
     }
-
     [PunRPC]
     public void UpdateResult(Team winnerTeam)
     {
 
         // °á°ú ÆÐ³Î Ç¥½Ã
-        resultPanel.SetActive(true);
         winnerText.text = $"½Â¸®: {(winnerTeam == Team.Red ? "RED ÆÀ" : "BLUE ÆÀ")}";
         // ÇÃ·¹ÀÌ¾î ½½·Ô ÃÊ±âÈ­
         foreach (Transform child in playersParent)
