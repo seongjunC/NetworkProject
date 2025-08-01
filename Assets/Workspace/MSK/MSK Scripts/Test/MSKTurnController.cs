@@ -297,6 +297,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         }
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
+            Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
             EnableCurrentPlayer();
         }
     }
