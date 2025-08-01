@@ -24,6 +24,7 @@ public class GachaEditor : Editor
         // 대상 스크립트 참조
         Gacha gacha = (Gacha)target;
         float[] chance = gacha.chance;
+        TankRank[] ranks = gacha.ranks;
 
         // chance 배열이 비어 있으면 그리지 않음
         if (chance == null || chance.Length == 0)
@@ -35,6 +36,12 @@ public class GachaEditor : Editor
             if (c > 0)
                 total += c;
 
+        if(ranks.Length != chance.Length)
+        {
+            Debug.Log("랭크와 확률의 수는 같아야합니다.");
+            return;
+        }
+
         // GUIStyle 지정
         GUIStyle headerStyle = new GUIStyle(EditorStyles.boldLabel);
         Color labelColor = Color.cyan;
@@ -45,12 +52,13 @@ public class GachaEditor : Editor
         headerStyle.focused.textColor = labelColor;
         headerStyle.active.textColor = labelColor;
 
-        headerStyle.fontSize = 13;
+        // 폰트 크기 설정
+        headerStyle.fontSize = 20;
         headerStyle.alignment = TextAnchor.MiddleLeft;
 
         // UI 여백 및 제목
         GUILayout.Space(10);
-        GUILayout.Label("가챠 확률", headerStyle);
+        GUILayout.Label("[가챠 확률]", headerStyle);
 
         // 바가 그려질 영역 Rect 생성
         Rect rect = GUILayoutUtility.GetRect(EditorGUIUtility.currentViewWidth - 40, 25);
@@ -108,6 +116,30 @@ public class GachaEditor : Editor
             string label = $"{Mathf.RoundToInt(percent * 100)}%";
             GUI.Label(labelRect, label, centeredStyle);
 
+            // 랭크 라벨 출력
+            Rect rankLabelRect = new Rect(x, rect.y + 20, segmentWidth, rect.height);
+
+            // 폰트 크기를 바 넓이에 따라 유동적으로 설정
+            int dynamicFontSize = Mathf.Clamp(Mathf.RoundToInt(segmentWidth * 0.2f), 8, 12);
+
+            // 스타일 적용
+            GUIStyle rankLabelStyle = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontStyle = FontStyle.Bold,
+                fontSize = dynamicFontSize
+            };
+
+            // 색상 지정
+            textColor = GetRankColor(ranks[i]);
+            rankLabelStyle.normal.textColor = textColor;
+            rankLabelStyle.hover.textColor = textColor;
+            rankLabelStyle.focused.textColor = textColor;
+            rankLabelStyle.active.textColor = textColor;
+
+            // 텍스트 출력
+            GUI.Label(rankLabelRect, $"{ranks[i]} 확률", rankLabelStyle);
+
             // 다음 구간 시작점으로 이동
             x += segmentWidth;
             drawnPercent += percent;
@@ -118,5 +150,17 @@ public class GachaEditor : Editor
         }
 
         GUILayout.Space(10);
+    }
+
+    private Color GetRankColor(TankRank rank)
+    {
+        return rank switch
+        {
+            TankRank.S => new Color(1f, 0.5f, 0f),
+            TankRank.A => new Color(0.5f, 0.8f, 1f),
+            TankRank.B => new Color(0.6f, 1f, 0.6f),
+            TankRank.C => Color.gray,
+            _ => Color.white
+        };
     }
 }

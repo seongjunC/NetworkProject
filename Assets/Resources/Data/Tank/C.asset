@@ -19,5 +19,4 @@ MonoBehaviour:
   tankName: C
   rank: 3
   icon: {fileID: 21300000, guid: fbb809cd7e4fd064b8a63e71f85242d9, type: 3}
-  level: 1
-  count: 1
+  description: "C\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

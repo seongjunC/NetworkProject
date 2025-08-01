@@ -19,5 +19,4 @@ MonoBehaviour:
   tankName: B
   rank: 2
   icon: {fileID: 21300000, guid: de199857230bfb34ca937ee584b85f8c, type: 3}
-  level: 1
-  count: 0
+  description: "B\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

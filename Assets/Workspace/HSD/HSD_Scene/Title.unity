@@ -10712,10 +10712,11 @@ MonoBehaviour:
   needGem: 0
   isTen: 1
   chance:
-  - 5
-  - 20
-  - 25
-  - 50
+  - 34.4
+  - 49.1
+  - 52.5
+  - 88.44
+  ranks: 00000000010000000200000003000000
   model:
   - {fileID: 0}
   - {fileID: 0}

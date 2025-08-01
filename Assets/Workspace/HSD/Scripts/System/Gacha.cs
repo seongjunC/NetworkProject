@@ -12,6 +12,7 @@ public class Gacha : MonoBehaviour
     public int needGem;
     public bool isTen;
     public float[] chance;
+    public TankRank[] ranks;
     [SerializeField] TankData[] model;
 
     [Header("List")]
@@ -108,7 +109,7 @@ public class Gacha : MonoBehaviour
         }
 
         TankData[] randomData = model.
-            Where(t => (int)t.rank == select).ToArray();
+            Where(t => t.rank == ranks[select]).ToArray();
 
         TankData selectTank = randomData[Random.Range(0, randomData.Length)];
 
