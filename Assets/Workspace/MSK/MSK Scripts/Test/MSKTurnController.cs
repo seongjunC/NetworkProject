@@ -95,25 +95,25 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Fire fire = controller.GetComponent<Fire>();
             if (fire != null)
                 fireMap[controller] = fire;
-
-            IEnumerable<PlayerInfo> players = allPlayers.Values;
-
-            if (room.GetTurnRandom())
-                players = players.OrderBy(_ => Random.value);
-
-            foreach (var playerInfo in PhotonNetwork.PlayerList)
-            {
-                var team = playerInfo.GetTeam();
-
-                if (team == Team.Red) 
-                    redRemain++;
-                else 
-                    blueRemain++;
-            }
-            Debug.Log($"[QueueAdd] turnQueue 갱신 완료: redRemain={redRemain}, blueRemain={blueRemain}");
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
+        IEnumerable<PlayerInfo> players = allPlayers.Values;
+
+        if (room.GetTurnRandom())
+            players = players.OrderBy(_ => Random.value);
+
+        foreach (var playerInfo in PhotonNetwork.PlayerList)
+        {
+            var team = playerInfo.GetTeam();
+
+            if (team == Team.Red)
+                redRemain++;
+            else
+                blueRemain++;
+        }
+        Debug.Log($"[QueueAdd] turnQueue 갱신 완료: redRemain={redRemain}, blueRemain={blueRemain}");
+
         isGameStart = true;
         InitializePlayerEvents();
         QueueAdd();
@@ -333,7 +333,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         tanks.Remove(player);
         tanks.RemoveAll(t => t == null);
-
         if (redRemain <= 0 || blueRemain <= 0)
         {
             Team winner = redRemain <= 0 ? Team.Blue : Team.Red;
@@ -381,22 +380,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (spawnedCount >= PhotonNetwork.CurrentRoom.PlayerCount)
         {
             Debug.Log("[MSKTurnController] 모든 플레이어가 스폰 완료됨 → GameStart()");
-            GameStart();
-        }
-    }
-
-    [PunRPC]
-    public void RPC_Spawned()
-    {
-        foreach (var t in tanks)
-        {
-            var view = t.GetComponent<PhotonView>();
-        }
-
-        spawnedCount++;
-        if (spawnedCount == PhotonNetwork.CurrentRoom.PlayerCount)
-        {
-            Debug.Log("모든 플레이어 탱크 생성 완료, 게임 시작");
             GameStart();
         }
     }

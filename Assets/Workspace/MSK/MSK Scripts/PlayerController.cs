@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviourPun
         {
             _movable = _data.maxMove;
             _hp = _data.maxHp;
+            myInfo = new PlayerInfo(photonView.Owner);
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
 
