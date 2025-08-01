@@ -20,6 +20,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [Header("Buttons")]
     [SerializeField] Button loginButton;
     [SerializeField] Button signupButton;
+    [SerializeField] Button gameOutButton;
 
     [Header("Panels")]
     [SerializeField] GameObject signupPanel;
@@ -59,6 +60,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         email.onEndEdit.AddListener(EnterLogin);
         loginButton.onClick.AddListener(Login);
         signupButton.onClick.AddListener(SignUp);
+        gameOutButton.onClick.AddListener(GameOut);
         Manager.Firebase.OnAuthSettingComplated += StartRoutine;
     }
     private void UnSubscribe()
@@ -67,6 +69,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         email.onEndEdit.RemoveListener(EnterLogin);
         loginButton.onClick.RemoveListener(Login);
         signupButton.onClick.RemoveListener(SignUp);
+        gameOutButton.onClick.RemoveListener(GameOut);
         Manager.Firebase.OnAuthSettingComplated -= StartRoutine;
     }
     #endregion
@@ -208,16 +211,16 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 else
                 {
                     Debug.Log("Not Exists");
-                    Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(false);                    
+                    Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(false);
                 }
             }
         });
 
         yield return new WaitForSeconds(.5f);
 
-        if(connected)
+        if (connected)
         {
-            Manager.UI.PopUpUI.Show("이미 접속중인 계정입니다.",Color.red);
+            Manager.UI.PopUpUI.Show("이미 접속중인 계정입니다.", Color.red);
             isLogin = false;
             loginButton.interactable = true;
             loginMessage.SetActive(false);
@@ -226,7 +229,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             yield break;
         }
 
-        
+
         if (task.IsFaulted || task.IsCanceled)
         {
             Debug.LogError("Firebase 데이터 가져오기 실패");
@@ -285,6 +288,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Debug.Log("Connected");
         PhotonNetwork.ConnectUsingSettings();
     }
+    private void GameOut() => Application.Quit();
     #endregion
 
     private void LoginSetActive(bool active) => loginPanel.SetActive(active);
