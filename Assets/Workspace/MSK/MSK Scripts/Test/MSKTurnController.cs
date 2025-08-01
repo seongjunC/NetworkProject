@@ -277,6 +277,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
         if (tank != null)
         {
+            tank.photonView.RPC("RPC_PCDead", RpcTarget.All);
             OnPlayerDied(tank);
             tanks.Remove(tank);
         }
