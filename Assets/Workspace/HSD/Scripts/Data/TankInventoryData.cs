@@ -83,8 +83,6 @@ public class TankInventoryData
             int count = 0;
             foreach (var tank in task.Result.Children)
             {
-                Debug.Log("Ãß°¡");
-
                 string json = tank.GetRawJsonValue();
                 Debug.Log(json);
                 TankGroupData group = JsonUtility.FromJson<TankGroupData>(json);
@@ -92,8 +90,6 @@ public class TankInventoryData
                 Debug.Log(group.TankName);
                 count++;
             }
-            Debug.Log($"{count}");
-            Debug.Log("³¡");
         });
     }
 

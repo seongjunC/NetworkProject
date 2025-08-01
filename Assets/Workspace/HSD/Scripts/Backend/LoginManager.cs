@@ -35,6 +35,9 @@ public class LoginManager : MonoBehaviourPunCallbacks
     public override void OnEnable()
     {
         base.OnEnable();
+        if (Manager.Game.State == Game.State.Game)
+            return;
+
         Manager.UI.FadeScreen.FadeOut(1);
         Manager.Game.State = Game.State.Login;
 
