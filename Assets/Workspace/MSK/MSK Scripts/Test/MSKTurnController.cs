@@ -25,6 +25,9 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [SerializeField] ResultUI ResultPanel;
     [Header("탱크 리스트 확인용")]
     [SerializeField] List<PlayerController> tanks = new();
+    [SerializeField] GameObject Arrow;
+    private Vector3 arrowOffset = new Vector3(-0.3f, 3f, 0);
+    private GameObject curArrow;
 
     private Queue<PlayerInfo> turnQueue = new();
     private List<PlayerInfo> nextCycle = new();
@@ -211,6 +214,26 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         return GetFireMap(GetLocalPlayerController());
     }
 
+    private void SpawnArrowCurrentPlayer()
+    {
+        if (curArrow != null)
+            Destroy(curArrow);
+        var pc = GetPlayerController(currentPlayer.ActorNumber);
+        if (pc == null)
+        {
+            Debug.LogError("플레이어 탐색 실패, 화살표 스폰 불가");
+            return;
+        }
+
+        Vector3 spawnPos = pc.transform.position + arrowOffset;
+        curArrow = Instantiate(Arrow, spawnPos, Quaternion.identity);
+
+        var ArrowCon = curArrow.GetComponent<ArrowController>();
+        ArrowCon.target = pc.transform;
+        ArrowCon.offset = arrowOffset;
+
+    }
+
     #region PunRPC
     // TODO: 추후 아이템 생성 등과 연결
     [PunRPC]
@@ -229,6 +252,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             return;
         isTurnRunning = false;
         photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
+        if (curArrow != null)
+            Destroy(curArrow);
 
         if (turnQueue.Count == 0 && nextCycle.Count > 0)
         {
@@ -299,6 +324,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
             EnableCurrentPlayer();
+            SpawnArrowCurrentPlayer();
         }
     }
 
