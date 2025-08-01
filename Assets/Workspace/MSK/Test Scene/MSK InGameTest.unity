@@ -4791,7 +4791,7 @@ MonoBehaviour:
   winnerText: {fileID: 1911547190}
   resultPanel: {fileID: 920666499}
   okButton: {fileID: 5325141}
-  playersParent: {fileID: 0}
+  playersParent: {fileID: 312978511}
   playerSlotPrefab: {fileID: 7406084352745847345, guid: b6422a9ae2745d544aed8b577ec78846, type: 3}
   redTeamColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   blueTeamColor: {r: 0.3, g: 0.3, b: 1, a: 1}
@@ -6664,6 +6664,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapSpriteRenderer: {fileID: 0}
   padding: 2
+  mapSize: {x: 0, y: 0}
 --- !u!4 &1392346346
 Transform:
   m_ObjectHideFlags: 0
