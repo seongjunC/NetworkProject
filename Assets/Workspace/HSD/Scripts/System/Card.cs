@@ -11,6 +11,9 @@ public class Card : MonoBehaviour
     [SerializeField] Image rankImage;
     [SerializeField] Button cardButton;
     [SerializeField] TMP_Text tankName;
+    [SerializeField] TMP_Text tankRank;
+    [SerializeField] TMP_Text tankDescription;
+
     [SerializeField] Animator anim;
 
     [SerializeField] TankData tankData;
@@ -28,6 +31,10 @@ public class Card : MonoBehaviour
         tankName.text = this.tankData.tankName;
         tankIcon.sprite = this.tankData.icon;
         rankImage.color = GetRankColor(this.tankData.rank);
+        
+        tankRank.color = GetRankColor(this.tankData.rank);
+        tankRank.text = this.tankData.rank.ToString();
+        tankDescription.text = this.tankData.description;
 
         StartCoroutine(MoveRoutine(targetTransform, moveTime));
     }

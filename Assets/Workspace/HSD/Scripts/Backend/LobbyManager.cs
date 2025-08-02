@@ -25,7 +25,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Main Panel")]
     [SerializeField] GameObject title;
     [SerializeField] GameObject lobby;    
-    [SerializeField] GameObject room;
+    [SerializeField] GameObject room;   
     [SerializeField] PasswordPanel passwordPanel;
 
     [Header("Main Buttons")]
@@ -64,10 +64,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region LifeCycle
     public override void OnEnable()
     {
-        base.OnEnable();
+        base.OnEnable();        
 
         Subscribe();
-        isRoomCreate = false;    
+        isRoomCreate = false;
     }
 
     public override void OnDisable()
