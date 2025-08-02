@@ -114,13 +114,19 @@ public class PTest : MonoBehaviour
         {
             // 각도를 사용해 발사 방향 벡터를 계산합니다.
             float angleInRadians = angle * Mathf.Deg2Rad;
-            Vector2 launchDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
+            Vector2 launchDirection = isFacingRight? new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians))
+                : new Vector2(-Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
             projectileRb.velocity = launchDirection * powerCharge;
         }
         else
         {
             Debug.LogWarning("투사체 프리팹에 Rigidbody2D 컴포넌트가 없습니다.");
         }
+
+        //발사 이펙트 재생
+        Vector3 effectSpawnPos = firePoint.position;
+        Quaternion effectSpawnRot = isFacingRight ? Quaternion.Euler(0, 0, angle) : Quaternion.Euler(0, 0, -angle);
+        EffectSpawner.Instance.SpawnFire(effectSpawnPos, effectSpawnRot);
     }
     bool isFacingRight = true;
     void Flip()

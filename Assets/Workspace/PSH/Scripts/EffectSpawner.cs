@@ -17,7 +17,8 @@ public class EffectSpawner : MonoBehaviour
         }
     }
 
-    void SpawnExplosion(Vector3 position)
+    //피격 포지션에 재생할 거
+    public void SpawnExplosion(Vector3 position)
     {
         GameObject explosionEffect = Instantiate(explosionPrefab, position, Quaternion.identity);
 
@@ -25,7 +26,8 @@ public class EffectSpawner : MonoBehaviour
 
         controller.TriggerHit();
     }
-    void SpawnFire(Vector3 position, Quaternion rotation)
+    //발사 포지션에 재생할 거
+    public void SpawnFire(Vector3 position, Quaternion rotation)
     {
         GameObject explosionEffect = Instantiate(explosionPrefab, position, rotation);
 
