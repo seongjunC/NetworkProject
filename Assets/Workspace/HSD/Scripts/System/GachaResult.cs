@@ -8,4 +8,5 @@ public class GachaResult
 {
     public string Time;
     public string Name;
+    public long Timestamp;
 }

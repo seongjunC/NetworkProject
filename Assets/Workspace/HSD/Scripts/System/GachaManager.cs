@@ -3,7 +3,9 @@ using Firebase.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 [Serializable]
@@ -57,24 +59,28 @@ public class GachaManager
 
     private void InitData()
     {
-        gachaRef.GetValueAsync().ContinueWithOnMainThread(task =>
+        gachaRef.OrderByChild("Timestamp").GetValueAsync()
+    .ContinueWithOnMainThread(task =>
+    {
+        if (task.IsFaulted || task.IsCanceled)
         {
-            if (task.IsFaulted || task.IsCanceled)
-            {
-                Debug.Log("가챠 데이터 가져오기 실패");
-                return;
-            }
+            Debug.LogError("가챠 데이터 가져오기 실패");
+            return;
+        }
 
-            DataSnapshot snapshot = task.Result;
+        DataSnapshot snapshot = task.Result;
 
-            foreach (var child in snapshot.Children)
-            {
-                string data = child.GetRawJsonValue();
-                Debug.Log(data);
-                GachaResult gachaResult = JsonUtility.FromJson<GachaResult>(data);
-                gachaResults.Add(gachaResult);
-            }
-        });
+        foreach (var child in snapshot.Children)
+        {
+            string data = child.GetRawJsonValue();
+            GachaResult gachaResult = JsonUtility.FromJson<GachaResult>(data);
+            gachaResults.Add(gachaResult);
+        }
+
+        // Firebase는 기본적으로 오름차순 정렬
+        // 최신순 = Reverse
+        gachaResults.Reverse();
+    });
     }
 
     #region Events
@@ -96,11 +102,19 @@ public class GachaManager
         GachaResult result = new GachaResult
         {
             Time = time,
-            Name = name
+            Name = name,
+            Timestamp = DateTimeOffset.Parse(time).ToUnixTimeMilliseconds()
         };
 
         string json = JsonUtility.ToJson(result);
-        string key = $"{DateTime.Now.ToString("yyyyMMdd_HHmm")}_{name}";
+        string key = $"{time}_{name}_{Guid.NewGuid().ToString()}";
         gachaRef.Child(key).SetRawJsonValueAsync(json);
+    }
+
+    public void GachaResultsOrderBy()
+    {
+        gachaResults = gachaResults
+        .OrderByDescending(r => DateTime.Parse(r.Time))
+        .ToList();
     }
 }

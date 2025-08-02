@@ -37,6 +37,8 @@ public class Gacha : MonoBehaviour
     public Dictionary<TankData, int> beforeLevel = new();
     public Dictionary<TankData, int> afterLevel = new();
 
+    public event System.Action OnGachaEnded;
+
     private string now;
 
     private void Start()
@@ -165,6 +167,9 @@ public class Gacha : MonoBehaviour
             Manager.Audio.PlaySFX("Deal", Vector3.zero, 1, Random.Range(.8f, 1.2f));
             yield return delay;
         }
+
+        OnGachaEnded?.Invoke();
+        Manager.Data.GachaManager.GachaResultsOrderBy();
     }
 
     private void SaveBeforeLevel()
@@ -191,6 +196,7 @@ public class Gacha : MonoBehaviour
 
     private string GetCurrentTime()
     {
-        return System.DateTime.Now.ToString("yy년 M월 d일 H시 mm분");
+        System.DateTime nowKST = System.DateTime.UtcNow.AddHours(9); // KST
+        return nowKST.ToString("o"); // ISO 8601 형식
     }
 }
