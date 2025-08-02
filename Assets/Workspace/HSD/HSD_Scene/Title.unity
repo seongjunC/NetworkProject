@@ -4195,6 +4195,7 @@ MonoBehaviour:
   rankPercentPrefab: {fileID: 3454946202176144258, guid: d8c4d635b1590b041852b7e55d176a5e, type: 3}
   probabilitySlotPrefab: {fileID: 5069192336205165900, guid: 7c941be7f1c4ace47a3f120a968ad8b5, type: 3}
   probabilityContent: {fileID: 213743567}
+  scrollRect: {fileID: 2044583005}
   sRank:
     topLeft: {r: 0.99215686, g: 0.7137255, b: 0.19215687, a: 1}
     topRight: {r: 0.9843137, g: 0.49803922, b: 0.18039216, a: 1}
@@ -10871,6 +10872,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gachaResultSlot: {fileID: 7297122715288142048, guid: 9f30ad08241bb434ba3055d04f1b7a34, type: 3}
   gachaResultContent: {fileID: 2025186824}
+  scrollRect: {fileID: 1221954722}
   gachaResults: []
   gachaResultSlots: []
 --- !u!1 &782698856

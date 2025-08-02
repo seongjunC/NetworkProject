@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [Serializable]
 public struct FourGradient
@@ -20,12 +21,18 @@ public class ProbabilityPanel : MonoBehaviour
     [SerializeField] GameObject rankPercentPrefab;
     [SerializeField] GameObject probabilitySlotPrefab;
     [SerializeField] Transform probabilityContent;
+    [SerializeField] ScrollRect scrollRect;
 
     [Header("Color")]
     [SerializeField] FourGradient sRank;
     [SerializeField] FourGradient aRank;
     [SerializeField] FourGradient bRank;
-    [SerializeField] FourGradient cRank;    
+    [SerializeField] FourGradient cRank;
+
+    private void OnEnable()
+    {
+        scrollRect.normalizedPosition = Vector3.one;
+    }
 
     private void Start()
     {
