@@ -96,4 +96,33 @@ public class GroundFollower : MonoBehaviour
         Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, groundNormal);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
     }
+
+    void OnDrawGizmosSelected()
+    {
+        // isGrounded 상태에 따라 기즈모 색상을 설정합니다.
+        if (isGrounded)
+        {
+            Gizmos.color = Color.green; // 지면에 닿았을 때: 녹색
+        }
+        else
+        {
+            Gizmos.color = Color.red; // 공중에 떠 있을 때: 빨간색
+        }
+
+        // CircleCast의 시작점과 끝점을 계산합니다.
+        Vector3 startPos = transform.position;
+        Vector3 endPos = startPos - transform.up * groundCheckDistance;
+
+        // 시작 위치와 끝 위치에 원(Sphere)을 그립니다.
+        Gizmos.DrawWireSphere(startPos, groundCheckRadius);
+        Gizmos.DrawWireSphere(endPos, groundCheckRadius);
+
+        // 두 원을 연결하는 라인을 그려 캡슐 형태를 만듭니다.
+        Gizmos.DrawLine(startPos + transform.right * groundCheckRadius, endPos + transform.right * groundCheckRadius);
+        Gizmos.DrawLine(startPos - transform.right * groundCheckRadius, endPos - transform.right * groundCheckRadius);
+
+        // 캐스트의 중심선을 노란색으로 그립니다.
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(startPos, endPos);
+    }
 }
