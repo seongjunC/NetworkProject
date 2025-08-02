@@ -60,8 +60,6 @@ public class Gacha : MonoBehaviour
     {
         yield return null;
 
-        now = GetCurrentTime();
-
         SetUpCardTransformList();
         SaveBeforeLevel();
 
@@ -77,7 +75,7 @@ public class Gacha : MonoBehaviour
             color.a = Mathf.Lerp(0, 1, progress / time);
             image.color = color;
             yield return null;
-        }        
+        }
 
         if (isTen)
         {
@@ -99,6 +97,7 @@ public class Gacha : MonoBehaviour
 
     private TankData GetRandomTank()
     {
+        now = GetCurrentTimeKey();
         float max = chance.Sum();
         float rand = Random.Range(0, max);
 
@@ -194,9 +193,9 @@ public class Gacha : MonoBehaviour
         }
     }
 
-    private string GetCurrentTime()
+    private string GetCurrentTimeKey()
     {
-        System.DateTime nowKST = System.DateTime.UtcNow.AddHours(9); // KST
-        return nowKST.ToString("o"); // ISO 8601 Çü½Ä
+        System.DateTime nowKST = System.DateTime.UtcNow.AddHours(9);
+        return nowKST.ToString("yyyyMMddHHmmssfff");
     }
 }

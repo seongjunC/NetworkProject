@@ -43,8 +43,7 @@ public class TankInventoryData
     private void InitTanks()
     {
         tankRef = Manager.Database.userRef.Child("Tanks");
-        RegisterTankListeners();
-
+        
         Manager.Database.userRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
             var snapShot = task.Result;
@@ -65,27 +64,8 @@ public class TankInventoryData
             
             if (!exists)
                 tankRef.SetValueAsync("");
-            else
-                InitData();
-        });
-    }
 
-    private void InitData()
-    {
-        tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted || task.IsCanceled)
-            {
-                Debug.LogError("Firebase ½ÇÆÐ");
-                return;
-            }
-
-            foreach (var tank in task.Result.Children)
-            {
-                string json = tank.GetRawJsonValue();
-                TankGroupData group = JsonUtility.FromJson<TankGroupData>(json);
-                tankGroups.Add(group.TankName, group);
-            }
+            RegisterTankListeners();
         });
     }
 

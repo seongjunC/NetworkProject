@@ -14,7 +14,7 @@ public class GachaResultSlot : MonoBehaviour
     {
         TankData tankData = data.GetTankData();
 
-        timeText.text = data.Time;
+        timeText.text = data.GetFormattedTime();
         tankNameText.text = data.Name;
         tankNameText.color = Utils.GetColor(tankData.rank);
 
