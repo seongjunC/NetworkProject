@@ -24,6 +24,9 @@ public class GachaEditor : Editor
         // 대상 스크립트 참조
         Gacha gacha = (Gacha)target;
 
+        if (gacha.GachaData == null)
+            return;
+
         float[] chance = new float[4];
 
         for (int i = 0; i < gacha.GachaData.GachaDatas.Length; i ++)

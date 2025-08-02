@@ -17,7 +17,7 @@ public class GachaManager
     public void Init()
     {
         InitGachaData();
-        GachaData = Resources.Load<GachaData>("Data/Gacha");
+        GachaData = Resources.Load<GachaData>("Data/Gacha/GachaData");
     }
 
     private void InitGachaData()
