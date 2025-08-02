@@ -57,8 +57,8 @@ MonoBehaviour:
   - RPC_NotifySpawned
   - EndPlayerTurn
   - ResetTurn
-  - RPC_PCDead
   - ResultActivate
+  - RPC_PCDead
   - TurnNotice
   - UpdateResult
   DisableAutoOpenWizard: 1
