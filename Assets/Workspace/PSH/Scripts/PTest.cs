@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -8,13 +9,23 @@ using UnityEngine;
 [RequireComponent(typeof(GroundFollower))] // GroundFollower가 필수임을 명시
 public class PTest : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private Transform firePivot;       // 회전할 포신 부분
+    [SerializeField] private Transform firePoint;       // 실제 폭탄이 나갈 위치
+    [SerializeField] private float angle = 45f;         // 포신의 현재 각도
+    [SerializeField] private float angleStep = 0.5f;      // 각도 변화량
+
+    public float powerCharge = 0f;         // 차지
+    private bool isCharging = false;        // 차지 중인지 여부
+    [SerializeField] private float chargingSpeed = 10f;    // 차지속도
+
+    [SerializeField] public float maxPower = 20f;         // 폭탄 발사 속도
     [Header("이동 설정")]
     public float moveSpeed = 5f;
 
     [Header("발사체 설정")]
     public GameObject projectilePrefab;
-    public float projectileSpeed = 10f;
-    public Transform muzzlePoint;
+
 
     // private 컴포넌트 및 변수
     private Rigidbody2D rb;
@@ -31,11 +42,24 @@ public class PTest : MonoBehaviour
     {
         // 이동 입력을 받습니다. (-1, 0, 1)
         horizontalInput = Input.GetAxisRaw("Horizontal");
+        Flip();
+        Aim();
+   
+        // 스페이스바 누르고 있으면 차지 시작
+        if (Input.GetKey(KeyCode.Space))
+        {
+            isCharging = true;
+            powerCharge += chargingSpeed * Time.deltaTime;
+            powerCharge = Mathf.Clamp(powerCharge, 0f, maxPower);
+        }
 
-        // 발사 입력을 받습니다.
-        if (Input.GetKeyDown(KeyCode.Space))
+        // 스페이스바에서 손을 뗐을 때 발사
+        if (isCharging && Input.GetKeyUp(KeyCode.Space))
         {
             Fire();
+
+            powerCharge = 0f;
+            isCharging = false;
         }
     }
 
@@ -57,7 +81,22 @@ public class PTest : MonoBehaviour
         }
         // 공중에 있을 때는 GroundFollower가 중력을 처리하므로 별도 로직이 필요 없습니다.
     }
-
+    private void Aim()
+    {
+        // 각도 조절 (Up/Down)
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+        {
+            angle += angleStep;
+            if (angle > 90f) angle = 90f;
+        }
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+        {
+            angle -= angleStep;
+            if (angle < 0f) angle = 0f;
+        }
+        // 포신 회전 
+        firePivot.localRotation = Quaternion.Euler(0, 0, angle);
+    }
     void Fire()
     {
         if (projectilePrefab == null)
@@ -66,19 +105,39 @@ public class PTest : MonoBehaviour
             return;
         }
 
-        GameObject projectile = Instantiate(projectilePrefab, muzzlePoint.transform.position, Quaternion.identity);
-        // CameraController.Instance.FollowBullet(projectile.transform); // 이 부분은 CameraController가 있어야 작동합니다.
+
+        GameObject projectile = Instantiate(projectilePrefab, firePoint.transform.position, Quaternion.identity);
+        CameraController.Instance.FollowBullet(projectile.transform); // 이 부분은 CameraController가 있어야 작동합니다.
         Rigidbody2D projectileRb = projectile.GetComponent<Rigidbody2D>();
 
         if (projectileRb != null)
         {
-            // 발사 방향을 포구(muzzlePoint)의 up 방향(포신 방향)으로 설정합니다.
-            Vector2 launchDirection = muzzlePoint.up;
-            projectileRb.velocity = launchDirection * projectileSpeed;
+            // 각도를 사용해 발사 방향 벡터를 계산합니다.
+            float angleInRadians = angle * Mathf.Deg2Rad;
+            Vector2 launchDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians));
+            projectileRb.velocity = launchDirection * powerCharge;
         }
         else
         {
             Debug.LogWarning("투사체 프리팹에 Rigidbody2D 컴포넌트가 없습니다.");
+        }
+    }
+    bool isFacingRight = true;
+    void Flip()
+    {
+        if (horizontalInput > 0 && !isFacingRight)
+        {
+            isFacingRight = true;
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Abs(scale.x);
+            transform.localScale = scale;
+        }
+        else if (horizontalInput < 0 && isFacingRight)
+        {
+            isFacingRight = false;
+            Vector3 scale = transform.localScale;
+            scale.x = -Mathf.Abs(scale.x);
+            transform.localScale = scale;
         }
     }
 }
