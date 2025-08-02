@@ -54,7 +54,7 @@ public class TankInventoryUI : MonoBehaviour
                     continue;
 
                 TankSlot slot = Instantiate(tankSlotPrefab, slotContent).GetComponent<TankSlot>();
-                slot.SetUp(data, tankToolTip, GetColor(data.rank));
+                slot.SetUp(data, tankToolTip, Utils.GetColor(data.rank));
                 tankSlotDic[data] = slot;
             }
             else
@@ -76,7 +76,7 @@ public class TankInventoryUI : MonoBehaviour
                 return;
 
             TankSlot slot = Instantiate(tankSlotPrefab, slotContent).GetComponent<TankSlot>();
-            slot.SetUp(data, tankToolTip, GetColor(data.rank));
+            slot.SetUp(data, tankToolTip, Utils.GetColor(data.rank));
             tankSlotDic[data] = slot;
         }
         else
@@ -87,19 +87,7 @@ public class TankInventoryUI : MonoBehaviour
                 tankSlotDic.Remove(data);
             }
         }
-    }
-
-    private Color GetColor(TankRank rank)
-    {
-        return (rank) switch
-        {
-            TankRank.S => sColor,
-            TankRank.A => aColor,
-            TankRank.B => bColor,
-            TankRank.C => cColor,
-            _ => cColor
-        };
-    }
+    }    
 
     private void ClearSlots()
     {

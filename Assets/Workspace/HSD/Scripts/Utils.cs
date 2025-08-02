@@ -42,9 +42,31 @@ public static class Utils
     {
         yield return Fade(() => target.color, c => target.color = c, start, end, fadeTime, delay, action);
     }
+    #endregion
     public static bool Contain(this LayerMask layerMask, int layer)
     {
         return ((1 << layer) & layerMask) != 0;
     }
-    #endregion
+
+    public static TankData GetTankData(this GachaResult result)
+    {
+        return Manager.Data.TankDataController.TankDatas[result.Name];
+    }
+
+    public static Color SColor = new Color(1f, 0.5f, 0f);   // 주황
+    public static Color AColor = new Color(0.3f, 0.7f, 1f); // 하늘색
+    public static Color BColor = new Color(0.5f, 1f, 0.5f); // 연두
+    public static Color CColor = new Color(0.6f, 0.6f, 0.6f); // 회색
+
+    public static Color GetColor(TankRank rank)
+    {
+        return rank switch
+        {
+            TankRank.S => SColor,
+            TankRank.A => AColor,
+            TankRank.B => BColor,
+            TankRank.C => CColor,
+            _ => CColor
+        };
+    }
 }

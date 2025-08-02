@@ -28,6 +28,14 @@ public class GachaPanel : MonoBehaviour
     [Header("GachaResult")]
     [SerializeField] GameObject gachaResultPopUp;
     [SerializeField] Transform gachaResultContent;
+
+
+    #region LifeCycle
+    private void Start()
+    {
+        gacha.OnGachaEnded += () => GachaExitButtonActive(true);        
+    }
+
     private void OnEnable()
     {
         gachaExitButton.onClick.AddListener(GachaExit);
@@ -54,6 +62,8 @@ public class GachaPanel : MonoBehaviour
         gachaRecordExitButton.onClick.RemoveListener(CloseGachaRecord);
     }
 
+    #endregion
+
     private void OneGacha()
     {
         gacha.isTen = false;
@@ -71,6 +81,7 @@ public class GachaPanel : MonoBehaviour
         if (Manager.Data.PlayerData.IsBuy(gacha.needGem * count))
         {
             Manager.Data.PlayerData.GemGain(-gacha.needGem * count);
+            gachaExitButton.gameObject.SetActive(false);
             gacha.TryGacha();
         }
         else
@@ -91,6 +102,8 @@ public class GachaPanel : MonoBehaviour
     }
 
     private void GachaExit() => StartCoroutine(GachaExitRoutine());
+
+    private void GachaExitButtonActive(bool isActive) => gachaExitButton.gameObject.SetActive(isActive);
 
     private IEnumerator GachaExitRoutine()
     {
