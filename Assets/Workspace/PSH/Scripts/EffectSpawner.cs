@@ -2,19 +2,18 @@ using UnityEngine;
 
 public class EffectSpawner : MonoBehaviour
 {
+    public static EffectSpawner Instance { get; private set; }
+
     public GameObject explosionPrefab;
-
-
-
-    private void Update()
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Instance == null)
         {
-            SpawnExplosion(new Vector3(0, 0, 0));
+            Instance = this;
         }
-        if (Input.GetKeyDown(KeyCode.B))
+        else if (Instance != this)
         {
-            SpawnFire(new Vector3(0, 0, 0));
+            Destroy(gameObject);
         }
     }
 
@@ -26,9 +25,9 @@ public class EffectSpawner : MonoBehaviour
 
         controller.TriggerHit();
     }
-    void SpawnFire(Vector3 position)
+    void SpawnFire(Vector3 position, Quaternion rotation)
     {
-        GameObject explosionEffect = Instantiate(explosionPrefab, position, Quaternion.identity);
+        GameObject explosionEffect = Instantiate(explosionPrefab, position, rotation);
 
         ExplosionController controller = explosionEffect.GetComponent<ExplosionController>();
 
