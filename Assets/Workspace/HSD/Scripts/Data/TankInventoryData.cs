@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using static Cinemachine.DocumentationSortingAttribute;
-public enum TankRank
+public enum Rank
 {
     S, A, B, C
 }
@@ -15,7 +15,7 @@ public enum TankRank
 public class TankGroupData
 {
     public string TankName;
-    public TankRank Rank;
+    public Rank Rank;
     public int Level;
     public int Count;
 }
@@ -80,7 +80,7 @@ public class TankInventoryData
         }
 
         var rankStr = args.Snapshot.Child("Rank")?.Value?.ToString();
-        if (!string.IsNullOrEmpty(rankStr) && Enum.TryParse(rankStr, out TankRank rank))
+        if (!string.IsNullOrEmpty(rankStr) && Enum.TryParse(rankStr, out Rank rank))
         {
             groupData.Rank = rank;
         }
@@ -107,7 +107,7 @@ public class TankInventoryData
         string tankName = snapshot.Key; // ÅÊÅ© ÀÌ¸§ °¡Á®¿È
 
         var rankStr = snapshot.Child("Rank")?.Value?.ToString();    // ·©Å© °¡Á®¿È
-        var rankParsed = Enum.TryParse(rankStr, out TankRank rank) ? rank : TankRank.C;
+        var rankParsed = Enum.TryParse(rankStr, out Rank rank) ? rank : Rank.C;
 
         var countStr = snapshot.Child("Count")?.Value?.ToString();        
 
@@ -131,7 +131,7 @@ public class TankInventoryData
         tankGroups[tankName] = groupData;
     }
 
-    public void AddTankEvent(string tankName, int count, TankRank rank = TankRank.C)
+    public void AddTankEvent(string tankName, int count, Rank rank = Rank.C)
     {
         tankRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
@@ -172,7 +172,7 @@ public class TankInventoryData
         });
     }
 
-    private void CreateTankGroupData(string name, TankRank rank, Action onComplete)
+    private void CreateTankGroupData(string name, Rank rank, Action onComplete)
     {
         var data = new TankGroupData
         {

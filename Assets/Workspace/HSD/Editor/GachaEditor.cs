@@ -24,7 +24,7 @@ public class GachaEditor : Editor
         // 대상 스크립트 참조
         Gacha gacha = (Gacha)target;
         float[] chance = gacha.chance;
-        TankRank[] ranks = gacha.ranks;
+        Rank[] ranks = gacha.ranks;
 
         // chance 배열이 비어 있으면 그리지 않음
         if (chance == null || chance.Length == 0)
@@ -152,14 +152,14 @@ public class GachaEditor : Editor
         GUILayout.Space(10);
     }
 
-    private Color GetRankColor(TankRank rank)
+    private Color GetRankColor(Rank rank)
     {
         return rank switch
         {
-            TankRank.S => new Color(1f, 0.5f, 0f),
-            TankRank.A => new Color(0.5f, 0.8f, 1f),
-            TankRank.B => new Color(0.6f, 1f, 0.6f),
-            TankRank.C => Color.gray,
+            Rank.S => new Color(1f, 0.5f, 0f),
+            Rank.A => new Color(0.5f, 0.8f, 1f),
+            Rank.B => new Color(0.6f, 1f, 0.6f),
+            Rank.C => Color.gray,
             _ => Color.white
         };
     }

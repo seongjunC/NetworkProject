@@ -8,6 +8,7 @@ using UnityEngine;
 [Serializable]
 public class GachaManager
 {
+    public GachaData GachaData;
     public List<GachaResult> gachaResults = new List<GachaResult>();
     private DatabaseReference gachaRef;
 
@@ -16,6 +17,7 @@ public class GachaManager
     public void Init()
     {
         InitGachaData();
+        GachaData = Resources.Load<GachaData>("Data/Gacha");
     }
 
     private void InitGachaData()

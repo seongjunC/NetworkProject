@@ -1,23 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
+public struct GachaChance
+{
+    public Rank rank;
+    public float chance;
+}
+
 public class Gacha : MonoBehaviour
 {
     [SerializeField] Image image;    
 
-    [Header("Setting")]
-    public int needGem;
+    [Header("Setting")]    
     public bool isTen;
-    public float[] chance;
-    public TankRank[] ranks;
-    [SerializeField] TankData[] model;
+    public GachaData GachaData;
 
     [Header("List")]
     [SerializeField] List<Transform> cardTransforms = new();
-    [SerializeField] List<TankData> gachaList = new();
+    [SerializeField] List<TankData> gachaResultList = new();
 
     [Header("Cards")]
     [SerializeField] List<Card> cards = new();
@@ -42,10 +47,10 @@ public class Gacha : MonoBehaviour
     private string now;
 
     private void Start()
-    {
+    {        
         delay = new WaitForSeconds(cardDelay);
         addDelay = new WaitForSeconds(gachaAddDelay);
-        model = Manager.Data.TankDataController.TankDatas.Values.ToArray();
+        GachaData.GachaList = Manager.Data.TankDataController.TankDatas.Values.ToArray();
     }    
 
     [ContextMenu("Gacha")]
@@ -63,7 +68,7 @@ public class Gacha : MonoBehaviour
         SetUpCardTransformList();
         SaveBeforeLevel();
 
-        gachaList.Clear();
+        gachaResultList.Clear();
         
         float progress = 0;
         float time = .5f;
@@ -81,12 +86,12 @@ public class Gacha : MonoBehaviour
         {
             for (int i = 0; i < 10; i++)
             {
-                gachaList.Add(GetRandomTank());
+                gachaResultList.Add(GetRandomTank());
                 yield return addDelay;
             }
         }
         else
-            gachaList.Add(GetRandomTank());
+            gachaResultList.Add(GetRandomTank());
 
         yield return new WaitForSeconds(.5f);
 
@@ -162,7 +167,7 @@ public class Gacha : MonoBehaviour
     {
         for (int i = 0;i < cards.Count; i++)
         {
-            cards[i].SetUp(gachaList[i], cardTransforms[i], moveTime);
+            cards[i].SetUp(gachaResultList[i], cardTransforms[i], moveTime);
             Manager.Audio.PlaySFX("Deal", Vector3.zero, 1, Random.Range(.8f, 1.2f));
             yield return delay;
         }
@@ -185,7 +190,7 @@ public class Gacha : MonoBehaviour
     {
         afterLevel.Clear();
 
-        TankData[] tanks = gachaList.Distinct().ToArray();
+        TankData[] tanks = gachaResultList.Distinct().ToArray();
 
         foreach (var tank in tanks)
         {

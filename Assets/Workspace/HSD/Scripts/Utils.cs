@@ -58,14 +58,14 @@ public static class Utils
     public static Color BColor = new Color(0.5f, 1f, 0.5f); // 연두
     public static Color CColor = new Color(0.6f, 0.6f, 0.6f); // 회색
 
-    public static Color GetColor(TankRank rank)
+    public static Color GetColor(Rank rank)
     {
         return rank switch
         {
-            TankRank.S => SColor,
-            TankRank.A => AColor,
-            TankRank.B => BColor,
-            TankRank.C => CColor,
+            Rank.S => SColor,
+            Rank.A => AColor,
+            Rank.B => BColor,
+            Rank.C => CColor,
             _ => CColor
         };
     }

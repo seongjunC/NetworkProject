@@ -39,14 +39,14 @@ public class Card : MonoBehaviour
         StartCoroutine(MoveRoutine(targetTransform, moveTime));
     }
 
-    private Color GetRankColor(TankRank rank)
+    private Color GetRankColor(Rank rank)
     {
         return (rank) switch
         {
-            TankRank.C => cColor,
-            TankRank.B => bColor,
-            TankRank.A => aColor,
-            TankRank.S => sColor,
+            Rank.C => cColor,
+            Rank.B => bColor,
+            Rank.A => aColor,
+            Rank.S => sColor,
             _ => cColor,
         };
     }
