@@ -14,12 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GachaDatas:
   - rank: 0
-    chance: 5
+    chance: 4
   - rank: 1
-    chance: 20
+    chance: 10
   - rank: 2
-    chance: 25
+    chance: 20
   - rank: 3
-    chance: 50
-  NeedGem: 1
-  GachaList: []
+    chance: 30
+  NeedGem: 0
+  GachaList:
+  - {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
+  - {fileID: 11400000, guid: 0b5327d3b52ddf4439d2a4dbc7c866c0, type: 2}
+  - {fileID: 11400000, guid: 41e018700970c6a41a7bc5b4137027a2, type: 2}
+  - {fileID: 11400000, guid: 17cb8d34800f11044b7cbf4304406168, type: 2}

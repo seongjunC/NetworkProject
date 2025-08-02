@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 [Serializable]
@@ -16,7 +17,7 @@ public struct FourGradient
 public class ProbabilityPanel : MonoBehaviour
 {
     [SerializeField] Gacha gacha;
-    [SerializeField] GameObject rankPersentPrefab;
+    [SerializeField] GameObject rankPercentPrefab;
     [SerializeField] GameObject probabilitySlotPrefab;
     [SerializeField] Transform probabilityContent;
 
@@ -24,25 +25,54 @@ public class ProbabilityPanel : MonoBehaviour
     [SerializeField] FourGradient sRank;
     [SerializeField] FourGradient aRank;
     [SerializeField] FourGradient bRank;
-    [SerializeField] FourGradient cRank;
+    [SerializeField] FourGradient cRank;    
 
-    private void Awake()
+    private void Start()
     {
-        
-    }
+        InitSlots();
+    }   
 
     private void InitSlots()
-    {
-        TankData[] tankDatas = Manager.Data.TankDataController.TankDatas.Values.ToArray();
-
-        TankData[] sTanks = tankDatas.Where(t => t.rank == Rank.S).ToArray();
-        TankData[] aTanks = tankDatas.Where(t => t.rank == Rank.A).ToArray();
-        TankData[] bTanks = tankDatas.Where(t => t.rank == Rank.B).ToArray();
-        TankData[] cTanks = tankDatas.Where(t => t.rank == Rank.C).ToArray();
-
-        foreach (var item in sTanks)
+    {        
+        for (int i = 0; i < (int)Rank.C + 1; i++)
         {
-            
+            CreateSlot((Rank)i);
         }
+    }
+
+    private void CreateSlot(Rank rank)
+    {
+        TankData[] tanks = gacha.GachaData.GetRankTankData(rank);
+
+        Instantiate(rankPercentPrefab, probabilityContent).GetComponent<RankPercentPanel>().
+            SetUp(gacha.GachaData.GetGachaPercent(rank), rank, GetRankGradient(rank));
+
+        float chance = gacha.GachaData.GetGachaPercent(rank) / tanks.Length;
+
+        foreach (var tank in tanks)
+        {
+            Instantiate(probabilitySlotPrefab, probabilityContent).GetComponent<ProbabilitySlot>().
+                SetUp(tank, chance);
+        }
+    }
+
+    private VertexGradient GetRankGradient(Rank rank)
+    {
+        FourGradient fourGradient = (rank) switch
+        {
+            Rank.S => sRank,
+            Rank.A => aRank,
+            Rank.B => bRank,
+            Rank.C => cRank,
+            _ => cRank
+        };
+
+        return new VertexGradient
+        {
+            bottomLeft = fourGradient.bottimLeft,
+            bottomRight = fourGradient.bottomRight,
+            topLeft = fourGradient.topLeft,
+            topRight = fourGradient.topRight,
+        };
     }
 }
