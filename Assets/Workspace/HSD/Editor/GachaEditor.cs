@@ -23,8 +23,20 @@ public class GachaEditor : Editor
 
         // 대상 스크립트 참조
         Gacha gacha = (Gacha)target;
-        float[] chance = gacha.chance;
-        Rank[] ranks = gacha.ranks;
+
+        float[] chance = new float[4];
+
+        for (int i = 0; i < gacha.GachaData.GachaDatas.Length; i ++)
+        {
+            chance[i] = gacha.GachaData.GachaDatas[i].chance;
+        }
+
+        Rank[] ranks = new Rank[4];
+
+        for (int i = 0; i < gacha.GachaData.GachaDatas.Length; i++)
+        {
+            ranks[i] = gacha.GachaData.GachaDatas[i].rank;
+        }
 
         // chance 배열이 비어 있으면 그리지 않음
         if (chance == null || chance.Length == 0)

@@ -1,11 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Serializable]
+[System.Serializable]
 public struct GachaChance
 {
     public Rank rank;
@@ -103,16 +102,22 @@ public class Gacha : MonoBehaviour
     private TankData GetRandomTank()
     {
         now = GetCurrentTimeKey();
-        float max = chance.Sum();
+
+        float max = 0;
+        for (int i = 0; i < GachaData.GachaDatas.Length; i++)
+        {
+            max += GachaData.GachaDatas[i].chance;
+        }
+        
         float rand = Random.Range(0, max);
 
         int select = 0;
 
         float cumulative = 0;
 
-        for (int i = 0; i < chance.Length; i++)
+        for (int i = 0; i < GachaData.GachaDatas.Length; i++)
         {
-            cumulative += chance[i];
+            cumulative += GachaData.GachaDatas[i].chance;
             if (rand < cumulative)
             {
                 select = i;
@@ -120,8 +125,7 @@ public class Gacha : MonoBehaviour
             }
         }
 
-        TankData[] randomData = model.
-            Where(t => t.rank == ranks[select]).ToArray();
+        TankData[] randomData = GachaData.GetRankTankData((Rank)select);
 
         TankData selectTank = randomData[Random.Range(0, randomData.Length)];
 
@@ -180,7 +184,7 @@ public class Gacha : MonoBehaviour
     {
         beforeLevel.Clear();
 
-        foreach (var tank in model)
+        foreach (var tank in GachaData.GachaList)
         {
             beforeLevel.Add(tank, tank.Level);
         }

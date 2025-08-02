@@ -78,9 +78,9 @@ public class GachaPanel : MonoBehaviour
 
     private void GemConsumption(int count)
     {
-        if (Manager.Data.PlayerData.IsBuy(gacha.needGem * count))
+        if (Manager.Data.PlayerData.IsBuy(gacha.GachaData.NeedGem * count))
         {
-            Manager.Data.PlayerData.GemGain(-gacha.needGem * count);
+            Manager.Data.PlayerData.GemGain(-gacha.GachaData.NeedGem * count);
             gachaExitButton.gameObject.SetActive(false);
             gacha.TryGacha();
         }
