@@ -168,7 +168,7 @@ public class Gacha : MonoBehaviour
         }
 
         OnGachaEnded?.Invoke();
-        Manager.Data.GachaManager.GachaResultsOrderBy();
+        //Manager.Data.GachaManager.GachaResultsOrderBy();
     }
 
     private void SaveBeforeLevel()

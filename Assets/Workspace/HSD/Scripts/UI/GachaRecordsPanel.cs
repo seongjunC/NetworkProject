@@ -10,13 +10,10 @@ public class GachaRecordsPanel : MonoBehaviour
     [SerializeField] List<GachaResult> gachaResults;
     [SerializeField] List<GachaResultSlot> gachaResultSlots = new();
 
-    private void Awake()
-    {
-        gachaResults = Manager.Data.GachaManager.gachaResults;
-    }
-
     private void OnEnable()
     {
+        Manager.Data.GachaManager.GachaResultsOrderBy();
+        gachaResults = Manager.Data.GachaManager.gachaResults;
         UpdateAllSlot();
     }
 

@@ -6,13 +6,13 @@ using UnityEngine;
 [Serializable]
 public class GachaResult
 {
-    public string Time;
+    public long Time;
     public string Name;
 
     public string GetFormattedTime()
     {
         // 안전하게 DateTime으로 변환
-        if (DateTime.TryParseExact(Time, "yyyyMMddHHmmssfff",
+        if (DateTime.TryParseExact(Time.ToString(), "yyyyMMddHHmmssfff",
                                    null,
                                    System.Globalization.DateTimeStyles.None,
                                    out DateTime parsedTime))
@@ -22,7 +22,7 @@ public class GachaResult
         }
         else
         {
-            return Time;
+            return Time.ToString();
         }
     }
 }

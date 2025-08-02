@@ -45,8 +45,7 @@ public class GachaManager
                 gachaRef.SetValueAsync("");
             }
 
-            RegisterGachaListeners();
-            GachaResultsOrderBy();
+            RegisterGachaListeners();          
         });
     }
 
@@ -71,9 +70,11 @@ public class GachaManager
 
     public void AddGachaResult(string time, string name)
     {
+        long _time = long.Parse(time);
+
         GachaResult result = new GachaResult
         {
-            Time = time,
+            Time = _time,
             Name = name
         };
 
@@ -94,7 +95,7 @@ public class GachaManager
     public void GachaResultsOrderBy()
     {
         gachaResults = gachaResults
-            .OrderByDescending(r => int.Parse(r.Time))
+            .OrderByDescending(r => r.Time)
             .ToList();
     }
 }
