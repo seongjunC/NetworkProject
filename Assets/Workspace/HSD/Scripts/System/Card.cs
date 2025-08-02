@@ -72,4 +72,9 @@ public class Card : MonoBehaviour
 
         transform.position = end;
     }
+
+    private void PlaySound(string soundName)
+    {
+        Manager.Audio.PlaySFX(soundName, Vector3.zero, .8f);
+    }
 }

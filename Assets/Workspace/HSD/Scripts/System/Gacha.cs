@@ -155,6 +155,7 @@ public class Gacha : MonoBehaviour
         for (int i = 0;i < cards.Count; i++)
         {
             cards[i].SetUp(gachaList[i], cardTransforms[i], moveTime);
+            Manager.Audio.PlaySFX("Deal", Vector3.zero, 1, Random.Range(.8f, 1.2f));
             yield return delay;
         }
     }
