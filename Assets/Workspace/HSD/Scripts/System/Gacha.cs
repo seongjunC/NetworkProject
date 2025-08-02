@@ -37,6 +37,8 @@ public class Gacha : MonoBehaviour
     public Dictionary<TankData, int> beforeLevel = new();
     public Dictionary<TankData, int> afterLevel = new();
 
+    private string now;
+
     private void Start()
     {
         delay = new WaitForSeconds(cardDelay);
@@ -55,8 +57,12 @@ public class Gacha : MonoBehaviour
     private IEnumerator GachaRoutine()
     {
         yield return null;
+
+        now = GetCurrentTime();
+
         SetUpCardTransformList();
         SaveBeforeLevel();
+
         gachaList.Clear();
         
         float progress = 0;
@@ -117,6 +123,7 @@ public class Gacha : MonoBehaviour
         cards.Add(card);
 
         Manager.Data.TankInventoryData.AddTankEvent(selectTank.tankName, 1, selectTank.rank);
+        Manager.Data.GachaManager.AddGachaResult(now, selectTank.tankName);
 
         return selectTank;
     }
@@ -180,5 +187,10 @@ public class Gacha : MonoBehaviour
         {
             afterLevel.Add(tank, tank.Level);
         }
+    }
+
+    private string GetCurrentTime()
+    {
+        return System.DateTime.Now.ToString("yy년 M월 d일 H시 mm분");
     }
 }

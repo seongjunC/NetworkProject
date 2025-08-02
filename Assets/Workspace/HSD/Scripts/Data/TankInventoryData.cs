@@ -65,8 +65,8 @@ public class TankInventoryData
             
             if (!exists)
                 tankRef.SetValueAsync("");
-
-            InitData();
+            else
+                InitData();
         });
     }
 
@@ -80,15 +80,11 @@ public class TankInventoryData
                 return;
             }
 
-            int count = 0;
             foreach (var tank in task.Result.Children)
             {
                 string json = tank.GetRawJsonValue();
-                Debug.Log(json);
                 TankGroupData group = JsonUtility.FromJson<TankGroupData>(json);
                 tankGroups.Add(group.TankName, group);
-                Debug.Log(group.TankName);
-                count++;
             }
         });
     }
