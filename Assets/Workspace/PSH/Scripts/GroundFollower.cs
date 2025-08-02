@@ -10,19 +10,19 @@ public class GroundFollower : MonoBehaviour
     [Tooltip("지면으로 인식할 레이어를 선택합니다.")]
     public LayerMask groundLayer;
     [Tooltip("지면을 감지할 CircleCast의 반지름입니다.")]
-    public float groundCheckRadius = 0.4f;
+    public float groundCheckRadius = 1f;
     [Tooltip("오브젝트 중심에서 아래로 발사할 CircleCast의 최대 거리입니다.")]
-    public float groundCheckDistance = 0.5f;
+    public float groundCheckDistance = 1.1f;
 
     [Header("경사 제한 설정")]
     [Tooltip("캐릭터가 서 있을 수 있는 최대 경사 각도입니다. 이보다 가파르면 떨어집니다.")]
-    public float maxSlopeAngle = 50f;
+    public float maxSlopeAngle = 60f;
 
     [Header("물리 효과 설정")]
     [Tooltip("지형 경사에 맞춰 얼마나 부드럽게 회전할지 결정합니다.")]
-    public float rotationSpeed = 20f;
+    public float rotationSpeed = 10f;
     [Tooltip("땅에 붙어있게 하는 미세한 추가 속도입니다.")]
-    public float stickiness = 1f;
+    public float stickiness = 6f;
 
     private Rigidbody2D rb;
     private float originalGravityScale;
