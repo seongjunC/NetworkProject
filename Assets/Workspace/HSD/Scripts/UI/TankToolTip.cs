@@ -42,7 +42,7 @@ public class TankToolTip : MonoBehaviour
         levelText.text = $"Lv.{data.Level.ToString()}";
         rankText.text = data.rank.ToString();
         rankText.color = rankColor;
-        tankIcon.sprite = data.icon;
+        tankIcon.sprite = data.Icon;
         tankNameText.text = data.tankName;
 
         // 업그레이드

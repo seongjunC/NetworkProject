@@ -9,10 +9,13 @@ public class CouponController : MonoBehaviour
 {
     [SerializeField] TMP_InputField couponKey;
     [SerializeField] Button checkButton;
+    [SerializeField] Button closeButton;
+    [SerializeField] CouponRewordPanel couponRewordPanel;
 
     private void Start()
     {
         checkButton.onClick.AddListener(Check);
+        closeButton.onClick.AddListener(() => gameObject.SetActive(false));
     }
 
     public void Check()
@@ -104,6 +107,8 @@ public class CouponController : MonoBehaviour
 
     private void GrantCouponReward(string key, Coupon couponData)
     {
+        Dictionary<string, int> dic = new Dictionary<string, int>();
+
         Manager.Database.root.Child("Coupon").Child(key).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted || task.IsCanceled)
@@ -121,20 +126,22 @@ public class CouponController : MonoBehaviour
                 return;
             }
 
-            foreach (var pair in rewardData)
+            foreach (var kvp in rewardData)
             {
-                if (int.TryParse(pair.Value.ToString(), out int value))
+                if (int.TryParse(kvp.Value.ToString(), out int value))
                 {
-                    if (pair.Key == "Gem")
+                    if (kvp.Key == "Gem")
                     {
                         Manager.Data.PlayerData.GemGain(value);
                         Debug.Log($"보상: Gem {value} 지급");
                     }
                     else
                     {
-                        Manager.Data.TankInventoryData.AddTankEvent(pair.Key, value);
-                        Debug.Log($"보상: {pair.Key} 유닛 {value}개 지급");
+                        Manager.Data.TankInventoryData.AddTankEvent(kvp.Key, value);
+                        Debug.Log($"보상: {kvp.Key} 유닛 {value}개 지급");
                     }
+
+                    dic[kvp.Key] = value;
                 }
             }
 
@@ -157,6 +164,8 @@ public class CouponController : MonoBehaviour
                 checkButton.interactable = true;
             });
         });
+
+        couponRewordPanel.CreateSlot(dic);
     }
 
     private void ShowError(string message)

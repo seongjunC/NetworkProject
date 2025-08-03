@@ -24,7 +24,7 @@ public class TankSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         tankData = data;
         tankToolTip = tooltip;
 
-        tankIcon.sprite = tankData.icon;
+        tankIcon.sprite = tankData.Icon;
         
         color = slotColor;
         tankRankImage.color = slotColor;

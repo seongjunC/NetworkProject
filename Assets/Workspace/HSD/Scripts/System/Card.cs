@@ -29,7 +29,7 @@ public class Card : MonoBehaviour
         this.tankData = tankData;
 
         tankName.text = this.tankData.tankName;
-        tankIcon.sprite = this.tankData.icon;
+        tankIcon.sprite = this.tankData.Icon;
         rankImage.color = GetRankColor(this.tankData.rank);
         
         tankRank.color = GetRankColor(this.tankData.rank);

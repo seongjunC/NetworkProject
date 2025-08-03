@@ -11,7 +11,7 @@ public class TankUpgradePopUp : MonoBehaviour
 
     public void SetUp(TankData data)
     {
-        tankIcon.sprite = data.icon;
+        tankIcon.sprite = data.Icon;
         message.text = $"{data.tankName}의 레벨이 {data.Level}로 올랐습니다!";        
     }
 

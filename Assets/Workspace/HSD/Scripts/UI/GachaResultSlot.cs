@@ -18,6 +18,6 @@ public class GachaResultSlot : MonoBehaviour
         tankNameText.text = data.Name;
         tankNameText.color = Utils.GetColor(tankData.rank);
 
-        tankIcon.sprite = tankData.icon;
+        tankIcon.sprite = tankData.Icon;
     }
 }
