@@ -14,7 +14,7 @@ public class CouponRewordPanel : MonoBehaviour
     private List<GameObject> slots = new List<GameObject>();
     [SerializeField] Sprite gemIcon;
 
-    private YieldInstruction delay = new WaitForSeconds(.5f);
+    private YieldInstruction delay = new WaitForSeconds(.15f);
 
     private void Start()
     {
@@ -33,6 +33,7 @@ public class CouponRewordPanel : MonoBehaviour
 
     private IEnumerator CreateRoutine()
     {
+        Debug.Log("Start");
         foreach (var kvp in resultDic)
         {
             GameObject obj = Instantiate(couponRewordPrefab, content);
@@ -49,6 +50,7 @@ public class CouponRewordPanel : MonoBehaviour
 
             slots.Add(obj);
 
+            Debug.Log("Re");
             yield return delay;
         }
 

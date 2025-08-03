@@ -11,11 +11,12 @@ public class CouponController : MonoBehaviour
     [SerializeField] Button checkButton;
     [SerializeField] Button closeButton;
     [SerializeField] CouponRewordPanel couponRewordPanel;
+    [SerializeField] GameObject couponPanel;
 
     private void Start()
     {
         checkButton.onClick.AddListener(Check);
-        closeButton.onClick.AddListener(() => gameObject.SetActive(false));
+        closeButton.onClick.AddListener(() => couponPanel.SetActive(false));
     }
 
     public void Check()
@@ -163,9 +164,9 @@ public class CouponController : MonoBehaviour
 
                 checkButton.interactable = true;
             });
-        });
 
-        couponRewordPanel.CreateSlot(dic);
+            couponRewordPanel.CreateSlot(dic);
+        }); 
     }
 
     private void ShowError(string message)
