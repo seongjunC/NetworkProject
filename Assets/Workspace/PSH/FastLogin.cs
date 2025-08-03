@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class FastLogin : MonoBehaviour
 {
@@ -13,9 +14,12 @@ public class FastLogin : MonoBehaviour
     [SerializeField] string Id;
     [SerializeField] string Password;
 
-    IEnumerator Start()
+    
+    void Start()
     {
-        yield return new WaitForSeconds(.1f);
+        EmailInputField = GameObject.Find("EmailInputField (TMP)").GetComponent<TMP_InputField>();
+        PWInputField = GameObject.Find("PWInputField (TMP)").GetComponent<TMP_InputField>();
+
         EmailInputField.text = Id;
         PWInputField.text = Password;
     }
