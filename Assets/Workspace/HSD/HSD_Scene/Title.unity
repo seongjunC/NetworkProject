@@ -13210,6 +13210,7 @@ MonoBehaviour:
   checkButton: {fileID: 960070780}
   closeButton: {fileID: 422162346}
   couponRewordPanel: {fileID: 810648116}
+  couponPanel: {fileID: 1318393430}
 --- !u!1 &893003803
 GameObject:
   m_ObjectHideFlags: 0
