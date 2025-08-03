@@ -12747,7 +12747,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &890903447
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12821,10 +12821,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   couponKey: {fileID: 316452429}
   checkButton: {fileID: 960070780}
-  Coupons:
-  - CouponKey: WELCOME
-    IsUse: 0
-    Amount: 199
 --- !u!1 &893003803
 GameObject:
   m_ObjectHideFlags: 0
@@ -13716,7 +13712,7 @@ GameObject:
   - component: {fileID: 960070781}
   - component: {fileID: 960070780}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: CheckButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

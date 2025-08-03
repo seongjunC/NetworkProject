@@ -1,6 +1,5 @@
 using Firebase.Database;
 using Firebase.Extensions;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,9 +10,6 @@ public class CouponController : MonoBehaviour
     [SerializeField] TMP_InputField couponKey;
     [SerializeField] Button checkButton;
 
-    public Coupon[] Coupons;
-    private Coupon newCoupon;
-
     private void Start()
     {
         checkButton.onClick.AddListener(Check);
@@ -21,85 +17,151 @@ public class CouponController : MonoBehaviour
 
     public void Check()
     {
-        StartCoroutine(CheckRoutine());
-    }
-
-    private IEnumerator CheckRoutine()
-    {
-        bool isUse = false;
-        bool isSame = false;
-
         checkButton.interactable = false;
 
-        foreach (var coupon in Coupons)
+        string inputKey = couponKey.text.Trim();
+        if (string.IsNullOrEmpty(inputKey))
         {
-            if (coupon.CouponKey == couponKey.text)
+            ShowError("쿠폰 코드를 입력하세요.");
+            return;
+        }
+
+        ValidateCoupon(inputKey);
+    }
+
+    private void ValidateCoupon(string key)
+    {
+        Manager.Database.root.Child("Coupon").GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
             {
-                isSame = true;
+                ShowError("서버 오류: 쿠폰 목록을 가져올 수 없습니다.");
+                return;
+            }
 
-                Manager.Database.userRef.Child("Coupons").Child(couponKey.text).GetValueAsync().ContinueWithOnMainThread(task =>
+            DataSnapshot allCoupons = task.Result;
+
+            if (!allCoupons.HasChild(key))
+            {
+                ShowError("유효하지 않은 쿠폰 번호입니다.");
+                return;
+            }
+
+            // 쿠폰 유효 → 유저가 이미 사용했는지 확인
+            CheckCouponUsage(key);
+        });
+    }
+
+    private void CheckCouponUsage(string key)
+    {
+        Manager.Database.userRef.Child("Coupons").Child(key).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                ShowError("서버 오류: 쿠폰 사용 여부 확인 실패");
+                return;
+            }
+
+            DataSnapshot snapshot = task.Result;
+            Coupon couponData;
+
+            if (snapshot.Exists)
+            {
+                // 이미 사용한 쿠폰일 수도 있음
+                couponData = JsonUtility.FromJson<Coupon>(snapshot.GetRawJsonValue());
+
+                if (couponData.IsUse)
                 {
-                    if (task.Result.Exists)
+                    ShowError("이미 사용된 쿠폰입니다.");
+                    return;
+                }
+            }
+            else
+            {
+                // 새로운 쿠폰 등록
+                couponData = new Coupon(key);
+                string json = JsonUtility.ToJson(couponData);
+
+                Manager.Database.userRef.Child("Coupons").Child(key).SetRawJsonValueAsync(json).ContinueWithOnMainThread(setTask =>
+                {
+                    if (setTask.IsFaulted || setTask.IsCanceled)
                     {
-                        DataSnapshot snapshot = task.Result;
+                        ShowError("쿠폰 등록 실패");
+                        return;
+                    }
 
-                        string json = snapshot.GetRawJsonValue();
+                    Debug.Log("쿠폰 등록 성공");
+                    GrantCouponReward(key, couponData);
+                });
 
-                        newCoupon = JsonUtility.FromJson<Coupon>(json);
+                return; // 보상은 Set이 완료되면 실행됨
+            }
 
-                        isUse = newCoupon.IsUse;
+            // 기존 쿠폰: 사용 안 했으므로 보상 지급
+            GrantCouponReward(key, couponData);
+        });
+    }
+
+    private void GrantCouponReward(string key, Coupon couponData)
+    {
+        Manager.Database.root.Child("Coupon").Child(key).GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                ShowError("보상 정보를 불러오지 못했습니다.");
+                return;
+            }
+
+            DataSnapshot rewardSnapshot = task.Result;
+            Dictionary<string, object> rewardData = rewardSnapshot.Value as Dictionary<string, object>;
+
+            if (rewardData == null)
+            {
+                ShowError("쿠폰 보상 데이터 오류");
+                return;
+            }
+
+            foreach (var pair in rewardData)
+            {
+                if (int.TryParse(pair.Value.ToString(), out int value))
+                {
+                    if (pair.Key == "Gem")
+                    {
+                        Manager.Data.PlayerData.GemGain(value);
+                        Debug.Log($"보상: Gem {value} 지급");
                     }
                     else
                     {
-                        Manager.Database.userRef.Child("Coupons").Child(couponKey.text).SetRawJsonValueAsync(JsonUtility.ToJson(coupon)).ContinueWithOnMainThread(task =>
-                        {
-                            if (task.IsCanceled || task.IsFaulted)
-                            {
-                                Debug.Log("쿠폰 설정 실패");
-                                checkButton.interactable = true;
-                                return;
-                            }
-
-                            Debug.Log("쿠폰 생성 완료");
-                            newCoupon = coupon;
-                        });
+                        Manager.Data.TankInventoryData.AddTankEvent(pair.Key, value);
+                        Debug.Log($"보상: {pair.Key} 유닛 {value}개 지급");
                     }
-                });
-
-                break;
+                }
             }
-        }
 
-        if (!isSame)
-        {
-            checkButton.interactable = true;
-            yield break;
-        }
+            // 사용 표시 저장
+            couponData.IsUse = true;
+            string updatedJson = JsonUtility.ToJson(couponData);
 
-        yield return new WaitForSeconds(.5f);
-
-        if (isUse)
-        {
-            Debug.Log("이미 사용된 쿠폰입니다.");
-            checkButton.interactable = true;
-            yield break;
-        }
-
-        Debug.Log($"쿠폰을 입력하여 {newCoupon.Amount} 만큼의 재화를 획득하였습니다!");
-        newCoupon.IsUse = true;
-
-        Manager.Database.userRef.Child("Coupons").Child(newCoupon.CouponKey).SetRawJsonValueAsync(JsonUtility.ToJson(newCoupon)).ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCanceled || task.IsFaulted)
+            Manager.Database.userRef.Child("Coupons").Child(key).SetRawJsonValueAsync(updatedJson).ContinueWithOnMainThread(setTask =>
             {
-                Debug.Log("쿠폰 사용했다는 설정 실패");
+                if (setTask.IsFaulted || setTask.IsCanceled)
+                {
+                    Debug.LogWarning("쿠폰 사용 표시 실패");
+                }
+                else
+                {
+                    Debug.Log("쿠폰 사용 완료");
+                    Manager.UI.PopUpUI.Show("쿠폰 보상이 지급되었습니다!", Color.green);
+                }
+
                 checkButton.interactable = true;
-                return;
-            }
-            else if (task.IsCompleted)
-            {
-                checkButton.interactable = true;
-            }
+            });
         });
+    }
+
+    private void ShowError(string message)
+    {
+        Manager.UI.PopUpUI.Show(message, Color.red);
+        checkButton.interactable = true;
     }
 }
