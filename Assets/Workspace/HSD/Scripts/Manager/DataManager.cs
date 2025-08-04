@@ -6,10 +6,10 @@ using UnityEngine;
 public class DataManager : Singleton<DataManager>
 {
     public PlayerData PlayerData;
-    public TankInventoryData TankInventoryData;
-
-    [Header("Cached")]
+    public TankInventoryData TankInventoryData;    
+    
     public TankDataController TankDataController = new();
+    public GachaManager GachaManager = new();
 
     private void Start()
     {
@@ -22,5 +22,6 @@ public class DataManager : Singleton<DataManager>
         TankDataController.Init();
         TankInventoryData.OnTankCountUpdated += TankDataController.UpdateCount;
         TankInventoryData.Init();
+        GachaManager.Init();
     }
 }
