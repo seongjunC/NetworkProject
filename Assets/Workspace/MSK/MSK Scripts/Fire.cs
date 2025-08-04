@@ -77,12 +77,12 @@ public class Fire : MonoBehaviourPun
     private void Aim()
     {
         // 각도 조절 (Up/Down)
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
         {
             angle += angleStep;
             if (angle > 90f) angle = 90f;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
         {
             angle -= angleStep;
             if (angle < 0f) angle = 0f;
