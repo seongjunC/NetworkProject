@@ -65,5 +65,5 @@ public class TankDataController
         currentTank = data;
         OnTankSelected?.Invoke(data);
         PhotonNetwork.LocalPlayer.SetTank(data.tankName);
-    }
+    }    
 }

@@ -206,7 +206,6 @@ namespace SOEditor
             if (selectedType == null) return;
 
             loadedAssets = dataProvider.LoadAssetsOfType(selectedType);
-            Debug.Log(loadedAssets.Count);
 
             if (loadedAssets == null || loadedAssets.Count == 0)
             {
