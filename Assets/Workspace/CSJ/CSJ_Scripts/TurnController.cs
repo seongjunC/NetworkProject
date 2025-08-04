@@ -333,7 +333,6 @@ public class TurnController : MonoBehaviourPunCallbacks
         {
             controller.PlayerDead();
         }
-
     }
 
     private void InitializePlayerEvents()

@@ -148,6 +148,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         currentPlayer = turnQueue.Dequeue();
 
+
         if (DeadPlayer.Contains(currentPlayer.ActorNumber))
         {
             Debug.Log($"{currentPlayer}는 사망하여 다음턴으로 이동");
@@ -281,10 +282,9 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_TurnFinished(int actorNumber)
     {
+        if (actorNumber != currentPlayer.ActorNumber) return;
         isTurnRunning = false;
         photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
-        if (curArrow != null)
-            Destroy(curArrow);
 
         if (turnQueue.Count == 0 && nextCycle.Count > 0)
         {
@@ -418,7 +418,9 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     public void TurnFinished()
     {
-        photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+        if (curArrow != null)
+            Destroy(curArrow);
+        photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
     [PunRPC]
     private void ResultActivate()
