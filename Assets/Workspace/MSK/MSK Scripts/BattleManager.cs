@@ -50,7 +50,8 @@ public class TestBattleManager : MonoBehaviourPun
 
     public void RegisterPlayer(PlayerController playerController)
     {
-        _playerController.OnPlayerAttacked = null;
+        if (_playerController != null)
+            _playerController.OnPlayerAttacked = null;
         _playerController = playerController;
         _playerController.OnPlayerAttacked += PlayerAttacked;
     }
