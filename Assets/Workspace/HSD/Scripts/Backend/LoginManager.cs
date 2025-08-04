@@ -239,7 +239,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         var snapshot = task.Result;
         string json = snapshot?.GetRawJsonValue();
         PlayerData newData = JsonUtility.FromJson<PlayerData>(json);
-
+        
         if (newData == null || string.IsNullOrEmpty(newData.Name))
         {
             newData = new PlayerData();
@@ -257,6 +257,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
 
         Manager.Data.PlayerData.Init();
+        
 
         yield return new WaitForSeconds(1);
 
@@ -264,6 +265,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).OnDisconnect().SetValue(false);
         Manager.Data.Init();
+        SetUpSelectTank();
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
         {
@@ -280,6 +282,22 @@ public class LoginManager : MonoBehaviourPunCallbacks
         lobbyPanel.SetActive(true);
     }
     #endregion
+
+    private void SetUpSelectTank()
+    {        
+        Manager.Database.userRef.Child("SelectTank").GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if(!task.Result.Exists)
+            {
+                return;
+            }
+
+            if (task.IsCompleted)
+            {
+                Manager.Data.TankDataController.SetSelectTank((string)task.Result.Value);
+            }
+        });
+    }
 
     #region PhotonCallbacks
     public override void OnConnectedToMaster()

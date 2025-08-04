@@ -63,7 +63,15 @@ public class TankDataController
         if (data == null) return;
 
         currentTank = data;
-        OnTankSelected?.Invoke(data);
+        OnTankSelected?.Invoke(currentTank);
         PhotonNetwork.LocalPlayer.SetTank(data.tankName);
-    }    
+
+        Manager.Database.userRef.Child("SelectTank").SetValueAsync(currentTank.tankName);
+    }
+    public void SetSelectTank(string tankName)
+    {
+        currentTank = TankDatas[tankName];
+        OnTankSelected?.Invoke(currentTank);
+        PhotonNetwork.LocalPlayer.SetTank(currentTank.tankName);        
+    }
 }
