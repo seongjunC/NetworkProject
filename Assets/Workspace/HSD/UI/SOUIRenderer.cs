@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SOEditor
 {
-    /// <summary>UI ������</summary>
+    /// <summary>UI 렌더러</summary>
     public class SOUIRenderer : ISOUIRenderer
     {
         private readonly Color[] groupColors = {
@@ -19,15 +19,15 @@ namespace SOEditor
             new Color(0.9f, 0.6f, 0.3f), new Color(0.6f, 0.9f, 0.6f),
         };
 
-        // ������ ������ ���� �Ŵ�����
+        // 의존성 주입을 위한 매니저들
         private ISOGroupManager groupManager;
 
-        // UI ����� ������ ���� ĳ��
+        // UI 재생성 방지를 위한 캐시
         private Dictionary<string, ObjectField> groupIconFields = new Dictionary<string, ObjectField>();
         private Dictionary<string, VisualElement> groupIconDisplays = new Dictionary<string, VisualElement>();
-        private ScrollView currentContainer; // ���� �����̳� ���� ����
+        private ScrollView currentContainer; // 현재 컨테이너 참조 유지
 
-        // �Ŵ����� �����ϴ� �޼��� �߰�
+        // 매니저를 설정하는 메서드 추가
         public void SetManagers(ISOGroupManager groupManager)
         {
             this.groupManager = groupManager;
@@ -35,7 +35,7 @@ namespace SOEditor
 
         public void RenderFlatUI(ScrollView container, List<ScriptableObject> assets, Type selectedType)
         {
-            // ĳ�� �ʱ�ȭ
+            // 캐시 초기화
             ClearUICache();
             currentContainer = container;
 
@@ -48,7 +48,7 @@ namespace SOEditor
         public void RenderGroupedUI(ScrollView container, IEnumerable<IGrouping<string, ScriptableObject>> groups,
                                   Type selectedType, bool showIcons, Color[] colors, string groupFieldName, Action onGroupFieldChanged)
         {
-            // ĳ�� �ʱ�ȭ�� ���� �ʰ� ���� �����̳ʸ� ������Ʈ
+            // 캐시 초기화는 하지 않고 현재 컨테이너만 업데이트
             currentContainer = container;
 
             int groupIndex = 0;
@@ -65,18 +65,18 @@ namespace SOEditor
             }
         }
 
-        /// <summary>UI ĳ�� �ʱ�ȭ - Ÿ���� �ٲ� ���� ȣ��</summary>
+        /// <summary>UI 캐시 초기화 - 타입이 바뀔 때만 호출</summary>
         public void ClearUICache()
         {
             groupIconFields.Clear();
             groupIconDisplays.Clear();
         }
 
-        /// <summary>�κ��� UI ������Ʈ - ������ ���� �ÿ��� �ʿ��� �κи� ������Ʈ</summary>
+        /// <summary>부분적 UI 업데이트 - 아이콘 변경 시에만 필요한 부분만 업데이트</summary>
         private void UpdateDataContainersOnly(ScrollView container, IEnumerable<IGrouping<string, ScriptableObject>> groups,
                                             Type selectedType, string groupFieldName, Action onGroupFieldChanged)
         {
-            // ���� �׷� �����̳ʵ��� ã�Ƽ� ������ �κи� ������Ʈ
+            // 기존 그룹 컨테이너들을 찾아서 데이터 부분만 업데이트
             var groupContainers = container.Query<VisualElement>()
                 .Where(ve => ve.style.flexDirection == FlexDirection.Row && ve.childCount >= 2)
                 .ToList();
@@ -87,7 +87,7 @@ namespace SOEditor
                 if (groupIndex < groupContainers.Count)
                 {
                     var groupContainer = groupContainers[groupIndex];
-                    var dataContainer = groupContainer.ElementAt(1) as ScrollView; // �� ��° �ڽ��� ������ �����̳�
+                    var dataContainer = groupContainer.ElementAt(1) as ScrollView; // 두 번째 자식이 데이터 컨테이너
 
                     if (dataContainer != null)
                     {
@@ -152,7 +152,7 @@ namespace SOEditor
         {
             var groupKey = group.Key;
 
-            // ���� �׷� �����̳ʰ� �ִ��� Ȯ�� (UQueryBuilder ���� ȸ��)
+            // 기존 그룹 컨테이너가 있는지 확인 (UQueryBuilder 문제 회피)
             VisualElement existingGroupContainer = null;
             for (int i = 0; i < container.childCount; i++)
             {
@@ -166,7 +166,7 @@ namespace SOEditor
 
             if (existingGroupContainer != null)
             {
-                // ���� �׷��� ������ ������ �κи� ������Ʈ
+                // 기존 그룹이 있으면 데이터 부분만 업데이트
                 var existingDataContainer = existingGroupContainer.ElementAt(1) as ScrollView;
                 if (existingDataContainer != null)
                 {
@@ -182,9 +182,9 @@ namespace SOEditor
                 return;
             }
 
-            // �� �׷� �����̳� ����
+            // 새 그룹 컨테이너 생성
             var groupContainer = new VisualElement();
-            groupContainer.name = $"group_{groupKey}"; // �ĺ��� ���� �̸� ����
+            groupContainer.name = $"group_{groupKey}"; // 식별을 위한 이름 설정
             groupContainer.style.flexDirection = FlexDirection.Row;
             groupContainer.style.marginBottom = 20;
             groupContainer.style.minHeight = 200;
@@ -232,7 +232,7 @@ namespace SOEditor
             StyleGroupHeader(groupHeader, groupColor);
             iconContainer.Add(groupHeader);
 
-            // ������ ǥ�� ���� - ĳ�õ� ���� ������ ����
+            // 아이콘 표시 영역 - 캐시된 것이 있으면 재사용
             VisualElement iconDisplay;
             if (groupIconDisplays.ContainsKey(groupKey))
             {
@@ -248,7 +248,7 @@ namespace SOEditor
                 groupIconDisplays[groupKey] = iconDisplay;
             }
 
-            // �׷��� ù ��° ��������Ʈ ��������
+            // 그룹의 첫 번째 스프라이트 가져오기
             Sprite groupSprite = null;
             if (groupManager != null)
             {
@@ -262,12 +262,12 @@ namespace SOEditor
 
             iconContainer.Add(iconDisplay);
 
-            // ������ ���� �ʵ� - ĳ�õ� ���� ������ ����
+            // 아이콘 변경 필드 - 캐시된 것이 있으면 재사용
             ObjectField iconField;
             if (groupIconFields.ContainsKey(groupKey))
             {
                 iconField = groupIconFields[groupKey];
-                iconField.value = groupSprite; // ���� ������Ʈ
+                iconField.value = groupSprite; // 값만 업데이트
             }
             else
             {
@@ -278,7 +278,7 @@ namespace SOEditor
                     allowSceneObjects = false
                 };
 
-                // ������ ���� �ݹ� ��� (�� ����)
+                // 아이콘 변경 콜백 등록 (한 번만)
                 iconField.RegisterValueChangedCallback(evt =>
                 {
                     var newSprite = evt.newValue as Sprite;
@@ -286,10 +286,10 @@ namespace SOEditor
 
                     if (groupManager != null)
                     {
-                        // �׷� �� ��� ������Ʈ�� ��������Ʈ ������Ʈ
+                        // 그룹 내 모든 오브젝트의 스프라이트 업데이트
                         groupManager.UpdateGroupSprites(group, newSprite, selectedType);
 
-                        // ������ ǥ�� ��� ������Ʈ
+                        // 아이콘 표시 즉시 업데이트
                         var cachedIconDisplay = groupIconDisplays[groupKey];
                         if (newSprite != null)
                         {
@@ -300,7 +300,7 @@ namespace SOEditor
                             cachedIconDisplay.style.backgroundImage = null;
                         }
 
-                        // ������ �κи� �κ������� ������Ʈ (��ü UI ����� ����)
+                        // 데이터 부분만 부분적으로 업데이트 (전체 UI 재생성 방지)
                         onGroupFieldChanged?.Invoke();
                     }
                 });
