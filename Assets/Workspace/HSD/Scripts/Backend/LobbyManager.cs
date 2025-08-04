@@ -58,6 +58,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Tank")]
     [SerializeField] GameObject tankInventory;
     [SerializeField] Button tankInventoryButton;
+    [SerializeField] Button tankInventoryButton2;
 
     [Header("Room Max Idx")]
     [SerializeField] int roomMax = 8;
@@ -87,6 +88,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Manager.Firebase.OnLogOut += GoTitle;
 
         tankInventoryButton.onClick.AddListener(OpenTankInventory);
+        tankInventoryButton2.onClick.AddListener(OpenTankInventory);
 
         couponButton.onClick    .AddListener(OpenCouponPanel);
         gachaButton.onClick     .AddListener(GachaOpen);
@@ -116,6 +118,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Manager.Firebase.OnLogOut -= GoTitle;
 
         tankInventoryButton.onClick.RemoveListener(OpenTankInventory);
+        tankInventoryButton2.onClick.RemoveListener(OpenTankInventory);
 
         couponButton.onClick    .RemoveListener(OpenCouponPanel);
         gachaButton.onClick     .RemoveListener(GachaOpen);

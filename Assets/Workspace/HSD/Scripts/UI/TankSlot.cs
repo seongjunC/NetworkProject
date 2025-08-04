@@ -5,24 +5,23 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TankSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TankSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
     [SerializeField] Image tankIcon;
     [SerializeField] Image tankRankImage;
     [SerializeField] TankData tankData;
-    private RectTransform rectTransform;
     private TankToolTip tankToolTip;
     private Color color;
 
-    private void Start()
+    private void OnEnable()
     {
-        rectTransform = GetComponent<RectTransform>();
+        
     }
 
     public void SetUp(TankData data, TankToolTip tooltip, Color slotColor)
     {
         tankData = data;
-        tankToolTip = tooltip;
+        tankToolTip ??= tooltip;
 
         tankIcon.sprite = tankData.Icon;
         
@@ -41,5 +40,12 @@ public class TankSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         tankToolTip.CloseToolTip();
-    }    
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (tankData == null) return;
+
+        Manager.Data.TankDataController.SetSelectTank(tankData);
+    }
 }

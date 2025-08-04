@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -9,6 +10,21 @@ public class TankDataController
     public Dictionary<string, TankData> TankDatas = new Dictionary<string, TankData>();    
 
     public event Action<TankData> OnTankDataChanged;
+    public Action<TankData> OnTankSelected;
+
+    private TankData currentTank;
+    public TankData CurrentTank
+    {
+        get
+        {
+            if (currentTank == null)
+                currentTank = TankDatas.First().Value;
+
+            return currentTank;
+        }
+
+        set => currentTank = value;
+    }
 
     public void Init()
     {
@@ -30,5 +46,13 @@ public class TankDataController
     {
         TankDatas[tankName].Count = count;
         OnTankDataChanged?.Invoke(TankDatas[tankName]);
-    }    
+    }
+    
+    public void SetSelectTank(TankData data)
+    {
+        if (data == null) return;
+
+        currentTank = data;
+        OnTankSelected?.Invoke(data);
+    }
 }
