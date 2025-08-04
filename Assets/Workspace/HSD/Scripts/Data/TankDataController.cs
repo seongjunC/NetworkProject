@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ public class TankDataController
         get
         {
             if (currentTank == null)
-                currentTank = TankDatas.First().Value;
+                SetSelectTank(TankDatas.First().Value);
 
             return currentTank;
         }
@@ -54,5 +55,6 @@ public class TankDataController
 
         currentTank = data;
         OnTankSelected?.Invoke(data);
+        PhotonNetwork.LocalPlayer.SetTank(data.tankName);
     }
 }
