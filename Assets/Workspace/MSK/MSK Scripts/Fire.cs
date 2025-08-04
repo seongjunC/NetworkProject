@@ -25,13 +25,13 @@ public class Fire : MonoBehaviourPun
     private List<float?> DamageBuff = new List<float?>(2);
 
 
-    private MSKTurnController _turnController;
+    private ProjectileManager _projectileManager;
     private PlayerController _playerController;
 
     private void Awake()
     {
         _playerController = GetComponentInParent<PlayerController>();
-        _turnController = FindObjectOfType<MSKTurnController>();
+        _projectileManager = FindObjectOfType<ProjectileManager>();
         InitBuff();
     }
 
@@ -77,12 +77,12 @@ public class Fire : MonoBehaviourPun
     private void Aim()
     {
         // 각도 조절 (Up/Down)
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
         {
             angle += angleStep;
             if (angle > 90f) angle = 90f;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
         {
             angle -= angleStep;
             if (angle < 0f) angle = 0f;
@@ -94,20 +94,17 @@ public class Fire : MonoBehaviourPun
     // 발사 
     private void Shoot()
     {
-        GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePoint.position, firePoint.rotation);
-        if (OnDamageBuff)
+        // 마스터 클라이언트에게 발사 요청
+        object[] damageBuffObjects = new object[DamageBuff.Count];
+        for (int i = 0; i < DamageBuff.Count; i++)
         {
-            Projectile bulletScripts = bullet.GetComponent<Projectile>();
-            bulletScripts.ApplyDamageBuff(DamageBuff);
-            InitDamageBuff();
+            damageBuffObjects[i] = DamageBuff[i];
         }
-        PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
-        _turnController.photonView.RPC("RPC_SetBulletTarget", RpcTarget.All, bulletPhotonView.ViewID);
-        Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-        if (rb != null)
-        {
-            rb.velocity = firePoint.up * powerCharge;
-        }
+        _projectileManager.photonView.RPC(nameof(_projectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
+            firePoint.position, firePoint.rotation, powerCharge,
+            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber);
+
+        InitDamageBuff(); // 발사 후 데미지 버프 초기화
     }
 
     public void SetDoubleAttack()

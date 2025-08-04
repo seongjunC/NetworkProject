@@ -441,7 +441,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             }
         }
     }
-
+    /*
     [PunRPC]
     private void RPC_SetBulletTarget(int bulletViewID)
     {
@@ -452,7 +452,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             CameraController.Instance.vcamBullet.Priority = 20;
         }
     }
-
+    */
     [PunRPC]
     private void RPC_NotifySpawned()
     {
