@@ -79,6 +79,7 @@ public class ProjectileManager : MonoBehaviourPun
             {
                 terrain.DestroyTerrain(explosionPoint, explosionRadiusX, explosionRadiusY);
             }
+            //TODO : 이거 적용시킬 조건 우선은 포탄 explosionRadius0으로 하면 될듯
             else if (explosionMask != null) // 마스크 파괴
             {
                 terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
