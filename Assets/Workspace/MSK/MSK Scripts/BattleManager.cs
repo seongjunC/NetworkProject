@@ -25,12 +25,8 @@ public class TestBattleManager : MonoBehaviourPun
             _playerController.EndPlayerTurn();
 
         if (_turnController.IsMyTurn())
-        {
-            if (PhotonNetwork.IsMasterClient)
                 _turnController.TurnFinished();
-            else
-                _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
-        }
+
     }
     private void PlayerAttacked()
     {
@@ -54,6 +50,7 @@ public class TestBattleManager : MonoBehaviourPun
 
     public void RegisterPlayer(PlayerController playerController)
     {
+        _playerController.OnPlayerAttacked = null;
         _playerController = playerController;
         _playerController.OnPlayerAttacked += PlayerAttacked;
     }
