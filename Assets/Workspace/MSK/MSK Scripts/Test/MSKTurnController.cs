@@ -49,7 +49,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private float turnTimer = 0f;
     private bool isTurnRunning = false;
     private bool isGameStart = false;
-    private bool isGameEnd = false;
 
     #region Unity LifeCycle
     private void Awake()
@@ -250,7 +249,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             if (p.player.GetTeam() != WinnerTeam) continue;
             float playerScore = 0;
-            //playerScore += Mathf.Min(p.damageDealt * 0.01f, 50) + p.KillCount * 5;
+            playerScore += Mathf.Min(p.damageDealt * 0.01f, 50) + p.KillCount * 5;
             if (DeadPlayer != null && DeadPlayer.Contains(p.ActorNumber)) playerScore -= 10;
 
             if (playerScore > mvpScore)
@@ -378,6 +377,15 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_RecordDamage(int damage)
     {
+        currentPlayer.ToDealDamage(damage);
+        Debug.Log($"{currentPlayer.NickName}가 {damage}의 데미지를 가함!");
+    }
+    #endregion
+
+    #region MSK added
+    [PunRPC]
+    private void RPC_RecordDamage(int damage)
+    {
         //currentPlayer.ToDealDamage(damage);
         Debug.Log($"{currentPlayer.NickName}가 {damage}의 데미지를 가함!");
     }
@@ -399,8 +407,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         Team team = CustomProperty.GetTeam(player.photonView.Owner);
         if (team == Team.Red) redRemain--;
         else blueRemain--;
+        currentPlayer.RecordKillCount();
 
-        //currentPlayer.RecordKillCount();
         DeadPlayer.Add(player.myInfo.ActorNumber);
         Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
 
@@ -412,7 +420,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (curArrow != null)
             Destroy(curArrow);
-        photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+        photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
     [PunRPC]
     private void ResultActivate()

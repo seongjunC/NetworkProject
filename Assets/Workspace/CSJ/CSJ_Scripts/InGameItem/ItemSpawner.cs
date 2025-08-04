@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class ItemSpawner : MonoBehaviourPun
 {
-    [Header("아이템 생성 지점")]
+    [Header("MapBoundary 참조")]
+    [SerializeField] private MapBoundary mapBoundary;
+
+    [Header("낙하산 프리팹")]
     [SerializeField]
-    private int mapHorizontalLength;
-    [SerializeField]
-    private int mapVerticalLength;
+    private GameObject parachuteDropPrefab;
+
+    [Header("낙하 관련 설정")]
+    [SerializeField] private float fallSpeed = 5f;
+    [SerializeField] private float swayAmp = 1f;
+    [SerializeField] private float swayFreq = 2f;
+
     [Header("생성할 아이템 리스트")]
     [SerializeField]
     private List<ItemData> itemList;
@@ -17,15 +25,26 @@ public class ItemSpawner : MonoBehaviourPun
     public void SpawnRandomItem()
     {
         ItemData selectedItem = RandItem();
-        Vector2 spawnPoint = new Vector2(Random.Range(0, mapHorizontalLength), mapVerticalLength);
 
-        GameObject item = PhotonNetwork.Instantiate(
-            selectedItem.prefab.name,
-            spawnPoint,
+        Vector2 center = mapBoundary.transform.position;
+        Vector2 size = mapBoundary.mapSize;
+
+        float halfw = size.x * 0.5f;
+        float halfh = size.y * 0.5f;
+
+        float spawnX = Random.Range(center.x - halfw, center.x + halfw);
+        float spawnY = center.y + halfh;
+        Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
+
+        GameObject drop = PhotonNetwork.Instantiate(
+            parachuteDropPrefab.name,
+            spawnPos,
             Quaternion.identity
         );
 
-        item.GetComponent<ItemInstance>().Init(selectedItem);
+        //var pd = parachuteDropPrefab.GetComponent<Parachute>();
+        //pd.Init(selectedItem, fallSpeed, swayAmp, swayFreq);
+
     }
 
     public ItemData RandItem()
