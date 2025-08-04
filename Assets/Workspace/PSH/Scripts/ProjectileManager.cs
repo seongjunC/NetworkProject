@@ -1,10 +1,12 @@
 using Photon.Pun;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ProjectileManager : MonoBehaviourPun
 {
     public static ProjectileManager Instance { get; private set; }
+
+    [SerializeField] Texture2D explosionMask;
 
     private void Awake()
     {
@@ -27,6 +29,8 @@ public class ProjectileManager : MonoBehaviourPun
         // 포탄 생성
         GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePointPosition, firePointRotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
+
+        EffectSpawner.Instance.SpawnFire(firePointPosition, firePointRotation);
 
         // 데미지 버프 적용
         if (onDamageBuff)
@@ -64,7 +68,8 @@ public class ProjectileManager : MonoBehaviourPun
 
     // 지형 파괴 및 데미지 적용 결과를 동기화하는 RPC (Projectile.cs에서 호출)
     [PunRPC]
-    public void RPC_ApplyExplosionEffects(Vector2 explosionPoint, int explosionRadiusX, int explosionRadiusY, float explosionScale, int bulletViewID, int[] hitPlayerActorNumbers, int realDamage)
+    public void RPC_ApplyExplosionEffects(Vector2 explosionPoint, int explosionRadiusX, int explosionRadiusY,
+        float explosionScale, int bulletViewID, int[] hitPlayerActorNumbers, int realDamage)
     {
         // 지형 파괴
         DeformableTerrain terrain = FindObjectOfType<DeformableTerrain>();
@@ -74,11 +79,10 @@ public class ProjectileManager : MonoBehaviourPun
             {
                 terrain.DestroyTerrain(explosionPoint, explosionRadiusX, explosionRadiusY);
             }
-            // TODO: 마스크를 이용한 파괴는 Texture2D를 RPC로 넘기기 어려우므로 다른 방법 고려 필요
-            // else if (explosionMask != null) // 마스크 파괴
-            // {
-            //     terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
-            // }
+            else if (explosionMask != null) // 마스크 파괴
+            {
+                terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
+            }
         }
 
         // 플레이어 데미지 적용 (각 클라이언트에서 해당 플레이어에게 데미지 적용)
