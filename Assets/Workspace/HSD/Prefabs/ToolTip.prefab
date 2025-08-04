@@ -1285,6 +1285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ac92ddb5fc3f646a6fb42addcd4d40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
   tankIcon: {fileID: 6062703877778485246}
   upgradeSlider: {fileID: 6163625281393350522}
   upgradeCountText: {fileID: 975463626516544197}
@@ -1297,8 +1298,8 @@ MonoBehaviour:
   isMousePos: 0
   xLimit: 960
   yLimit: 540
-  xOffset: 250
-  yOffset: 150
+  xOffset: 80
+  yOffset: 50
 --- !u!1 &6957413520493215931
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,11 +13,6 @@ public class TankSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private TankToolTip tankToolTip;
     private Color color;
 
-    private void OnEnable()
-    {
-        
-    }
-
     public void SetUp(TankData data, TankToolTip tooltip, Color slotColor)
     {
         tankData = data;

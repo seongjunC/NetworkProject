@@ -19,7 +19,16 @@ public class TankDataController
         get
         {
             if (currentTank == null)
-                SetSelectTank(TankDatas.First().Value);
+            {
+                foreach (var tank in TankDatas.Values)
+                {
+                    if (tank.Count > 0)
+                    {
+                        SetSelectTank(tank);
+                        break;
+                    }
+                }
+            }
 
             return currentTank;
         }
