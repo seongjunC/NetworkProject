@@ -49,6 +49,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private float turnTimer = 0f;
     private bool isTurnRunning = false;
     private bool isGameStart = false;
+    private bool isGameEnd = false;
 
     #region Unity LifeCycle
     private void Awake()
@@ -71,7 +72,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        
+
         if (!isGameStart)
             return;
 
@@ -383,15 +384,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #endregion
 
     #region MSK added
-    [PunRPC]
-    private void RPC_RecordDamage(int damage)
-    {
-        //currentPlayer.ToDealDamage(damage);
-        Debug.Log($"{currentPlayer.NickName}가 {damage}의 데미지를 가함!");
-    }
-    #endregion
-
-    #region MSK added
     private void InitializePlayerEvents()
     {
         allPlayers.Clear();
@@ -490,7 +482,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         int currentActor = currentPlayer.ActorNumber;
         return currentActor == localActor;
     }
-    /*
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
@@ -504,12 +495,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 break;
             }
         }
-        var controller = GetPlayerController(otherPlayer);
+        var controller = GetPlayerController(otherPlayer.ActorNumber);
         if (controller != null)
         {
             controller.PlayerDead();
         }
-    }*/
+    }
 
     [PunRPC]
     public void RPC_UpdateTimerText(float remainingTime)
