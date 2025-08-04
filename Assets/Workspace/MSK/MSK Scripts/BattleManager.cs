@@ -1,5 +1,4 @@
 using Photon.Pun;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,7 +31,7 @@ public class TestBattleManager : MonoBehaviourPun
         if (_playerController._hp <= 0)
         {
             // 사망 처리
-            _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.All);
+            _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.MasterClient);
             // 죽은 유저가 자신의 턴이었다면, 턴도 종료
             if (_turnController.IsMyTurn())
             {
@@ -49,6 +48,8 @@ public class TestBattleManager : MonoBehaviourPun
 
     public void RegisterPlayer(PlayerController playerController)
     {
+        if (_playerController != null)
+            _playerController.OnPlayerAttacked = null;
         _playerController = playerController;
         _playerController.OnPlayerAttacked += PlayerAttacked;
     }
