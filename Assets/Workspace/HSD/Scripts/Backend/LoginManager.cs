@@ -267,6 +267,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.JoinLobby();
         Manager.UI.FadeScreen.FadeOut(1);
+
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
         {
             Manager.Data.TankInventoryData.AddTankEvent("C", 1);
@@ -274,7 +275,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         }
 
         gameObject.SetActive(false);
-        lobbyPanel.SetActive(true);        
+        lobbyPanel.SetActive(true);
     }
     #endregion
 
