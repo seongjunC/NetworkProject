@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GachaRecordsPanel : MonoBehaviour
 {
     [SerializeField] GameObject gachaResultSlot;
     [SerializeField] Transform gachaResultContent;
+    [SerializeField] ScrollRect scrollRect;
 
     [SerializeField] List<GachaResult> gachaResults;
     [SerializeField] List<GachaResultSlot> gachaResultSlots = new();
@@ -14,6 +16,7 @@ public class GachaRecordsPanel : MonoBehaviour
     {
         Manager.Data.GachaManager.GachaResultsOrderBy();
         gachaResults = Manager.Data.GachaManager.gachaResults;
+        scrollRect.normalizedPosition = Vector3.one;
         UpdateAllSlot();
     }
 
