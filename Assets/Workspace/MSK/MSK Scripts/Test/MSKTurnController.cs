@@ -82,6 +82,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         photonView.RPC("RPC_UpdateTimerText", RpcTarget.All, turnTimer);
         if (turnTimer >= turnLimit)
         {
+            turnTimer = 0f;
             photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         }
     }
@@ -158,10 +159,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             StartNextTurn();
             return;
         }
-
-        nextCycle.Add(currentPlayer);
-        turnTimer = 0f;
         isTurnRunning = true;
+        nextCycle.Add(currentPlayer);
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
@@ -305,6 +304,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (isGameEnd)
             return;
 
+        isTurnRunning = false;
         isGameEnd = true;
         Debug.Log("게임 종료!");
         Team myTeam = CustomProperty.GetTeam(PhotonNetwork.LocalPlayer);
@@ -482,6 +482,27 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         int currentActor = currentPlayer.ActorNumber;
         return currentActor == localActor;
     }
+    /*
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+
+        Debug.Log($"플레이어 퇴장 : ActorNumber = {otherPlayer.ActorNumber}");
+        foreach (var tank in tanks)
+        {
+            if (tank.myInfo.player.ActorNumber == otherPlayer.ActorNumber)
+            {
+                tanks.Remove(tank);
+                break;
+            }
+        }
+        var controller = GetPlayerController(otherPlayer);
+        if (controller != null)
+        {
+            controller.PlayerDead();
+        }
+    }*/
+
     [PunRPC]
     public void RPC_UpdateTimerText(float remainingTime)
     {
