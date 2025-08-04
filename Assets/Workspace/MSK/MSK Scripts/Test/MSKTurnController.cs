@@ -48,7 +48,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private float turnTimer = 0f;
     private bool isTurnRunning = false;
     private bool isGameStart = false;
-
+    private bool isGameEnd = false;
     private UnityEvent OnGameEnded;
 
     #region Unity LifeCycle
@@ -72,7 +72,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart)
+        if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart && !isGameEnd)
         {
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
@@ -268,6 +268,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_GameEnded(Team winnerTeam)
     {
+        if (isGameEnd)
+            return;
+
+        isGameEnd = true;
+
         Debug.Log("게임 종료!");
         Team myTeam = CustomProperty.GetTeam(PhotonNetwork.LocalPlayer);
         PlayerData data = Manager.Data.PlayerData;
@@ -314,17 +319,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartTurnForPlayer(int actorNumber)
     {
-
-        // 현재 턴 대상 강제 지정
-        if (allPlayers.TryGetValue(actorNumber, out var info))
-        {
-            currentPlayer = info;
-        }
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
             Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
             photonView.RPC("EnableCurrentPlayer", RpcTarget.All);
             SpawnArrowCurrentPlayer();
+            EnableCurrentPlayer();
         }
     }
 
@@ -371,7 +371,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     public void TurnFinished()
     {
-        photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
     }
     [PunRPC]
     private void ResultActivate()
