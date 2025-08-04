@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviourPun
 {
     public int explosionRadiusx = 100; // 텍스처 픽셀 단위
     public int explosionRadiusy = 100;
@@ -18,6 +18,7 @@ public class Projectile : MonoBehaviour
     private DeformableTerrain terrain;
 
     private bool hasCollided = false;
+    private int ownerActorNumber; // 포탄을 발사한 플레이어의 ActorNumber
 
     [SerializeField] GameObject explosionEffect;
     [SerializeField] float delay = 2f;
@@ -50,8 +51,12 @@ public class Projectile : MonoBehaviour
 
         Debug.Log($"worldPerPixel = {worldPerPixel}");
 
-        isTeamDamage = PhotonNetwork.CurrentRoom.GetDamageType();
-        myTeam = PhotonNetwork.LocalPlayer.GetTeam();
+        // 마스터 클라이언트에서만 팀킬 여부와 팀 정보를 설정
+        if (PhotonNetwork.IsMasterClient)
+        {
+            isTeamDamage = PhotonNetwork.CurrentRoom.GetDamageType();
+            myTeam = PhotonNetwork.LocalPlayer.GetTeam(); // 마스터 클라이언트의 팀
+        }
         realDamage = damage;
     }
 
@@ -72,33 +77,68 @@ public class Projectile : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Vector2 explosionPoint = collision.contacts[0].point;
+        if (!PhotonNetwork.IsMasterClient) return; // 마스터 클라이언트에서만 충돌 처리
 
-        // Terrain 파괴
-        if (explosionMask == null)
-            terrain.DestroyTerrain(explosionPoint, explosionRadiusx, explosionRadiusy);
-        else
-            terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
+        Vector2 explosionPoint = collision.contacts[0].point;
 
         // 데미지 처리
         float pixelRadius = Mathf.Max(explosionRadiusx, explosionRadiusy);
         float worldRadius = pixelRadius * worldPerPixel;
 
-        DetectPlayerInCircle(explosionPoint, worldRadius);
+        List<int> hitPlayerActorNumbers = new List<int>();
+        var colliders = Physics2D.OverlapCircleAll(explosionPoint, worldRadius);
 
+        foreach (var hit in colliders)
+        {
+            if (!hit.CompareTag("Player"))
+                continue;
+
+            var pv = hit.GetComponent<PhotonView>();
+            if (pv == null) continue;
+
+            Game.Team otherTeam = pv.Owner.GetTeam();
+            // 포탄을 발사한 플레이어의 팀 정보를 가져와서 비교
+            Game.Team projectileOwnerTeam = PhotonNetwork.CurrentRoom.GetPlayer(ownerActorNumber).GetTeam();
+
+            if (!isTeamDamage && otherTeam == projectileOwnerTeam)
+            {
+                Debug.Log("아군이다 사격 중지!");
+                continue;
+            }
+            hitPlayerActorNumbers.Add(pv.Owner.ActorNumber);
+        }
+
+        // ProjectileManager를 통해 모든 클라이언트에 폭발 효과 동기화
+        ProjectileManager.Instance.photonView.RPC("RPC_ApplyExplosionEffects", RpcTarget.All,
+            explosionPoint, explosionRadiusx, explosionRadiusy, explosionScale,
+            photonView.ViewID, hitPlayerActorNumbers.ToArray(), realDamage);
+
+        // 마스터 클라이언트에서는 즉시 파괴 루틴 시작
         BeginDestroyRoutine(true);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (!PhotonNetwork.IsMasterClient) return; // 마스터 클라이언트에서만 충돌 처리
+
         if (collision.CompareTag("MapBoundary"))
         {
             if (!hasCollided)
             {
                 Debug.Log("포탄이 맵 밖으로 나감");
+                // ProjectileManager를 통해 모든 클라이언트에 포탄 파괴 동기화
+                ProjectileManager.Instance.photonView.RPC("RPC_ApplyExplosionEffects", RpcTarget.All,
+                    Vector2.zero, 0, 0, 0f, // 지형 파괴 없음
+                    photonView.ViewID, new int[0], 0); // 데미지 없음
+
                 BeginDestroyRoutine(false);
             }
         }
+    }
+
+    public void SetOwnerActorNumber(int actorNumber)
+    {
+        ownerActorNumber = actorNumber;
     }
     public void BeginDestroyRoutine(bool hasExplosionEffect)
     {
@@ -127,50 +167,7 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void DetectPlayerInCircle(Vector2 centerWorld, float radiusWorld)
-    {
-        gizmoCenter = centerWorld;
-        gizmoRadius = radiusWorld;
-
-        var colliders = Physics2D.OverlapCircleAll(centerWorld, radiusWorld);
-
-        foreach (var hit in colliders)
-        {
-            if (!hit.CompareTag("Player"))
-                continue;
-
-            // PhotonView 통해 다른 플레이어 Actor 얻기
-            var pv = hit.GetComponent<PhotonView>();
-            if (pv == null) continue;
-
-            Game.Team otherTeam = pv.Owner.GetTeam();  // 상대 팀
-            if (!isTeamDamage && otherTeam == myTeam)
-            {
-                Debug.Log("아군이다 사격 중지!");
-                continue;  // 같은 팀이면 스킵!
-            }
-            var player = hit.GetComponent<PlayerController>();
-            // TODO : 데미지 적용 공식 추가하기
-            player.OnHit(realDamage);
-            // 피격 이펙트
-            if (EffectSpawner.Instance != null)
-            {
-                EffectSpawner.Instance.SpawnExplosion(hit.transform.position);
-            }
-            Debug.Log($"플레이어에게 {realDamage} 데미지");
-            realDamage = damage;    //데미지 초기화
-        }
-    }
-    private void OnDrawGizmos()
-    {
-        // 1) 색상 설정
-        Gizmos.color = Color.red;
-
-        // 2) 2D용 원 그리기
-        Gizmos.DrawWireSphere(gizmoCenter, gizmoRadius);
-    }
-
-    public void ApplyDamageBuff(List<float?> DamageBuff)
+    public void ApplyDamageBuff(List<object> DamageBuff)
     {
         float Fixed = 0;
         float Ratio = 1;
