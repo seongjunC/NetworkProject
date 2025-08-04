@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEditor.UIElements;
+
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SOEditor
 {
-    /// <summary>UI ·»´õ·¯</summary>
+    /// <summary>UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</summary>
     public class SOUIRenderer : ISOUIRenderer
     {
         private readonly Color[] groupColors = {
@@ -19,15 +19,15 @@ namespace SOEditor
             new Color(0.9f, 0.6f, 0.3f), new Color(0.6f, 0.9f, 0.6f),
         };
 
-        // ÀÇÁ¸¼º ÁÖÀÔÀ» À§ÇÑ ¸Å´ÏÀúµé
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½
         private ISOGroupManager groupManager;
 
-        // UI Àç»ý¼º ¹æÁö¸¦ À§ÇÑ Ä³½Ã
+        // UI ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½
         private Dictionary<string, ObjectField> groupIconFields = new Dictionary<string, ObjectField>();
         private Dictionary<string, VisualElement> groupIconDisplays = new Dictionary<string, VisualElement>();
-        private ScrollView currentContainer; // ÇöÀç ÄÁÅ×ÀÌ³Ê ÂüÁ¶ À¯Áö
+        private ScrollView currentContainer; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        // ¸Å´ÏÀú¸¦ ¼³Á¤ÇÏ´Â ¸Þ¼­µå Ãß°¡
+        // ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
         public void SetManagers(ISOGroupManager groupManager)
         {
             this.groupManager = groupManager;
@@ -35,7 +35,7 @@ namespace SOEditor
 
         public void RenderFlatUI(ScrollView container, List<ScriptableObject> assets, Type selectedType)
         {
-            // Ä³½Ã ÃÊ±âÈ­
+            // Ä³ï¿½ï¿½ ï¿½Ê±ï¿½È­
             ClearUICache();
             currentContainer = container;
 
@@ -48,7 +48,7 @@ namespace SOEditor
         public void RenderGroupedUI(ScrollView container, IEnumerable<IGrouping<string, ScriptableObject>> groups,
                                   Type selectedType, bool showIcons, Color[] colors, string groupFieldName, Action onGroupFieldChanged)
         {
-            // Ä³½Ã ÃÊ±âÈ­´Â ÇÏÁö ¾Ê°í ÇöÀç ÄÁÅ×ÀÌ³Ê¸¸ ¾÷µ¥ÀÌÆ®
+            // Ä³ï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³Ê¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             currentContainer = container;
 
             int groupIndex = 0;
@@ -65,18 +65,18 @@ namespace SOEditor
             }
         }
 
-        /// <summary>UI Ä³½Ã ÃÊ±âÈ­ - Å¸ÀÔÀÌ ¹Ù²ð ¶§¸¸ È£Ãâ</summary>
+        /// <summary>UI Ä³ï¿½ï¿½ ï¿½Ê±ï¿½È­ - Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½</summary>
         public void ClearUICache()
         {
             groupIconFields.Clear();
             groupIconDisplays.Clear();
         }
 
-        /// <summary>ºÎºÐÀû UI ¾÷µ¥ÀÌÆ® - ¾ÆÀÌÄÜ º¯°æ ½Ã¿¡¸¸ ÇÊ¿äÇÑ ºÎºÐ¸¸ ¾÷µ¥ÀÌÆ®</summary>
+        /// <summary>ï¿½Îºï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¿ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ÎºÐ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®</summary>
         private void UpdateDataContainersOnly(ScrollView container, IEnumerable<IGrouping<string, ScriptableObject>> groups,
                                             Type selectedType, string groupFieldName, Action onGroupFieldChanged)
         {
-            // ±âÁ¸ ±×·ì ÄÁÅ×ÀÌ³ÊµéÀ» Ã£¾Æ¼­ µ¥ÀÌÅÍ ºÎºÐ¸¸ ¾÷µ¥ÀÌÆ®
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³Êµï¿½ï¿½ï¿½ Ã£ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             var groupContainers = container.Query<VisualElement>()
                 .Where(ve => ve.style.flexDirection == FlexDirection.Row && ve.childCount >= 2)
                 .ToList();
@@ -87,7 +87,7 @@ namespace SOEditor
                 if (groupIndex < groupContainers.Count)
                 {
                     var groupContainer = groupContainers[groupIndex];
-                    var dataContainer = groupContainer.ElementAt(1) as ScrollView; // µÎ ¹øÂ° ÀÚ½ÄÀÌ µ¥ÀÌÅÍ ÄÁÅ×ÀÌ³Ê
+                    var dataContainer = groupContainer.ElementAt(1) as ScrollView; // ï¿½ï¿½ ï¿½ï¿½Â° ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½
 
                     if (dataContainer != null)
                     {
@@ -152,7 +152,7 @@ namespace SOEditor
         {
             var groupKey = group.Key;
 
-            // ±âÁ¸ ±×·ì ÄÁÅ×ÀÌ³Ê°¡ ÀÖ´ÂÁö È®ÀÎ (UQueryBuilder ¹®Á¦ È¸ÇÇ)
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³Ê°ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ (UQueryBuilder ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½)
             VisualElement existingGroupContainer = null;
             for (int i = 0; i < container.childCount; i++)
             {
@@ -166,7 +166,7 @@ namespace SOEditor
 
             if (existingGroupContainer != null)
             {
-                // ±âÁ¸ ±×·ìÀÌ ÀÖÀ¸¸é µ¥ÀÌÅÍ ºÎºÐ¸¸ ¾÷µ¥ÀÌÆ®
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
                 var existingDataContainer = existingGroupContainer.ElementAt(1) as ScrollView;
                 if (existingDataContainer != null)
                 {
@@ -182,9 +182,9 @@ namespace SOEditor
                 return;
             }
 
-            // »õ ±×·ì ÄÁÅ×ÀÌ³Ê »ý¼º
+            // ï¿½ï¿½ ï¿½×·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½
             var groupContainer = new VisualElement();
-            groupContainer.name = $"group_{groupKey}"; // ½Äº°À» À§ÇÑ ÀÌ¸§ ¼³Á¤
+            groupContainer.name = $"group_{groupKey}"; // ï¿½Äºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
             groupContainer.style.flexDirection = FlexDirection.Row;
             groupContainer.style.marginBottom = 20;
             groupContainer.style.minHeight = 200;
@@ -232,7 +232,7 @@ namespace SOEditor
             StyleGroupHeader(groupHeader, groupColor);
             iconContainer.Add(groupHeader);
 
-            // ¾ÆÀÌÄÜ Ç¥½Ã ¿µ¿ª - Ä³½ÃµÈ °ÍÀÌ ÀÖÀ¸¸é Àç»ç¿ë
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - Ä³ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             VisualElement iconDisplay;
             if (groupIconDisplays.ContainsKey(groupKey))
             {
@@ -248,7 +248,7 @@ namespace SOEditor
                 groupIconDisplays[groupKey] = iconDisplay;
             }
 
-            // ±×·ìÀÇ Ã¹ ¹øÂ° ½ºÇÁ¶óÀÌÆ® °¡Á®¿À±â
+            // ï¿½×·ï¿½ï¿½ï¿½ Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             Sprite groupSprite = null;
             if (groupManager != null)
             {
@@ -262,12 +262,12 @@ namespace SOEditor
 
             iconContainer.Add(iconDisplay);
 
-            // ¾ÆÀÌÄÜ º¯°æ ÇÊµå - Ä³½ÃµÈ °ÍÀÌ ÀÖÀ¸¸é Àç»ç¿ë
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ - Ä³ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             ObjectField iconField;
             if (groupIconFields.ContainsKey(groupKey))
             {
                 iconField = groupIconFields[groupKey];
-                iconField.value = groupSprite; // °ª¸¸ ¾÷µ¥ÀÌÆ®
+                iconField.value = groupSprite; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             }
             else
             {
@@ -278,7 +278,7 @@ namespace SOEditor
                     allowSceneObjects = false
                 };
 
-                // ¾ÆÀÌÄÜ º¯°æ ÄÝ¹é µî·Ï (ÇÑ ¹ø¸¸)
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¹ï¿½ ï¿½ï¿½ï¿½ (ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
                 iconField.RegisterValueChangedCallback(evt =>
                 {
                     var newSprite = evt.newValue as Sprite;
@@ -286,10 +286,10 @@ namespace SOEditor
 
                     if (groupManager != null)
                     {
-                        // ±×·ì ³» ¸ðµç ¿ÀºêÁ§Æ®ÀÇ ½ºÇÁ¶óÀÌÆ® ¾÷µ¥ÀÌÆ®
+                        // ï¿½×·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
                         groupManager.UpdateGroupSprites(group, newSprite, selectedType);
 
-                        // ¾ÆÀÌÄÜ Ç¥½Ã Áï½Ã ¾÷µ¥ÀÌÆ®
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
                         var cachedIconDisplay = groupIconDisplays[groupKey];
                         if (newSprite != null)
                         {
@@ -300,7 +300,7 @@ namespace SOEditor
                             cachedIconDisplay.style.backgroundImage = null;
                         }
 
-                        // µ¥ÀÌÅÍ ºÎºÐ¸¸ ºÎºÐÀûÀ¸·Î ¾÷µ¥ÀÌÆ® (ÀüÃ¼ UI Àç»ý¼º ¹æÁö)
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ¸ï¿½ ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® (ï¿½ï¿½Ã¼ UI ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
                         onGroupFieldChanged?.Invoke();
                     }
                 });
