@@ -265,6 +265,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).OnDisconnect().SetValue(false);
         Manager.Data.Init();
 
+        yield return new WaitForSeconds(1);
+
         PhotonNetwork.JoinLobby();
         Manager.UI.FadeScreen.FadeOut(1);
 
