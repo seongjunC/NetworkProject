@@ -82,7 +82,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
             if (turnTimer <= 0f)
             {
-                photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+                Debug.Log("시간 제한으로 턴 종료");
+                TurnFinished();
             }
         }
     }
@@ -145,9 +146,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             StartNextTurn();
             return;
         }
-
-        turnTimer = turnLimit;
-        isTurnRunning = true;
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
     }
@@ -178,7 +176,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             {
                 Debug.Log($"[EnableCurrentPlayer] : {photonView.Owner.NickName} 통제 박탈 호출됨");
                 playerCon.EnableControl(false);
-                playerCon.EndPlayerTurn();
             }
         }
     }
@@ -247,18 +244,17 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_TurnFinished(int actorNumber)
     {
-        Debug.Log("[RPC_TurnFinished] : 작업 진행 ");
+        //  강제로 비활성화
+        foreach (var playerCon in tanks)
+        {
+            if (playerCon == null) continue;
+            playerCon.EnableControl(false);
+            playerCon.EndPlayerTurn();
+        }
         isTurnRunning = false;
         photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
         if (curArrow != null)
             Destroy(curArrow);
-
-        if (turnQueue.Count == 0 && nextCycle.Count > 0)
-        {
-            foreach (var player in nextCycle)
-                turnQueue.Enqueue(player);
-            nextCycle.Clear();
-        }
 
         if (tanks.Count <= 0)
             return;
@@ -324,6 +320,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         Debug.Log("[StartTurnForPlayer] : 호출됨");
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
+            turnTimer = turnLimit;
+            isTurnRunning = true;
             Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
             SpawnArrowCurrentPlayer();
             EnableCurrentPlayer();

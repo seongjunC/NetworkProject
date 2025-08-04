@@ -31,7 +31,7 @@ public class TestBattleManager : MonoBehaviourPun
         if (_playerController._hp <= 0)
         {
             // 사망 처리
-            _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.All);
+            _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.MasterClient);
             // 죽은 유저가 자신의 턴이었다면, 턴도 종료
             if (_turnController.IsMyTurn())
             {
