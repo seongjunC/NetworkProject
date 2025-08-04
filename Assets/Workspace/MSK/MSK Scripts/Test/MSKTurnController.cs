@@ -16,6 +16,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [Header("보상")]
     [SerializeField] int winnerTeamReward = 100;
     [SerializeField] int loserTeamReward = 50;
+    [Header("턴 제한")]
+    [SerializeField] float turnLimit = 5f;
     [Header("아이템 생성기")]
     [SerializeField] ItemSpawner itemSpawner;
     [Header("사이클 종료시 생성할 아이템의 개수")]
@@ -70,18 +72,18 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     void Update()
     {
-
-        turnTimer -= Time.deltaTime;
-        CountText.text = $"{turnTimer}";
-
-        if (!PhotonNetwork.IsMasterClient || !isTurnRunning) return;
-
-        if (!isGameStart)
-            return;
-       
-        if (turnTimer <= 0)
+        if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart)
         {
-            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+            turnTimer -= Time.deltaTime;
+            turnTimer = Mathf.Max(0f, turnTimer);
+
+            // 모든 클라이언트에 남은 시간 텍스트 갱신
+            photonView.RPC("RPC_UpdateTimerText", RpcTarget.All, turnTimer);
+
+            if (turnTimer <= 0f)
+            {
+                photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+            }
         }
     }
     #endregion
@@ -142,7 +144,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             return;
         }
 
-        turnTimer = 5f;
+        turnTimer = turnLimit;
         isTurnRunning = true;
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
@@ -333,6 +335,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #endregion
 
     #region MSK added
+    [PunRPC]
+    private void RPC_UpdateTimerText(float remainingTime)
+    {
+        CountText.text = $"{remainingTime:F0}";
+    }
     private void InitializePlayerEvents()
     {
         allPlayers.Clear();
