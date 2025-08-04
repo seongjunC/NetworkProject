@@ -100,7 +100,7 @@ public class Fire : MonoBehaviourPun
         {
             damageBuffObjects[i] = DamageBuff[i];
         }
-        _projectileManager.photonView.RPC("RPC_RequestFireProjectile", RpcTarget.MasterClient,
+        _projectileManager.photonView.RPC(nameof(_projectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
             OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber);
 

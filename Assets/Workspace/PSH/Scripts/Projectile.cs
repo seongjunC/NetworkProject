@@ -109,7 +109,7 @@ public class Projectile : MonoBehaviourPun
         }
 
         // ProjectileManager를 통해 모든 클라이언트에 폭발 효과 동기화
-        ProjectileManager.Instance.photonView.RPC("RPC_ApplyExplosionEffects", RpcTarget.All,
+        ProjectileManager.Instance.photonView.RPC(nameof(ProjectileManager.RPC_ApplyExplosionEffects), RpcTarget.All,
             explosionPoint, explosionRadiusx, explosionRadiusy, explosionScale,
             photonView.ViewID, hitPlayerActorNumbers.ToArray(), realDamage);
 
@@ -127,7 +127,7 @@ public class Projectile : MonoBehaviourPun
             {
                 Debug.Log("포탄이 맵 밖으로 나감");
                 // ProjectileManager를 통해 모든 클라이언트에 포탄 파괴 동기화
-                ProjectileManager.Instance.photonView.RPC("RPC_ApplyExplosionEffects", RpcTarget.All,
+                ProjectileManager.Instance.photonView.RPC(nameof(ProjectileManager.RPC_ApplyExplosionEffects), RpcTarget.All,
                     Vector2.zero, 0, 0, 0f, // 지형 파괴 없음
                     photonView.ViewID, new int[0], 0); // 데미지 없음
 

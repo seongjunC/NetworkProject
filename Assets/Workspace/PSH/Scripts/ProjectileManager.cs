@@ -51,7 +51,7 @@ public class ProjectileManager : MonoBehaviourPun
 
         // 모든 클라이언트에 포탄 ViewID 동기화 (카메라 타겟용)
         PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
-        photonView.RPC("RPC_SetBulletTarget", RpcTarget.All, bulletPhotonView.ViewID);
+        photonView.RPC(nameof(RPC_SetBulletTarget), RpcTarget.All, bulletPhotonView.ViewID);
     }
 
     [PunRPC]
