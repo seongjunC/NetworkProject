@@ -160,6 +160,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         Debug.Log($"[QueueAdd] turnQueue 갱신 완료: {turnQueue.Count}명 / redRemain={redRemain}, blueRemain={blueRemain}");
     }
+
+    [PunRPC]
     private void EnableCurrentPlayer()
     {
         foreach (var playerCon in tanks)
@@ -321,7 +323,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
             Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
-            EnableCurrentPlayer();
+            photonView.RPC("EnableCurrentPlayer", RpcTarget.All);
             SpawnArrowCurrentPlayer();
         }
     }

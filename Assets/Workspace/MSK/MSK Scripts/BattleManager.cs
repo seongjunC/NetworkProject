@@ -25,7 +25,12 @@ public class TestBattleManager : MonoBehaviourPun
             _playerController.EndPlayerTurn();
 
         if (_turnController.IsMyTurn())
-            _turnController.TurnFinished();
+        {
+            if (PhotonNetwork.IsMasterClient)
+                _turnController.TurnFinished();
+            else
+                _turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+        }
     }
     private void PlayerAttacked()
     {
