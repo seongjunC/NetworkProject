@@ -382,6 +382,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (Manager.Data.PlayerData.Name == "")
             Manager.UI.NickNameSelectPanel.Show();
 
+        PhotonNetwork.LocalPlayer.SetTank(Manager.Data.TankDataController.CurrentTank.tankName);
+
         roomManager.OnJoinedRoom();
     }
 
