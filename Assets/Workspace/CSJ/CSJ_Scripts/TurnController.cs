@@ -220,7 +220,7 @@ public class TurnController : MonoBehaviourPunCallbacks
                 losers.Add(player);
             }
         }
-        ResultPanel.UpdateResult(winnerTeam);
+        //ResultPanel.UpdateResult(winnerTeam);
         // Firebase에 게임 결과를 업로드
     }
 
@@ -243,6 +243,10 @@ public class TurnController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
             Debug.Log("턴 시작");
+            foreach (PlayerController p in tanks)
+            {
+                Debug.Log($"{p.myInfo.NickName}의 남은 체력 : {p._hp}");
+            }
             EnableCurrentPlayer();
         }
     }

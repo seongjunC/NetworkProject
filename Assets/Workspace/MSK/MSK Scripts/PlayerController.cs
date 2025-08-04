@@ -80,18 +80,25 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     public void OnHit(int damage)
     {
+        if (damage > 100000)
+        {
+            PlayerDead();
+        }
         if (OnBarrier)
         {
-            if (damage > 100000)
-            {
-                PlayerDead();
-            }
             OnBarrier = false;
             Debug.Log("배리어로 1회 피격 방어");
             return;
         }
+
         _hp -= damage;
         Debug.Log("피격");
+
+        MSKTurnController.Instance.photonView.RPC(
+            "RPC_RecordDamage",
+            RpcTarget.MasterClient,
+            damage
+        );
 
         if (_hp <= 0)
             PlayerDead();
