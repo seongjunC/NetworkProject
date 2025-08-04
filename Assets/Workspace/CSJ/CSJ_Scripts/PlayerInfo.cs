@@ -12,10 +12,14 @@ public class PlayerInfo
     public string NickName => player.NickName;
     public int ActorNumber => player.ActorNumber;
     public ItemData[] items = new ItemData[2];
+    public int damageDealt { get; private set; }
+    public int KillCount { get; private set; }
 
     public PlayerInfo(Player _player)
     {
         player = _player;
+        damageDealt = 0;
+        KillCount = 0;
     }
 
     public void ItemAcquire(ItemData item)
@@ -90,5 +94,16 @@ public class PlayerInfo
         items[order].UseItem();
         ItemRemove(order);
 
+    }
+
+    public void ToDealDamage(int amount)
+    {
+        damageDealt += amount;
+    }
+
+    public void RecordKillCount()
+    {
+        KillCount++;
+        Debug.Log($"{NickName}이 플레이어를 사망에 이르게 하였습니다. \n 킬 스코어 : {KillCount}");
     }
 }

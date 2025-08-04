@@ -33,7 +33,7 @@ public class ResultUI : MonoBehaviourPun
         okButton.onClick.AddListener(OnClickOK);
     }
     [PunRPC]
-    public void UpdateResult(Team winnerTeam)
+    public void UpdateResult(Team winnerTeam, int mvpActor)
     {
 
         // 결과 패널 표시
@@ -46,7 +46,11 @@ public class ResultUI : MonoBehaviourPun
         // 승리 팀 플레이어 추가
         foreach (var player in PhotonNetwork.PlayerList)
         {
-            if (CustomProperty.GetTeam(player) == winnerTeam)
+            if (player.ActorNumber == mvpActor)
+            {
+                AddMVPPlayerSlot(player);
+            }
+            else if (CustomProperty.GetTeam(player) == winnerTeam)
             {
                 AddPlayerSlot(player, true);
             }
@@ -75,6 +79,29 @@ public class ResultUI : MonoBehaviourPun
         TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
         if (rewardText != null)
             rewardText.text = $"+{reward}";
+    }
+
+    public void AddMVPPlayerSlot(Player player)
+    {
+        // 프리팹 생성
+        GameObject slot = Instantiate(playerSlotPrefab, playersParent);
+        // 패널 배경 색상
+        Image bgImage = slot.GetComponent<Image>();
+        if (bgImage != null)
+            bgImage.color = (CustomProperty.GetTeam(player) == Team.Red) ? redTeamColor : blueTeamColor;
+        // 플레이어 닉네임
+        TextMeshProUGUI nameText = slot.transform.Find("PlayerNickname")?.GetComponent<TextMeshProUGUI>();
+        if (nameText != null)
+            nameText.text = player.NickName;
+        // 보상 점수 계산
+        int reward = 150;
+        // 보상 숫자 Text
+        TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
+        if (rewardText != null)
+            rewardText.text = $"+{reward}";
+        Image mvpImage = slot.transform.Find("MVPImage")?.GetComponent<Image>();
+        if (mvpImage != null)
+            mvpImage.gameObject.SetActive(true);
     }
 
     ///// <summary>
