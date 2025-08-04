@@ -25,7 +25,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [Header("UI 관련")]
     [SerializeField] ResultUI ResultPanel;
     [SerializeField] TextMeshProUGUI CountText;
-    
+
     [Header("탱크 리스트 확인용")]
     [SerializeField] List<PlayerController> tanks = new();
     [SerializeField] GameObject Arrow;
@@ -130,10 +130,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
+        Debug.Log("[StartNextTurn] : 턴 진행 시작");
         if (turnQueue.Count <= 0)
         {
             photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
             QueueAdd();
+            nextCycle.Clear();
         }
 
         currentPlayer = turnQueue.Dequeue();
@@ -161,7 +163,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         Debug.Log($"[QueueAdd] turnQueue 갱신 완료: {turnQueue.Count}명 / redRemain={redRemain}, blueRemain={blueRemain}");
     }
 
-    [PunRPC]
     private void EnableCurrentPlayer()
     {
         foreach (var playerCon in tanks)
@@ -169,11 +170,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             if (playerCon == null) continue;
             if (IsMyTurn() && playerCon.photonView.IsMine)
             {
+                Debug.Log($"[EnableCurrentPlayer] : {photonView.Owner.NickName} 통제 가능 호출됨");
                 playerCon.EnableControl(true);
                 playerCon.ResetTurn();
             }
             else
             {
+                Debug.Log($"[EnableCurrentPlayer] : {photonView.Owner.NickName} 통제 박탈 호출됨");
                 playerCon.EnableControl(false);
                 playerCon.EndPlayerTurn();
             }
@@ -244,8 +247,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_TurnFinished(int actorNumber)
     {
-        if (!PhotonNetwork.IsMasterClient)
-            return;
+        Debug.Log("[RPC_TurnFinished] : 작업 진행 ");
         isTurnRunning = false;
         photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
         if (curArrow != null)
@@ -268,11 +270,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_GameEnded(Team winnerTeam)
     {
-        if (isGameEnd)
+        if (!PhotonNetwork.IsMasterClient && isGameEnd)
             return;
 
         isGameEnd = true;
-
         Debug.Log("게임 종료!");
         Team myTeam = CustomProperty.GetTeam(PhotonNetwork.LocalPlayer);
         PlayerData data = Manager.Data.PlayerData;
@@ -307,6 +308,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_PlayerDead(int actorNumber)
     {
+        Debug.Log("[RPC_PlayerDead] : 호출됨");
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
         if (tank != null)
         {
@@ -319,10 +321,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartTurnForPlayer(int actorNumber)
     {
+        Debug.Log("[StartTurnForPlayer] : 호출됨");
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
             Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
-            photonView.RPC("EnableCurrentPlayer", RpcTarget.All);
             SpawnArrowCurrentPlayer();
             EnableCurrentPlayer();
         }
@@ -338,7 +340,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     #region MSK added
     [PunRPC]
-    private void RPC_UpdateTimerText(float remainingTime)
+    public void RPC_UpdateTimerText(float remainingTime)
     {
         CountText.text = $"{remainingTime:F0}";
     }
@@ -359,7 +361,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         else blueRemain--;
 
         Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
-
+        player.OnPlayerDied = null;
         tanks.Remove(player);
         tanks.RemoveAll(t => t == null);
         if (redRemain <= 0 || blueRemain <= 0)
@@ -371,7 +373,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     public void TurnFinished()
     {
-        photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+        Debug.Log("[TurnFinished] : 턴 종료 호출됨");
+        photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
     [PunRPC]
     private void ResultActivate()
@@ -424,10 +427,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             tank.OnPlayerDied += () =>
             {
-                photonView.RPC("RPC_PlayerDead", RpcTarget.All, tank.photonView.Owner.ActorNumber);
+                photonView.RPC("RPC_PlayerDead", RpcTarget.MasterClient, tank.photonView.Owner.ActorNumber);
             };
         }
     }
+
     public bool IsMyTurn()
     {
         if (currentPlayer == null)

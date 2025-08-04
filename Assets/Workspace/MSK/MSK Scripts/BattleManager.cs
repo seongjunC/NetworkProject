@@ -1,5 +1,4 @@
 using Photon.Pun;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,8 +24,7 @@ public class TestBattleManager : MonoBehaviourPun
             _playerController.EndPlayerTurn();
 
         if (_turnController.IsMyTurn())
-                _turnController.TurnFinished();
-
+            _turnController.TurnFinished();
     }
     private void PlayerAttacked()
     {
