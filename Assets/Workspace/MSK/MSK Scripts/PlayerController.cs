@@ -64,9 +64,12 @@ public class PlayerController : MonoBehaviourPun
         }
 
         // 닉네임 색상 설정
-        _textMeshPro.text = photonView.IsMine
-            ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>"
-            : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
+        //_textMeshPro.text = photonView.IsMine
+        //    ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>"
+        //    : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
+
+        _textMeshPro.text = photonView.Owner.NickName;
+        _textMeshPro.color = CustomProperty.GetTeam(photonView.Owner) == Game.Team.Red ? Color.red : Color.blue;
     }
 
     private void PlayerSetUp()
