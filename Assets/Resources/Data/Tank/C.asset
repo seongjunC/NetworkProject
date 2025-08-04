@@ -18,5 +18,5 @@ MonoBehaviour:
   maxHp: 1
   tankName: C
   rank: 3
-  icon: {fileID: 21300000, guid: fbb809cd7e4fd064b8a63e71f85242d9, type: 3}
+  Icon: {fileID: 21300000, guid: 6f33133a895fb9b44800f7e6f924b0a0, type: 3}
   description: "C\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

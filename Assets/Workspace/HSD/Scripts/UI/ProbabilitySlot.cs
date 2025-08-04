@@ -12,7 +12,7 @@ public class ProbabilitySlot : MonoBehaviour
 
     public void SetUp(TankData data, float percent)
     {
-        icon.sprite = data.icon;
+        icon.sprite = data.Icon;
         nameText.text = data.tankName;
         percentText.text = $"{percent.ToString("F5")}%";
     }

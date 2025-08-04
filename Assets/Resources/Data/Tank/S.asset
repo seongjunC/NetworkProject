@@ -18,5 +18,5 @@ MonoBehaviour:
   maxHp: 1
   tankName: S
   rank: 0
-  icon: {fileID: 21300000, guid: 997bcb066c248844099898e0020f458f, type: 3}
+  Icon: {fileID: 21300000, guid: d2b1d35503b1f4d4ab01a5673a90ae6d, type: 3}
   description: "S\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
