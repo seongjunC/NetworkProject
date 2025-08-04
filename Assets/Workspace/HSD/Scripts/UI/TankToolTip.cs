@@ -14,7 +14,8 @@ public class TankToolTip : MonoBehaviour
 
     [Header("Texts")]
     [SerializeField] TMP_Text tankNameText;
-    [SerializeField] TMP_Text rankText;    
+    [SerializeField] TMP_Text rankText;
+    [SerializeField] TMP_Text levelText;
     [SerializeField] TMP_Text damageText;
     [SerializeField] TMP_Text maxMoveText;
     [SerializeField] TMP_Text hpText;
@@ -25,11 +26,6 @@ public class TankToolTip : MonoBehaviour
     [SerializeField] private float yLimit = 540;
     [SerializeField] private float xOffset = 150;
     [SerializeField] private float yOffset = 150;
-
-    private void Start()
-    {
-        upgradeSlider.maxValue = Manager.Data.TankInventoryData.needUpgradeCount;
-    }
 
     public void ShowToolTip(TankData data, Color rankColor, Vector2 pos)
     {
@@ -43,14 +39,19 @@ public class TankToolTip : MonoBehaviour
         maxMoveText.text = data.maxMove.ToString();
 
         // 데이터
+        levelText.text = $"Lv.{data.Level.ToString()}";
         rankText.text = data.rank.ToString();
         rankText.color = rankColor;
-        tankIcon.sprite = data.icon;
+        tankIcon.sprite = data.Icon;
         tankNameText.text = data.tankName;
 
         // 업그레이드
-        upgradeCountText.text = $"{data.count} / {Manager.Data.TankInventoryData.needUpgradeCount}";
-        upgradeSlider.value = data.count;
+        int required = data.GetRequiredCountForNextLevel();
+        int progress = data.GetProgressTowardsNextLevel();
+
+        upgradeCountText.text = $"{progress} / {required}";
+        upgradeSlider.maxValue = required;
+        upgradeSlider.value = progress;   
     }
 
     public void CloseToolTip()

@@ -10,19 +10,19 @@ public class GroundFollower : MonoBehaviour
     [Tooltip("지면으로 인식할 레이어를 선택합니다.")]
     public LayerMask groundLayer;
     [Tooltip("지면을 감지할 CircleCast의 반지름입니다.")]
-    public float groundCheckRadius = 0.4f;
+    public float groundCheckRadius = 1f;
     [Tooltip("오브젝트 중심에서 아래로 발사할 CircleCast의 최대 거리입니다.")]
-    public float groundCheckDistance = 0.5f;
+    public float groundCheckDistance = 1.1f;
 
     [Header("경사 제한 설정")]
     [Tooltip("캐릭터가 서 있을 수 있는 최대 경사 각도입니다. 이보다 가파르면 떨어집니다.")]
-    public float maxSlopeAngle = 50f;
+    public float maxSlopeAngle = 60f;
 
     [Header("물리 효과 설정")]
     [Tooltip("지형 경사에 맞춰 얼마나 부드럽게 회전할지 결정합니다.")]
-    public float rotationSpeed = 20f;
+    public float rotationSpeed = 10f;
     [Tooltip("땅에 붙어있게 하는 미세한 추가 속도입니다.")]
-    public float stickiness = 1f;
+    public float stickiness = 6f;
 
     private Rigidbody2D rb;
     private float originalGravityScale;
@@ -95,5 +95,34 @@ public class GroundFollower : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, groundNormal);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // isGrounded 상태에 따라 기즈모 색상을 설정합니다.
+        if (isGrounded)
+        {
+            Gizmos.color = Color.green; // 지면에 닿았을 때: 녹색
+        }
+        else
+        {
+            Gizmos.color = Color.red; // 공중에 떠 있을 때: 빨간색
+        }
+
+        // CircleCast의 시작점과 끝점을 계산합니다.
+        Vector3 startPos = transform.position;
+        Vector3 endPos = startPos - transform.up * groundCheckDistance;
+
+        // 시작 위치와 끝 위치에 원(Sphere)을 그립니다.
+        Gizmos.DrawWireSphere(startPos, groundCheckRadius);
+        Gizmos.DrawWireSphere(endPos, groundCheckRadius);
+
+        // 두 원을 연결하는 라인을 그려 캡슐 형태를 만듭니다.
+        Gizmos.DrawLine(startPos + transform.right * groundCheckRadius, endPos + transform.right * groundCheckRadius);
+        Gizmos.DrawLine(startPos - transform.right * groundCheckRadius, endPos - transform.right * groundCheckRadius);
+
+        // 캐스트의 중심선을 노란색으로 그립니다.
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(startPos, endPos);
     }
 }

@@ -25,7 +25,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Main Panel")]
     [SerializeField] GameObject title;
     [SerializeField] GameObject lobby;    
-    [SerializeField] GameObject room;
+    [SerializeField] GameObject room;   
     [SerializeField] PasswordPanel passwordPanel;
 
     [Header("Main Buttons")]
@@ -33,6 +33,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] Button optionButton;
     [SerializeField] Button gameOutButton;
     [SerializeField] Button logOutButton;
+
+    [Header("Coupon")]
+    [SerializeField] Button couponButton;
+    [SerializeField] GameObject couponPanel;
 
     [Header("Sub Panel")]
     [SerializeField] GameObject roomSelectPanel;
@@ -64,10 +68,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     #region LifeCycle
     public override void OnEnable()
     {
-        base.OnEnable();
+        base.OnEnable();        
 
         Subscribe();
-        isRoomCreate = false;    
+        isRoomCreate = false;
     }
 
     public override void OnDisable()
@@ -84,6 +88,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         tankInventoryButton.onClick.AddListener(OpenTankInventory);
 
+        couponButton.onClick    .AddListener(OpenCouponPanel);
         gachaButton.onClick     .AddListener(GachaOpen);
         roomRightButton.onClick .AddListener(RoomIndexPlus);
         roomLeftButton.onClick  .AddListener(RoomIndexMinus);
@@ -112,6 +117,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         tankInventoryButton.onClick.RemoveListener(OpenTankInventory);
 
+        couponButton.onClick    .RemoveListener(OpenCouponPanel);
         gachaButton.onClick     .RemoveListener(GachaOpen);
         roomRightButton.onClick .RemoveListener(RoomIndexPlus);
         roomLeftButton.onClick  .RemoveListener(RoomIndexMinus);
@@ -324,9 +330,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetTurnRandom(true);
         PhotonNetwork.CurrentRoom.SetFull(false);
         PhotonNetwork.CurrentRoom.SetDamageType(false);
-        PhotonNetwork.CurrentRoom.SetGameStart(false);
-
-        StartCoroutine(TestCoroutine());
+        PhotonNetwork.CurrentRoom.SetGameStart(false);        
 
         if (isPassword.isOn)
         {
@@ -337,11 +341,15 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Debug.Log("방 생성 완료");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
-    private IEnumerator TestCoroutine()
+
+    private void OpenCouponPanel()
     {
-        yield return new WaitForSeconds(2);
-        Debug.Log(PhotonNetwork.CurrentRoom.GetGameStart());
+        if(Manager.Game.State != Game.State.Lobby)
+            return;
+
+        couponPanel.SetActive(true);
     }
+
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         isRoomCreate = false;

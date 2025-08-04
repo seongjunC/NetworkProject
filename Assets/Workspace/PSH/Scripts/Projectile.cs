@@ -152,6 +152,11 @@ public class Projectile : MonoBehaviour
             var player = hit.GetComponent<PlayerController>();
             // TODO : 데미지 적용 공식 추가하기
             player.OnHit(realDamage);
+            // 피격 이펙트
+            if (EffectSpawner.Instance != null)
+            {
+                EffectSpawner.Instance.SpawnExplosion(hit.transform.position);
+            }
             Debug.Log($"플레이어에게 {realDamage} 데미지");
             realDamage = damage;    //데미지 초기화
         }

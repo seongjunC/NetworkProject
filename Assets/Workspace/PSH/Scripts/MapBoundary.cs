@@ -7,6 +7,7 @@ public class MapBoundary : MonoBehaviour
     public SpriteRenderer mapSpriteRenderer;
 
     public float padding = 2f;
+    public float paddingUp = 10f;  //위로 쐈을 때는 맵 영역을 벗어났다고 생각하면 안됨
 
     private BoxCollider2D boxCollider;
 
@@ -69,10 +70,10 @@ public class MapBoundary : MonoBehaviour
 
     public void ResizeCollider()
     {
-        transform.position = mapSpriteRenderer.transform.position;
+        transform.position = mapSpriteRenderer.transform.position ;
         mapSize = mapSpriteRenderer.bounds.size;
-        boxCollider.size = mapSize + new Vector2(padding,padding);
-        boxCollider.offset = Vector2.zero;
+        boxCollider.size = mapSize + new Vector2(padding,padding + 2 * paddingUp);
+        boxCollider.offset = new Vector2(0, paddingUp);
         Debug.Log("맵 크기에 맞게 트리거 영역 설정 완료");
     }
     private void OnDrawGizmos()

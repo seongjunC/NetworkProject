@@ -5,12 +5,11 @@ using Unity.VisualScripting;
 public class Coupon
 {
     public string CouponKey;
-    public bool IsUse = false;
-    public int Amount;
+    public bool IsUse = false;    
 
-    public Coupon(string _couponKey, int _amount)
+    public Coupon(string _couponKey)
     {
         CouponKey = _couponKey;
-        Amount = _amount;
+        IsUse = false;
     }
 }

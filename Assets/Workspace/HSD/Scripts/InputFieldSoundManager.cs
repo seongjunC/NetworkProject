@@ -10,7 +10,7 @@ public class InputFieldSoundManager : MonoBehaviour
 
     private void Start()
     {
-        TMP_InputField[] inputFields = FindObjectsOfType<TMP_InputField>();
+        TMP_InputField[] inputFields = FindObjectsOfType<TMP_InputField>(true);
 
         foreach (var field in inputFields)
         {

@@ -48,7 +48,8 @@ public class RoomManager : MonoBehaviourPun
     [Header("Panel")]
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
-    [SerializeField] GameObject gameSettingPanel;    
+    [SerializeField] GameObject gameSettingPanel;
+    [SerializeField] GameObject login;
 
     [Header("Chat")]
     [SerializeField] Chat chat;
@@ -73,6 +74,14 @@ public class RoomManager : MonoBehaviourPun
     private void OnEnable()
     {
         Subscribe();
+
+        if (Manager.Game.State == Game.State.Game)
+        {
+            login.SetActive(false);
+            room.SetActive(true);
+
+            Manager.Game.State = Game.State.Lobby;
+        }
     }
     private void OnDisable()
     {
@@ -393,6 +402,7 @@ public class RoomManager : MonoBehaviourPun
             return;
         }
 
+        Manager.Game.State = State.Game;
         PhotonNetwork.CurrentRoom.SetGameStart(true);
         PhotonNetwork.LoadLevel("MSK InGameTest"); // æ¿¿Ãµø
     }
