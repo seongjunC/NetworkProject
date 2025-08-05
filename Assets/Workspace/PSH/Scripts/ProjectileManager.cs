@@ -8,6 +8,7 @@ public class ProjectileManager : MonoBehaviourPun
 
     [SerializeField] Texture2D explosionMask;
 
+    private FloatingTextSpawner floatingTextSpawner;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -18,6 +19,10 @@ public class ProjectileManager : MonoBehaviourPun
         Instance = this;
     }
 
+    private void Start()
+    {
+        floatingTextSpawner = GetComponent<FloatingTextSpawner>();
+    }
     [PunRPC]
     public void RPC_RequestFireProjectile(Vector3 firePointPosition, Quaternion firePointRotation, float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber)
     {
@@ -92,12 +97,14 @@ public class ProjectileManager : MonoBehaviourPun
             PlayerController player = FindObjectOfType<MSKTurnController>().GetPlayerController(actorNumber);
             if (player != null)
             {
-                player.OnHit(realDamage);
                 // 피격 이펙트 (각 클라이언트에서 생성)
                 if (EffectSpawner.Instance != null)
                 {
                     EffectSpawner.Instance.SpawnExplosion(player.transform.position);
+                    string str = realDamage.ToString();
+                    floatingTextSpawner.SpawnText(str, player.transform.position);
                 }
+                player.OnHit(realDamage);
                 Debug.Log($"[ProjectileManager] 플레이어 {actorNumber}에게 {realDamage} 데미지 적용");
             }
         }

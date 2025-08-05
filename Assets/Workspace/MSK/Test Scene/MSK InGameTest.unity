@@ -7170,6 +7170,7 @@ GameObject:
   - component: {fileID: 1448513394}
   - component: {fileID: 1448513393}
   - component: {fileID: 1448513395}
+  - component: {fileID: 1448513396}
   m_Layer: 0
   m_Name: ProjectileManager
   m_TagString: Untagged
@@ -7227,6 +7228,21 @@ MonoBehaviour:
   sceneViewId: 5
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &1448513396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448513392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f7d83ff5b62d8140bed457bcb564904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatingTextPrefab: {fileID: 419903368279807418, guid: 6de216b081004ce4cbf705bc84ce133c, type: 3}
+  moveSpeed: 1
+  duration: 3
 --- !u!1 &1470499857
 GameObject:
   m_ObjectHideFlags: 0
