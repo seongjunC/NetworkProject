@@ -36,7 +36,7 @@ public class PlayerInfoPanel : MonoBehaviour
 
         playerName.text = player.NickName;
 
-        Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Win").GetValueAsync().ContinueWithOnMainThread(task =>
+        Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Data").Child("Win").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted) return;
 
@@ -46,7 +46,7 @@ public class PlayerInfoPanel : MonoBehaviour
 
             winCount.text = win.ToString();
         });
-        Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
+        Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Data").Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted) return;
 
