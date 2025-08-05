@@ -173,4 +173,14 @@ public class PlayerController : MonoBehaviourPun
         _hp = MathF.Min(_hp + _data.maxHp * Amount / 100, _data.maxHp);
         Debug.Log($"{_hp - beforeHp} 만큼 체력 회복");
     }
+
+    public bool HasFreeItemSlot()
+    {
+        return !myInfo.Isfull();
+    }
+
+    public bool TryAcquireItem(ItemData data)
+    {
+        return myInfo.ItemAcquire(data);
+    }
 }

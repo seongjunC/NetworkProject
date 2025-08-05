@@ -11,7 +11,7 @@ public class ItemSpawner : MonoBehaviourPun
 
     [Header("낙하산 프리팹")]
     [SerializeField]
-    private GameObject parachuteDropPrefab;
+    private GameObject RandomBoxPrefab;
 
     [Header("낙하 관련 설정")]
     [SerializeField] private float fallSpeed = 5f;
@@ -37,13 +37,13 @@ public class ItemSpawner : MonoBehaviourPun
         Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
 
         GameObject drop = PhotonNetwork.Instantiate(
-            parachuteDropPrefab.name,
+            "Prefabs/RandomBoxPrefab",
             spawnPos,
             Quaternion.identity
         );
 
-        //var pd = parachuteDropPrefab.GetComponent<Parachute>();
-        //pd.Init(selectedItem, fallSpeed, swayAmp, swayFreq);
+        var pd = drop.GetComponent<FallingBox>();
+        pd.Init(selectedItem, fallSpeed, swayAmp, swayFreq);
 
     }
 

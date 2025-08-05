@@ -22,7 +22,7 @@ public class PlayerInfo
         KillCount = 0;
     }
 
-    public void ItemAcquire(ItemData item)
+    public bool ItemAcquire(ItemData item)
     {
         int length = items.Length;
         for (int i = 0; i < length; i++)
@@ -30,21 +30,24 @@ public class PlayerInfo
             if (items[i] == null)
             {
                 items[i] = item;
-                return;
+                return true;
             }
         }
+        return false;
 
-        // 인게임 UI에서 Item을 선택받아 오기
-        ItemData removeItem;
-        // removeItem = 
-        // 임시 지정
-        removeItem = new ItemData();
-
-        int itemNum = ItemRemove(removeItem);
-        if (itemNum < items.Length)
-        {
-            items[itemNum] = item;
-        }
+        #region 기획 수정으로 미사용
+        //         // 인게임 UI에서 Item을 선택받아 오기
+        //         ItemData removeItem;
+        //         // removeItem = 
+        //         // 임시 지정
+        //         removeItem = new ItemData();
+        // 
+        //         int itemNum = ItemRemove(removeItem);
+        //         if (itemNum < items.Length)
+        //         {
+        //             items[itemNum] = item;
+        //         }
+        #endregion
     }
 
     public int ItemRemove(ItemData removeItem)
@@ -58,7 +61,11 @@ public class PlayerInfo
         {
             for (int i = 0; i < items.Length; i++)
             {
-                if (items[i] == removeItem) return i + 1;
+                if (items[i] == removeItem)
+                {
+                    items[i] = null;
+                    return i + 1;
+                }
             }
         }
 
@@ -93,7 +100,15 @@ public class PlayerInfo
         }
         items[order].UseItem();
         ItemRemove(order);
+    }
 
+    public bool Isfull()
+    {
+        foreach (var h in items)
+        {
+            if (h == null) return false;
+        }
+        return true;
     }
 
     public void ToDealDamage(int amount)
