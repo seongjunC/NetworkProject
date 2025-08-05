@@ -21,9 +21,10 @@ public class FloatingTextSpawner : MonoBehaviour
         GameObject textObj = Instantiate(floatingTextPrefab, pos, Quaternion.identity);
 
         // 텍스트 내용과 색상 설정
-        TextMeshProUGUI tmpro = textObj.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI tmpro = textObj.GetComponentInChildren<TextMeshProUGUI>();
         if (tmpro != null)
         {
+            Debug.Log("텍스트 변경 완료");
             tmpro.text = text;
         }
 
