@@ -31,6 +31,12 @@ public class Projectile : MonoBehaviourPun
     [Header("기즈모")]
     private Vector2 gizmoCenter;
     private float gizmoRadius;
+
+    [Header("바람")]
+    [SerializeField] private float windEffectMultiplier = 1f; // 바람의 영향을 받는 정도
+
+    private Vector2 windForce;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -58,8 +64,25 @@ public class Projectile : MonoBehaviourPun
             myTeam = PhotonNetwork.LocalPlayer.GetTeam(); // 마스터 클라이언트의 팀
         }
         realDamage = damage;
+
+        // 바람 정보 저장
+        if (WindManager.Instance != null)
+        {
+            windForce = WindManager.Instance.CurrentWind;
+        }
     }
 
+    // 바람
+    private void FixedUpdate()
+    {
+        if (photonView.IsMine)
+        {
+            if (rb != null)
+            {
+                rb.AddForce(windForce * windEffectMultiplier, ForceMode2D.Force);
+            }
+        }
+    }
     private void Update()
     {
         if (!photonView.IsMine)
