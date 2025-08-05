@@ -1,7 +1,6 @@
 using Photon.Pun;
 using System;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : MonoBehaviourPun
 {
@@ -21,7 +20,6 @@ public class PlayerController : MonoBehaviourPun
     public bool IsAttacked { get; private set; } = false;
 
     public Action OnPlayerAttacked;
-    public Action OnPlayerDied;
 
     [Header("이동 및 지면 설정")]
     [SerializeField] private float moveSpeed = 5f;
@@ -70,33 +68,14 @@ public class PlayerController : MonoBehaviourPun
         //    ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>"
         //    : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
 
-        InitPlayecr(photonView.InstantiationData);
-
         _textMeshPro.text = photonView.Owner.NickName;
         _textMeshPro.color = CustomProperty.GetTeam(photonView.Owner) == Game.Team.Red ? Color.red : Color.blue;
-    }
-
-
-    /// <summary>
-    /// 플레이어 초기화함수 (생성될 때 실행됨)
-    /// </summary>
-    private void InitPlayecr(object[] datas)
-    {
-        TankData data = Manager.Data.TankDataController.TankDatas[(string)datas[0]];
-        _data = Instantiate(data);      // 개별 인스턴스를 생성해야 다른 클라에 영향을 주지 않음
-        _data.Level = (int)datas[1];
-        _data.InitStat();
-
-        // 달라져야 할 데이터들을 모두 세팅함
-        // 예를 들어 Animator, 총알 프리팹
-        // 해당 데이터를 TankData에 넣고 세팅하는게 좋아 보입니다.
     }
 
     private void PlayerSetUp()
     {
         myInfo = new PlayerInfo(photonView.Owner);
     }
-
     void FixedUpdate()
     {
         CheckGroundStatus();
@@ -179,22 +158,24 @@ public class PlayerController : MonoBehaviourPun
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("MapBoundary"))
+        {
+            if (player == null)
+                return;
             PlayerDead();
+        }
     }
 
     public void PlayerDead()
     {
-        if (_isDead) return;
+        if (_isDead)
+            return;
         _isDead = true;
         OnPlayerAttacked = null;
         Debug.Log("플레이어 사망");
-        OnPlayerDied?.Invoke();
-    }
+        if (PhotonView.Find(2) == null)
+            return;
 
-    [PunRPC]
-    public void RPC_PCDead()
-    {
-        gameObject.SetActive(false);
+        PhotonView.Find(2).RPC("RPC_PlayerDead", RpcTarget.All, photonView.Owner.ActorNumber);
     }
 
     public void EnableControl(bool enable)

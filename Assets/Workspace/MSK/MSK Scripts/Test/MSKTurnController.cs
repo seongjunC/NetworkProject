@@ -289,6 +289,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         int currentActor = currentPlayer.ActorNumber;
         return currentActor == localActor;
     }
+    /*
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
@@ -308,7 +309,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             controller.PlayerDead();
         }
     }
-
+    */
     #endregion
 
 
@@ -375,6 +376,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             else
                 losers.Add(player);
         }
+        foreach (var tank in tanks)
+        {
+            tank.GetComponent<Collider2D>().enabled = false;
+        }
         photonView.RPC("ResultActivate", RpcTarget.All);
         Player MVPPlayer = ReturnMVP(winnerTeam);
         ResultPanel.photonView.RPC("UpdateResult", RpcTarget.All, winnerTeam, MVPPlayer.ActorNumber);
@@ -433,7 +438,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             var info = new PlayerInfo(player);
             allPlayers[player.ActorNumber] = info;
         }
-        RegisterPlayerEvents();
     }
 
     private void OnPlayerDied(PlayerController player)
@@ -498,19 +502,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             Debug.Log("[MSKTurnController] 모든 플레이어가 스폰 완료됨 → GameStart()");
             GameStart();
-        }
-    }
-
-    //  사망 이벤트 등록용
-    private void RegisterPlayerEvents()
-    {
-        foreach (var tank in tanks)
-        {
-            tank.OnPlayerDied = null;
-            tank.OnPlayerDied += () =>
-            {
-                photonView.RPC("RPC_PlayerDead", RpcTarget.MasterClient, tank.photonView.Owner.ActorNumber);
-            };
         }
     }
     #endregion
