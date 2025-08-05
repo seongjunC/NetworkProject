@@ -71,7 +71,7 @@ public class Fire : MonoBehaviourPun
         }
 
         // PlayerController의 firePoint 정보를 사용합니다.
-        _projectileManager.photonView.RPC("RPC_RequestFireProjectile", RpcTarget.MasterClient,
+        _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
             OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber);
 

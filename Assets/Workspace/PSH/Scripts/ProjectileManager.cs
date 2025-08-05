@@ -35,7 +35,7 @@ public class ProjectileManager : MonoBehaviourPun
         GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePointPosition, firePointRotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
 
-        EffectSpawner.Instance.SpawnFire(firePointPosition, firePointRotation);
+        photonView.RPC(nameof(RPC_SpawnFireEffect), RpcTarget.All, firePointPosition, firePointRotation);
 
         // 데미지 버프 적용
         if (onDamageBuff)
@@ -58,6 +58,14 @@ public class ProjectileManager : MonoBehaviourPun
         PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
         photonView.RPC(nameof(RPC_SetBulletTarget), RpcTarget.All, bulletPhotonView.ViewID);
     }
+
+    [PunRPC]
+    public void RPC_SpawnFireEffect(Vector3 firePointPosition, Quaternion firePointRotation)
+    {
+        EffectSpawner.Instance.SpawnFire(firePointPosition, firePointRotation);
+    }
+
+
 
     [PunRPC]
     private void RPC_SetBulletTarget(int bulletViewID)
