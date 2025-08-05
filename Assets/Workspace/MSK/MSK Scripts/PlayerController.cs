@@ -101,15 +101,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (Mathf.Abs(horizontalInput) > 0.1f)
         {
             isFacingRight = horizontalInput > 0;
+            player.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f);
 
             if (_movable > 0)
             {
-                _movable -= Mathf.Abs(horizontalInput) * _data.speed * Time.deltaTime;
+                _movable -= Time.deltaTime;
+                Debug.Log("움직이는중");
             }         
         }
 
-        // 방향 즉시 반영
-        player.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f);
+        
 
         if (_movable <= 0)
         {
@@ -118,13 +119,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
 
         // 포신 각도 조절 입력
-        float verticalInput = Input.GetAxis("Vertical");
+        float verticalInput = Input.GetAxisRaw("Vertical");
         if (verticalInput != 0)
         {
             float angleDelta = verticalInput * muzzleRotationSpeed * Time.deltaTime;
-            // 탱크 방향에 따라 각도 조절 방향을 반대로
-            turretAngle -= isFacingRight ? angleDelta : -angleDelta;
-            turretAngle = Mathf.Clamp(turretAngle, -90f, 90f);
+            turretAngle = Mathf.Clamp(turretAngle + angleDelta, 0f, 90f);
         }
         // 포신 각도 즉시 반영
         muzzleRotatePos.localRotation = Quaternion.Euler(0, 0, turretAngle);
