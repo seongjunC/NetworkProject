@@ -26,7 +26,7 @@ public class AudioManager : Singleton<AudioManager>
 
     private const string SOUND_PATH = "Sound/";
 
-    public void Awake()
+    private void Awake()
     {
         sfxCached = new Dictionary<string, AudioClip>();
 
@@ -136,6 +136,43 @@ public class AudioManager : Singleton<AudioManager>
         bgmSource.volume = volume;
         bgmSource.pitch = pitch;
         bgmSource.Play();
+    }
+
+    public void PlayBGMFade(string name, float volume = 1f, float pitch = 1f, float fadeTime = 1f)
+    {
+        if (string.IsNullOrEmpty(name)) return;
+        StartCoroutine(FadeOutAndPlayNewBGM(name, volume, pitch, fadeTime));
+    }
+
+    private IEnumerator FadeOutAndPlayNewBGM(string name, float volume, float pitch, float fadeTime)
+    {
+        if (bgmSource.isPlaying)
+        {
+            float startVolume = bgmSource.volume;
+            float elapsed = 0f;
+
+            while (elapsed < fadeTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / fadeTime);
+                bgmSource.volume = Mathf.Lerp(startVolume, 0, t);
+                yield return null;
+            }
+
+            bgmSource.Stop();
+        }
+
+        bgmSource.clip = LoadClip(name, SoundType.BGM);
+        bgmSource.pitch = pitch;
+        bgmSource.Play();
+
+        for (float t = 0; t < fadeTime; t += Time.deltaTime)
+        {
+            bgmSource.volume = Mathf.Lerp(0, volume, t / fadeTime);
+            yield return null;
+        }
+
+        bgmSource.volume = volume;
     }
 
     private AudioClip LoadClip(string name, SoundType type)
