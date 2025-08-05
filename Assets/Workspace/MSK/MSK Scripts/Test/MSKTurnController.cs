@@ -345,9 +345,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_GameEnded(Team winnerTeam)
     {
-        if (isGameEnd)
-            return;
-
         isTurnRunning = false;
         isGameEnd = true;
         Debug.Log("게임 종료!");
@@ -376,10 +373,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             else
                 losers.Add(player);
         }
+
         foreach (var tank in tanks)
         {
             tank.GetComponent<Collider2D>().enabled = false;
         }
+
         photonView.RPC("ResultActivate", RpcTarget.All);
         Player MVPPlayer = ReturnMVP(winnerTeam);
         ResultPanel.photonView.RPC("UpdateResult", RpcTarget.All, winnerTeam, MVPPlayer.ActorNumber);
@@ -392,9 +391,9 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
         if (tank != null)
         {
-            tank.photonView.RPC("RPC_PCDead", RpcTarget.All);
             OnPlayerDied(tank);
             tanks.Remove(tank);
+            tank.gameObject.SetActive(false);
         }
         GameEndCheck();
     }
