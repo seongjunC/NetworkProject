@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Fire : MonoBehaviourPun
@@ -71,9 +72,12 @@ public class Fire : MonoBehaviourPun
         }
 
         // PlayerController의 firePoint 정보를 사용합니다.
+        // 포신 각도 * 로컬스케일 + 지면 각도
+        bool isRight = transform.localScale.z > 0;
+        float playerAngle = gameObject.transform.eulerAngles.z;
         _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
-            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber);
+            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight);
 
         InitDamageBuff();
     }
