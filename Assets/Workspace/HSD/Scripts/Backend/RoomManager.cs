@@ -64,7 +64,7 @@ public class RoomManager : MonoBehaviourPun
     #region LifeCycle
     private void Start()
     {
-        CreateMapSlot();
+        
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
@@ -93,6 +93,14 @@ public class RoomManager : MonoBehaviourPun
     #region EventSubscribe
     private void Subscribe()
     {
+        PlayerSlot.OnKick += Kick;
+
+        redTeamChangeButton.onClick.AddListener(OnClickRedTeamChange);
+        blueTeamChangeButton.onClick.AddListener(OnClickBlueTeamChange);
+        waitTeamChangeButton.onClick.AddListener(OnClickWaitTeamChange);
+        gameSettingButton.onClick.AddListener(OnClickGameSettingOpen);
+        gameSettingCloseButton.onClick.AddListener(OnClickGameSettingClose);
+
         exitButton.onClick.AddListener(LeaveRoom);
         readyButton.onClick.AddListener(Ready);
         startButton.onClick.AddListener(GameStart);
@@ -104,6 +112,14 @@ public class RoomManager : MonoBehaviourPun
 
     private void UnSubscribe()
     {
+        PlayerSlot.OnKick -= Kick;
+
+        redTeamChangeButton.onClick.RemoveListener(OnClickRedTeamChange);
+        blueTeamChangeButton.onClick.RemoveListener(OnClickBlueTeamChange);
+        waitTeamChangeButton.onClick.RemoveListener(OnClickWaitTeamChange);
+        gameSettingButton.onClick.RemoveListener(OnClickGameSettingOpen);
+        gameSettingCloseButton.onClick.RemoveListener(OnClickGameSettingClose);
+
         exitButton.onClick.RemoveListener(LeaveRoom);
         readyButton.onClick.RemoveListener(Ready);
         startButton.onClick.RemoveListener(GameStart);
@@ -180,7 +196,6 @@ public class RoomManager : MonoBehaviourPun
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
-            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         else
@@ -223,7 +238,6 @@ public class RoomManager : MonoBehaviourPun
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
-            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         SetButtonInteractable();
@@ -243,7 +257,6 @@ public class RoomManager : MonoBehaviourPun
         if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
         {
             Destroy(panel.gameObject);
-            panel.OnKick -= Kick;
             playerSlotDic.Remove(player.ActorNumber);
         }
         else
@@ -408,13 +421,42 @@ public class RoomManager : MonoBehaviourPun
         PhotonNetwork.LoadLevel("MSK InGameTest"); // æ¿¿Ãµø
     }
 
+    #region Events
+    private void OnClickRedTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Red);
+    }
+
+    private void OnClickBlueTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Blue);
+    }
+
+    private void OnClickWaitTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Wait);
+    }
+
+    private void OnClickGameSettingOpen()
+    {
+        GameSettingPanelActive(true);
+    }
+
+    private void OnClickGameSettingClose()
+    {
+        GameSettingPanelActive(false);
+    }
+    #endregion
+
     #region PhotonCallbacks
     public void OnJoinedRoom()
     {
         PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         roomName.text = PhotonNetwork.CurrentRoom.Name;
         Manager.UI.FadeScreen.FadeOut(.5f);
+
         Init();
+        CreateMapSlot();
         CreatePlayerSlot();
         UpdateAllPlayerSlot();
         UpdateReadyCountText();
