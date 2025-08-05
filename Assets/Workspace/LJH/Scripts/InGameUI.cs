@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,16 +21,18 @@ public class InGameUI : MonoBehaviour
     public Button item2Button;     // 아이템2 버튼
     public Button endTurnButton;
 
-    [Header("Item Icons")]
-    [SerializeField] private Image item1Icon;
-    [SerializeField] private Image item2Icon;
-
     // 아이템 슬롯에 아이템 데이터 저장
     private Sprite item1Sprite = null;
     private Sprite item2Sprite = null;
+    private ItemData item1 = null;
+    private ItemData item2 = null;
 
     [Header("Text")]
     public TextMeshProUGUI healthPointText; // 체력 텍스트
+
+
+    private PlayerController _player;
+    private Fire _fire;
 
     void Start()
     {
@@ -48,18 +51,42 @@ public class InGameUI : MonoBehaviour
         endTurnButton.onClick.AddListener(OnEndTurnClick);
     }
 
-    public void AddItem(Sprite itemIcon)
+    public void RegisterPlayer(PlayerController playerController)
+    {
+        _player = playerController;
+        _fire = _player.GetComponentInChildren<Fire>();
+
+        if (_fire != null)
+            powerBar.maxValue = _fire.maxPower;
+
+        hpBar.maxValue = _player._hp;
+        moveBar.maxValue = _player._movable;
+    }
+
+
+    private void Update()
+    {
+        if (_player == null) return;
+
+        hpBar.value = _player._hp;
+        moveBar.value = _player._movable;
+
+        if (_fire != null)
+            powerBar.value = _fire.powerCharge;
+    }
+
+    public void AddItem(ItemData item)
     {
         if (item1Sprite == null)
         {
-            item1Sprite = itemIcon;
-            item1Icon.sprite = itemIcon;
+            item1Sprite = item.icon;
+            item1 = item;
             item1Button.gameObject.SetActive(true);
         }
         else if (item2Sprite == null)
         {
-            item2Sprite = itemIcon;
-            item2Icon.sprite = itemIcon;
+            item2Sprite = item.icon;
+            item2 = item;
             item2Button.gameObject.SetActive(true);
         }
         else
@@ -72,6 +99,7 @@ public class InGameUI : MonoBehaviour
     private void OnItem1Click()
     {
         Debug.Log("아이템 1 사용");
+        MSKTurnController.Instance.UseItem(item1);
         // 아이템 1 사용 로직 추가
         ClearSlot(1);
     }
@@ -79,6 +107,7 @@ public class InGameUI : MonoBehaviour
     private void OnItem2Click()
     {
         Debug.Log("아이템 2 사용");
+        MSKTurnController.Instance.UseItem(item2);
         // 아이템 2 사용 로직 추가
         ClearSlot(2);
     }
@@ -104,23 +133,23 @@ public class InGameUI : MonoBehaviour
         // 턴 종료 로직 추가
     }
 
-    // 체력 업데이트
-    public void SetHP(float current, float max)
-    {
-        hpBar.value = current / max;
-    }
-
-    // 이동 게이지 업데이트
-    public void SetMove(float current, float max)
-    {
-        moveBar.value = current / max;
-    }
-
-    // 파워 차지 업데이트
-    public void SetPower(float charge)
-    {
-        powerBar.value = charge;
-    }
+    //     // 체력 업데이트
+    //     public void SetHP(float current, float max)
+    //     {
+    //         hpBar.value = current / max;
+    //     }
+    // 
+    //     // 이동 게이지 업데이트
+    //     public void SetMove(float current, float max)
+    //     {
+    //         moveBar.value = current / max;
+    //     }
+    // 
+    //     // 파워 차지 업데이트
+    //     public void SetPower(float charge)
+    //     {
+    //         powerBar.value = charge;
+    //     }
 
     // 바람 세기 업데이트
     public void SetWind(float windStrength)

@@ -324,4 +324,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         Gizmos.DrawWireSphere(startPos, groundCheckRadius);
         Gizmos.DrawWireSphere(endPos, groundCheckRadius);
     }
+
+    public bool HasFreeItemSlot()
+    {
+        return !myInfo.Isfull();
+    }
+
+    public bool TryAcquireItem(ItemData data)
+    {
+        return myInfo.ItemAcquire(data);
+    }
 }
