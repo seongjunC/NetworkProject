@@ -38,10 +38,6 @@ public class PlayerController : MonoBehaviourPun
     private Vector2 groundNormal = Vector2.up;
 
     private float horizontalInput;
-    private float angle = 45f;
-    private float powerCharge = 0f;
-    private bool isCharging = false;
-    private bool isFacingRight = true;
 
     private void Awake()
     {
