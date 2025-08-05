@@ -62,6 +62,10 @@ public class Projectile : MonoBehaviourPun
 
     private void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
         // 속도가 0에 가까울 정도로 작지 않을 때만 방향을 업데이트합니다.
         if (rb != null && rb.velocity.sqrMagnitude > 0.01f)
         {
