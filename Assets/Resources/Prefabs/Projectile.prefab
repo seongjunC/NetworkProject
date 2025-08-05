@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 2398114623178038475}
   - component: {fileID: 6515520639368925497}
   - component: {fileID: -1744257906108635217}
-  - component: {fileID: 5077522412435928998}
+  - component: {fileID: -873388188192548066}
+  - component: {fileID: 8540684139827710673}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Bullet
@@ -108,6 +109,7 @@ MonoBehaviour:
   damage: 100
   explosionEffect: {fileID: 739683856073798810, guid: 7841814d350503a4e8bd5f49a48ea62b, type: 3}
   delay: 2
+  windEffectMultiplier: 1
 --- !u!50 &2398114623178038475
 Rigidbody2D:
   serializedVersion: 4
@@ -209,11 +211,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 5077522412435928998}
+  - {fileID: -873388188192548066}
+  - {fileID: 8540684139827710673}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &5077522412435928998
+--- !u!114 &-873388188192548066
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -229,3 +232,19 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &8540684139827710673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7477408352287670730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3

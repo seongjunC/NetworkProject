@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TankToolTip : MonoBehaviour
 {
+    [SerializeField] private Canvas canvas;
+
     [SerializeField] Image tankIcon;
 
     [Header("UpgradeCount")]
@@ -58,30 +60,28 @@ public class TankToolTip : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-    
 
-    public virtual void AdjustPosition(Vector2 _pos)
+
+    public virtual void AdjustPosition(Vector2 screenPos)
     {
-        Vector2 pos = Vector2.zero;
-        if (isMousePos)
-            pos = Input.mousePosition;
-        else
-            pos = _pos;
+        Vector2 offset = Vector2.zero;
+        Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 
+        offset.x = (screenPos.x > screenSize.x / 2f) ? -xOffset : xOffset;
+        offset.y = (screenPos.y > screenSize.y / 2f) ? -yOffset : yOffset;
 
-        float newXoffset = 0;
-        float newYoffset = 0;
+        Vector2 finalScreenPos = screenPos + offset;
 
-        if (pos.x > xLimit)
-            newXoffset = -xOffset;
-        else
-            newXoffset = xOffset;
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        RectTransform tooltipRect = GetComponent<RectTransform>();
 
-        if (pos.y > yLimit)
-            newYoffset = -yOffset;
-        else
-            newYoffset = yOffset;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            finalScreenPos,
+            canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera,
+            out Vector2 localPos
+        );
 
-        transform.position = new Vector2(pos.x + newXoffset, pos.y + newYoffset);
+        tooltipRect.anchoredPosition = localPos;
     }
 }

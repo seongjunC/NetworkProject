@@ -36,6 +36,7 @@ public class TankInventoryUI : MonoBehaviour
     private void OnEnable()
     {
         UpdateAllSlot();
+        SortingTankDatas();
         Manager.Data.TankDataController.OnTankDataChanged += UpdateSlot;
     }
 
@@ -53,7 +54,7 @@ public class TankInventoryUI : MonoBehaviour
                 if (data.Count == 0)
                     continue;
 
-                TankSlot slot = Instantiate(tankSlotPrefab, slotContent).GetComponent<TankSlot>();
+                TankSlot slot = Instantiate(tankSlotPrefab, slotContent).GetComponent<TankSlot>();                
                 slot.SetUp(data, tankToolTip, Utils.GetColor(data.rank));
                 tankSlotDic[data] = slot;
             }
@@ -96,5 +97,19 @@ public class TankInventoryUI : MonoBehaviour
             Destroy(kvp.Value.gameObject);
         }
         tankSlotDic.Clear();
+    }
+
+    private void SortingTankDatas()
+    {
+        var sortedDatas = datas
+        .Where(d => tankSlotDic.ContainsKey(d))
+        .OrderBy(d => d.rank)
+        .ToArray();
+
+        for (int i = 0; i < sortedDatas.Length; i++)
+        {
+            var slot = tankSlotDic[sortedDatas[i]];
+            slot.transform.SetSiblingIndex(i);
+        }
     }
 }
