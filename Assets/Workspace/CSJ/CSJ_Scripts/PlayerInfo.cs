@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Realtime;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Analytics;
 
@@ -14,6 +14,7 @@ public class PlayerInfo
     public ItemData[] items = new ItemData[2];
     public int damageDealt { get; private set; }
     public int KillCount { get; private set; }
+    public Action<ItemData> OnItemAcquired;
 
     public PlayerInfo(Player _player)
     {
@@ -30,6 +31,7 @@ public class PlayerInfo
             if (items[i] == null)
             {
                 items[i] = item;
+                OnItemAcquired?.Invoke(item);
                 return true;
             }
         }
@@ -100,6 +102,25 @@ public class PlayerInfo
         }
         items[order].UseItem();
         ItemRemove(order);
+    }
+
+    public void ItemUse(ItemData item)
+    {
+        int index;
+        if ((index = GetItemIndex(item)) != -99)
+            ItemUse(index);
+        else
+        {
+            Debug.Log("해당 아이템이 없습니다");
+        }
+    }
+    public int GetItemIndex(ItemData item)
+    {
+        for (int i = 0; i < items.Length; i++)
+        {
+            if (items[i] == item) return i;
+        }
+        return -99;
     }
 
     public bool Isfull()

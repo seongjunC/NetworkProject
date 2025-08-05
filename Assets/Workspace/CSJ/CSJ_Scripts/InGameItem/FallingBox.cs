@@ -20,6 +20,7 @@ public class FallingBox : MonoBehaviourPun
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDist = 0.5f;
     [SerializeField] private float playerCheckDist = 0.5f;
+    [SerializeField] private ItemDatabase itemCandidate;
 
     private Collider2D triggerCol;
 
@@ -29,9 +30,9 @@ public class FallingBox : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void Init(ItemData data, float speed, float amp, float freq)
+    public void Init(string id, float speed, float amp, float freq)
     {
-        itemData = data;
+        itemData = itemCandidate.Get(id);
         fallSpeed = speed;
         swayAmp = amp;
         swayFreq = freq;
@@ -75,7 +76,7 @@ public class FallingBox : MonoBehaviourPun
             if (!h.CompareTag("Player")) continue;
 
             var pc = h.GetComponent<PlayerController>();
-            if (pc != null)
+            if (pc != null && pc.photonView.IsMine)
             {
                 if (TryAcquire(pc)) break;
 
@@ -92,11 +93,14 @@ public class FallingBox : MonoBehaviourPun
 
     private bool TryAcquire(PlayerController pc)
     {
+        Debug.Log("아이템 획득 체크");
         if (!pc.HasFreeItemSlot()) return false;
 
         bool isAcquired = pc.TryAcquireItem(itemData);
+        Debug.Log($"아이템 획득 시도, {isAcquired}");
         if (!isAcquired) return false;
 
+        Debug.Log($"{pc.myInfo.NickName}이 {itemData.name}을 획득하였습니다.");
         photonView.RPC(nameof(RPC_OpenBox), RpcTarget.All);
         return true;
     }

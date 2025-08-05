@@ -20,7 +20,7 @@ public class ItemSpawner : MonoBehaviourPun
 
     [Header("생성할 아이템 리스트")]
     [SerializeField]
-    private List<ItemData> itemList;
+    private ItemDatabase itemDatabase;
 
     public void SpawnRandomItem()
     {
@@ -42,8 +42,10 @@ public class ItemSpawner : MonoBehaviourPun
             Quaternion.identity
         );
 
-        var pd = drop.GetComponent<FallingBox>();
-        pd.Init(selectedItem, fallSpeed, swayAmp, swayFreq);
+        var pd = drop.GetComponent<PhotonView>();
+        pd.RPC("Init",
+        RpcTarget.AllBuffered,
+        itemDatabase.GetIndex(selectedItem).ToString(), fallSpeed, swayAmp, swayFreq);
 
     }
 
@@ -51,20 +53,23 @@ public class ItemSpawner : MonoBehaviourPun
     {
         int rate = 0;
         List<int> rateArr = new();
-        foreach (ItemData item in itemList)
+        foreach (ItemData item in itemDatabase.GetAll())
         {
             rate += item.appearRate;
             rateArr.Add(rate);
         }
         int rands = Random.Range(0, rate);
 
-        int i = 0;
-        while (rands > 0)
+        for (int i = 0; i < rateArr.Count; i++)
         {
-            rands -= rateArr[i];
-            i++;
+            if (rands < rateArr[i])
+            {
+                return itemDatabase.Get($"{i}");
+            }
+
+            else rands -= rateArr[i];
         }
-        return itemList[--i];
+        return itemDatabase.Get("0");
     }
 
 

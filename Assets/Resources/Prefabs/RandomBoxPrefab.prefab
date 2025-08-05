@@ -170,8 +170,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 0
   groundCheckDist: 0.5
   playerCheckDist: 0.5
+  itemCandidate: {fileID: 11400000, guid: 1d9cb44b6f07d49419894202358ad3af, type: 2}
