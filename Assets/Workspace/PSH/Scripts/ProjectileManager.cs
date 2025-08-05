@@ -8,6 +8,7 @@ public class ProjectileManager : MonoBehaviourPun
 
     [SerializeField] Texture2D explosionMask;
 
+    private FloatingTextSpawner floatingTextSpawner;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -18,8 +19,13 @@ public class ProjectileManager : MonoBehaviourPun
         Instance = this;
     }
 
+    private void Start()
+    {
+        floatingTextSpawner = GetComponent<FloatingTextSpawner>();
+    }
     [PunRPC]
-    public void RPC_RequestFireProjectile(Vector3 firePointPosition, Quaternion firePointRotation, float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber)
+    public void RPC_RequestFireProjectile(Vector3 firePointPosition, Quaternion firePointRotation,
+        float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber, float playerAngle, bool isRight)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -30,7 +36,8 @@ public class ProjectileManager : MonoBehaviourPun
         GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePointPosition, firePointRotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
 
-        EffectSpawner.Instance.SpawnFire(firePointPosition, firePointRotation);
+        // 발사 이펙트 생성
+        photonView.RPC(nameof(RPC_SpawnFireEffect), RpcTarget.All, firePointPosition, firePointRotation, playerAngle, isRight);
 
         // 데미지 버프 적용
         if (onDamageBuff)
@@ -53,6 +60,33 @@ public class ProjectileManager : MonoBehaviourPun
         PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
         photonView.RPC(nameof(RPC_SetBulletTarget), RpcTarget.All, bulletPhotonView.ViewID);
     }
+
+    // 발사 이펙트
+    [PunRPC]
+    public void RPC_SpawnFireEffect(Vector3 firePointPosition, Quaternion firePointRotation, float playerAngle, bool isRight)
+    {
+        Quaternion newRotation;
+
+        if (isRight)
+        {
+            // 정방향: 기본 회전에 플레이어 각도만 추가
+            newRotation = firePointRotation * Quaternion.Euler(0, 0, playerAngle);
+        }
+        else
+        {
+            // 역방향: firePointRotation 자체를 y축 기준으로 뒤집고, playerAngle 추가
+            // 180도 회전: z축 반전 효과
+            Quaternion flipped = Quaternion.Euler(0, 0, -firePointRotation.eulerAngles.z);
+            newRotation = flipped * Quaternion.Euler(0, 0, playerAngle);
+        }
+        // 이론은 완벽했는데 정확히 90도 차이나는 이유가 도대체 뭐임 찝찝하게
+        newRotation *= Quaternion.Euler(0, 0, 90);
+
+        // 공통 이펙트 호출
+        EffectSpawner.Instance.SpawnFire(firePointPosition, newRotation);
+    }
+
+
 
     [PunRPC]
     private void RPC_SetBulletTarget(int bulletViewID)
@@ -92,12 +126,14 @@ public class ProjectileManager : MonoBehaviourPun
             PlayerController player = FindObjectOfType<MSKTurnController>().GetPlayerController(actorNumber);
             if (player != null)
             {
-                player.OnHit(realDamage);
                 // 피격 이펙트 (각 클라이언트에서 생성)
                 if (EffectSpawner.Instance != null)
                 {
                     EffectSpawner.Instance.SpawnExplosion(player.transform.position);
+                    string str = realDamage.ToString();
+                    floatingTextSpawner.SpawnText(str, player.transform.position);
                 }
+                player.OnHit(realDamage);
                 Debug.Log($"[ProjectileManager] 플레이어 {actorNumber}에게 {realDamage} 데미지 적용");
             }
         }
