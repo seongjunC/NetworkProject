@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 
 public class MSKTurnController : MonoBehaviourPunCallbacks
@@ -72,17 +71,23 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     void Update()
     {
-
-        if (!isGameStart)
-            return;
-
-        if (!PhotonNetwork.IsMasterClient || !isTurnRunning) return;
-
-        turnTimer -= Time.deltaTime;
-        photonView.RPC("RPC_UpdateTimerText", RpcTarget.All, turnTimer);
-        if (turnTimer <= 0)
+        if (isTurnRunning && isGameStart && !isGameEnd)
         {
-            photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+            turnTimer -= Time.deltaTime;
+            turnTimer = Mathf.Max(0f, turnTimer);
+
+            // 모든 클라이언트에 남은 시간 텍스트 갱신
+            photonView.RPC("RPC_UpdateTimerText", RpcTarget.All, turnTimer);
+
+            // 자신의 턴 일때만 턴 종료 요청
+            if (!IsMyTurn())
+                return;
+
+            if (turnTimer <= 0f)
+            {
+                Debug.Log("시간 제한으로 턴 종료");
+                TurnFinished();
+            }
         }
     }
     #endregion
@@ -141,7 +146,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
-        turnTimer = turnLimit;
         GameEndCheck();
         if (turnQueue.Count <= 0)
         {
@@ -150,7 +154,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         }
 
         currentPlayer = turnQueue.Dequeue();
-
 
         if (DeadPlayer.Contains(currentPlayer.ActorNumber))
         {
@@ -293,6 +296,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 turnQueue.Enqueue(player);
             nextCycle.Clear();
         }
+        turnTimer = turnLimit;
         StartNextTurn();
     }
 

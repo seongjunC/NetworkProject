@@ -7269,7 +7269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   winnerTeamReward: 100
   loserTeamReward: 50
-  turnLimit: 15
+  turnLimit: 10
   itemSpawner: {fileID: 0}
   itemCount: 0
   ResultPanel: {fileID: 920666501}
