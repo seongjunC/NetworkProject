@@ -33,7 +33,6 @@ public class CouponRewordPanel : MonoBehaviour
 
     private IEnumerator CreateRoutine()
     {
-        Debug.Log("Start");
         foreach (var kvp in resultDic)
         {
             GameObject obj = Instantiate(couponRewordPrefab, content);
@@ -50,7 +49,6 @@ public class CouponRewordPanel : MonoBehaviour
 
             slots.Add(obj);
 
-            Debug.Log("Re");
             yield return delay;
         }
 
