@@ -179,6 +179,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         nextCycle.Add(currentPlayer);
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
+
+        //턴 시작시 바람
+        if (PhotonNetwork.IsMasterClient)
+        {
+            WindManager.Instance.GenerateNewWind();
+        }
     }
     private void QueueAdd(IEnumerable<PlayerInfo> players)
     {
