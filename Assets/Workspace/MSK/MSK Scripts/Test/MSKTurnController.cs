@@ -58,6 +58,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #region Unity LifeCycle
     private void Awake()
     {
+        Manager.Game.State = State.Game;
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);

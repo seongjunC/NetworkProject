@@ -79,6 +79,7 @@ public class RoomManager : MonoBehaviourPun
         {
             login.SetActive(false);
             room.SetActive(true);
+            OnJoinedRoom();
 
             Manager.Game.State = Game.State.Lobby;
         }
@@ -402,8 +403,7 @@ public class RoomManager : MonoBehaviourPun
             Manager.UI.PopUpUI.Show("누군가가 대기자에 포함되어 있습니다.");
             return;
         }
-
-        Manager.Game.State = State.Game;
+        
         PhotonNetwork.CurrentRoom.SetGameStart(true);
         PhotonNetwork.LoadLevel("MSK InGameTest"); // 씬이동
     }
