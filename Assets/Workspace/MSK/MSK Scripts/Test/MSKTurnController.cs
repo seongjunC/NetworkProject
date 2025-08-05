@@ -17,7 +17,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [SerializeField] int winnerTeamReward = 100;
     [SerializeField] int loserTeamReward = 50;
     [Header("턴 제한")]
-    [SerializeField] float turnLimit = 5f;
+    [SerializeField] float turnLimit = 10f;
     [Header("아이템 생성기")]
     [SerializeField] ItemSpawner itemSpawner;
     [Header("사이클 종료시 생성할 아이템의 개수")]
@@ -46,7 +46,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private Room room;
     IEnumerable<PlayerInfo> players;
 
-    private float turnTimer = 0f;
+    private float turnTimer = 15f;
     private bool isTurnRunning = false;
     private bool isGameStart = false;
     private bool isGameEnd = false;
@@ -78,11 +78,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         if (!PhotonNetwork.IsMasterClient || !isTurnRunning) return;
 
-        turnTimer += Time.deltaTime;
+        turnTimer -= Time.deltaTime;
         photonView.RPC("RPC_UpdateTimerText", RpcTarget.All, turnTimer);
-        if (turnTimer >= turnLimit)
+        if (turnTimer <= 0)
         {
-            turnTimer = 0f;
             photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         }
     }
@@ -142,7 +141,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     private void StartNextTurn()
     {
-
+        turnTimer = turnLimit;
         GameEndCheck();
         if (turnQueue.Count <= 0)
         {
