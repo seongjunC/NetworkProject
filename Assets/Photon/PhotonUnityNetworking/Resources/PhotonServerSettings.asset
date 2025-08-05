@@ -67,6 +67,7 @@ MonoBehaviour:
   - RPC_RequestFireProjectile
   - RPC_UpdateTimerText
   - RPC_SetWind
+  - RPC_SpawnFireEffect
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
