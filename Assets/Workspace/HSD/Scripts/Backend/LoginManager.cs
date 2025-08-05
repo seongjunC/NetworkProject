@@ -105,7 +105,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
                     if (auth.CurrentUser != null && auth.CurrentUser.IsEmailVerified)
                     {
-                        Debug.Log("�ڵ� �α��� ��ȿ��: " + auth.CurrentUser.Email);
+                        Debug.Log(auth.CurrentUser.Email);
                         user = auth.CurrentUser;
 
                         LoginSetActive(user == null);
@@ -117,14 +117,9 @@ public class LoginManager : MonoBehaviourPunCallbacks
                     }
                     else
                     {
-                        Debug.Log("�ڵ� �α��� ����");
                         return;
                     }
                 }
-            }
-            else
-            {
-                Debug.LogError("�ĺ� ������ �������� ����");
             }
         });
     }
@@ -143,12 +138,12 @@ public class LoginManager : MonoBehaviourPunCallbacks
         loginButton.interactable = false;
         loginMessage.SetActive(true);
         loginPanel.SetActive(false);
+
         FirebaseManager.Auth.SignInWithEmailAndPasswordAsync(email.text, pw.text).ContinueWithOnMainThread(task =>
         {
             if (task.IsCanceled || task.IsFaulted)
             {
-                Debug.LogError($"�α��� ����: {task.Exception}");
-                Manager.UI.PopUpUI.Show("Login Failed");
+                Manager.UI.PopUpUI.Show("로그인에 실패하였습니다.");
                 isLogin = false;
                 loginButton.interactable = true;
                 loginMessage.SetActive(false);
@@ -169,20 +164,18 @@ public class LoginManager : MonoBehaviourPunCallbacks
                     {
                         if (sendTaskEmail.IsCanceled || sendTaskEmail.IsFaulted)
                             return;
-
-                        Debug.Log("�̸��� ������");
                     });
+
                     loginMessage.SetActive(false);
                     loginPanel.SetActive(true);
 
-                    Manager.UI.PopUpUI.Show("�̸��� ������ �ʿ��մϴ�. ������ Ȯ�����ּ���.", Color.yellow);
+                    Manager.UI.PopUpUI.Show("이메일을 확인해주세요.", Color.yellow);
                     FirebaseManager.Auth.SignOut();
                     isLogin = false;
                     loginButton.interactable = true;
                     return;
                 }
 
-                Debug.Log($"�α��� ����: {task.Result.User.Email}");
                 PhotonNetwork.ConnectUsingSettings();
                 Manager.UI.FadeScreen.FadeIn(1);
             });
@@ -201,7 +194,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
         {
             if (task.IsFaulted)
             {
-                Debug.LogError("Firebase ����: " + task.Exception);
                 PhotonNetwork.Disconnect();
             }
             else if (task.IsCompleted)
@@ -224,7 +216,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         if (connected)
         {
-            Manager.UI.PopUpUI.Show("�̹� �������� �����Դϴ�.", Color.red);
+            Manager.UI.PopUpUI.Show("이미 접속중인 계정입니다.", Color.red);
             isLogin = false;
             loginButton.interactable = true;
             loginMessage.SetActive(false);
@@ -236,7 +228,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
         
         if (task.IsFaulted || task.IsCanceled)
         {
-            Debug.LogError("Firebase ������ �������� ����");
             isLogin = false;
             loginMessage.SetActive(false);
             loginPanel.SetActive(true);
@@ -248,7 +239,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         var snapshot = task.Result;
         string json = snapshot?.GetRawJsonValue();
         PlayerData newData = JsonUtility.FromJson<PlayerData>(json);
-
+        
         if (newData == null || string.IsNullOrEmpty(newData.Name))
         {
             newData = new PlayerData();
@@ -266,6 +257,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.NickName = Manager.Data.PlayerData.Name;
 
         Manager.Data.PlayerData.Init();
+        
 
         yield return new WaitForSeconds(1);
 
@@ -273,16 +265,39 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).OnDisconnect().SetValue(false);
         Manager.Data.Init();
-
-        PhotonNetwork.JoinLobby();
-        Manager.UI.FadeScreen.FadeOut(1);
-        gameObject.SetActive(false);
-        lobbyPanel.SetActive(true);        
+        SetUpSelectTank();
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
+        {
+            Manager.Data.TankInventoryData.AddTankEvent("C", 1);
             Manager.UI.NickNameSelectPanel.Show();
+        }
+
+        yield return new WaitForSeconds(1);
+
+        PhotonNetwork.JoinLobby();
+        Manager.UI.FadeScreen.FadeOut(1);        
+
+        gameObject.SetActive(false);
+        lobbyPanel.SetActive(true);
     }
     #endregion
+
+    private void SetUpSelectTank()
+    {        
+        Manager.Database.userRef.Child("SelectTank").GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if(!task.Result.Exists)
+            {
+                return;
+            }
+
+            if (task.IsCompleted)
+            {
+                Manager.Data.TankDataController.SetSelectTank((string)task.Result.Value);
+            }
+        });
+    }
 
     #region PhotonCallbacks
     public override void OnConnectedToMaster()

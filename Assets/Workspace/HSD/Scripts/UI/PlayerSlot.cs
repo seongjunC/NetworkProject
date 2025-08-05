@@ -11,13 +11,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerSlot : MonoBehaviour
-{
+{    
     [SerializeField] TMP_Text playerName;
     [SerializeField] Image readyPanel;
     [SerializeField] Image teamPanel;
     [SerializeField] Image masterPanel;
     [SerializeField] Button infoButton;
     [SerializeField] Button playerCloseConnectionButton;
+
+    [SerializeField] Image tankIcon;
+    [SerializeField] Image tankRankImage;
 
     [Header("ReadyColor")]
     [SerializeField] Sprite readySpite;
@@ -30,7 +33,7 @@ public class PlayerSlot : MonoBehaviour
 
     private Player player;
     public event Action<Player> OnKick;
-
+    
     #region LifeCycle
     private void OnEnable()
     {
@@ -58,7 +61,7 @@ public class PlayerSlot : MonoBehaviour
         playerName.color = PhotonNetwork.LocalPlayer == player ? Color.green : Color.white;
         masterPanel.color = PhotonNetwork.MasterClient == player ? Color.white : Color.clear;        
         
-        Team team =player.GetTeam();
+        Team team = player.GetTeam();
         switch (team)
         {
             case Team.Red: 
@@ -72,6 +75,11 @@ public class PlayerSlot : MonoBehaviour
                 break;
         }
         readyPanel.sprite = player.GetReady() ? readySpite : defaultSprite;
+
+        TankData data = player.GetTank();
+
+        tankIcon.sprite = data.Icon;
+        tankRankImage.color = Utils.GetColor(data.rank);
     }
 
     public void ViewPlayerInfo()

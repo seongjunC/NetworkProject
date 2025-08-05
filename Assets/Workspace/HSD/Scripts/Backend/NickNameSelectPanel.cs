@@ -16,7 +16,7 @@ public class NickNameSelectPanel : MonoBehaviour
     #region LifeCycle
     private void Start()
     {
-        closeButton.onClick.AddListener(() => gameObject.SetActive(false));
+        closeButton.onClick.AddListener(Close);
     }
 
     private void OnEnable()
@@ -76,5 +76,16 @@ public class NickNameSelectPanel : MonoBehaviour
         });        
 
         gameObject.SetActive(false);
-    }    
+    }
+
+    private void Close()
+    {
+        if(Manager.Data.PlayerData.Name == "")
+        {
+            Manager.UI.PopUpUI.Show("닉네임을 입력해 주세요");
+            return;
+        }
+
+        gameObject.SetActive(false);
+    }
 }

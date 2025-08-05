@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7417769650807161156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -119.95665, y: 0}
-  m_SizeDelta: {x: 239.9133, y: 50}
+  m_AnchorMin: {x: 0.514241, y: 0.085}
+  m_AnchorMax: {x: 1, y: 0.92441934}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7158172875205628161
 CanvasRenderer:
@@ -164,14 +164,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6834461232481600234}
   - {fileID: 8572271615963268027}
   m_Father: {fileID: 7417769650807161156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 28.851868, y: 0}
-  m_SizeDelta: {x: 57.703705, y: 57.096}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.11800001, y: 1}
+  m_AnchoredPosition: {x: -0.14813232, y: 0}
+  m_SizeDelta: {x: -0.29629517, y: -0.9039993}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6890953902071546123
 CanvasRenderer:
@@ -242,6 +241,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3194330961271634675}
+  - {fileID: 6834461232481600234}
   - {fileID: 3347201067366573186}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -378,12 +378,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3194330961271634675}
+  m_Father: {fileID: 7417769650807161156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 126.41501, y: 0}
-  m_SizeDelta: {x: 239.9133, y: 50}
+  m_AnchorMin: {x: 0.133, y: 0.085}
+  m_AnchorMax: {x: 0.6198279, y: 0.92441934}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2145171078276463205
 CanvasRenderer:
