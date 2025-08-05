@@ -11,7 +11,7 @@ public class ItemSpawner : MonoBehaviourPun
 
     [Header("낙하산 프리팹")]
     [SerializeField]
-    private GameObject RandomBoxPrefab;
+    private GameObject parachuteDropPrefab;
 
     [Header("낙하 관련 설정")]
     [SerializeField] private float fallSpeed = 5f;
@@ -20,7 +20,7 @@ public class ItemSpawner : MonoBehaviourPun
 
     [Header("생성할 아이템 리스트")]
     [SerializeField]
-    private ItemDatabase itemDatabase;
+    private List<ItemData> itemList;
 
     public void SpawnRandomItem()
     {
@@ -37,15 +37,13 @@ public class ItemSpawner : MonoBehaviourPun
         Vector3 spawnPos = new Vector3(spawnX, spawnY, 0);
 
         GameObject drop = PhotonNetwork.Instantiate(
-            "Prefabs/RandomBoxPrefab",
+            parachuteDropPrefab.name,
             spawnPos,
             Quaternion.identity
         );
 
-        var pd = drop.GetComponent<PhotonView>();
-        pd.RPC("Init",
-        RpcTarget.AllBuffered,
-        itemDatabase.GetIndex(selectedItem).ToString(), fallSpeed, swayAmp, swayFreq);
+        //var pd = parachuteDropPrefab.GetComponent<Parachute>();
+        //pd.Init(selectedItem, fallSpeed, swayAmp, swayFreq);
 
     }
 
@@ -53,23 +51,20 @@ public class ItemSpawner : MonoBehaviourPun
     {
         int rate = 0;
         List<int> rateArr = new();
-        foreach (ItemData item in itemDatabase.GetAll())
+        foreach (ItemData item in itemList)
         {
             rate += item.appearRate;
             rateArr.Add(rate);
         }
         int rands = Random.Range(0, rate);
 
-        for (int i = 0; i < rateArr.Count; i++)
+        int i = 0;
+        while (rands > 0)
         {
-            if (rands < rateArr[i])
-            {
-                return itemDatabase.Get($"{i}");
-            }
-
-            else rands -= rateArr[i];
+            rands -= rateArr[i];
+            i++;
         }
-        return itemDatabase.Get("0");
+        return itemList[--i];
     }
 
 

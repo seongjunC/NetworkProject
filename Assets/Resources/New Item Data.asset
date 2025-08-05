@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b9bff6f7ca8d249adb20bead3a6c44, type: 3}
   m_Name: New Item Data
   m_EditorClassIdentifier: 
-  itemName: "\uD3EC\uC158"
+  itemName: 
   description: 3232
   icon: {fileID: 21300000, guid: 03fa52ca95deb7a4c8a7379e29e70b9a, type: 3}
   prefab: {fileID: 0}

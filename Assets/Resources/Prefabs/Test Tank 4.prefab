@@ -549,7 +549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePivot: {fileID: 5143764862364520804}
   firePoint: {fileID: 3679909884157931425}
-  bulletPrefab: {fileID: 7477408352287670730, guid: 026f3f2646307f045819c010ae1090f2, type: 3}
+  bulletPrefab: {fileID: 7477408352287670730, guid: 6660d23fa609c7b429726b1dbac0125b, type: 3}
   angle: 45
   angleStep: 0.5
   chargingSpeed: 10
