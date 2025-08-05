@@ -98,17 +98,24 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         // 이동 입력
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        if (_movable > 0 && Mathf.Abs(horizontalInput) > 0.1f)
+        if (Mathf.Abs(horizontalInput) > 0.1f)
         {
-            _movable -= Mathf.Abs(horizontalInput) * _data.speed * Time.deltaTime;
+            isFacingRight = horizontalInput > 0;
+
+            if (_movable > 0)
+            {
+                _movable -= Mathf.Abs(horizontalInput) * _data.speed * Time.deltaTime;
+            }         
         }
-        else
+
+        // 방향 즉시 반영
+        player.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f);
+
+        if (_movable <= 0)
         {
             horizontalInput = 0;
         }
-        // 방향 즉시 반영
-        isFacingRight = horizontalInput > 0;
-        player.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f);
+
 
         // 포신 각도 조절 입력
         float verticalInput = Input.GetAxis("Vertical");
