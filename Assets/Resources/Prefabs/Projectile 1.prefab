@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -1744257906108635217}
   - component: {fileID: 5077522412435928998}
   m_Layer: 0
-  m_Name: Projectile
+  m_Name: Projectile 1
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7353bbe7e559d2c40821533b2cbddca5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 99f9df2f12d57ee4fbf0dfb26065a080, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,12 +101,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c2a549feff03f4e819a282153e833c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionRadiusx: 200
-  explosionRadiusy: 200
+  explosionRadiusx: 0
+  explosionRadiusy: 0
   explosionMask: {fileID: 0}
   explosionScale: 1
   damage: 100
-  explosionEffect: {fileID: 739683856073798810, guid: 7841814d350503a4e8bd5f49a48ea62b, type: 3}
+  explosionEffect: {fileID: 739683856073798810, guid: 6538bb1ec2794034f87d90690d5be8ae, type: 3}
   delay: 2
 --- !u!50 &2398114623178038475
 Rigidbody2D:
@@ -171,7 +171,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.75, y: 0.5}
+    oldSize: {x: 1.8, y: 0.96}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

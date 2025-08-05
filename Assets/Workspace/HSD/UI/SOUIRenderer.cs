@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 namespace SOEditor
 {
-    /// <summary>UI ·»´õ·¯</summary>
+    /// <summary>UI ë Œë”ëŸ¬</summary>
     public class SOUIRenderer : ISOUIRenderer
     {
         private readonly Color[] groupColors = {
@@ -19,15 +19,15 @@ namespace SOEditor
             new Color(0.9f, 0.6f, 0.3f), new Color(0.6f, 0.9f, 0.6f),
         };
 
-        // ÀÇÁ¸¼º ÁÖÀÔÀ» À§ÇÑ ¸Å´ÏÀúµé
+        // ì˜ì¡´ì„± ì£¼ì…ì„ ìœ„í•œ ë§¤ë‹ˆì €ë“¤
         private ISOGroupManager groupManager;
 
-        // UI Àç»ı¼º ¹æÁö¸¦ À§ÇÑ Ä³½Ã
+        // UI ì¬ìƒì„± ë°©ì§€ë¥¼ ìœ„í•œ ìºì‹œ
         private Dictionary<string, ObjectField> groupIconFields = new Dictionary<string, ObjectField>();
         private Dictionary<string, VisualElement> groupIconDisplays = new Dictionary<string, VisualElement>();
-        private ScrollView currentContainer; // ÇöÀç ÄÁÅ×ÀÌ³Ê ÂüÁ¶ À¯Áö
+        private ScrollView currentContainer; // í˜„ì¬ ì»¨í…Œì´ë„ˆ ì°¸ì¡° ìœ ì§€
 
-        // ¸Å´ÏÀú¸¦ ¼³Á¤ÇÏ´Â ¸Ş¼­µå Ãß°¡
+        // ë§¤ë‹ˆì €ë¥¼ ì„¤ì •í•˜ëŠ” ë©”ì„œë“œ ì¶”ê°€
         public void SetManagers(ISOGroupManager groupManager)
         {
             this.groupManager = groupManager;
@@ -35,7 +35,7 @@ namespace SOEditor
 
         public void RenderFlatUI(ScrollView container, List<ScriptableObject> assets, Type selectedType)
         {
-            // Ä³½Ã ÃÊ±âÈ­
+            // ìºì‹œ ì´ˆê¸°í™”
             ClearUICache();
             currentContainer = container;
 
@@ -48,7 +48,7 @@ namespace SOEditor
         public void RenderGroupedUI(ScrollView container, IEnumerable<IGrouping<string, ScriptableObject>> groups,
                                   Type selectedType, bool showIcons, Color[] colors, string groupFieldName, Action onGroupFieldChanged)
         {
-            // Ä³½Ã ÃÊ±âÈ­´Â ÇÏÁö ¾Ê°í ÇöÀç ÄÁÅ×ÀÌ³Ê¸¸ ¾÷µ¥ÀÌÆ®
+            // ìºì‹œ ì´ˆê¸°í™”ëŠ” í•˜ì§€ ì•Šê³  í˜„ì¬ ì»¨í…Œì´ë„ˆë§Œ ì—…ë°ì´íŠ¸
             currentContainer = container;
 
             int groupIndex = 0;
@@ -65,18 +65,18 @@ namespace SOEditor
             }
         }
 
-        /// <summary>UI Ä³½Ã ÃÊ±âÈ­ - Å¸ÀÔÀÌ ¹Ù²ğ ¶§¸¸ È£Ãâ</summary>
+        /// <summary>UI ìºì‹œ ì´ˆê¸°í™” - íƒ€ì…ì´ ë°”ë€” ë•Œë§Œ í˜¸ì¶œ</summary>
         public void ClearUICache()
         {
             groupIconFields.Clear();
             groupIconDisplays.Clear();
         }
 
-        /// <summary>ºÎºĞÀû UI ¾÷µ¥ÀÌÆ® - ¾ÆÀÌÄÜ º¯°æ ½Ã¿¡¸¸ ÇÊ¿äÇÑ ºÎºĞ¸¸ ¾÷µ¥ÀÌÆ®</summary>
+        /// <summary>ë¶€ë¶„ì  UI ì—…ë°ì´íŠ¸ - ì•„ì´ì½˜ ë³€ê²½ ì‹œì—ë§Œ í•„ìš”í•œ ë¶€ë¶„ë§Œ ì—…ë°ì´íŠ¸</summary>
         private void UpdateDataContainersOnly(ScrollView container, IEnumerable<IGrouping<string, ScriptableObject>> groups,
                                             Type selectedType, string groupFieldName, Action onGroupFieldChanged)
         {
-            // ±âÁ¸ ±×·ì ÄÁÅ×ÀÌ³ÊµéÀ» Ã£¾Æ¼­ µ¥ÀÌÅÍ ºÎºĞ¸¸ ¾÷µ¥ÀÌÆ®
+            // ê¸°ì¡´ ê·¸ë£¹ ì»¨í…Œì´ë„ˆë“¤ì„ ì°¾ì•„ì„œ ë°ì´í„° ë¶€ë¶„ë§Œ ì—…ë°ì´íŠ¸
             var groupContainers = container.Query<VisualElement>()
                 .Where(ve => ve.style.flexDirection == FlexDirection.Row && ve.childCount >= 2)
                 .ToList();
@@ -87,7 +87,7 @@ namespace SOEditor
                 if (groupIndex < groupContainers.Count)
                 {
                     var groupContainer = groupContainers[groupIndex];
-                    var dataContainer = groupContainer.ElementAt(1) as ScrollView; // µÎ ¹øÂ° ÀÚ½ÄÀÌ µ¥ÀÌÅÍ ÄÁÅ×ÀÌ³Ê
+                    var dataContainer = groupContainer.ElementAt(1) as ScrollView; // ë‘ ë²ˆì§¸ ìì‹ì´ ë°ì´í„° ì»¨í…Œì´ë„ˆ
 
                     if (dataContainer != null)
                     {
@@ -152,7 +152,7 @@ namespace SOEditor
         {
             var groupKey = group.Key;
 
-            // ±âÁ¸ ±×·ì ÄÁÅ×ÀÌ³Ê°¡ ÀÖ´ÂÁö È®ÀÎ (UQueryBuilder ¹®Á¦ È¸ÇÇ)
+            // ê¸°ì¡´ ê·¸ë£¹ ì»¨í…Œì´ë„ˆê°€ ìˆëŠ”ì§€ í™•ì¸ (UQueryBuilder ë¬¸ì œ íšŒí”¼)
             VisualElement existingGroupContainer = null;
             for (int i = 0; i < container.childCount; i++)
             {
@@ -166,7 +166,7 @@ namespace SOEditor
 
             if (existingGroupContainer != null)
             {
-                // ±âÁ¸ ±×·ìÀÌ ÀÖÀ¸¸é µ¥ÀÌÅÍ ºÎºĞ¸¸ ¾÷µ¥ÀÌÆ®
+                // ê¸°ì¡´ ê·¸ë£¹ì´ ìˆìœ¼ë©´ ë°ì´í„° ë¶€ë¶„ë§Œ ì—…ë°ì´íŠ¸
                 var existingDataContainer = existingGroupContainer.ElementAt(1) as ScrollView;
                 if (existingDataContainer != null)
                 {
@@ -182,9 +182,9 @@ namespace SOEditor
                 return;
             }
 
-            // »õ ±×·ì ÄÁÅ×ÀÌ³Ê »ı¼º
+            // ìƒˆ ê·¸ë£¹ ì»¨í…Œì´ë„ˆ ìƒì„±
             var groupContainer = new VisualElement();
-            groupContainer.name = $"group_{groupKey}"; // ½Äº°À» À§ÇÑ ÀÌ¸§ ¼³Á¤
+            groupContainer.name = $"group_{groupKey}"; // ì‹ë³„ì„ ìœ„í•œ ì´ë¦„ ì„¤ì •
             groupContainer.style.flexDirection = FlexDirection.Row;
             groupContainer.style.marginBottom = 20;
             groupContainer.style.minHeight = 200;
@@ -232,7 +232,7 @@ namespace SOEditor
             StyleGroupHeader(groupHeader, groupColor);
             iconContainer.Add(groupHeader);
 
-            // ¾ÆÀÌÄÜ Ç¥½Ã ¿µ¿ª - Ä³½ÃµÈ °ÍÀÌ ÀÖÀ¸¸é Àç»ç¿ë
+            // ì•„ì´ì½˜ í‘œì‹œ ì˜ì—­ - ìºì‹œëœ ê²ƒì´ ìˆìœ¼ë©´ ì¬ì‚¬ìš©
             VisualElement iconDisplay;
             if (groupIconDisplays.ContainsKey(groupKey))
             {
@@ -248,7 +248,7 @@ namespace SOEditor
                 groupIconDisplays[groupKey] = iconDisplay;
             }
 
-            // ±×·ìÀÇ Ã¹ ¹øÂ° ½ºÇÁ¶óÀÌÆ® °¡Á®¿À±â
+            // ê·¸ë£¹ì˜ ì²« ë²ˆì§¸ ìŠ¤í”„ë¼ì´íŠ¸ ê°€ì ¸ì˜¤ê¸°
             Sprite groupSprite = null;
             if (groupManager != null)
             {
@@ -262,12 +262,12 @@ namespace SOEditor
 
             iconContainer.Add(iconDisplay);
 
-            // ¾ÆÀÌÄÜ º¯°æ ÇÊµå - Ä³½ÃµÈ °ÍÀÌ ÀÖÀ¸¸é Àç»ç¿ë
+            // ì•„ì´ì½˜ ë³€ê²½ í•„ë“œ - ìºì‹œëœ ê²ƒì´ ìˆìœ¼ë©´ ì¬ì‚¬ìš©
             ObjectField iconField;
             if (groupIconFields.ContainsKey(groupKey))
             {
                 iconField = groupIconFields[groupKey];
-                iconField.value = groupSprite; // °ª¸¸ ¾÷µ¥ÀÌÆ®
+                iconField.value = groupSprite; // ê°’ë§Œ ì—…ë°ì´íŠ¸
             }
             else
             {
@@ -278,7 +278,7 @@ namespace SOEditor
                     allowSceneObjects = false
                 };
 
-                // ¾ÆÀÌÄÜ º¯°æ Äİ¹é µî·Ï (ÇÑ ¹ø¸¸)
+                // ì•„ì´ì½˜ ë³€ê²½ ì½œë°± ë“±ë¡ (í•œ ë²ˆë§Œ)
                 iconField.RegisterValueChangedCallback(evt =>
                 {
                     var newSprite = evt.newValue as Sprite;
@@ -286,10 +286,10 @@ namespace SOEditor
 
                     if (groupManager != null)
                     {
-                        // ±×·ì ³» ¸ğµç ¿ÀºêÁ§Æ®ÀÇ ½ºÇÁ¶óÀÌÆ® ¾÷µ¥ÀÌÆ®
+                        // ê·¸ë£¹ ë‚´ ëª¨ë“  ì˜¤ë¸Œì íŠ¸ì˜ ìŠ¤í”„ë¼ì´íŠ¸ ì—…ë°ì´íŠ¸
                         groupManager.UpdateGroupSprites(group, newSprite, selectedType);
 
-                        // ¾ÆÀÌÄÜ Ç¥½Ã Áï½Ã ¾÷µ¥ÀÌÆ®
+                        // ì•„ì´ì½˜ í‘œì‹œ ì¦‰ì‹œ ì—…ë°ì´íŠ¸
                         var cachedIconDisplay = groupIconDisplays[groupKey];
                         if (newSprite != null)
                         {
@@ -300,7 +300,7 @@ namespace SOEditor
                             cachedIconDisplay.style.backgroundImage = null;
                         }
 
-                        // µ¥ÀÌÅÍ ºÎºĞ¸¸ ºÎºĞÀûÀ¸·Î ¾÷µ¥ÀÌÆ® (ÀüÃ¼ UI Àç»ı¼º ¹æÁö)
+                        // ë°ì´í„° ë¶€ë¶„ë§Œ ë¶€ë¶„ì ìœ¼ë¡œ ì—…ë°ì´íŠ¸ (ì „ì²´ UI ì¬ìƒì„± ë°©ì§€)
                         onGroupFieldChanged?.Invoke();
                     }
                 });

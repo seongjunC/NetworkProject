@@ -12,6 +12,7 @@ public class Chat : MonoBehaviourPun
     [SerializeField] TMP_InputField messageField;
     [SerializeField] Transform chatContent;
     [SerializeField] ChatText chatPrefab;
+    [SerializeField] TMP_Text chatTypeText;
 
     [Header("Color")]
     [SerializeField] Color whisperColor;
@@ -25,7 +26,12 @@ public class Chat : MonoBehaviourPun
         messageField.onEndEdit.AddListener(OnMessageSubmitted);
     }
 
-    void Update()
+    private void OnEnable()
+    {
+        UpdateChatTypeText();
+    }
+
+    private void Update()
     {
         // 마지막 메시지 불러오기
         if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -38,9 +44,6 @@ public class Chat : MonoBehaviourPun
             }
         }
 
-        if (messageField.text.Length > 3)
-            return;
-
         if (messageField.isFocused && messageField.text.StartsWith("/r") && Input.GetKeyDown(KeyCode.Space))
         {
             if (!string.IsNullOrEmpty(beforeWhisperPlayerName))
@@ -48,6 +51,25 @@ public class Chat : MonoBehaviourPun
                 messageField.text = $"/귓 {beforeWhisperPlayerName} ";
                 messageField.caretPosition = messageField.text.Length;
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            messageField.ActivateInputField();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            if(chatType == ChatType.All)
+            {
+                chatType = ChatType.Team;                
+            }
+            else
+            {
+                chatType = ChatType.All;                
+            }
+
+            UpdateChatTypeText();
         }
     }
 
@@ -62,8 +84,7 @@ public class Chat : MonoBehaviourPun
         }        
         else
         {
-            // 일반 채팅
-            photonView.RPC(nameof(SendChat), RpcTarget.All, PhotonNetwork.LocalPlayer, PhotonNetwork.NickName, text);
+            photonView.RPC(nameof(SendChat), RpcTarget.All, PhotonNetwork.LocalPlayer, PhotonNetwork.NickName, text, chatType);
         }
 
         beforeMessage = messageField.text;
@@ -116,13 +137,31 @@ public class Chat : MonoBehaviourPun
         Instantiate(chatPrefab, chatContent).SetUp(msg, whisperColor);
     }
 
+    private void UpdateChatTypeText()
+    {
+        chatTypeText.text = chatType == ChatType.Team ? "팀" : "전체";
+    }
+
     [PunRPC]
-    private void SendChat(Player senderPlayer, string sender, string message)
+    private void SendChat(Player senderPlayer, string sender, string message, ChatType type)
     {
         if (PhotonNetwork.LocalPlayer == senderPlayer)
             sender = $"{sender}(나)";
 
-        Instantiate(chatPrefab, chatContent).SetUp($"{sender} : {message}");
+        string prefix = type == ChatType.Team ? "[팀]" : "[전체]";
+        sender = $"{prefix} {sender}";
+
+        if (type == ChatType.Team)
+        {
+            if(senderPlayer.GetTeam() == PhotonNetwork.LocalPlayer.GetTeam())
+            {
+                Instantiate(chatPrefab, chatContent).SetUp($"{sender} : {message}");
+            }
+        }
+        else
+        {
+            Instantiate(chatPrefab, chatContent).SetUp($"{sender} : {message}");
+        }        
 
         Canvas.ForceUpdateCanvases();
     }
@@ -133,7 +172,7 @@ public class Chat : MonoBehaviourPun
         AddLocalMessage($"[귓속말 ← {sender}] {message}");
 
         beforeWhisperPlayerName = sender;
-    }
+    }        
 
     public void ResetChat()
     {
