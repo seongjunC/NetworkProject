@@ -18,7 +18,7 @@ public class TestBattleManager : MonoBehaviourPun
 
     #endregion
 
-    private void TestTurnEnd()
+    public void TestTurnEnd()
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
@@ -26,6 +26,7 @@ public class TestBattleManager : MonoBehaviourPun
         if (_turnController.IsMyTurn())
             _turnController.TurnFinished();
     }
+
     private void PlayerAttacked()
     {
         if (_playerController._hp <= 0)
