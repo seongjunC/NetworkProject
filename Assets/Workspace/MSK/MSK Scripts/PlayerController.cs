@@ -67,15 +67,28 @@ public class PlayerController : MonoBehaviourPun
         //_textMeshPro.text = photonView.IsMine
         //    ? $"<color=#00aaff>{PhotonNetwork.NickName}</color>"
         //    : $"<color=#ff4444>{photonView.Owner.NickName}</color>";
-
+        InitPlayecr(photonView.InstantiationData);
         _textMeshPro.text = photonView.Owner.NickName;
         _textMeshPro.color = CustomProperty.GetTeam(photonView.Owner) == Game.Team.Red ? Color.red : Color.blue;
     }
+    /// <summary>
+    /// 플레이어 초기화함수 (생성될 때 실행됨)
+    /// </summary>
+    private void InitPlayecr(object[] datas)
+    {
+        TankData data = Manager.Data.TankDataController.TankDatas[(string)datas[0]];
+        _data = Instantiate(data);      // 개별 인스턴스를 생성해야 다른 클라에 영향을 주지 않음
+        _data.Level = (int)datas[1];
+        _data.InitStat();
 
+        // 달라져야 할 데이터들을 모두 세팅함
+        // 예를 들어 Animator, 총알 프리팹
+    }
     private void PlayerSetUp()
     {
         myInfo = new PlayerInfo(photonView.Owner);
     }
+
     void FixedUpdate()
     {
         CheckGroundStatus();
