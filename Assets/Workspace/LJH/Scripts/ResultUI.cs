@@ -220,14 +220,6 @@ public class ResultUI : MonoBehaviourPun
     /// </summary>
     private void OnClickOK()
     {
-        // Photon ·ë ÅðÀå
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-
-        // ¾À ·Îµå
-        SceneManager.LoadScene("Title");
-        lobbyPanel.SetActive(true);
+        PhotonNetwork.LoadLevel(0);
     }
 }
