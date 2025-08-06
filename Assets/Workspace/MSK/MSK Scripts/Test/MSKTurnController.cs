@@ -174,7 +174,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         }
 
         currentPlayer = turnQueue.Dequeue();
-
+        Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
         if (DeadPlayer.Contains(currentPlayer.ActorNumber))
         {
             Debug.Log($"{currentPlayer}는 사망하여 다음턴으로 이동");
@@ -205,17 +205,14 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         foreach (var playerCon in tanks)
         {
-            Debug.Log("반복문 실행");
             if (playerCon == null) continue;
             if (IsMyTurn() && playerCon.photonView.IsMine)
             {
                 playerCon.EnableControl(true);
                 playerCon.ResetTurn();
-                Debug.Log($"{playerCon.photonView}의 컨트롤 가능.");
             }
             else
             {
-                Debug.Log($"{playerCon.photonView}의 컨트롤 탈취.");
                 playerCon.EnableControl(false);
                 playerCon.EndPlayerTurn();
             }
@@ -297,9 +294,17 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     public void TurnFinished()
     {
+        Debug.Log($"일반 [TurnFinished]{currentPlayer.player.NickName}님의 턴 종료 ");
         if (curArrow != null)
             Destroy(curArrow);
         photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+    public void TurnFinished(int ownerActnum)
+    {
+        Debug.Log($"공격 [TurnFinished]{currentPlayer.player.NickName}님의 턴 종료 ");
+        if (curArrow != null)
+            Destroy(curArrow);
+        photonView.RPC("RPC_TurnFinished", RpcTarget.All, ownerActnum);
     }
 
     public bool IsMyTurn()
@@ -439,7 +444,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
-            Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
             EnableCurrentPlayer();
             SpawnArrowCurrentPlayer();
         }
@@ -477,7 +481,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (team == Team.Red) redRemain--;
         else blueRemain--;
         currentPlayer.RecordKillCount();
-        Debug.Log($"[OnPlayerDied] 플레이어가 포톤 마이 인포 널? {player.myInfo == null}");
 
         DeadPlayer.Add(player.myInfo.ActorNumber);
         Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
@@ -529,7 +532,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_TimeStop()
     {
-        Debug.Log("[RPC_TimeStop] 시간 정지 실행");
         isTurnRunning = false;
     }
     #endregion

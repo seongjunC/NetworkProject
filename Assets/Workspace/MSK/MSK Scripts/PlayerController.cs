@@ -223,7 +223,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if (IsAttacked)
         {
-            Debug.Log("공격 이벤트");
             OnPlayerAttacked?.Invoke();
             isControllable = false;
         }

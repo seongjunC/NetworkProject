@@ -195,7 +195,8 @@ public class Projectile : MonoBehaviourPun
             CameraController.Instance.ReturnToPlayerCam();
 
 
-        testBattleManager.TestTurnEnd();
+        testBattleManager.TestTurnEnd(ownerActorNumber);
+
         Destroy(gameObject);
     }
 
