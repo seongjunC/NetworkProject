@@ -25,7 +25,8 @@ public class ProjectileManager : MonoBehaviourPun
     }
     [PunRPC]
     public void RPC_RequestFireProjectile(Vector3 firePointPosition, Quaternion firePointRotation,
-        float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber, float playerAngle, bool isRight)
+        float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber, float playerAngle, bool isRight
+        ,string projectileName)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -38,6 +39,9 @@ public class ProjectileManager : MonoBehaviourPun
 
         // 발사 이펙트 생성
         photonView.RPC(nameof(RPC_SpawnFireEffect), RpcTarget.All, firePointPosition, firePointRotation, playerAngle, isRight);
+
+        // 효과음 재생
+        photonView.RPC(nameof(RPC_SpawnSFX), RpcTarget.All, projectileName);
 
         // 데미지 버프 적용
         if (onDamageBuff)
@@ -86,7 +90,18 @@ public class ProjectileManager : MonoBehaviourPun
         EffectSpawner.Instance.SpawnFire(firePointPosition, newRotation);
     }
 
-
+    [PunRPC]
+    public void RPC_SpawnSFX(string projectileName)
+    {
+        if (projectileName == "StarProjectile")
+        {
+            Manager.Audio.PlaySFX("StarFire", transform.position);
+        }
+        else
+        {
+            Manager.Audio.PlaySFX("TankFire", transform.position);
+        }
+    }
 
     [PunRPC]
     private void RPC_SetBulletTarget(int bulletViewID)
@@ -119,6 +134,9 @@ public class ProjectileManager : MonoBehaviourPun
                 terrain.DestroyTerrain(explosionPoint, explosionMask, explosionScale);
             }
         }
+
+        // 효과음 재생
+        Manager.Audio.PlaySFX("Explosion", transform.position);
 
         // 플레이어 데미지 적용 (각 클라이언트에서 해당 플레이어에게 데미지 적용)
         foreach (int actorNumber in hitPlayerActorNumbers)
