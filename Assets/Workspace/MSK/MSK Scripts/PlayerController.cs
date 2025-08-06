@@ -49,11 +49,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         originalGravityScale = _rigidbody.gravityScale;
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
 
+        myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
         {
             _movable = _data.maxMove;
             _hp = _data.maxHp;
-            myInfo = new PlayerInfo(photonView.Owner);
+
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
 
