@@ -402,6 +402,7 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
   _hp: 200
   _movable: 0
+  _damage: 0
   moveSpeed: 3
   groundLayer:
     serializedVersion: 2
