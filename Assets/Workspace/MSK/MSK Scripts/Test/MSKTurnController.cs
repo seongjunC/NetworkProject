@@ -102,10 +102,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     public void GameStart()
     {
-        turnQueue.Clear();
-        nextCycle.Clear();
-        tanks.Clear();
-        fireMap.Clear();
+        ClearInit();
         InitializePlayerEvents();
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
@@ -133,40 +130,50 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         }
         Debug.Log($"[QueueAdd] turnQueue 갱신 완료: redRemain={redRemain}, blueRemain={blueRemain}");
         players = allPlayers.Values;
+        isGameStart = true;
 
         if (PhotonNetwork.IsMasterClient)
             SetRandomTurn();
-        isGameStart = true;
+    }
+    private void ClearInit()
+    {
+        turnQueue.Clear();
+        nextCycle.Clear();
+        tanks.Clear();
+        fireMap.Clear();
+        allPlayers.Clear();
     }
 
     private void SetRandomTurn()
     {
         room = PhotonNetwork.CurrentRoom;
-        if (!room.GetTurnRandom())
-            return;
-        
-        // 현재 플레이어들을 랜덤하게 정렬
-        var ordered = allPlayers.Values
-            .OrderBy(_ => Random.value)
+
+        var ordered = allPlayers.Values;
+
+        //  랜덤 설정
+        if (room.GetTurnRandom())
+        {
+            ordered.OrderBy(_ => Random.value)
             .Select(p => p.ActorNumber)
             .ToArray();
+        }
 
         photonView.RPC("RPC_ApplyRandomTurn", RpcTarget.All, ordered);
     }
     [PunRPC]
-    private void RPC_ApplyRandomTurn(int[] orderedActorNumbers)
+    private void RPC_ApplyRandomTurn(int[] orderedActor)
     {
         var orderedList = new List<PlayerInfo>();
 
-        foreach (var actorNumber in orderedActorNumbers)
+        foreach (var actorNumber in orderedActor)
         {
-            Debug.Log($"{actorNumber} 넣기");
             if (allPlayers.TryGetValue(actorNumber, out var playerInfo))
             {
                 orderedList.Add(playerInfo);
             }
         }
 
+        //정렬 후 게임 시작
         players = orderedList;
         QueueAdd(players);
         StartNextTurn();
@@ -489,7 +496,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         // 현재 턴 대상 강제 지정
         if (allPlayers.TryGetValue(actorNumber, out var info))
             currentPlayer = info;
-        
+
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
             EnableCurrentPlayer();
@@ -515,7 +522,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #region MSK added
     private void InitializePlayerEvents()
     {
-        allPlayers.Clear();
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             var info = new PlayerInfo(player);
