@@ -125,9 +125,28 @@ public class Gacha : MonoBehaviour
             }
         }
 
-        TankData[] randomData = GachaData.GetRankTankData((Rank)select);
+        Rank rank = (Rank)select;
 
-        TankData selectTank = randomData[Random.Range(0, randomData.Length)];
+        TankData[] rankTankData = GachaData.GetRankTankData(rank);
+        TankData selectTank = null;
+
+        if (rank == Rank.S)
+        {
+            int random = Random.Range(0, 2);
+
+            if(rank == 0)
+            {
+                selectTank = GachaData.pickUp;
+            }
+            else
+            {
+                TankData[] notPickUpTankDatas = rankTankData.Where(t => t != GachaData.pickUp).ToArray();
+                selectTank = notPickUpTankDatas[Random.Range(0, notPickUpTankDatas.Length)];
+            }
+        }
+        else
+            selectTank = rankTankData[Random.Range(0, rankTankData.Length)];
+
 
         Card card = Instantiate(cardPrefab, cardSpawnTransform.position, Quaternion.identity, cardSpawnTransform).GetComponent<Card>();
         cards.Add(card);
