@@ -34,7 +34,7 @@ public class ProjectileManager : MonoBehaviourPun
         }
 
         // 포탄 생성
-        GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePointPosition, firePointRotation);
+        GameObject bullet = PhotonNetwork.Instantiate($"Prefabs/{projectileName}", firePointPosition, firePointRotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
 
         // 발사 이펙트 생성
