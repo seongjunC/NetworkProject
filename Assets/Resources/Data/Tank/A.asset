@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: A
   m_EditorClassIdentifier: 
-  baseDamage: 0
-  baseSpeed: 0
-  baseMaxHp: 0
-  baseMaxMove: 0
-  damageGrowth: 0
+  baseDamage: 100
+  baseSpeed: 3
+  baseMaxHp: 250
+  baseMaxMove: 1
+  damageGrowth: 10
   speedGrowth: 0
-  maxHpGrowth: 0
-  maxMoveGrowth: 0
+  maxHpGrowth: 25
+  maxMoveGrowth: 0.1
   damage: 1
   maxMove: 5
   speed: 1
   maxHp: 1
   tankName: A
   rank: 1
-  Icon: {fileID: 21300000, guid: f08838a4b0eb82741b2eabaec087ffe4, type: 3}
+  Icon: {fileID: 21300000, guid: fbc8f0dab81bbba409ba68826180b68a, type: 3}
   description: "A\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

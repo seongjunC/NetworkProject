@@ -73,6 +73,9 @@ MonoBehaviour:
   - RPC_SpawnFireEffect
   - RPC_SyncUseItem
   - RPC_UseItem
+  - RPC_SpawnSFX
+  - RPC_TimeStop
+  - SetOwnerActorNumber
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

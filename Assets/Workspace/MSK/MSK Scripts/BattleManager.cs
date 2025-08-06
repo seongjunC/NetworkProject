@@ -25,9 +25,14 @@ public class TestBattleManager : MonoBehaviourPun
 
         _turnEndButton.onClick.AddListener(TestTurnEnd);
         _turnController.OnPlayerDied += HandlePlayerDied;
+        _turnEndButton.interactable = false;
     }
 
     #endregion
+    public void SetTurnEndButton(bool result)
+    {
+        _turnEndButton.interactable = result;
+    }
 
     public void TestTurnEnd()
     {
@@ -37,12 +42,64 @@ public class TestBattleManager : MonoBehaviourPun
         if (_turnController.IsMyTurn())
             _turnController.TurnFinished();
     }
+    public void TestTurnEnd(int actnum)
+    {
+        if (_playerController != null)
+            _playerController.EndPlayerTurn();
+
+        if (_turnController.IsMyTurn())
+            _turnController.TurnFinished(actnum);
+    }
 
     private void InitRemains()
     {
         redRemain = PhotonNetwork.PlayerList.Count(p => p.GetTeam() == Team.Red);
         blueRemain = PhotonNetwork.PlayerList.Count(p => p.GetTeam() == Team.Blue);
         Debug.Log($"[BattleManager] 초기 생존자 R:{redRemain}, B:{blueRemain}");
+    }
+
+    private void HandlePlayerDied(PlayerController victim, PlayerInfo killerInfo)
+    {
+        var team = CustomProperty.GetTeam(victim.photonView.Owner);
+        if (team == Game.Team.Red) redRemain--;
+        else blueRemain--;
+
+        killerInfo.RecordKillCount();
+        Debug.Log($"[BattleManager] {killerInfo.NickName}가 {victim.myInfo.NickName} 처치. 남은 R:{redRemain}, B:{blueRemain}");
+
+        if (!_gameEnded && (blueRemain == 0 || redRemain == 0))
+        {
+            _gameEnded = true;
+            Team winnerTeam = redRemain == 0 ? Team.Blue : Team.Red;
+
+            int mvpActor = ReturnMVP(winnerTeam);
+
+            Debug.Log($"게임 종료!\n {(winnerTeam == Team.Red ? "레드" : "블루")}팀의 승리");
+            photonView.RPC(nameof(_turnController.RPC_GameEnded), RpcTarget.All, winnerTeam, mvpActor);
+        }
+
+        Debug.Log($"GameEndCheck : 블루팀 : {blueRemain} , 레드팀 : {redRemain}");
+    }
+
+    private int ReturnMVP(Team WinnerTeam)
+    {
+        if (_playerController._hp <= 0)
+        {
+            // 사망 처리
+            _turnController.photonView.RPC("RPC_PlayerDead", RpcTarget.MasterClient);
+            // 죽은 유저가 자신의 턴이었다면, 턴도 종료
+            if (_turnController.IsMyTurn())
+            {
+                _turnController.TurnFinished();
+            }
+            return;
+        }
+        // 살아있고 내 턴이면 턴 종료
+        if (_turnController.IsMyTurn())
+        {
+            _turnController.TurnFinished();
+        }
+        */
     }
 
     private void HandlePlayerDied(PlayerController victim, PlayerInfo killerInfo)
@@ -101,6 +158,7 @@ public class TestBattleManager : MonoBehaviourPun
 
     //     private void PlayerAttacked()
     //     {
+    //          _turnController.photonView.RPC("RPC_TimeStop", RpcTarget.All);
     //         if (_playerController._hp <= 0)
     //         {
     //             // 사망 처리

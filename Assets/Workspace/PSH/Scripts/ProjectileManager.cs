@@ -9,6 +9,7 @@ public class ProjectileManager : MonoBehaviourPun
     [SerializeField] Texture2D explosionMask;
 
     private FloatingTextSpawner floatingTextSpawner;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -25,7 +26,8 @@ public class ProjectileManager : MonoBehaviourPun
     }
     [PunRPC]
     public void RPC_RequestFireProjectile(Vector3 firePointPosition, Quaternion firePointRotation,
-        float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber, float playerAngle, bool isRight)
+        float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber, float playerAngle, bool isRight
+        ,string projectileName, float damage)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -33,11 +35,14 @@ public class ProjectileManager : MonoBehaviourPun
         }
 
         // 포탄 생성
-        GameObject bullet = PhotonNetwork.Instantiate("Prefabs/Projectile", firePointPosition, firePointRotation);
+        GameObject bullet = PhotonNetwork.Instantiate($"Prefabs/{projectileName}", firePointPosition, firePointRotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
-
+        bulletScript.damage = damage;
         // 발사 이펙트 생성
         photonView.RPC(nameof(RPC_SpawnFireEffect), RpcTarget.All, firePointPosition, firePointRotation, playerAngle, isRight);
+
+        // 효과음 재생
+        photonView.RPC(nameof(RPC_SpawnSFX), RpcTarget.All, projectileName);
 
         // 데미지 버프 적용
         if (onDamageBuff)
@@ -54,7 +59,8 @@ public class ProjectileManager : MonoBehaviourPun
         }
 
         // 포탄의 소유자 설정 (옵션: Projectile 스크립트에서 사용 가능)
-        bulletScript.SetOwnerActorNumber(ownerActorNumber);
+        //bulletScript.SetOwnerActorNumber(ownerActorNumber);   기존
+        bulletScript.photonView.RPC(nameof(bulletScript.SetOwnerActorNumber), RpcTarget.All, ownerActorNumber);
 
         // 모든 클라이언트에 포탄 ViewID 동기화 (카메라 타겟용)
         PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();
@@ -86,7 +92,18 @@ public class ProjectileManager : MonoBehaviourPun
         EffectSpawner.Instance.SpawnFire(firePointPosition, newRotation);
     }
 
-
+    [PunRPC]
+    public void RPC_SpawnSFX(string projectileName)
+    {
+        if (projectileName == "StarProjectile")
+        {
+            Manager.Audio.PlaySFX("StarFire", transform.position);
+        }
+        else
+        {
+            Manager.Audio.PlaySFX("TankFire", transform.position);
+        }
+    }
 
     [PunRPC]
     private void RPC_SetBulletTarget(int bulletViewID)
@@ -103,7 +120,7 @@ public class ProjectileManager : MonoBehaviourPun
     // 지형 파괴 및 데미지 적용 결과를 동기화하는 RPC (Projectile.cs에서 호출)
     [PunRPC]
     public void RPC_ApplyExplosionEffects(Vector2 explosionPoint, int explosionRadiusX, int explosionRadiusY,
-        float explosionScale, int bulletViewID, int[] hitPlayerActorNumbers, int realDamage)
+        float explosionScale, int bulletViewID, int[] hitPlayerActorNumbers, float realDamage)
     {
         // 지형 파괴
         DeformableTerrain terrain = FindObjectOfType<DeformableTerrain>();
@@ -120,6 +137,13 @@ public class ProjectileManager : MonoBehaviourPun
             }
         }
 
+        // 효과음 재생
+        Manager.Audio.PlaySFX("Explosion", transform.position);
+
+        // 카메라 흔들림
+        float shakeIntensity = 12f + realDamage * .1f;
+        CameraController.Instance.ShakeCam(shakeIntensity);
+
         // 플레이어 데미지 적용 (각 클라이언트에서 해당 플레이어에게 데미지 적용)
         foreach (int actorNumber in hitPlayerActorNumbers)
         {
@@ -130,7 +154,7 @@ public class ProjectileManager : MonoBehaviourPun
                 if (EffectSpawner.Instance != null)
                 {
                     EffectSpawner.Instance.SpawnExplosion(player.transform.position);
-                    string str = realDamage.ToString();
+                    string str = realDamage.ToString("F0");
                     floatingTextSpawner.SpawnText(str, player.transform.position);
                 }
                 player.OnHit(realDamage);

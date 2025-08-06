@@ -11,8 +11,8 @@ public class Projectile : MonoBehaviourPun
     public int explosionRadiusy = 100;
     public Texture2D explosionMask;
     public float explosionScale = 1f;
-    public int damage = 50;
-    private int realDamage;
+    public float damage = 50;
+    private float realDamage;
 
     private float worldPerPixel; // Terrain 기준
     private DeformableTerrain terrain;
@@ -37,8 +37,11 @@ public class Projectile : MonoBehaviourPun
 
     private Vector2 windForce;
 
+    private TestBattleManager testBattleManager;
+
     private void Awake()
     {
+        testBattleManager = FindAnyObjectByType<TestBattleManager>();
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
@@ -156,13 +159,15 @@ public class Projectile : MonoBehaviourPun
                 // ProjectileManager를 통해 모든 클라이언트에 포탄 파괴 동기화
                 ProjectileManager.Instance.photonView.RPC(nameof(ProjectileManager.RPC_ApplyExplosionEffects), RpcTarget.All,
                     Vector2.zero, 0, 0, 0f, // 지형 파괴 없음
-                    photonView.ViewID, new int[0], 0); // 데미지 없음
+                    photonView.ViewID, new int[0], 0f); // 데미지 없음
 
                 BeginDestroyRoutine(false);
             }
         }
     }
 
+    //  RPC 호출 테스트
+    [PunRPC]
     public void SetOwnerActorNumber(int actorNumber)
     {
         ownerActorNumber = actorNumber;
@@ -190,6 +195,10 @@ public class Projectile : MonoBehaviourPun
 
         if (CameraController.Instance != null)
             CameraController.Instance.ReturnToPlayerCam();
+
+        Debug.Log($"[DestroyRoutine] : {ownerActorNumber}");
+        if (PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber)
+            testBattleManager.TestTurnEnd(ownerActorNumber);
 
         Destroy(gameObject);
     }
