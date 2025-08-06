@@ -63,18 +63,21 @@ public class RoomManager : MonoBehaviourPun
 
     #region LifeCycle
     private void Start()
-    {
-        
+    {     
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
         gameSettingButton.onClick.AddListener(() => GameSettingPanelActive(true));
         gameSettingCloseButton.onClick.AddListener(() => GameSettingPanelActive(false));
     }
+
     private void OnEnable()
     {
-        Subscribe();
+        Subscribe();        
+    }
 
+    public void RecreateRoom()
+    {
         if (Manager.Game.State == Game.State.Game)
         {
             login.SetActive(false);
@@ -84,6 +87,7 @@ public class RoomManager : MonoBehaviourPun
             Manager.Game.State = Game.State.Lobby;
         }
     }
+
     private void OnDisable()
     {
         UnSubscribe();
@@ -456,6 +460,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.FadeScreen.FadeOut(.5f);
 
         Init();
+        MapChange();
         CreateMapSlot();
         CreatePlayerSlot();
         UpdateAllPlayerSlot();

@@ -50,7 +50,12 @@ public class PlayerSlot : MonoBehaviour
     #endregion
 
     public void SetUp(Player player)
-    {   
+    {
+        if (this == null)
+        {
+            return;
+        }
+
         this.player = player;
 
         if (player != PhotonNetwork.MasterClient)

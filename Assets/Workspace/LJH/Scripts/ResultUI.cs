@@ -221,6 +221,6 @@ public class ResultUI : MonoBehaviourPun
     private void OnClickOK()
     {
         PhotonNetwork.AutomaticallySyncScene = false;
-        SceneManager.LoadSceneAsync("Title");
+        PhotonNetwork.LoadLevel("Title");
     }
 }
