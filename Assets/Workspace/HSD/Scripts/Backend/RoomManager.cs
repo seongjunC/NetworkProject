@@ -418,7 +418,7 @@ public class RoomManager : MonoBehaviourPun
         }
         
         PhotonNetwork.CurrentRoom.SetGameStart(true);
-        PhotonNetwork.LoadLevel("MSK InGameTest"); // æ¿¿Ãµø
+        PhotonNetwork.LoadLevel("MSK InGameTest 1"); // æ¿¿Ãµø
     }
 
     #region Events
