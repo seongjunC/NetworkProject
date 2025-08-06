@@ -1592,8 +1592,6 @@ MonoBehaviour:
   item1Button: {fileID: 2058580865}
   item2Button: {fileID: 632761413}
   endTurnButton: {fileID: 401992352}
-  item1Icon: {fileID: 0}
-  item2Icon: {fileID: 0}
   healthPointText: {fileID: 1351828250}
 --- !u!114 &583216032
 MonoBehaviour:
@@ -2147,6 +2145,7 @@ MonoBehaviour:
   turnLimit: 30
   itemSpawner: {fileID: 0}
   itemCount: 0
+  ResultPanel: {fileID: 0}
 --- !u!114 &828588929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3948,6 +3947,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapSpriteRenderer: {fileID: 0}
   padding: 2
+  paddingUp: 10
+  mapSize: {x: 0, y: 0}
 --- !u!4 &1392346346
 Transform:
   m_ObjectHideFlags: 0
@@ -5615,7 +5616,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 890325396}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.94330144
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

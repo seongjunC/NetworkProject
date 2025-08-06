@@ -476,7 +476,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void RPC_RecordDamage(int damage)
+    private void RPC_RecordDamage(float damage)
     {
         currentPlayer.ToDealDamage(damage);
         Debug.Log($"{currentPlayer.NickName}가 {damage}의 데미지를 가함!");

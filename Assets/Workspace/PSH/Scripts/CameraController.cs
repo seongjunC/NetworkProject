@@ -10,11 +10,16 @@ public class CameraController : MonoBehaviour
     public CinemachineVirtualCamera vcamPlayer;
     public CinemachineVirtualCamera vcamBullet;
 
+    private CinemachineBasicMultiChannelPerlin _perlin;
+    private float _shakeTimer;
+    private float _shakeDuration;
+    private float _startAmplitude;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Debug.Log("ÀÎ½ºÅÏ½º ÀÌ¹Ì Á¸Àç. »õ·Î »ı¼ºµÈ ÀÎ½ºÅÏ½º ÆÄ±«");
+            Debug.Log("ì¸ìŠ¤í„´ìŠ¤ ì´ë¯¸ ì¡´ì¬. ìƒˆë¡œ ìƒì„±ëœ ì¸ìŠ¤í„´ìŠ¤ íŒŒê´´");
         }
         else
         {
@@ -27,7 +32,7 @@ public class CameraController : MonoBehaviour
         if (vcamBullet == null) return;
         vcamBullet.Follow = bulletTransform;
         vcamBullet.Priority = 20;
-        Debug.Log("Ä«¸Ş¶ó°¡ Åõ»çÃ¼¸¦ÇâÇÔ");
+        Debug.Log("ì¹´ë©”ë¼ê°€ íˆ¬ì‚¬ì²´ë¥¼í–¥í•¨");
     }
 
     public void ReturnToPlayerCam()
@@ -35,6 +40,34 @@ public class CameraController : MonoBehaviour
         if(vcamPlayer == null) return;
         vcamBullet.Priority = 5;
         vcamBullet.Follow = null;
-        Debug.Log("Ä«¸Ş¶ó°¡ µ¹¾Æ¿È");
+        Debug.Log("ì¹´ë©”ë¼ê°€ ëŒì•„ì˜´");
     }
+
+    public void ShakeCam(float intensity = 3f, float duration = .5f)
+    {
+        StartCoroutine(ShakeCoroutine(intensity, duration));
+    }
+
+    private IEnumerator ShakeCoroutine(float intensity, float duration)
+    {
+        var perlin = vcamBullet.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        if (perlin == null)
+        {
+            Debug.LogWarning("Perlin Noise ì»´í¬ë„ŒíŠ¸ê°€ ì—†ì–´ìš”~");
+            yield break;
+        }
+
+        float timer = 0f;
+        perlin.m_AmplitudeGain = intensity;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        perlin.m_AmplitudeGain = 0f;
+    }
+
 }

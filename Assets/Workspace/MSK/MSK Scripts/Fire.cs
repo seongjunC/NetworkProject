@@ -24,11 +24,15 @@ public class Fire : MonoBehaviourPun
     private ProjectileManager _projectileManager;
     private PlayerController _playerController;
 
+    private string projectileName;
+
     private void Awake()
     {
         _playerController = GetComponentInParent<PlayerController>();
         _projectileManager = FindObjectOfType<ProjectileManager>();
         InitBuff();
+
+        projectileName = bulletPrefab.name;
     }
 
     private void Update()
@@ -77,7 +81,8 @@ public class Fire : MonoBehaviourPun
         float playerAngle = gameObject.transform.eulerAngles.z;
         _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
-            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight);
+            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
+            ,projectileName, _playerController._damage);
 
         InitDamageBuff();
     }
