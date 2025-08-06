@@ -32,18 +32,20 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Color waitColor;
 
     private Player player;
-    public event Action<Player> OnKick;
+    public static event Action<Player> OnKick;
     
     #region LifeCycle
     private void OnEnable()
     {
         PhotonNetwork.EnableCloseConnection = true;
         infoButton.onClick.AddListener(ViewPlayerInfo);
+        playerCloseConnectionButton.onClick.AddListener(TryCloseConnection);
     }
 
     private void OnDisable()
     {
         infoButton.onClick.RemoveListener(ViewPlayerInfo);
+        playerCloseConnectionButton.onClick.RemoveListener(TryCloseConnection);
     }
     #endregion
 

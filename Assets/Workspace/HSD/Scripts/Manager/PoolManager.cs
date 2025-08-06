@@ -180,11 +180,14 @@ public class PoolManager : Singleton<PoolManager>
         yield return new WaitForSeconds(delay);
 
         GameObject obj = original as GameObject;
+
+        if (obj == null || !obj.activeSelf) yield break;
+
         string name = obj.name;
 
         if (!poolDic.ContainsKey(name) && !obj.activeSelf)
             yield break;
-        //Debug.Log(obj.activeSelf);
+
         poolDic[name].Release(obj);
     }
 

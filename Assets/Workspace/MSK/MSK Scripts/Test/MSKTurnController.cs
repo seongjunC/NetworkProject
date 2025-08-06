@@ -59,6 +59,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #region Unity LifeCycle
     private void Awake()
     {
+        Manager.Game.State = State.Game;
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -151,7 +153,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         ItemController.useItem(item, GetLocalPlayerController().myInfo);
     }
-
 
     private void GameEndCheck()
     {
@@ -373,6 +374,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_GameEnded(Team winnerTeam)
     {
+        if (isGameEnd) return;
+
         isTurnRunning = false;
         isGameEnd = true;
         Debug.Log("게임 종료!");

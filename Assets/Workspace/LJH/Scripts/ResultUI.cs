@@ -220,6 +220,7 @@ public class ResultUI : MonoBehaviourPun
     /// </summary>
     private void OnClickOK()
     {
-        PhotonNetwork.LoadLevel(0);
+        PhotonNetwork.AutomaticallySyncScene = false;
+        SceneManager.LoadSceneAsync("Title");
     }
 }

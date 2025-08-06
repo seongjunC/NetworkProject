@@ -1,4 +1,0 @@
-[submodule "Resources"]
-	path = Resources
-	url = git@github.com:seongjunC/Resources.git
-	branch = main

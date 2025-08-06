@@ -67,6 +67,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public int currentRoomSelectIdx { get => _currentRoomSelectIdx; set { _currentRoomSelectIdx = value; ChangeCurrentRoomIdx(); RoomSelectButtonActiveCheck(); } }
 
     #region LifeCycle
+    private void Awake()
+    {
+        if (this == null)
+            Destroy(gameObject);
+    }
+
     public override void OnEnable()
     {
         base.OnEnable();        
