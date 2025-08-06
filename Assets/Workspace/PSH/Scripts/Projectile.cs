@@ -37,8 +37,11 @@ public class Projectile : MonoBehaviourPun
 
     private Vector2 windForce;
 
+    private TestBattleManager testBattleManager;
+
     private void Awake()
     {
+        testBattleManager = FindAnyObjectByType<TestBattleManager>();
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
@@ -191,6 +194,8 @@ public class Projectile : MonoBehaviourPun
         if (CameraController.Instance != null)
             CameraController.Instance.ReturnToPlayerCam();
 
+
+        testBattleManager.TestTurnEnd();
         Destroy(gameObject);
     }
 

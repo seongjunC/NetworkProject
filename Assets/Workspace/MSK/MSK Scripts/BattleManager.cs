@@ -29,6 +29,8 @@ public class TestBattleManager : MonoBehaviourPun
 
     private void PlayerAttacked()
     {
+        _turnController.timeStop();
+        /*
         if (_playerController._hp <= 0)
         {
             // 사망 처리
@@ -44,7 +46,7 @@ public class TestBattleManager : MonoBehaviourPun
         if (_turnController.IsMyTurn())
         {
             _turnController.TurnFinished();
-        }
+        }*/
     }
 
     public void RegisterPlayer(PlayerController playerController)

@@ -50,7 +50,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private Room room;
     IEnumerable<PlayerInfo> players;
 
-
     private bool isTurnRunning = false;
     private bool isGameStart = false;
     private bool isGameEnd = false;
@@ -161,7 +160,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             Team winnerTeam = blueRemain == 0 ? Team.Blue : Team.Red;
             Debug.Log($"게임 종료!\n {(winnerTeam == Team.Red ? "레드" : "블루")}팀의 승리");
-            photonView.RPC("RPC_GameEnded", RpcTarget.All, winnerTeam);
+            photonView.RPC("RPC_GameEnded", RpcTarget.MasterClient, winnerTeam);
             return;
         }
         Debug.Log($"GameEndCheck : 블루팀 : {blueRemain} , 레드팀 : {redRemain}");
@@ -313,6 +312,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         int localActor = PhotonNetwork.LocalPlayer.ActorNumber;
         int currentActor = currentPlayer.ActorNumber;
         return currentActor == localActor;
+    }
+
+    public void timeStop()
+    {
+        isTurnRunning = false;
     }
     /*
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -488,6 +492,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_UpdateTimerText(float remainingTime)
     {
+        if (isGameEnd)
+            return;
         CountText.text = $"{remainingTime:F0}";
     }
 
@@ -511,18 +517,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             }
         }
     }
-    /*
-    [PunRPC]
-    private void RPC_SetBulletTarget(int bulletViewID)
-    {
-        PhotonView bulletView = PhotonView.Find(bulletViewID);
-        if (bulletView != null)
-        {
-            CameraController.Instance.vcamBullet.Follow = bulletView.transform;
-            CameraController.Instance.vcamBullet.Priority = 20;
-        }
-    }
-    */
     [PunRPC]
     private void RPC_NotifySpawned()
     {
