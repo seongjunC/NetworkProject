@@ -38,6 +38,11 @@ public class ResultUI : MonoBehaviour
         Debug.Log("ResultActive");
         gameObject.SetActive(true);
 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("게임 끝");
+            PhotonNetwork.CurrentRoom.SetGameStart(false);
+        }
         // 결과 패널 표시
         winnerText.text = $"승리: {(winnerTeam == Team.Red ? "RED 팀" : "BLUE 팀")}";
         // 플레이어 슬롯 초기화
@@ -229,7 +234,26 @@ public class ResultUI : MonoBehaviour
     /// </summary>
     private void OnClickOK()
     {
-        PhotonNetwork.AutomaticallySyncScene = false;
-        SceneManager.LoadSceneAsync("Title");
+        okButton.interactable = false;
+
+        Debug.Log($"씬 동기화 여부 : {PhotonNetwork.AutomaticallySyncScene}");
+
+        StartCoroutine(GameExitRoutine());
+    }
+
+    private IEnumerator GameExitRoutine()
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync("Title");
+        op.allowSceneActivation = false;
+
+        Manager.UI.FadeScreen.FadeIn();
+
+        yield return new WaitUntil(() => op.progress >= 0.9f);
+
+        yield return new WaitForSeconds(1f);
+
+        PhotonNetwork.LocalPlayer.SetGamePlay(false);
+
+        op.allowSceneActivation = true;
     }
 }

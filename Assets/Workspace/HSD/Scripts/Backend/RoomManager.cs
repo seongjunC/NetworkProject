@@ -6,11 +6,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PhotonView))]
 public class RoomManager : MonoBehaviourPun
 {
+    [SerializeField] string gameSceneName;
+
     [Header("Player")]
     [SerializeField] GameObject playerSlotPrefab;
     [SerializeField] Transform redPlayerContent;
@@ -64,17 +67,20 @@ public class RoomManager : MonoBehaviourPun
     #region LifeCycle
     private void Start()
     {
-
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
         gameSettingButton.onClick.AddListener(() => GameSettingPanelActive(true));
         gameSettingCloseButton.onClick.AddListener(() => GameSettingPanelActive(false));
     }
+
     private void OnEnable()
     {
         Subscribe();
+    }
 
+    public void RecreateRoom()
+    {
         if (Manager.Game.State == Game.State.Game)
         {
             login.SetActive(false);
@@ -84,6 +90,7 @@ public class RoomManager : MonoBehaviourPun
             Manager.Game.State = Game.State.Lobby;
         }
     }
+
     private void OnDisable()
     {
         UnSubscribe();
@@ -160,6 +167,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
+    #region Kick
     private void Kick(Player player)
     {
         photonView.RPC(nameof(Kick_RPC), player);
@@ -187,6 +195,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.PopUpUI.Show("방에서 강퇴 되었습니다.");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
+    #endregion
 
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
@@ -209,7 +218,8 @@ public class RoomManager : MonoBehaviourPun
     private void SetButtonInteractable()
     {
         mapChangeButton.interactable = PhotonNetwork.IsMasterClient;
-        gameSettingButton.interactable = PhotonNetwork.IsMasterClient;
+        damageTypeButton.interactable = PhotonNetwork.IsMasterClient;
+        turnSwitchButton.interactable = PhotonNetwork.IsMasterClient;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -226,13 +236,6 @@ public class RoomManager : MonoBehaviourPun
 
     private void CreatePlayerSlot()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            MapChange();
-        }
-
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
@@ -405,6 +408,15 @@ public class RoomManager : MonoBehaviourPun
 
     private void GameStart()
     {
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player.GetGamePlay())
+            {
+                Manager.UI.PopUpUI.Show("누군가 아직 게임 내부에 있습니다.", Color.red);
+                return;
+            }
+        }
+
         if (currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             Debug.Log("방에 인원이 부족하거나 모든 플레이어가 레디하지 않았습니다.");
@@ -418,7 +430,13 @@ public class RoomManager : MonoBehaviourPun
         }
 
         PhotonNetwork.CurrentRoom.SetGameStart(true);
-        PhotonNetwork.LoadLevel("MSK InGameTest"); // 씬이동
+        photonView.RPC(nameof(LoadScene), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void LoadScene()
+    {
+        SceneManager.LoadScene(gameSceneName);
     }
 
     #region Events
@@ -456,6 +474,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.FadeScreen.FadeOut(.5f);
 
         Init();
+        MapChange();
         CreateMapSlot();
         CreatePlayerSlot();
         UpdateAllPlayerSlot();

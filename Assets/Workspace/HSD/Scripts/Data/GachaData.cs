@@ -10,6 +10,7 @@ public class GachaData : ScriptableObject
     public GachaChance[] GachaDatas;
     public int NeedGem;
     public TankData[] GachaList;
+    public TankData pickUp;
 
     private void OnEnable()
     {

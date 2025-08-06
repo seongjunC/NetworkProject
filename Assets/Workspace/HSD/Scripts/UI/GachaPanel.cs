@@ -8,6 +8,7 @@ public class GachaPanel : MonoBehaviour
 {
     [SerializeField] Gacha gacha;
     [SerializeField] Button gachaExitButton;
+    [SerializeField] Image tankImage;
 
     [Header("GachaButtons")]
     [SerializeField] Button oneGachaButton;
@@ -38,6 +39,8 @@ public class GachaPanel : MonoBehaviour
 
     private void OnEnable()
     {
+        tankImage.sprite = gacha.GachaData.pickUp.Icon;
+
         gachaExitButton.onClick.AddListener(GachaExit);
         oneGachaButton.onClick.AddListener(OneGacha);
         tenGachaButton.onClick.AddListener(TenGacha);

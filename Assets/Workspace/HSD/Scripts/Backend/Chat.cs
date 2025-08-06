@@ -16,6 +16,7 @@ public class Chat : MonoBehaviourPun
 
     [Header("Color")]
     [SerializeField] Color whisperColor;
+    [SerializeField] Color teamChatColor;
 
     private ChatType chatType = ChatType.All;
     private string beforeMessage;
@@ -147,7 +148,7 @@ public class Chat : MonoBehaviourPun
     {
         if (PhotonNetwork.LocalPlayer == senderPlayer)
             sender = $"{sender}(³ª)";
-
+        
         string prefix = type == ChatType.Team ? "[ÆÀ]" : "[ÀüÃ¼]";
         sender = $"{prefix} {sender}";
 
@@ -155,7 +156,7 @@ public class Chat : MonoBehaviourPun
         {
             if(senderPlayer.GetTeam() == PhotonNetwork.LocalPlayer.GetTeam())
             {
-                Instantiate(chatPrefab, chatContent).SetUp($"{sender} : {message}");
+                Instantiate(chatPrefab, chatContent).SetUp($"{sender} : {message}", teamChatColor);
             }
         }
         else
