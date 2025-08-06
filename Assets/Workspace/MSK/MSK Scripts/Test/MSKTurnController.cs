@@ -29,7 +29,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [Header("탱크 리스트 확인용")]
     [SerializeField] List<PlayerController> tanks = new();
     [SerializeField] GameObject Arrow;
-
+    [SerializeField] private TestBattleManager testBattleManager;
 
 
     private Vector3 arrowOffset = new Vector3(-0.3f, 3f, 0);
@@ -54,7 +54,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private bool isGameStart = false;
     private bool isGameEnd = false;
 
-    [SerializeField] private TestBattleManager testBattleManager;
+
 
     #region Unity LifeCycle
     private void Awake()
@@ -81,13 +81,14 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (isTurnRunning && isGameStart && !isGameEnd)
         {
-            // 자신의 턴 일때만 턴 종료 요청
+            // 자신의 턴 일때만 요청
             if (!IsMyTurn())
                 return;
+
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
 
-            // 모든 클라이언트에 남은 시간 텍스트 갱신
+            // 모든 클라이언트에 남은 시간 텍스트 갱신, 코드 위치 변경 필요...
             photonView.RPC("RPC_UpdateTimerText", RpcTarget.All, turnTimer);
 
             if (turnTimer <= 0f)
@@ -99,14 +100,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     #endregion
 
-
     public void GameStart()
     {
         turnQueue.Clear();
         nextCycle.Clear();
         tanks.Clear();
         fireMap.Clear();
-        room = PhotonNetwork.CurrentRoom;
+        InitializePlayerEvents();
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
         {
@@ -121,10 +121,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 controller.myInfo.OnItemAcquired += ItemAdd;
             }
         }
-        players = allPlayers.Values;
-
-        if (room.GetTurnRandom())
-            players = players.OrderBy(_ => Random.value);
 
         foreach (var playerInfo in PhotonNetwork.PlayerList)
         {
@@ -136,13 +132,45 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 blueRemain++;
         }
         Debug.Log($"[QueueAdd] turnQueue 갱신 완료: redRemain={redRemain}, blueRemain={blueRemain}");
+        players = allPlayers.Values;
 
+        if (PhotonNetwork.IsMasterClient)
+            SetRandomTurn();
         isGameStart = true;
-        InitializePlayerEvents();
+    }
+
+    private void SetRandomTurn()
+    {
+        room = PhotonNetwork.CurrentRoom;
+        if (!room.GetTurnRandom())
+            return;
+        
+        // 현재 플레이어들을 랜덤하게 정렬
+        var ordered = allPlayers.Values
+            .OrderBy(_ => Random.value)
+            .Select(p => p.ActorNumber)
+            .ToArray();
+
+        photonView.RPC("RPC_ApplyRandomTurn", RpcTarget.All, ordered);
+    }
+    [PunRPC]
+    private void RPC_ApplyRandomTurn(int[] orderedActorNumbers)
+    {
+        var orderedList = new List<PlayerInfo>();
+
+        foreach (var actorNumber in orderedActorNumbers)
+        {
+            Debug.Log($"{actorNumber} 넣기");
+            if (allPlayers.TryGetValue(actorNumber, out var playerInfo))
+            {
+                orderedList.Add(playerInfo);
+            }
+        }
+
+        players = orderedList;
         QueueAdd(players);
         StartNextTurn();
     }
-
     private void ItemAdd(ItemData item)
     {
         inGameUI.AddItem(item);
@@ -202,6 +230,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             WindManager.Instance.GenerateNewWind();
         }
     }
+
     public void EndButtonInteractable()
     {
         if (IsMyTurn())
