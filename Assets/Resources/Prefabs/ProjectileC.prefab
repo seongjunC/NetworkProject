@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -873388188192548066}
   - component: {fileID: 8540684139827710673}
   m_Layer: 0
-  m_Name: Projectile
+  m_Name: ProjectileC
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7353bbe7e559d2c40821533b2cbddca5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c60bd8b2dae4dec4bbf9db75834b8220, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -173,7 +173,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.75, y: 0.5}
+    oldSize: {x: 0.34, y: 0.28}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

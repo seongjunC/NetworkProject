@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 2398114623178038475}
   - component: {fileID: 6515520639368925497}
   - component: {fileID: -1744257906108635217}
-  - component: {fileID: 9012273701837569015}
-  - component: {fileID: -9007266015004898651}
+  - component: {fileID: -873388188192548066}
+  - component: {fileID: 8540684139827710673}
   m_Layer: 0
-  m_Name: Projectile 1
+  m_Name: ProjectileB
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 99f9df2f12d57ee4fbf0dfb26065a080, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1ab614522e1275447b2bfc1208fdb1d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102,13 +102,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c2a549feff03f4e819a282153e833c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionRadiusx: 0
-  explosionRadiusy: 0
+  explosionRadiusx: 200
+  explosionRadiusy: 200
   explosionMask: {fileID: 0}
   explosionScale: 1
   damage: 100
-  explosionEffect: {fileID: 739683856073798810, guid: 6538bb1ec2794034f87d90690d5be8ae, type: 3}
+  explosionEffect: {fileID: 739683856073798810, guid: 7841814d350503a4e8bd5f49a48ea62b, type: 3}
   delay: 2
+  windEffectMultiplier: 1
 --- !u!50 &2398114623178038475
 Rigidbody2D:
   serializedVersion: 4
@@ -172,7 +173,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.8, y: 0.96}
+    oldSize: {x: 0.75, y: 0.5}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -210,12 +211,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 9012273701837569015}
-  - {fileID: -9007266015004898651}
+  - {fileID: -873388188192548066}
+  - {fileID: 8540684139827710673}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &9012273701837569015
+--- !u!114 &-873388188192548066
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -231,7 +232,7 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &-9007266015004898651
+--- !u!114 &8540684139827710673
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
