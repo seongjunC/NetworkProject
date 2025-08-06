@@ -14,9 +14,15 @@ public class TestBattleManager : MonoBehaviourPun
     private void Start()
     {
         _turnEndButton.onClick.AddListener(TestTurnEnd);
+        _turnEndButton.interactable = false;
     }
 
     #endregion
+
+    public void SetTurnEndButton(bool result)
+    {
+            _turnEndButton.interactable = result;
+    }
 
     public void TestTurnEnd()
     {
@@ -26,9 +32,20 @@ public class TestBattleManager : MonoBehaviourPun
         if (_turnController.IsMyTurn())
             _turnController.TurnFinished();
     }
+    public void TestTurnEnd(int actnum)
+    {
+        if (_playerController != null)
+            _playerController.EndPlayerTurn();
+
+        if (_turnController.IsMyTurn())
+            _turnController.TurnFinished(actnum);
+    }
 
     private void PlayerAttacked()
     {
+        _turnController.photonView.RPC("RPC_TimeStop", RpcTarget.All);
+        //  시간 정지
+        /*
         if (_playerController._hp <= 0)
         {
             // 사망 처리
@@ -44,7 +61,7 @@ public class TestBattleManager : MonoBehaviourPun
         if (_turnController.IsMyTurn())
         {
             _turnController.TurnFinished();
-        }
+        }*/
     }
 
     public void RegisterPlayer(PlayerController playerController)
