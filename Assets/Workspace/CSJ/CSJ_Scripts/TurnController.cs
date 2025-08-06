@@ -334,7 +334,7 @@ public class TurnController : MonoBehaviourPunCallbacks
             controller.PlayerDead();
         }
     }
-
+    /*
     private void InitializePlayerEvents()
     {
         foreach (var tank in tanks)
@@ -346,7 +346,7 @@ public class TurnController : MonoBehaviourPunCallbacks
                 tank.OnPlayerDied += () => OnPlayerDied(tank);
             }
         }
-    }
+    }*/
     private void OnPlayerDied(PlayerController player)
     {
         Team team = CustomProperty.GetTeam(player.photonView.Owner);

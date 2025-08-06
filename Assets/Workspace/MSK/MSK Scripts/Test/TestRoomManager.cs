@@ -49,6 +49,7 @@ public class TestRoomManager : MonoBehaviourPun
     [SerializeField] GameObject lobby;
     [SerializeField] GameObject room;
     [SerializeField] GameObject gameSettingPanel;
+    [SerializeField] GameObject login;
 
     [Header("Chat")]
     [SerializeField] Chat chat;
@@ -63,7 +64,7 @@ public class TestRoomManager : MonoBehaviourPun
     #region LifeCycle
     private void Start()
     {
-        CreateMapSlot();
+
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
@@ -73,6 +74,15 @@ public class TestRoomManager : MonoBehaviourPun
     private void OnEnable()
     {
         Subscribe();
+
+        if (Manager.Game.State == Game.State.Game)
+        {
+            login.SetActive(false);
+            room.SetActive(true);
+            OnJoinedRoom();
+
+            Manager.Game.State = Game.State.Lobby;
+        }
     }
     private void OnDisable()
     {
@@ -83,6 +93,14 @@ public class TestRoomManager : MonoBehaviourPun
     #region EventSubscribe
     private void Subscribe()
     {
+        PlayerSlot.OnKick += Kick;
+
+        redTeamChangeButton.onClick.AddListener(OnClickRedTeamChange);
+        blueTeamChangeButton.onClick.AddListener(OnClickBlueTeamChange);
+        waitTeamChangeButton.onClick.AddListener(OnClickWaitTeamChange);
+        gameSettingButton.onClick.AddListener(OnClickGameSettingOpen);
+        gameSettingCloseButton.onClick.AddListener(OnClickGameSettingClose);
+
         exitButton.onClick.AddListener(LeaveRoom);
         readyButton.onClick.AddListener(Ready);
         startButton.onClick.AddListener(GameStart);
@@ -94,6 +112,14 @@ public class TestRoomManager : MonoBehaviourPun
 
     private void UnSubscribe()
     {
+        PlayerSlot.OnKick -= Kick;
+
+        redTeamChangeButton.onClick.RemoveListener(OnClickRedTeamChange);
+        blueTeamChangeButton.onClick.RemoveListener(OnClickBlueTeamChange);
+        waitTeamChangeButton.onClick.RemoveListener(OnClickWaitTeamChange);
+        gameSettingButton.onClick.RemoveListener(OnClickGameSettingOpen);
+        gameSettingCloseButton.onClick.RemoveListener(OnClickGameSettingClose);
+
         exitButton.onClick.RemoveListener(LeaveRoom);
         readyButton.onClick.RemoveListener(Ready);
         startButton.onClick.RemoveListener(GameStart);
@@ -114,6 +140,7 @@ public class TestRoomManager : MonoBehaviourPun
     {
         StartCoroutine(LeaveRoomRoutine());
     }
+
     private IEnumerator LeaveRoomRoutine()
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
@@ -169,7 +196,6 @@ public class TestRoomManager : MonoBehaviourPun
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
-            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         else
@@ -187,7 +213,8 @@ public class TestRoomManager : MonoBehaviourPun
 
         if (PhotonNetwork.IsMasterClient)
         {
-            startButton.gameObject.SetActive(true);
+            startButton
+                .gameObject.SetActive(true);
             readyButton.gameObject.SetActive(false);
         }
         else
@@ -211,7 +238,6 @@ public class TestRoomManager : MonoBehaviourPun
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
-            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         SetButtonInteractable();
@@ -231,7 +257,6 @@ public class TestRoomManager : MonoBehaviourPun
         if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
         {
             Destroy(panel.gameObject);
-            panel.OnKick -= Kick;
             playerSlotDic.Remove(player.ActorNumber);
         }
         else
@@ -278,6 +303,7 @@ public class TestRoomManager : MonoBehaviourPun
         {
             playerSlotDic[player.ActorNumber].SetUp(player);
             UpdateReadyCountText();
+            CheckButtons();
         }
     }
 
@@ -314,8 +340,7 @@ public class TestRoomManager : MonoBehaviourPun
             blueTeamChangeButton.interactable = !isReady;
             waitTeamChangeButton.interactable = !isReady;
         }
-        // 
-        startButton.interactable = currentReadyCount == PhotonNetwork.CurrentRoom.MaxPlayers - 1;
+        startButton.interactable = currentReadyCount == PhotonNetwork.CurrentRoom.MaxPlayers;
     }
     #endregion
 
@@ -369,6 +394,13 @@ public class TestRoomManager : MonoBehaviourPun
     }
     #endregion
 
+    private void CheckFull()
+    {
+        bool isFull = PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
+
+        PhotonNetwork.CurrentRoom.SetFull(isFull);
+    }
+
     private void GameSettingPanelActive(bool isActive) => gameSettingPanel.SetActive(isActive);
 
     private void GameStart()
@@ -385,8 +417,36 @@ public class TestRoomManager : MonoBehaviourPun
             return;
         }
 
+        PhotonNetwork.CurrentRoom.SetGameStart(true);
         PhotonNetwork.LoadLevel("MSK InGameTest"); // æ¿¿Ãµø
     }
+
+    #region Events
+    private void OnClickRedTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Red);
+    }
+
+    private void OnClickBlueTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Blue);
+    }
+
+    private void OnClickWaitTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Wait);
+    }
+
+    private void OnClickGameSettingOpen()
+    {
+        GameSettingPanelActive(true);
+    }
+
+    private void OnClickGameSettingClose()
+    {
+        GameSettingPanelActive(false);
+    }
+    #endregion
 
     #region PhotonCallbacks
     public void OnJoinedRoom()
@@ -394,7 +454,9 @@ public class TestRoomManager : MonoBehaviourPun
         PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         roomName.text = PhotonNetwork.CurrentRoom.Name;
         Manager.UI.FadeScreen.FadeOut(.5f);
+
         Init();
+        CreateMapSlot();
         CreatePlayerSlot();
         UpdateAllPlayerSlot();
         UpdateReadyCountText();
@@ -405,12 +467,14 @@ public class TestRoomManager : MonoBehaviourPun
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
         CreatePlayerSlot(newPlayer);
+        CheckFull();
     }
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
         DestroyPlayerSlot(otherPlayer);
         UpdateReadyCountText();
         UpdateAllPlayerSlot();
+        CheckFull();
     }
     public void OnRoomPropertiesUpdate()
     {

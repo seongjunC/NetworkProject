@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
     public Action OnPlayerAttacked;
-    public Action OnPlayerDied;
 
     [Header("이동 및 지면 설정")]
     [SerializeField] private float moveSpeed = 5f;
@@ -79,7 +78,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
 
         InitPlayecr(photonView.InstantiationData);
-
         _textMeshPro.text = photonView.Owner.NickName;
         _textMeshPro.color = CustomProperty.GetTeam(photonView.Owner) == Game.Team.Red ? Color.red : Color.blue;
     }
@@ -176,9 +174,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         // 달라져야 할 데이터들을 모두 세팅함
         // 예를 들어 Animator, 총알 프리팹
-        // 해당 데이터를 TankData에 넣고 세팅하는게 좋아 보입니다.
     }
-
     private void PlayerSetUp()
     {
         myInfo = new PlayerInfo(photonView.Owner);
@@ -241,22 +237,24 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("MapBoundary"))
+        {
+            if (player == null)
+                return;
             PlayerDead();
+        }
     }
 
     public void PlayerDead()
     {
-        if (_isDead) return;
+        if (_isDead)
+            return;
         _isDead = true;
         OnPlayerAttacked = null;
         Debug.Log("플레이어 사망");
-        OnPlayerDied?.Invoke();
-    }
+        if (PhotonView.Find(2) == null)
+            return;
 
-    [PunRPC]
-    public void RPC_PCDead()
-    {
-        gameObject.SetActive(false);
+        PhotonView.Find(2).RPC("RPC_PlayerDead", RpcTarget.All, photonView.Owner.ActorNumber);
     }
 
     public void EnableControl(bool enable)
