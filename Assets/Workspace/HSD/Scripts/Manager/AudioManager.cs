@@ -220,6 +220,6 @@ public class AudioManager : Singleton<AudioManager>, ISavable
     public void Load(GameData data)
     {
         SetVolume(SoundType.BGM, data.bgm);
-        SetVolume(SoundType.SFX, data.sfx);
+        SetVolume(SoundType.SFX, data.sfx);        
     }
 }
