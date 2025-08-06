@@ -13,7 +13,7 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        handler = new FileHandler(Application.persistentDataPath, fileName);
+        handler = new FileHandler(fileName, Application.persistentDataPath);
         savables = FindSavables();
 
         LoadGame();
