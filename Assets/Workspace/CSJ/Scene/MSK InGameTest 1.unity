@@ -2940,7 +2940,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 121895632}
   m_HandleRect: {fileID: 121895631}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7304,6 +7304,7 @@ MonoBehaviour:
   CountText: {fileID: 679817610}
   tanks: []
   Arrow: {fileID: 3370305161053916214, guid: ef03ac441a28396479ecdb8d38009675, type: 3}
+  testBattleManager: {fileID: 1495371545}
 --- !u!114 &1495371547
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,11 +6,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PhotonView))]
 public class RoomManager : MonoBehaviourPun
 {
+    [SerializeField] string gameSceneName;
+
     [Header("Player")]
     [SerializeField] GameObject playerSlotPrefab;
     [SerializeField] Transform redPlayerContent;
@@ -55,7 +58,7 @@ public class RoomManager : MonoBehaviourPun
     [SerializeField] Chat chat;
 
     [Header("Room")]
-    [SerializeField] TMP_Text roomName;
+    [SerializeField] TMP_Text roomName;    
 
     private bool isReady;
     private bool isRandom;
@@ -64,17 +67,20 @@ public class RoomManager : MonoBehaviourPun
     #region LifeCycle
     private void Start()
     {
-
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
         gameSettingButton.onClick.AddListener(() => GameSettingPanelActive(true));
         gameSettingCloseButton.onClick.AddListener(() => GameSettingPanelActive(false));
     }
+
     private void OnEnable()
     {
         Subscribe();
+    }
 
+    public void RecreateRoom()
+    {
         if (Manager.Game.State == Game.State.Game)
         {
             login.SetActive(false);
@@ -84,6 +90,7 @@ public class RoomManager : MonoBehaviourPun
             Manager.Game.State = Game.State.Lobby;
         }
     }
+
     private void OnDisable()
     {
         UnSubscribe();
@@ -160,6 +167,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
+    #region Kick
     private void Kick(Player player)
     {
         photonView.RPC(nameof(Kick_RPC), player);
@@ -184,9 +192,10 @@ public class RoomManager : MonoBehaviourPun
         PhotonNetwork.LeaveRoom();
 
         yield return new WaitForSeconds(.5f);
-        Manager.UI.PopUpUI.Show("¹æ¿¡¼­ °­Åğ µÇ¾ú½À´Ï´Ù.");
+        Manager.UI.PopUpUI.Show("ë°©ì—ì„œ ê°•í‡´ ë˜ì—ˆìŠµë‹ˆë‹¤.");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
+    #endregion
 
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
@@ -209,7 +218,8 @@ public class RoomManager : MonoBehaviourPun
     private void SetButtonInteractable()
     {
         mapChangeButton.interactable = PhotonNetwork.IsMasterClient;
-        gameSettingButton.interactable = PhotonNetwork.IsMasterClient;
+        damageTypeButton.interactable = PhotonNetwork.IsMasterClient;
+        turnSwitchButton.interactable = PhotonNetwork.IsMasterClient;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -226,13 +236,6 @@ public class RoomManager : MonoBehaviourPun
 
     private void CreatePlayerSlot()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            MapChange();
-        }
-
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
@@ -261,7 +264,7 @@ public class RoomManager : MonoBehaviourPun
         }
         else
         {
-            Debug.LogError("½½·Ô ¾øÀ½");
+            Debug.LogError("ìŠ¬ë¡¯ ì—†ìŒ");
         }
     }
 
@@ -379,7 +382,7 @@ public class RoomManager : MonoBehaviourPun
 
     private void UpdateTurnType()
     {
-        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "·£´ı" : "ÀÔÀå¼ø¼­";
+        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "ëœë¤" : "ì…ì¥ìˆœì„œ";
     }
     #endregion
 
@@ -390,7 +393,7 @@ public class RoomManager : MonoBehaviourPun
     }
     private void ChangeDamageTypeText()
     {
-        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "ÆÀ µ¥¹ÌÁö Çã¿ë" : "ÆÀ µ¥¹ÌÁö ±İÁö";
+        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "íŒ€ ë°ë¯¸ì§€ í—ˆìš©" : "íŒ€ ë°ë¯¸ì§€ ê¸ˆì§€";
     }
     #endregion
 
@@ -405,20 +408,35 @@ public class RoomManager : MonoBehaviourPun
 
     private void GameStart()
     {
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if(player.GetGamePlay())
+            {
+                Manager.UI.PopUpUI.Show("ëˆ„êµ°ê°€ ì•„ì§ ê²Œì„ ë‚´ë¶€ì— ìˆìŠµë‹ˆë‹¤.", Color.red);
+                return;
+            }
+        }
+
         if (currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            Debug.Log("¹æ¿¡ ÀÎ¿øÀÌ ºÎÁ·ÇÏ°Å³ª ¸ğµç ÇÃ·¹ÀÌ¾î°¡ ·¹µğÇÏÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.Log("ë°©ì— ì¸ì›ì´ ë¶€ì¡±í•˜ê±°ë‚˜ ëª¨ë“  í”Œë ˆì´ì–´ê°€ ë ˆë””í•˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             return;
         }
 
         if (teamManager.GetWaitPlayerCount() > 0)
         {
-            Manager.UI.PopUpUI.Show("´©±º°¡°¡ ´ë±âÀÚ¿¡ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù.");
+            Manager.UI.PopUpUI.Show("ëˆ„êµ°ê°€ê°€ ëŒ€ê¸°ìì— í¬í•¨ë˜ì–´ ìˆìŠµë‹ˆë‹¤.");
             return;
         }
 
         PhotonNetwork.CurrentRoom.SetGameStart(true);
-        PhotonNetwork.LoadLevel("MSK InGameTest"); // ¾ÀÀÌµ¿
+        photonView.RPC(nameof(LoadScene), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void LoadScene()
+    {
+        SceneManager.LoadScene(gameSceneName);
     }
 
     #region Events
@@ -456,6 +474,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.FadeScreen.FadeOut(.5f);
 
         Init();
+        MapChange();
         CreateMapSlot();
         CreatePlayerSlot();
         UpdateAllPlayerSlot();

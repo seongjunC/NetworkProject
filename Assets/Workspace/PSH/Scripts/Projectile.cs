@@ -172,6 +172,7 @@ public class Projectile : MonoBehaviourPun
     {
         ownerActorNumber = actorNumber;
     }
+
     public void BeginDestroyRoutine(bool hasExplosionEffect)
     {
         if (hasCollided) return;
