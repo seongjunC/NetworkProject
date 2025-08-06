@@ -148,7 +148,7 @@ public class ProjectileManager : MonoBehaviourPun
                 if (EffectSpawner.Instance != null)
                 {
                     EffectSpawner.Instance.SpawnExplosion(player.transform.position);
-                    string str = realDamage.ToString();
+                    string str = realDamage.ToString("F0");
                     floatingTextSpawner.SpawnText(str, player.transform.position);
                 }
                 player.OnHit(realDamage);
