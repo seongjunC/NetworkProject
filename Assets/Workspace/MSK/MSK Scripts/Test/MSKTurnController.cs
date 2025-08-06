@@ -375,8 +375,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_GameEnded(Team winnerTeam)
     {
-        if (isGameEnd) return;
-
         isTurnRunning = false;
         isGameEnd = true;
         Debug.Log("게임 종료!");
