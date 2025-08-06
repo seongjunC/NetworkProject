@@ -266,6 +266,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).SetValueAsync(true);
         Manager.Database.userRef.Child(UserDataType.Connected.ToString()).OnDisconnect().SetValue(false);
         Manager.Data.Init();
+        Manager.Data.GachaManager.GachaData.InitPickUp();
         SetUpSelectTank();
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
