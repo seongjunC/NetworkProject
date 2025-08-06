@@ -32,15 +32,14 @@ public class TestBattleManager : MonoBehaviourPun
             _playerController.EndPlayerTurn();
 
         if (_turnController.IsMyTurn())
-            _turnController.TurnFinished();
+            _turnController.TurnFinished(actnum);
     }
 
     private void PlayerAttacked()
     {
+            Debug.Log("[PlayerAttacked] 실행");
+            _turnController.photonView.RPC("RPC_TimeStop", RpcTarget.All);
         //  시간 정지
-        Debug.Log("[PlayerAttacked] 실행");
-        _turnController.photonView.RPC("RPC_TimeStop", RpcTarget.All);
-
         /*
         if (_playerController._hp <= 0)
         {

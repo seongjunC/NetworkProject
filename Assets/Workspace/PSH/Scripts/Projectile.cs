@@ -166,6 +166,8 @@ public class Projectile : MonoBehaviourPun
         }
     }
 
+    //  RPC 호출 테스트
+    [PunRPC]
     public void SetOwnerActorNumber(int actorNumber)
     {
         ownerActorNumber = actorNumber;
@@ -194,8 +196,9 @@ public class Projectile : MonoBehaviourPun
         if (CameraController.Instance != null)
             CameraController.Instance.ReturnToPlayerCam();
 
-
-        testBattleManager.TestTurnEnd(ownerActorNumber);
+        Debug.Log($"[DestroyRoutine] : {ownerActorNumber}");
+        if (PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber)
+            testBattleManager.TestTurnEnd(ownerActorNumber);
 
         Destroy(gameObject);
     }

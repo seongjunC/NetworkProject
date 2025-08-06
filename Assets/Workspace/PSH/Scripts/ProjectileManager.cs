@@ -54,7 +54,8 @@ public class ProjectileManager : MonoBehaviourPun
         }
 
         // 포탄의 소유자 설정 (옵션: Projectile 스크립트에서 사용 가능)
-        bulletScript.SetOwnerActorNumber(ownerActorNumber);
+        //bulletScript.SetOwnerActorNumber(ownerActorNumber);   기존
+        bulletScript.photonView.RPC(nameof(bulletScript.SetOwnerActorNumber), RpcTarget.All, ownerActorNumber);
 
         // 모든 클라이언트에 포탄 ViewID 동기화 (카메라 타겟용)
         PhotonView bulletPhotonView = bullet.GetComponent<PhotonView>();

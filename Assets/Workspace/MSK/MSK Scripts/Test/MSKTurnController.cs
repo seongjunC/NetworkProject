@@ -299,9 +299,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Destroy(curArrow);
         photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
+
     public void TurnFinished(int ownerActnum)
     {
         Debug.Log($"공격 [TurnFinished]{currentPlayer.player.NickName}님의 턴 종료 ");
+        Debug.Log($"[TurnFinished] : {ownerActnum}");
         if (curArrow != null)
             Destroy(curArrow);
         photonView.RPC("RPC_TurnFinished", RpcTarget.All, ownerActnum);
