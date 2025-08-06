@@ -34,6 +34,7 @@ public class InGameUI : MonoBehaviour
     private PlayerController _player;
     private Fire _fire;
 
+
     void Start()
     {
         // 초기화
@@ -103,7 +104,7 @@ public class InGameUI : MonoBehaviour
     private void OnItem1Click()
     {
         Debug.Log("아이템 1 사용");
-        MSKTurnController.Instance.UseItem(item1);
+        MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 0);
         // 아이템 1 사용 로직 추가
         ClearSlot(1);
     }
@@ -111,12 +112,12 @@ public class InGameUI : MonoBehaviour
     private void OnItem2Click()
     {
         Debug.Log("아이템 2 사용");
-        MSKTurnController.Instance.UseItem(item2);
+        MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 1);
         // 아이템 2 사용 로직 추가
         ClearSlot(2);
     }
 
-    private void ClearSlot(int slot)
+    public void ClearSlot(int slot)
     {
         if (slot == 1)
         {

@@ -71,6 +71,8 @@ MonoBehaviour:
   - Init
   - RPC_SetWind
   - RPC_SpawnFireEffect
+  - RPC_SyncUseItem
+  - RPC_UseItem
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

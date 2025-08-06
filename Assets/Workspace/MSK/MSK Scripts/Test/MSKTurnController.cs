@@ -129,14 +129,30 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         StartNextTurn();
     }
 
-    private void ItemAdd(ItemData item)
+    [PunRPC]
+    public void RPC_UseItem(int actorNumber, int slotIndex)
     {
-        inGameUI.AddItem(item);
-    }
+        if (!PhotonNetwork.IsMasterClient) return;
 
-    public void UseItem(ItemData item)
+        var info = allPlayers[actorNumber];
+
+        if (slotIndex < 0 || slotIndex >= info.items.Length ||
+        info.items[slotIndex] == null)
+            return;
+
+        if (actorNumber != currentPlayer.ActorNumber) return;
+
+        info.ItemUse(slotIndex);
+
+        photonView.RPC(nameof(RPC_SyncUseItem), RpcTarget.All, actorNumber, slotIndex);
+    }
+    [PunRPC]
+    private void RPC_SyncUseItem(int actorNumber, int slotIndex)
     {
-        ItemController.useItem(item, GetLocalPlayerController().myInfo);
+        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+        {
+            inGameUI.ClearSlot(slotIndex + 1);
+        }
     }
 
 
