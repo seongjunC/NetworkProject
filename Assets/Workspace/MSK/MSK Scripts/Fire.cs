@@ -82,7 +82,7 @@ public class Fire : MonoBehaviourPun
         _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
             OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
-            ,projectileName);
+            ,projectileName, _playerController._damage);
 
         InitDamageBuff();
     }

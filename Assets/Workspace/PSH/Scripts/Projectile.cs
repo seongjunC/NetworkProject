@@ -11,8 +11,8 @@ public class Projectile : MonoBehaviourPun
     public int explosionRadiusy = 100;
     public Texture2D explosionMask;
     public float explosionScale = 1f;
-    public int damage = 50;
-    private int realDamage;
+    public float damage = 50;
+    private float realDamage;
 
     private float worldPerPixel; // Terrain 기준
     private DeformableTerrain terrain;

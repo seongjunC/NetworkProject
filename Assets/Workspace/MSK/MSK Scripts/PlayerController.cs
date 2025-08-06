@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public PlayerInfo myInfo;
     public float _hp;
     public float _movable;
+    public float _damage;
     public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
     public Action OnPlayerAttacked;
@@ -168,6 +169,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         _movable = _data.maxMove;
         _hp = _data.maxHp;
+        _damage = _data.damage;
         // 달라져야 할 데이터들을 모두 세팅함
         // 예를 들어 Animator, 총알 프리팹
     }
@@ -177,7 +179,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
-    public void OnHit(int damage)
+    public void OnHit(float damage)
     {
         if (damage > 100000)
         {

@@ -26,7 +26,7 @@ public class ProjectileManager : MonoBehaviourPun
     [PunRPC]
     public void RPC_RequestFireProjectile(Vector3 firePointPosition, Quaternion firePointRotation,
         float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber, float playerAngle, bool isRight
-        ,string projectileName)
+        ,string projectileName, float damage)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -36,7 +36,7 @@ public class ProjectileManager : MonoBehaviourPun
         // 포탄 생성
         GameObject bullet = PhotonNetwork.Instantiate($"Prefabs/{projectileName}", firePointPosition, firePointRotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
-
+        bulletScript.damage = damage;
         // 발사 이펙트 생성
         photonView.RPC(nameof(RPC_SpawnFireEffect), RpcTarget.All, firePointPosition, firePointRotation, playerAngle, isRight);
 
@@ -118,7 +118,7 @@ public class ProjectileManager : MonoBehaviourPun
     // 지형 파괴 및 데미지 적용 결과를 동기화하는 RPC (Projectile.cs에서 호출)
     [PunRPC]
     public void RPC_ApplyExplosionEffects(Vector2 explosionPoint, int explosionRadiusX, int explosionRadiusY,
-        float explosionScale, int bulletViewID, int[] hitPlayerActorNumbers, int realDamage)
+        float explosionScale, int bulletViewID, int[] hitPlayerActorNumbers, float realDamage)
     {
         // 지형 파괴
         DeformableTerrain terrain = FindObjectOfType<DeformableTerrain>();
