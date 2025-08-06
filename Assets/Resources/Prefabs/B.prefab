@@ -399,7 +399,7 @@ MonoBehaviour:
   _rigidbody: {fileID: 2735546527898058516}
   player: {fileID: 55806390711248404}
   _textMeshPro: {fileID: 736693573828537321, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
-  _data: {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
+  _data: {fileID: 11400000, guid: 0b5327d3b52ddf4439d2a4dbc7c866c0, type: 2}
   _hp: 200
   _movable: 0
   moveSpeed: 3
@@ -466,7 +466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 3679909884157931425}
-  bulletPrefab: {fileID: 7477408352287670730, guid: 026f3f2646307f045819c010ae1090f2, type: 3}
+  bulletPrefab: {fileID: 7477408352287670730, guid: 1c054f20944105e47afdee3be4ccd259, type: 3}
   chargingSpeed: 10
   maxPower: 10
   powerCharge: 0
