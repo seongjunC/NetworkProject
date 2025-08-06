@@ -81,15 +81,14 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (isTurnRunning && isGameStart && !isGameEnd)
         {
+            // 자신의 턴 일때만 턴 종료 요청
+            if (!IsMyTurn())
+                return;
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
 
             // 모든 클라이언트에 남은 시간 텍스트 갱신
             photonView.RPC("RPC_UpdateTimerText", RpcTarget.All, turnTimer);
-
-            // 자신의 턴 일때만 턴 종료 요청
-            if (!IsMyTurn())
-                return;
 
             if (turnTimer <= 0f)
             {
@@ -295,12 +294,14 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         return GetFireMap(GetLocalPlayerController());
     }
+
     public void TurnFinished()
     {
         if (curArrow != null)
             Destroy(curArrow);
         photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
+
     public bool IsMyTurn()
     {
         if (currentPlayer == null)
@@ -314,10 +315,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         return currentActor == localActor;
     }
 
-    public void timeStop()
-    {
-        isTurnRunning = false;
-    }
     /*
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
@@ -528,6 +525,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Debug.Log("[MSKTurnController] 모든 플레이어가 스폰 완료됨 → GameStart()");
             GameStart();
         }
+    }
+    [PunRPC]
+    private void RPC_TimeStop()
+    {
+        Debug.Log("[RPC_TimeStop] 시간 정지 실행");
+        isTurnRunning = false;
     }
     #endregion
 }

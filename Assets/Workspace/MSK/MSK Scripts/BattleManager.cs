@@ -29,7 +29,10 @@ public class TestBattleManager : MonoBehaviourPun
 
     private void PlayerAttacked()
     {
-        _turnController.timeStop();
+        //  시간 정지
+        Debug.Log("[PlayerAttacked] 실행");
+        _turnController.photonView.RPC("RPC_TimeStop", RpcTarget.All);
+
         /*
         if (_playerController._hp <= 0)
         {
