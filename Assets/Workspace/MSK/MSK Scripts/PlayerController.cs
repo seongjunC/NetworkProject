@@ -55,9 +55,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
         {
-            _movable = _data.maxMove;
-            _hp = _data.maxHp;
-
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
 
@@ -169,6 +166,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _data.Level = (int)datas[1];
         _data.InitStat();
 
+        _movable = _data.maxMove;
+        _hp = _data.maxHp;
         // 달라져야 할 데이터들을 모두 세팅함
         // 예를 들어 Animator, 총알 프리팹
     }
