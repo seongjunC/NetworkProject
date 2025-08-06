@@ -218,7 +218,8 @@ public class RoomManager : MonoBehaviourPun
     private void SetButtonInteractable()
     {
         mapChangeButton.interactable = PhotonNetwork.IsMasterClient;
-        gameSettingButton.interactable = PhotonNetwork.IsMasterClient;
+        damageTypeButton.interactable = PhotonNetwork.IsMasterClient;
+        turnSwitchButton.interactable = PhotonNetwork.IsMasterClient;
 
         if (PhotonNetwork.IsMasterClient)
         {
