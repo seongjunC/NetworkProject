@@ -7,8 +7,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
-public class ResultUI : MonoBehaviourPun
+public class ResultUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI winnerText;
     [SerializeField] private GameObject resultPanel;
@@ -27,14 +28,15 @@ public class ResultUI : MonoBehaviourPun
     [Header("연결할 패널")]
     [SerializeField] private GameObject lobbyPanel;
 
+
     void Start()
     {
-        gameObject.SetActive(false);
         okButton.onClick.AddListener(OnClickOK);
     }
-    [PunRPC]
     public void UpdateResult(Team winnerTeam, int mvpActor)
     {
+        Debug.Log("ResultActive");
+        gameObject.SetActive(true);
 
         // 결과 패널 표시
         winnerText.text = $"승리: {(winnerTeam == Team.Red ? "RED 팀" : "BLUE 팀")}";
@@ -43,11 +45,15 @@ public class ResultUI : MonoBehaviourPun
         {
             Destroy(child.gameObject);
         }
+        PhotonNetwork.CurrentRoom.Players.TryGetValue(mvpActor, out Player mvpplayer);
+        Debug.Log($"Mvp user == {mvpplayer.NickName}");
         // 승리 팀 플레이어 추가
         foreach (var player in PhotonNetwork.PlayerList)
         {
-            if (player.ActorNumber == mvpActor)
+            Debug.Log($"{player.NickName}, {player.ActorNumber}, {mvpplayer.ActorNumber}");
+            if (player.ActorNumber == mvpplayer.ActorNumber)
             {
+                Debug.Log($"{player} mvp panel 생성");
                 AddMVPPlayerSlot(player);
             }
             else if (CustomProperty.GetTeam(player) == winnerTeam)
@@ -59,6 +65,8 @@ public class ResultUI : MonoBehaviourPun
                 AddPlayerSlot(player, false);
             }
         }
+        resultPanel.SetActive(true);
+
 
     }
     public void AddPlayerSlot(Player player, bool isWinner)
@@ -70,9 +78,10 @@ public class ResultUI : MonoBehaviourPun
         if (bgImage != null)
             bgImage.color = (CustomProperty.GetTeam(player) == Team.Red) ? redTeamColor : blueTeamColor;
         // 플레이어 닉네임
-        TextMeshProUGUI nameText = slot.transform.Find("PlayerNickname")?.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI nameText = slot.transform.Find("NickNameText (TMP)")?.GetComponent<TextMeshProUGUI>();
         if (nameText != null)
             nameText.text = player.NickName;
+        else Debug.LogError("nameText == null");
         // 보상 점수 계산
         int reward = isWinner ? 100 : 50;
         // 보상 숫자 Text
@@ -90,7 +99,7 @@ public class ResultUI : MonoBehaviourPun
         if (bgImage != null)
             bgImage.color = (CustomProperty.GetTeam(player) == Team.Red) ? redTeamColor : blueTeamColor;
         // 플레이어 닉네임
-        TextMeshProUGUI nameText = slot.transform.Find("PlayerNickname")?.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI nameText = slot.transform.Find("NickNameText (TMP)")?.GetComponent<TextMeshProUGUI>();
         if (nameText != null)
             nameText.text = player.NickName;
         // 보상 점수 계산

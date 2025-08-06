@@ -5022,7 +5022,6 @@ GameObject:
   - component: {fileID: 920666503}
   - component: {fileID: 920666502}
   - component: {fileID: 920666501}
-  - component: {fileID: 920666504}
   m_Layer: 5
   m_Name: ResultPanel
   m_TagString: Untagged
@@ -5111,28 +5110,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920666499}
   m_CullTransparentMesh: 1
---- !u!114 &920666504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 920666499}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 1
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &953161781
 GameObject:
   m_ObjectHideFlags: 0
@@ -5366,7 +5343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7404,7 +7381,7 @@ GameObject:
   - component: {fileID: 1574390734}
   - component: {fileID: 1574390737}
   - component: {fileID: 1574390736}
-  - component: {fileID: 1574390735}
+  - component: {fileID: 1574390738}
   m_Layer: 5
   m_Name: InGamePanel
   m_TagString: Untagged
@@ -7433,27 +7410,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1574390735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1574390733}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd7ac918e9c4d9e4083a31a340974b79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hpBar: {fileID: 1185878718}
-  moveBar: {fileID: 796068767}
-  powerBar: {fileID: 504923932}
-  windBar: {fileID: 1204169356}
-  flagImage: {fileID: 902914302}
-  item1Button: {fileID: 718079426}
-  item2Button: {fileID: 2045418933}
-  endTurnButton: {fileID: 1225509752}
-  healthPointText: {fileID: 847118187}
 --- !u!114 &1574390736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7492,6 +7448,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1574390733}
   m_CullTransparentMesh: 1
+--- !u!114 &1574390738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574390733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd7ac918e9c4d9e4083a31a340974b79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpBar: {fileID: 1185878718}
+  moveBar: {fileID: 796068767}
+  powerBar: {fileID: 504923932}
+  windBar: {fileID: 1204169356}
+  flagImage: {fileID: 0}
+  item1Button: {fileID: 718079426}
+  item2Button: {fileID: 2045418933}
+  endTurnButton: {fileID: 1225509752}
+  Button1Image: {fileID: 1848486277}
+  Button2Image: {fileID: 1043458697}
+  healthPointText: {fileID: 847118187}
 --- !u!1 &1583903620
 GameObject:
   m_ObjectHideFlags: 0
@@ -8378,7 +8357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9505,14 +9484,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   winnerTeamReward: 100
   loserTeamReward: 50
+  MVPTeamReward: 150
   turnLimit: 15
   itemSpawner: {fileID: 8997017285418179625}
   itemCount: 1
   ResultPanel: {fileID: 920666501}
-  inGameUI: {fileID: 1574390735}
+  inGameUI: {fileID: 1574390738}
   CountText: {fileID: 679817610}
   tanks: []
   Arrow: {fileID: 3370305161053916214, guid: ef03ac441a28396479ecdb8d38009675, type: 3}
+  isGameEnd: 0
+  testBattleManager: {fileID: 6362320272806174243}
 --- !u!1 &1839097424417612717
 GameObject:
   m_ObjectHideFlags: 0
@@ -9559,6 +9541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _turnEndButton: {fileID: 1225509752}
   _turnController: {fileID: 300177772368943100}
+  inGameUI: {fileID: 1574390738}
 --- !u!1 &7247871672525404663
 GameObject:
   m_ObjectHideFlags: 0
@@ -9568,11 +9551,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3632493154105732721}
-  - component: {fileID: 7571492776250548769}
   - component: {fileID: 8848008591687646980}
   - component: {fileID: 300177772368943100}
   - component: {fileID: 6362320272806174243}
-  - component: {fileID: 7648983525443531671}
   m_Layer: 0
   m_Name: TestManager
   m_TagString: Untagged
@@ -9580,42 +9561,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &7571492776250548769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7247871672525404663}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dd2103e6ef33d045a4700eef5b98578, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hp_Slider: {fileID: 0}
-  _power_Slider: {fileID: 0}
-  _move_Slider: {fileID: 0}
---- !u!114 &7648983525443531671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7247871672525404663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd7ac918e9c4d9e4083a31a340974b79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hpBar: {fileID: 1185878718}
-  moveBar: {fileID: 796068767}
-  powerBar: {fileID: 504923932}
-  windBar: {fileID: 1204169356}
-  flagImage: {fileID: 542563138}
-  item1Button: {fileID: 718079426}
-  item2Button: {fileID: 2045418933}
-  endTurnButton: {fileID: 1225509752}
-  healthPointText: {fileID: 371068001}
 --- !u!4 &8786230354631097796
 Transform:
   m_ObjectHideFlags: 0

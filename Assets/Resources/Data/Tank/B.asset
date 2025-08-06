@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: B
   m_EditorClassIdentifier: 
+  baseDamage: 0
+  baseSpeed: 0
+  baseMaxHp: 0
+  baseMaxMove: 0
+  damageGrowth: 0
+  speedGrowth: 0
+  maxHpGrowth: 0
+  maxMoveGrowth: 0
   damage: 1
-  maxMove: 1
+  maxMove: 5
   speed: 1
   maxHp: 1
   tankName: B

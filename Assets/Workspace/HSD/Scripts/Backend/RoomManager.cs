@@ -64,7 +64,7 @@ public class RoomManager : MonoBehaviourPun
     #region LifeCycle
     private void Start()
     {
-        
+
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
@@ -416,7 +416,7 @@ public class RoomManager : MonoBehaviourPun
             Manager.UI.PopUpUI.Show("누군가가 대기자에 포함되어 있습니다.");
             return;
         }
-        
+
         PhotonNetwork.CurrentRoom.SetGameStart(true);
         PhotonNetwork.LoadLevel("MSK InGameTest"); // 씬이동
     }

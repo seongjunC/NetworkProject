@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 086361d7c748e9f44a1da050b263741b, type: 3}
   m_Name: HalfPotionEffect
   m_EditorClassIdentifier: 
-  HealAmount: 0
-  isTurnSkip: 0
+  HealAmount: 50
+  isTurnSkip: 1
