@@ -1,6 +1,8 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -9,6 +11,30 @@ public class TankDataController
     public Dictionary<string, TankData> TankDatas = new Dictionary<string, TankData>();    
 
     public event Action<TankData> OnTankDataChanged;
+    public Action<TankData> OnTankSelected;
+
+    private TankData currentTank;
+    public TankData CurrentTank
+    {
+        get
+        {
+            if (currentTank == null)
+            {
+                foreach (var tank in TankDatas.Values)
+                {
+                    if (tank.Count > 0)
+                    {
+                        SetSelectTank(tank);
+                        break;
+                    }
+                }
+            }
+
+            return currentTank;
+        }
+
+        set => currentTank = value;
+    }
 
     public void Init()
     {
@@ -30,5 +56,22 @@ public class TankDataController
     {
         TankDatas[tankName].Count = count;
         OnTankDataChanged?.Invoke(TankDatas[tankName]);
-    }    
+    }
+    
+    public void SetSelectTank(TankData data)
+    {
+        if (data == null) return;
+
+        currentTank = data;
+        OnTankSelected?.Invoke(currentTank);
+        PhotonNetwork.LocalPlayer.SetTank(data.tankName);
+
+        Manager.Database.userRef.Child("SelectTank").SetValueAsync(currentTank.tankName);
+    }
+    public void SetSelectTank(string tankName)
+    {
+        currentTank = TankDatas[tankName];
+        OnTankSelected?.Invoke(currentTank);
+        PhotonNetwork.LocalPlayer.SetTank(currentTank.tankName);        
+    }
 }

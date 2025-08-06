@@ -197,7 +197,8 @@ public class RoomManager : MonoBehaviourPun
 
         if (PhotonNetwork.IsMasterClient)
         {
-            startButton.gameObject.SetActive(true);
+            startButton
+                .gameObject.SetActive(true);
             readyButton.gameObject.SetActive(false);
         }
         else

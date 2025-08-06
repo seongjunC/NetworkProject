@@ -22,6 +22,7 @@ public static class CustomProperty
     private const string UID = "UID";
     private const string READY = "Ready";
     private const string TEAM = "Team";
+    private const string TANK = "Tank";
     #endregion
 
     private static ExitGames.Client.Photon.Hashtable playerHash = new ExitGames.Client.Photon.Hashtable();
@@ -71,6 +72,21 @@ public static class CustomProperty
             return (Team)value;
         }
         return Team.Wait;
+    }
+
+    public static void SetTank(this Player player, string tankName)
+    {
+        playerHash[TANK] = tankName;
+        player.SetCustomProperties(playerHash);
+    }
+
+    public static TankData GetTank(this Player player)
+    {
+        if(player.CustomProperties.TryGetValue(TANK, out object value))
+        {
+            return Manager.Data.TankDataController.TankDatas[(string)value];
+        }
+        return null;
     }
     #endregion
 
