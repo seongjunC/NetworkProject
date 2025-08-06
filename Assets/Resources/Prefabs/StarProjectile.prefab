@@ -105,10 +105,11 @@ MonoBehaviour:
   explosionRadiusx: 0
   explosionRadiusy: 0
   explosionMask: {fileID: 0}
-  explosionScale: 1
+  explosionScale: 3
   damage: 100
   explosionEffect: {fileID: 739683856073798810, guid: 6538bb1ec2794034f87d90690d5be8ae, type: 3}
   delay: 2
+  windEffectMultiplier: 1
 --- !u!50 &2398114623178038475
 Rigidbody2D:
   serializedVersion: 4
