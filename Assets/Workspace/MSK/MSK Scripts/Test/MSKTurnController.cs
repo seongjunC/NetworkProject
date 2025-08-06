@@ -17,7 +17,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [SerializeField] int loserTeamReward = 50;
     [SerializeField] int MVPTeamReward = 150;
     [Header("턴 제한")]
-    [SerializeField] float turnLimit = 10f;
+    [SerializeField] float turnLimit = 15f;
     [Header("아이템 생성기")]
     [SerializeField] ItemSpawner itemSpawner;
     [Header("사이클 종료시 생성할 아이템의 개수")]
@@ -539,6 +539,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private void RPC_TimeStop()
     {
         isTurnRunning = false;
+        turnTimer = turnLimit;
     }
     #endregion
 }
