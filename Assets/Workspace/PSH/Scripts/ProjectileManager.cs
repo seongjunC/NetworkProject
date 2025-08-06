@@ -9,6 +9,10 @@ public class ProjectileManager : MonoBehaviourPun
     [SerializeField] Texture2D explosionMask;
 
     private FloatingTextSpawner floatingTextSpawner;
+
+    [Header("Test")]
+    [SerializeField] float a;
+    [SerializeField] float b;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -137,6 +141,9 @@ public class ProjectileManager : MonoBehaviourPun
 
         // 효과음 재생
         Manager.Audio.PlaySFX("Explosion", transform.position);
+
+        // 카메라 흔들림
+        CameraController.Instance.ShakeCam(a,b);
 
         // 플레이어 데미지 적용 (각 클라이언트에서 해당 플레이어에게 데미지 적용)
         foreach (int actorNumber in hitPlayerActorNumbers)
