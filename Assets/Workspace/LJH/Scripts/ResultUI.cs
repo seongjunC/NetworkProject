@@ -220,7 +220,33 @@ public class ResultUI : MonoBehaviourPun
     /// </summary>
     private void OnClickOK()
     {
-        PhotonNetwork.AutomaticallySyncScene = false;
-        PhotonNetwork.LoadLevel("Title");
+        okButton.interactable = false;
+        StartCoroutine(GameExitRoutine());
+    }
+
+    private IEnumerator GameExitRoutine()
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync("Title");
+        op.allowSceneActivation = false;
+
+        Manager.UI.FadeScreen.FadeIn();
+
+        yield return new WaitUntil(() => op.progress >= 0.9f);
+
+        yield return new WaitForSeconds(1f);
+
+        InitProperty();
+
+        op.allowSceneActivation = true;
+    }
+
+    private void InitProperty()
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.SetGameStart(false);
+        }
+
+        PhotonNetwork.LocalPlayer.SetGamePlay(false);
     }
 }

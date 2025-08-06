@@ -18,6 +18,7 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Image masterPanel;
     [SerializeField] Button infoButton;
     [SerializeField] Button playerCloseConnectionButton;
+    [SerializeField] GameObject gamePlayPanel;
 
     [SerializeField] Image tankIcon;
     [SerializeField] Image tankRankImage;
@@ -87,6 +88,8 @@ public class PlayerSlot : MonoBehaviour
 
         tankIcon.sprite = data.Icon;
         tankRankImage.color = Utils.GetColor(data.rank);
+
+        gamePlayPanel.SetActive(player.GetGamePlay());
     }
 
     public void ViewPlayerInfo()

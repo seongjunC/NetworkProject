@@ -73,7 +73,7 @@ public class RoomManager : MonoBehaviourPun
 
     private void OnEnable()
     {
-        Subscribe();        
+        Subscribe();
     }
 
     public void RecreateRoom()
@@ -423,6 +423,15 @@ public class RoomManager : MonoBehaviourPun
         
         PhotonNetwork.CurrentRoom.SetGameStart(true);
         PhotonNetwork.LoadLevel("MSK InGameTest 1"); // æ¿¿Ãµø
+        PhotonNetwork.AutomaticallySyncScene = false;
+
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if(!PhotonNetwork.IsMasterClient)
+                player.SetReady(false);
+
+            player.SetGamePlay(true);
+        }        
     }
 
     #region Events
