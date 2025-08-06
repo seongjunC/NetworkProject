@@ -192,7 +192,7 @@ public class RoomManager : MonoBehaviourPun
         PhotonNetwork.LeaveRoom();
 
         yield return new WaitForSeconds(.5f);
-        Manager.UI.PopUpUI.Show("¹æ¿¡¼­ °­Åð µÇ¾ú½À´Ï´Ù.");
+        Manager.UI.PopUpUI.Show("ë°©ì—ì„œ ê°•í‡´ ë˜ì—ˆìŠµë‹ˆë‹¤.");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
     #endregion
@@ -264,7 +264,7 @@ public class RoomManager : MonoBehaviourPun
         }
         else
         {
-            Debug.LogError("½½·Ô ¾øÀ½");
+            Debug.LogError("ìŠ¬ë¡¯ ì—†ìŒ");
         }
     }
 
@@ -382,7 +382,7 @@ public class RoomManager : MonoBehaviourPun
 
     private void UpdateTurnType()
     {
-        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "·£´ý" : "ÀÔÀå¼ø¼­";
+        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "ëžœë¤" : "ìž…ìž¥ìˆœì„œ";
     }
     #endregion
 
@@ -393,7 +393,7 @@ public class RoomManager : MonoBehaviourPun
     }
     private void ChangeDamageTypeText()
     {
-        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "ÆÀ µ¥¹ÌÁö Çã¿ë" : "ÆÀ µ¥¹ÌÁö ±ÝÁö";
+        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "íŒ€ ë°ë¯¸ì§€ í—ˆìš©" : "íŒ€ ë°ë¯¸ì§€ ê¸ˆì§€";
     }
     #endregion
 
@@ -412,20 +412,20 @@ public class RoomManager : MonoBehaviourPun
         {
             if (player.GetGamePlay())
             {
-                Manager.UI.PopUpUI.Show("´©±º°¡ ¾ÆÁ÷ °ÔÀÓ ³»ºÎ¿¡ ÀÖ½À´Ï´Ù.", Color.red);
+                Manager.UI.PopUpUI.Show("ëˆ„êµ°ê°€ ì•„ì§ ê²Œìž„ ë‚´ë¶€ì— ìžˆìŠµë‹ˆë‹¤.", Color.red);
                 return;
             }
         }
 
         if (currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            Debug.Log("¹æ¿¡ ÀÎ¿øÀÌ ºÎÁ·ÇÏ°Å³ª ¸ðµç ÇÃ·¹ÀÌ¾î°¡ ·¹µðÇÏÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.Log("ë°©ì— ì¸ì›ì´ ë¶€ì¡±í•˜ê±°ë‚˜ ëª¨ë“  í”Œë ˆì´ì–´ê°€ ë ˆë””í•˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             return;
         }
 
         if (teamManager.GetWaitPlayerCount() > 0)
         {
-            Manager.UI.PopUpUI.Show("´©±º°¡°¡ ´ë±âÀÚ¿¡ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù.");
+            Manager.UI.PopUpUI.Show("ëˆ„êµ°ê°€ê°€ ëŒ€ê¸°ìžì— í¬í•¨ë˜ì–´ ìžˆìŠµë‹ˆë‹¤.");
             return;
         }
 
