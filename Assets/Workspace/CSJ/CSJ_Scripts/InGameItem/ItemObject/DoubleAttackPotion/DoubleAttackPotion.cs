@@ -8,7 +8,7 @@ public class DoubleAttackPotion : ItemEffectSO
 
     public override void Activate()
     {
-        TurnController turnCon = TurnController.Instance;
+        MSKTurnController turnCon = MSKTurnController.Instance;
         turnCon.GetLocalPlayerFire().SetDoubleAttack();
     }
 }

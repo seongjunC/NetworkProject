@@ -15,7 +15,7 @@ public class AttackPotion : ItemEffectSO
 
     public override void Activate()
     {
-        TurnController turnCon = TurnController.Instance;
+        MSKTurnController turnCon = MSKTurnController.Instance;
         if (isFixed)
             turnCon.GetLocalPlayerFire().SetFixedDamageBuff(BuffAmount);
         else

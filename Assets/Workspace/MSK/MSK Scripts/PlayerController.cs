@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public TankData _data;
 
     public bool _isDead { get; private set; } = false;
-    public bool OnBarrier { get; private set; } = false;
+    [SerializeField] public bool OnBarrier { get; private set; } = false;
     public PlayerInfo myInfo;
     public float _hp;
     public float _movable;
@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [Header("포격 조준")]
     [SerializeField] private Transform muzzleRotatePos;
     [SerializeField] private float muzzleRotationSpeed = 50f; // 포신 회전 속도
+
 
     private float turretAngle = 0f;
     private bool isFacingRight = true;
@@ -56,13 +57,25 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
         {
-            TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
-            MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
+            _movable = _data.maxMove;
+            _hp = _data.maxHp;
 
-            if (battleManager != null)
-                battleManager.RegisterPlayer(this);
-            if (uiManager != null)
-                uiManager.RegisterPlayer(this);
+            //             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
+            //             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
+            // 
+            //             if (battleManager != null)
+            //             {
+            //                 battleManager.RegisterPlayer(this);
+            //                 Debug.Log("battleManager 가입");
+            //             }
+            // if (uiManager != null)
+            //     uiManager.RegisterPlayer(this);
+            //             if (inGameUI != null)
+            //             {
+            //                 inGameUI.RegisterPlayer(this);
+            // 
+            //                 Debug.Log("인게임 ui 등록");
+            //             }
 
             PlayerSetUp();
         }
@@ -75,6 +88,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         InitPlayecr(photonView.InstantiationData);
         _textMeshPro.text = photonView.Owner.NickName;
         _textMeshPro.color = CustomProperty.GetTeam(photonView.Owner) == Game.Team.Red ? Color.red : Color.blue;
+    }
+    void Start()
+    {
+        if (!photonView.IsMine) return;
+        TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
+
+        if (battleManager != null)
+        {
+            battleManager.RegisterPlayer(this);
+            Debug.Log("battleManager 가입");
+        }
     }
     void FixedUpdate()
     {
@@ -106,10 +130,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             if (_movable > 0)
             {
                 _movable -= Time.deltaTime;
-            }         
+
+            }
         }
 
-        
+
 
         if (_movable <= 0)
         {
@@ -177,13 +202,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         myInfo = new PlayerInfo(photonView.Owner);
     }
 
-    [PunRPC]
-    public void OnHit(float damage)
+    public void OnHit(int damage)
     {
-        if (damage > 100000)
-        {
-            PlayerDead();
-        }
         if (OnBarrier)
         {
             OnBarrier = false;
@@ -233,6 +253,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (_isDead || MSKTurnController.Instance.isGameEnd)
+            return;
         if (collision.CompareTag("MapBoundary"))
         {
             if (player == null)
@@ -248,10 +270,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _isDead = true;
         OnPlayerAttacked = null;
         Debug.Log("플레이어 사망");
-        if (PhotonView.Find(2) == null)
+        if (MSKTurnController.Instance == null)
             return;
 
-        PhotonView.Find(2).RPC("RPC_PlayerDead", RpcTarget.All, photonView.Owner.ActorNumber);
+        MSKTurnController.Instance.photonView.RPC("RPC_PlayerDead", RpcTarget.MasterClient, photonView.Owner.ActorNumber);
     }
 
     public void EnableControl(bool enable)

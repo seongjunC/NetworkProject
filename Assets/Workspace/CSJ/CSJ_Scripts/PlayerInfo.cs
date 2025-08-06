@@ -31,6 +31,7 @@ public class PlayerInfo
             if (items[i] == null)
             {
                 items[i] = item;
+                Debug.Log($"▶ ItemAcquire 성공: {item.name} / 슬롯 {i}");
                 OnItemAcquired?.Invoke(item);
                 return true;
             }

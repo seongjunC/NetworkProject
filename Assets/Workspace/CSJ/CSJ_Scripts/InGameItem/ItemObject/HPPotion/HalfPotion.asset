@@ -16,7 +16,7 @@ MonoBehaviour:
   description: "Hp\uC758 \uC808\uBC18\uC744 \uD68C\uBCF5\uC2DC\uCF1C\uC8FC\uB294
     \uD3EC\uC158, \uD558\uC9C0\uB9CC \uC0AC\uC6A9 \uD6C4 \uD574\uB2F9 \uD134\uC744
     \uB118\uAE34\uB2E4."
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: cba073428c5d06346820e5cf2262bfc1, type: 3}
   prefab: {fileID: 0}
   appearRate: 1
   Effect: {fileID: 11400000, guid: f21c411972df87d4b8d434625a4257ed, type: 2}

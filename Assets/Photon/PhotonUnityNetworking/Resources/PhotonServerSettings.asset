@@ -71,6 +71,8 @@ MonoBehaviour:
   - Init
   - RPC_SetWind
   - RPC_SpawnFireEffect
+  - RPC_SyncUseItem
+  - RPC_UseItem
   - LoadScene
   - RPC_SpawnSFX
   - RPC_TimeStop
