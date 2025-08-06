@@ -409,6 +409,15 @@ public class RoomManager : MonoBehaviourPun
 
     private void GameStart()
     {
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if(player.GetGamePlay())
+            {
+                Manager.UI.PopUpUI.Show("누군가 아직 게임 내부에 있습니다.", Color.red);
+                return;
+            }
+        }
+
         if (currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             Debug.Log("방에 인원이 부족하거나 모든 플레이어가 레디하지 않았습니다.");
