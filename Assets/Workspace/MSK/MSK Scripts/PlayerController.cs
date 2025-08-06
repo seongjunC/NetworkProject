@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
 
         player = GetComponent<Transform>();
+        _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
 
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
