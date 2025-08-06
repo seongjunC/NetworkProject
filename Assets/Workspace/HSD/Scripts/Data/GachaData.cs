@@ -27,7 +27,7 @@ public class GachaData : ScriptableObject
             Rank.C => GachaList.Where(t => t.rank == Rank.C).ToArray(),
             _ => GachaList
         };
-    }
+    }    
 
     public float GetGachaPercent(Rank rank)
     {
@@ -40,6 +40,8 @@ public class GachaData : ScriptableObject
 
         float selectChance = GachaDatas.FirstOrDefault(g => g.rank == rank).chance;
 
-        return (selectChance / totalChance) * 100;
+        float chance = (selectChance / totalChance) * 100;      
+
+        return chance;
     }
 }
