@@ -10,7 +10,7 @@ public enum SoundType
     BGM, SFX
 }
 
-public class AudioManager : Singleton<AudioManager>
+public class AudioManager : Singleton<AudioManager>, ISavable
 {
     private AudioMixer audioMixer;
     private AudioMixerGroup bgmGroup;
@@ -209,5 +209,17 @@ public class AudioManager : Singleton<AudioManager>
         float db;
         audioMixer.GetFloat(type.ToString(), out db);
         return db;
+    }
+
+    public void Save(ref GameData data)
+    {
+        data.bgm = GetVolume(SoundType.BGM);
+        data.sfx = GetVolume(SoundType.SFX);
+    }
+
+    public void Load(GameData data)
+    {
+        SetVolume(SoundType.BGM, data.bgm);
+        SetVolume(SoundType.SFX, data.sfx);
     }
 }
