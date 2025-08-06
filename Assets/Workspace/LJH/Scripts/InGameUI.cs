@@ -21,6 +21,10 @@ public class InGameUI : MonoBehaviour
     public Button item2Button;     // 아이템2 버튼
     public Button endTurnButton;
 
+    [Header("ButtonImage")]
+    public Image Button1Image;
+    public Image Button2Image;
+
     // 아이템 슬롯에 아이템 데이터 저장
     private Sprite item1Sprite = null;
     private Sprite item2Sprite = null;
@@ -34,6 +38,7 @@ public class InGameUI : MonoBehaviour
     private PlayerController _player;
     private Fire _fire;
 
+
     void Start()
     {
         // 초기화
@@ -45,11 +50,10 @@ public class InGameUI : MonoBehaviour
         windBar.value = 0f;        // 바람 세기 초기화
         item1Button.gameObject.SetActive(false);
         item2Button.gameObject.SetActive(false);
-        // 버튼 클릭 이벤트 설정
-        item1Button.onClick.AddListener(OnItem1Click);
-        item2Button.onClick.AddListener(OnItem2Click);
         endTurnButton.onClick.AddListener(OnEndTurnClick);
+        Debug.Log($"AddListener 등록: {item1Button.gameObject.name}");
     }
+
 
     public void RegisterPlayer(PlayerController playerController)
     {
@@ -61,6 +65,11 @@ public class InGameUI : MonoBehaviour
 
         hpBar.maxValue = _player._hp;
         moveBar.maxValue = _player._movable;
+        playerController.myInfo.OnItemAcquired -= AddItem;
+        playerController.myInfo.OnItemAcquired += AddItem;
+        foreach (var item in playerController.myInfo.items)
+            if (item != null) AddItem(item);
+        Debug.Log("IngameUI 등록 완료");
     }
 
 
@@ -75,53 +84,90 @@ public class InGameUI : MonoBehaviour
             powerBar.value = _fire.powerCharge;
     }
 
+
     public void AddItem(ItemData item)
     {
+
+        Debug.Log($"▶ InGameUI.AddItem 호출: {item.name}");
         if (item1Sprite == null)
         {
-            item1Sprite = item.icon;
+            Debug.Log("item1 실행");
             item1 = item;
+            Button1Image.sprite = item.icon;
+            item1Button.image.sprite = Button1Image.sprite;
             item1Button.gameObject.SetActive(true);
+            item1Button.onClick.RemoveAllListeners();
+            item1Button.onClick.AddListener(() => OnClickSlot(0));
+
+            item1Button.interactable = true;
+            item1Button.gameObject.SetActive(true);
+
+            Debug.Log($"▶ 슬롯 1에 아이템 {item.name} 세팅 완료");
         }
         else if (item2Sprite == null)
         {
-            item2Sprite = item.icon;
+            Debug.Log("item2 실행");
             item2 = item;
+            Button2Image.sprite = item.icon;
             item2Button.gameObject.SetActive(true);
+            item2Button.onClick.RemoveAllListeners();
+            item2Button.onClick.AddListener(() => OnClickSlot(1));
+
+            item2Button.interactable = true;
+            item2Button.gameObject.SetActive(true);
+
+            Debug.Log($"▶ 슬롯 2에 아이템 {item.name} 세팅 완료");
         }
         else
         {
             Debug.Log("아이템 슬롯이 가득 찼습니다.");
         }
     }
-
-    // 아이템1 버튼 클릭 이벤트
-    private void OnItem1Click()
+    void OnClickSlot(int slot)
     {
-        Debug.Log("아이템 1 사용");
-        MSKTurnController.Instance.UseItem(item1);
-        // 아이템 1 사용 로직 추가
-        ClearSlot(1);
-    }
-    // 아이템2 버튼 클릭 이벤트
-    private void OnItem2Click()
-    {
-        Debug.Log("아이템 2 사용");
-        MSKTurnController.Instance.UseItem(item2);
-        // 아이템 2 사용 로직 추가
-        ClearSlot(2);
+        Button btn = slot == 0 ? item1Button : item2Button;
+        Debug.Log($"▶ 슬롯 {slot} 클릭! 아이템: {btn}");
+        if (btn != null)
+        {
+            MSKTurnController.Instance.photonView.RPC(
+                nameof(MSKTurnController.RPC_UseItem),
+                RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber,
+                slot);
+            ClearSlot(slot);
+        }
     }
 
-    private void ClearSlot(int slot)
+    // // 아이템1 버튼 클릭 이벤트
+    // private void OnItem1Click()
+    // {
+    //     Debug.Log("아이템 1 사용");
+    //     MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 0);
+    //     // 아이템 1 사용 로직 추가
+    //     ClearSlot(1);
+    // }
+    // // 아이템2 버튼 클릭 이벤트
+    // private void OnItem2Click()
+    // {
+    //     Debug.Log("아이템 2 사용");
+    //     MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 1);
+    //     // 아이템 2 사용 로직 추가
+    //     ClearSlot(2);
+    // }
+
+    public void ClearSlot(int slot)
     {
-        if (slot == 1)
+        if (slot == 0)
         {
             item1Sprite = null;
+            item1 = null;
+            item1Button.GetComponent<Image>().sprite = null;
             item1Button.gameObject.SetActive(false);
         }
-        else if (slot == 2)
+        else if (slot == 1)
         {
             item2Sprite = null;
+            item2 = null;
+            item2Button.GetComponent<Image>().sprite = null;
             item2Button.gameObject.SetActive(false);
         }
     }

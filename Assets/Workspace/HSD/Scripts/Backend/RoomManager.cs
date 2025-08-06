@@ -58,7 +58,7 @@ public class RoomManager : MonoBehaviourPun
     [SerializeField] Chat chat;
 
     [Header("Room")]
-    [SerializeField] TMP_Text roomName;    
+    [SerializeField] TMP_Text roomName;
 
     private bool isReady;
     private bool isRandom;
@@ -66,7 +66,7 @@ public class RoomManager : MonoBehaviourPun
 
     #region LifeCycle
     private void Start()
-    {     
+    {
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
@@ -192,7 +192,7 @@ public class RoomManager : MonoBehaviourPun
         PhotonNetwork.LeaveRoom();
 
         yield return new WaitForSeconds(.5f);
-        Manager.UI.PopUpUI.Show("¹æ¿¡¼­ °­Åğ µÇ¾ú½À´Ï´Ù.");
+        Manager.UI.PopUpUI.Show("ë°©ì—ì„œ ê°•í‡´ ë˜ì—ˆìŠµë‹ˆë‹¤.");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
     #endregion
@@ -264,7 +264,7 @@ public class RoomManager : MonoBehaviourPun
         }
         else
         {
-            Debug.LogError("½½·Ô ¾øÀ½");
+            Debug.LogError("ìŠ¬ë¡¯ ì—†ìŒ");
         }
     }
 
@@ -382,7 +382,7 @@ public class RoomManager : MonoBehaviourPun
 
     private void UpdateTurnType()
     {
-        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "·£´ı" : "ÀÔÀå¼ø¼­";
+        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "ëœë¤" : "ì…ì¥ìˆœì„œ";
     }
     #endregion
 
@@ -393,7 +393,7 @@ public class RoomManager : MonoBehaviourPun
     }
     private void ChangeDamageTypeText()
     {
-        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "ÆÀ µ¥¹ÌÁö Çã¿ë" : "ÆÀ µ¥¹ÌÁö ±İÁö";
+        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "íŒ€ ë°ë¯¸ì§€ í—ˆìš©" : "íŒ€ ë°ë¯¸ì§€ ê¸ˆì§€";
     }
     #endregion
 
@@ -410,25 +410,25 @@ public class RoomManager : MonoBehaviourPun
     {
         foreach (var player in PhotonNetwork.PlayerList)
         {
-            if(player.GetGamePlay())
+            if (player.GetGamePlay())
             {
-                Manager.UI.PopUpUI.Show("´©±º°¡ ¾ÆÁ÷ °ÔÀÓ ³»ºÎ¿¡ ÀÖ½À´Ï´Ù.", Color.red);
+                Manager.UI.PopUpUI.Show("ëˆ„êµ°ê°€ ì•„ì§ ê²Œì„ ë‚´ë¶€ì— ìˆìŠµë‹ˆë‹¤.", Color.red);
                 return;
             }
         }
 
         if (currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            Debug.Log("¹æ¿¡ ÀÎ¿øÀÌ ºÎÁ·ÇÏ°Å³ª ¸ğµç ÇÃ·¹ÀÌ¾î°¡ ·¹µğÇÏÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.Log("ë°©ì— ì¸ì›ì´ ë¶€ì¡±í•˜ê±°ë‚˜ ëª¨ë“  í”Œë ˆì´ì–´ê°€ ë ˆë””í•˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
             return;
         }
 
         if (teamManager.GetWaitPlayerCount() > 0)
         {
-            Manager.UI.PopUpUI.Show("´©±º°¡°¡ ´ë±âÀÚ¿¡ Æ÷ÇÔµÇ¾î ÀÖ½À´Ï´Ù.");
+            Manager.UI.PopUpUI.Show("ëˆ„êµ°ê°€ê°€ ëŒ€ê¸°ìì— í¬í•¨ë˜ì–´ ìˆìŠµë‹ˆë‹¤.");
             return;
         }
-        
+
         PhotonNetwork.CurrentRoom.SetGameStart(true);
         photonView.RPC(nameof(LoadScene), RpcTarget.All);
     }
