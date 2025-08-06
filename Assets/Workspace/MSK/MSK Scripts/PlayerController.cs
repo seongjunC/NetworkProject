@@ -57,11 +57,18 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             myInfo = new PlayerInfo(photonView.Owner);
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
+            InGameUI inGameUI = FindAnyObjectByType<InGameUI>();
 
             if (battleManager != null)
                 battleManager.RegisterPlayer(this);
             if (uiManager != null)
                 uiManager.RegisterPlayer(this);
+            if (inGameUI != null)
+            {
+                inGameUI.RegisterPlayer(this);
+
+                Debug.Log("인게임 ui 등록");
+            }
 
             PlayerSetUp();
         }
@@ -107,10 +114,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             {
                 _movable -= Time.deltaTime;
                 Debug.Log("움직이는중");
-            }         
+            }
         }
 
-        
+
 
         if (_movable <= 0)
         {

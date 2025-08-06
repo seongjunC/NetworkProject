@@ -106,10 +106,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 fireMap[controller] = fire;
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
-            if (view.IsMine)
-            {
-                controller.myInfo.OnItemAcquired += ItemAdd;
-            }
         }
         players = allPlayers.Values;
 

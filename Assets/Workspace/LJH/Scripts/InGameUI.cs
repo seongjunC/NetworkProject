@@ -61,6 +61,7 @@ public class InGameUI : MonoBehaviour
 
         hpBar.maxValue = _player._hp;
         moveBar.maxValue = _player._movable;
+        playerController.myInfo.OnItemAcquired += AddItem;
     }
 
 
@@ -75,18 +76,21 @@ public class InGameUI : MonoBehaviour
             powerBar.value = _fire.powerCharge;
     }
 
+
     public void AddItem(ItemData item)
     {
         if (item1Sprite == null)
         {
-            item1Sprite = item.icon;
             item1 = item;
+            item1Sprite = item.icon;
+            item1Button.GetComponent<Image>().sprite = item.icon;
             item1Button.gameObject.SetActive(true);
         }
         else if (item2Sprite == null)
         {
-            item2Sprite = item.icon;
             item2 = item;
+            item2Sprite = item.icon;
+            item2Button.GetComponent<Image>().sprite = item.icon;
             item2Button.gameObject.SetActive(true);
         }
         else
@@ -117,11 +121,15 @@ public class InGameUI : MonoBehaviour
         if (slot == 1)
         {
             item1Sprite = null;
+            item1 = null;
+            item1Button.GetComponent<Image>().sprite = null;
             item1Button.gameObject.SetActive(false);
         }
         else if (slot == 2)
         {
             item2Sprite = null;
+            item2 = null;
+            item2Button.GetComponent<Image>().sprite = null;
             item2Button.gameObject.SetActive(false);
         }
     }
