@@ -16,14 +16,14 @@ public class PoolManager : Singleton<PoolManager>
     private Transform parent;
 
     private Coroutine poolCleanupRoutine;   
-    private YieldInstruction cleamupDelay;
+    private YieldInstruction cleanUpDelay;
 
     private const float poolCleanupTime = 60;
     private const float poolCleanupDelay = 30;
 
     public void Start()
     {
-        cleamupDelay = new WaitForSeconds(poolCleanupDelay);
+        cleanUpDelay = new WaitForSeconds(poolCleanupDelay);
 
         ResetPool();
         poolCleanupRoutine = StartCoroutine(PoolCleanupRoutine());
@@ -48,7 +48,7 @@ public class PoolManager : Singleton<PoolManager>
     {
         while (true)
         {
-            yield return cleamupDelay;
+            yield return cleanUpDelay;
 
             float now = Time.time;
             List<string> removePoolKeys = new List<string>();

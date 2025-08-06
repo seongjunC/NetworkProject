@@ -61,11 +61,16 @@ MonoBehaviour:
   - RPC_PCDead
   - TurnNotice
   - UpdateResult
+  - RPC_OpenBox
+  - RPC_RecordDamage
   - RPC_UpdateTimer
   - RPC_ApplyExplosionEffects
   - RPC_RecordDamage
   - RPC_RequestFireProjectile
   - RPC_UpdateTimerText
+  - Init
+  - RPC_SetWind
+  - RPC_SpawnFireEffect
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

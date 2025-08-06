@@ -3730,14 +3730,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6462264, g: 0.9865615, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2afe4ea42e73f62428bd4c66e5b84cdb, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6886,7 +6886,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 47.100044, y: -44.430603}
+  m_AnchoredPosition: {x: 47.100098, y: -44.430603}
   m_SizeDelta: {x: 93.5049, y: 91.0642}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &466348317
@@ -7208,7 +7208,6 @@ GameObject:
   - component: {fileID: 494625357}
   - component: {fileID: 494625359}
   - component: {fileID: 494625360}
-  - component: {fileID: 494625361}
   m_Layer: 5
   m_Name: TitlePanel
   m_TagString: Untagged
@@ -7315,22 +7314,6 @@ MonoBehaviour:
   - {fileID: 1346663378}
   - {fileID: 1520045308}
   typing: {fileID: 0}
---- !u!114 &494625361
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 494625355}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9ff8071e2c61534489c551548abec4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bgmName: Login
-  volume: 0
-  pitch: 0
-  fadeTime: 0
 --- !u!1 &504369268
 GameObject:
   m_ObjectHideFlags: 0
@@ -8887,7 +8870,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.21764152, y: 0.15722245}
   m_AnchorMax: {x: 0.76900005, y: 0.2867776}
-  m_AnchoredPosition: {x: 0.00021362305, y: 0}
+  m_AnchoredPosition: {x: 0.00019836426, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &592450949
@@ -10558,7 +10541,6 @@ GameObject:
   - component: {fileID: 742476367}
   - component: {fileID: 742476369}
   - component: {fileID: 742476368}
-  - component: {fileID: 742476370}
   m_Layer: 5
   m_Name: InsideRoomPanel
   m_TagString: Untagged
@@ -10616,7 +10598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b1170af1bd540794d9329e2f6699a479, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3971118ed82aa1e47baefcf582847ad5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10634,22 +10616,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 742476366}
   m_CullTransparentMesh: 1
---- !u!114 &742476370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 742476366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9ff8071e2c61534489c551548abec4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bgmName: Room
-  volume: 0
-  pitch: 0
-  fadeTime: 0
 --- !u!1 &751974554
 GameObject:
   m_ObjectHideFlags: 0
@@ -17529,7 +17495,6 @@ GameObject:
   - component: {fileID: 1161290377}
   - component: {fileID: 1161290379}
   - component: {fileID: 1161290378}
-  - component: {fileID: 1161290380}
   m_Layer: 5
   m_Name: LobbyPanel
   m_TagString: Untagged
@@ -17599,22 +17564,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161290376}
   m_CullTransparentMesh: 1
---- !u!114 &1161290380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1161290376}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9ff8071e2c61534489c551548abec4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bgmName: Lobby
-  volume: 0
-  pitch: 0
-  fadeTime: 0.5
 --- !u!1 &1171254171
 GameObject:
   m_ObjectHideFlags: 0
@@ -19175,7 +19124,6 @@ GameObject:
   - component: {fileID: 1261503213}
   - component: {fileID: 1261503212}
   - component: {fileID: 1261503214}
-  - component: {fileID: 1261503215}
   m_Layer: 5
   m_Name: GachaPanel
   m_TagString: Untagged
@@ -19222,14 +19170,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 30f5b0cd915e72145a1b78c11dea74a2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3971118ed82aa1e47baefcf582847ad5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -19273,22 +19221,6 @@ MonoBehaviour:
   lobby: {fileID: 1161290376}
   gachaResultPopUp: {fileID: 5172729790837279672, guid: e80288d748f1593439c127ffb076b79f, type: 3}
   gachaResultContent: {fileID: 1474130615}
---- !u!114 &1261503215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261503209}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9ff8071e2c61534489c551548abec4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bgmName: Gacha
-  volume: 0
-  pitch: 0
-  fadeTime: 0.5
 --- !u!1 &1276979179
 GameObject:
   m_ObjectHideFlags: 0
@@ -21536,7 +21468,6 @@ GameObject:
   - component: {fileID: 1412463142}
   - component: {fileID: 1412463141}
   - component: {fileID: 1412463143}
-  - component: {fileID: 1412463144}
   m_Layer: 5
   m_Name: RoomSelectPanel
   m_TagString: Untagged
@@ -21620,23 +21551,7 @@ MonoBehaviour:
   fields:
   - {fileID: 1178142179}
   - {fileID: 890610683}
-  typing: {fileID: 8300000, guid: 3a6fb2b369c670d40891d3520a906bf0, type: 3}
---- !u!114 &1412463144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1412463139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9ff8071e2c61534489c551548abec4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bgmName: RoomSelect
-  volume: 0
-  pitch: 0
-  fadeTime: 0
+  typing: {fileID: 0}
 --- !u!1 &1417640280
 GameObject:
   m_ObjectHideFlags: 0
@@ -22902,7 +22817,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 146.4, y: 146.4}
+  m_CellSize: {x: 150, y: 150}
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
   m_ConstraintCount: 5
@@ -33162,7 +33077,7 @@ PrefabInstance:
       objectReference: {fileID: 312978510}
     - target: {fileID: 1854339527321586215, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: xOffset
-      value: 290
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6085408916159698831, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_Name
