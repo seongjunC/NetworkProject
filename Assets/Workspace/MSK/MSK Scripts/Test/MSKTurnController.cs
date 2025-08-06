@@ -107,6 +107,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         tanks.Clear();
         fireMap.Clear();
         room = PhotonNetwork.CurrentRoom;
+        Manager.Game.GameStart();
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
         {

@@ -32,9 +32,15 @@ public class ResultUI : MonoBehaviourPun
         gameObject.SetActive(false);
         okButton.onClick.AddListener(OnClickOK);
     }
+
     [PunRPC]
     public void UpdateResult(Team winnerTeam, int mvpActor)
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("°ÔÀÓ ³¡");
+            PhotonNetwork.CurrentRoom.SetGameStart(false);
+        }
 
         // °á°ú ÆÐ³Î Ç¥½Ã
         winnerText.text = $"½Â¸®: {(winnerTeam == Team.Red ? "RED ÆÀ" : "BLUE ÆÀ")}";
@@ -220,7 +226,26 @@ public class ResultUI : MonoBehaviourPun
     /// </summary>
     private void OnClickOK()
     {
-        PhotonNetwork.AutomaticallySyncScene = false;
-        SceneManager.LoadSceneAsync("Title");
+        okButton.interactable = false;
+
+        Debug.Log($"¾À µ¿±âÈ­ ¿©ºÎ : {PhotonNetwork.AutomaticallySyncScene}");
+
+        StartCoroutine(GameExitRoutine());
+    }
+
+    private IEnumerator GameExitRoutine()
+    {
+        AsyncOperation op = SceneManager.LoadSceneAsync("Title");
+        op.allowSceneActivation = false;
+
+        Manager.UI.FadeScreen.FadeIn();
+
+        yield return new WaitUntil(() => op.progress >= 0.9f);
+
+        yield return new WaitForSeconds(1f);
+
+        PhotonNetwork.LocalPlayer.SetGamePlay(false);
+
+        op.allowSceneActivation = true;
     }
 }
