@@ -166,6 +166,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     private void StartNextTurn()
     {
+        // 게임 종료 시 동작 중지
+        if (isGameEnd)
+            return;
+
         GameEndCheck();
 
         if (turnQueue.Count <= 0)
@@ -186,6 +190,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         nextCycle.Add(currentPlayer);
 
+        //  턴 종료 버튼 활성화
         EndButtonInteractable();
 
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
