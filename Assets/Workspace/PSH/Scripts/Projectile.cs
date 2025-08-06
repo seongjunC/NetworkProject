@@ -37,8 +37,11 @@ public class Projectile : MonoBehaviourPun
 
     private Vector2 windForce;
 
+    private TestBattleManager testBattleManager;
+
     private void Awake()
     {
+        testBattleManager = FindAnyObjectByType<TestBattleManager>();
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
@@ -163,6 +166,8 @@ public class Projectile : MonoBehaviourPun
         }
     }
 
+    //  RPC 호출 테스트
+    [PunRPC]
     public void SetOwnerActorNumber(int actorNumber)
     {
         ownerActorNumber = actorNumber;
@@ -190,6 +195,10 @@ public class Projectile : MonoBehaviourPun
 
         if (CameraController.Instance != null)
             CameraController.Instance.ReturnToPlayerCam();
+
+        Debug.Log($"[DestroyRoutine] : {ownerActorNumber}");
+        if (PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber)
+            testBattleManager.TestTurnEnd(ownerActorNumber);
 
         Destroy(gameObject);
     }
