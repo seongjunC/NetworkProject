@@ -398,7 +398,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 2735546527898058516}
   player: {fileID: 55806390711248404}
-  _textMeshPro: {fileID: 736693573828537321, guid: 246c684467684e74e8dad5bd0ce7c539, type: 3}
+  _textMeshPro: {fileID: 736693573828537321}
   _data: {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
   _hp: 200
   _movable: 0
