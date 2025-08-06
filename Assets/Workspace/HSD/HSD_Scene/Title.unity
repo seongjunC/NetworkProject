@@ -4973,7 +4973,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -7886,6 +7886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8fc1dfcd5b71434280b541e0d722b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSceneName: 
   playerSlotPrefab: {fileID: 4398182311349774773, guid: 7a08ab7af783c0246aafa561d7fd105b, type: 3}
   redPlayerContent: {fileID: 1704617411}
   bluePlayerContent: {fileID: 74122402}

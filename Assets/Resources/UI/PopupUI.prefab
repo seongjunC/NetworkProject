@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1390923186994126459}
   - component: {fileID: 4346878698499323945}
   - component: {fileID: 4475235492701485830}
+  - component: {fileID: 3283700541831473899}
   m_Layer: 5
   m_Name: PopupUI
   m_TagString: Untagged
@@ -91,6 +92,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   message: {fileID: 4533874971330343528}
   image: {fileID: 4346878698499323945}
+--- !u!95 &3283700541831473899
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3201548165674040012}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f1642c2a609a1a948886c5ce09b961b8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7025270903216814172
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,7 +187,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 3288334335
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3

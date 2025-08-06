@@ -6,11 +6,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PhotonView))]
 public class RoomManager : MonoBehaviourPun
 {
+    [SerializeField] string gameSceneName;
+
     [Header("Player")]
     [SerializeField] GameObject playerSlotPrefab;
     [SerializeField] Transform redPlayerContent;
@@ -55,7 +58,7 @@ public class RoomManager : MonoBehaviourPun
     [SerializeField] Chat chat;
 
     [Header("Room")]
-    [SerializeField] TMP_Text roomName;
+    [SerializeField] TMP_Text roomName;    
 
     private bool isReady;
     private bool isRandom;
@@ -164,6 +167,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
+    #region Kick
     private void Kick(Player player)
     {
         photonView.RPC(nameof(Kick_RPC), player);
@@ -191,6 +195,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.PopUpUI.Show("방에서 강퇴 되었습니다.");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
+    #endregion
 
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
@@ -230,13 +235,6 @@ public class RoomManager : MonoBehaviourPun
 
     private void CreatePlayerSlot()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            MapChange();
-        }
-
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
@@ -431,16 +429,13 @@ public class RoomManager : MonoBehaviourPun
         }
         
         PhotonNetwork.CurrentRoom.SetGameStart(true);
-        PhotonNetwork.LoadLevel("MSK InGameTest 1"); // 씬이동
-        PhotonNetwork.AutomaticallySyncScene = false;
+        photonView.RPC(nameof(LoadScene), RpcTarget.All);
+    }
 
-        foreach (var player in PhotonNetwork.PlayerList)
-        {
-            if(!PhotonNetwork.IsMasterClient)
-                player.SetReady(false);
-
-            player.SetGamePlay(true);
-        }        
+    [PunRPC]
+    private void LoadScene()
+    {
+        SceneManager.LoadScene(gameSceneName);
     }
 
     #region Events
