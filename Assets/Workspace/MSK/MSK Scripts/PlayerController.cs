@@ -106,7 +106,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             if (_movable > 0)
             {
                 _movable -= Time.deltaTime;
-                Debug.Log("움직이는중");
             }         
         }
 
