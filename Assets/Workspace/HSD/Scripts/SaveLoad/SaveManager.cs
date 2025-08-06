@@ -9,7 +9,7 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private GameData gameData;
     private List<ISavable> savables;
 
-    [SerializeField] private string fileName = "HSD.json";
+    [SerializeField] private string fileName = "Fortress.json";
 
     private void Start()
     {

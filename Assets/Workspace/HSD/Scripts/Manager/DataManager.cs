@@ -10,6 +10,7 @@ public class DataManager : Singleton<DataManager>
     
     public TankDataController TankDataController = new();
     public GachaManager GachaManager = new();
+    public SaveManager saveManager = new();
 
     private void Start()
     {
