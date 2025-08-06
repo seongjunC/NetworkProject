@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         originalGravityScale = _rigidbody.gravityScale;
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
 
+        player = GetComponent<Transform>();
+
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
         {
