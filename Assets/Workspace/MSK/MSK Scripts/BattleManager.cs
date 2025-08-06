@@ -14,9 +14,15 @@ public class TestBattleManager : MonoBehaviourPun
     private void Start()
     {
         _turnEndButton.onClick.AddListener(TestTurnEnd);
+        _turnEndButton.interactable = false;
     }
 
     #endregion
+
+    public void SetTurnEndButton(bool result)
+    {
+            _turnEndButton.interactable = result;
+    }
 
     public void TestTurnEnd()
     {
@@ -37,8 +43,7 @@ public class TestBattleManager : MonoBehaviourPun
 
     private void PlayerAttacked()
     {
-            Debug.Log("[PlayerAttacked] 실행");
-            _turnController.photonView.RPC("RPC_TimeStop", RpcTarget.All);
+        _turnController.photonView.RPC("RPC_TimeStop", RpcTarget.All);
         //  시간 정지
         /*
         if (_playerController._hp <= 0)

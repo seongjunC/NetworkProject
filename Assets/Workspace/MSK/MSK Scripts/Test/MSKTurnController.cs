@@ -167,6 +167,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private void StartNextTurn()
     {
         GameEndCheck();
+
         if (turnQueue.Count <= 0)
         {
             //photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
@@ -182,7 +183,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             return;
         }
         isTurnRunning = true;
+
         nextCycle.Add(currentPlayer);
+
+        EndButtonInteractable();
+
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
 
@@ -191,6 +196,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             WindManager.Instance.GenerateNewWind();
         }
+    }
+    public void EndButtonInteractable()
+    {
+        if (IsMyTurn())
+            testBattleManager.SetTurnEndButton(true);
+        else
+            testBattleManager.SetTurnEndButton(false);
     }
     private void QueueAdd(IEnumerable<PlayerInfo> players)
     {
