@@ -3324,7 +3324,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 718858781}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -7671,6 +7671,7 @@ MonoBehaviour:
   itemSpawner: {fileID: 0}
   itemCount: 0
   ResultPanel: {fileID: 920666501}
+  inGameUI: {fileID: 1574390735}
   CountText: {fileID: 1229694190}
   tanks: []
   Arrow: {fileID: 3370305161053916214, guid: ef03ac441a28396479ecdb8d38009675, type: 3}
@@ -7810,8 +7811,6 @@ MonoBehaviour:
   item1Button: {fileID: 718079426}
   item2Button: {fileID: 2045418933}
   endTurnButton: {fileID: 1225509752}
-  item1Icon: {fileID: 718079427}
-  item2Icon: {fileID: 2045418934}
   healthPointText: {fileID: 847118187}
 --- !u!114 &1574390736
 MonoBehaviour:
@@ -9870,3 +9869,4 @@ SceneRoots:
   - {fileID: 1448513394}
   - {fileID: 1857165070}
   - {fileID: 335403836}
+  - {fileID: 679817609}

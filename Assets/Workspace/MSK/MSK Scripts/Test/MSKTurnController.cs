@@ -25,6 +25,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [SerializeField] ResultUI ResultPanel;
     [SerializeField] InGameUI inGameUI;
     [SerializeField] TextMeshProUGUI CountText;
+
     [Header("탱크 리스트 확인용")]
     [SerializeField] List<PlayerController> tanks = new();
     [SerializeField] GameObject Arrow;
@@ -374,8 +375,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_GameEnded(Team winnerTeam)
     {
-        if (isGameEnd) return;
-
         isTurnRunning = false;
         isGameEnd = true;
         Debug.Log("게임 종료!");
@@ -405,9 +404,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
                 losers.Add(player);
         }
 
-        foreach (var tank in tanks)
+        foreach (var tank in tanks.ToList())
         {
-            tank.GetComponent<Collider2D>().enabled = false;
+            if (tank != null)
+                tank.GetComponent<Collider2D>().enabled = false;
         }
 
         photonView.RPC("ResultActivate", RpcTarget.All);
@@ -476,6 +476,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (team == Team.Red) redRemain--;
         else blueRemain--;
         currentPlayer.RecordKillCount();
+        Debug.Log($"[OnPlayerDied] 플레이어가 포톤 마이 인포 널? {player.myInfo == null}");
 
         DeadPlayer.Add(player.myInfo.ActorNumber);
         Debug.Log($"[MSKTurn] 팀 {team} 남은 인원: {(team == Team.Red ? redRemain : blueRemain)}");
