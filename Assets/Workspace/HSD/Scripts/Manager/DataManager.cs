@@ -10,10 +10,11 @@ public class DataManager : Singleton<DataManager>
     
     public TankDataController TankDataController = new();
     public GachaManager GachaManager = new();
-    public SaveManager saveManager = new();
+    public SaveManager saveManager;
 
     private void Start()
     {
+        saveManager = gameObject.AddComponent<SaveManager>();
         Manager.Firebase.OnLogOut += () => TankDataController.TankDatas.Clear();
     }
 
