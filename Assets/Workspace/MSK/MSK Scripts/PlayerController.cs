@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public PlayerInfo myInfo;
     public float _hp;
     public float _movable;
+    public float _damage;
     public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
     public Action OnPlayerAttacked;
@@ -49,12 +50,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         originalGravityScale = _rigidbody.gravityScale;
         _rigidbody.bodyType = RigidbodyType2D.Dynamic;
 
+        player = GetComponent<Transform>();
+        _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
+
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
         {
-            _movable = _data.maxMove;
-            _hp = _data.maxHp;
-
             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
 
@@ -105,7 +106,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             if (_movable > 0)
             {
                 _movable -= Time.deltaTime;
-                Debug.Log("움직이는중");
             }         
         }
 
@@ -166,6 +166,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         _data.Level = (int)datas[1];
         _data.InitStat();
 
+        _movable = _data.maxMove;
+        _hp = _data.maxHp;
+        _damage = _data.damage;
         // 달라져야 할 데이터들을 모두 세팅함
         // 예를 들어 Animator, 총알 프리팹
     }
@@ -175,7 +178,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
-    public void OnHit(int damage)
+    public void OnHit(float damage)
     {
         if (damage > 100000)
         {

@@ -72,6 +72,7 @@ MonoBehaviour:
   - RPC_SetWind
   - RPC_SpawnFireEffect
   - LoadScene
+  - RPC_SpawnSFX
   - RPC_TimeStop
   - SetOwnerActorNumber
   DisableAutoOpenWizard: 1
