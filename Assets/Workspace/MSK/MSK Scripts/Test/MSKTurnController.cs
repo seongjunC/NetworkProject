@@ -100,7 +100,18 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     }
     #endregion
 
-    public void GameStart()
+    // 초기화 함수
+    private void ClearInit()
+    {
+        turnQueue.Clear();
+        nextCycle.Clear();
+        tanks.Clear();
+        fireMap.Clear();
+        allPlayers.Clear();
+    }
+
+    //   턴 시작 전 게임 세팅
+    private void GameStart()
     {
         ClearInit();
         InitializePlayerEvents();
@@ -135,31 +146,20 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
             SetRandomTurn();
     }
-    private void ClearInit()
-    {
-        turnQueue.Clear();
-        nextCycle.Clear();
-        tanks.Clear();
-        fireMap.Clear();
-        allPlayers.Clear();
-    }
+
 
     private void SetRandomTurn()
     {
         room = PhotonNetwork.CurrentRoom;
 
-        var ordered = allPlayers.Values;
-
         //  랜덤 설정
-        if (room.GetTurnRandom())
-        {
-            ordered.OrderBy(_ => Random.value)
+        var actorNumbers = allPlayers.Values
+            .OrderBy(_ => room.GetTurnRandom() ? Random.value : 0f)
             .Select(p => p.ActorNumber)
             .ToArray();
-        }
-
-        photonView.RPC("RPC_ApplyRandomTurn", RpcTarget.All, ordered);
+        photonView.RPC("RPC_ApplyRandomTurn", RpcTarget.All, actorNumbers);
     }
+    //  턴 사이클 시작
     [PunRPC]
     private void RPC_ApplyRandomTurn(int[] orderedActor)
     {
@@ -178,6 +178,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         QueueAdd(players);
         StartNextTurn();
     }
+
     private void ItemAdd(ItemData item)
     {
         inGameUI.AddItem(item);
