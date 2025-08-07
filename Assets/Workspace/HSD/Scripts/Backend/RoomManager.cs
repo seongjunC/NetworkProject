@@ -430,14 +430,13 @@ public class RoomManager : MonoBehaviourPun
         }
 
         PhotonNetwork.CurrentRoom.SetGameStart(true);
-        photonView.RPC(nameof(AutomaticallySyncSceneTrue), RpcTarget.All);
-        PhotonNetwork.LoadLevel(gameSceneName);
+        photonView.RPC(nameof(GameStart_RPC), RpcTarget.All);        
     }
 
     [PunRPC]
-    private void AutomaticallySyncSceneTrue()
+    private void GameStart_RPC()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
+        StartCoroutine(Manager.Game.GameStartRoutine(gameSceneName));
     }
 
     #region Events
