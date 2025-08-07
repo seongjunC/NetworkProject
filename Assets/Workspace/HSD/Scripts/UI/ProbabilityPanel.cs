@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,10 +34,10 @@ public class ProbabilityPanel : MonoBehaviour
     private void Start()
     {
         InitSlots();
-    }   
+    }
 
     private void InitSlots()
-    {        
+    {
         for (int i = 0; i < (int)Rank.C + 1; i++)
         {
             CreateSlot((Rank)i);
@@ -51,16 +48,41 @@ public class ProbabilityPanel : MonoBehaviour
     {
         TankData[] tanks = gacha.GachaData.GetRankTankData(rank);
 
+        float totalChance = gacha.GachaData.GetGachaPercent(rank);
+
         Instantiate(rankPercentPrefab, probabilityContent).GetComponent<RankPercentPanel>().
-            SetUp(gacha.GachaData.GetGachaPercent(rank), rank, GetRankGradient(rank));
+            SetUp(totalChance, rank, GetRankGradient(rank));
 
-        float chance = gacha.GachaData.GetGachaPercent(rank) / tanks.Length;
+        float pickupChance = totalChance;
 
-        foreach (var tank in tanks)
+        if (rank == Rank.S && gacha.GachaData.pickUp != null)
         {
-            Instantiate(probabilitySlotPrefab, probabilityContent).GetComponent<ProbabilitySlot>().
-                SetUp(tank, chance);
+            pickupChance = totalChance / 2f;
+
+            int normalCount = tanks.Length - 1;
+            float normalChance = pickupChance / normalCount;
+
+            foreach (var tank in tanks)
+            {
+                float chance = (tank == gacha.GachaData.pickUp) ? pickupChance : normalChance;
+
+                Instantiate(probabilitySlotPrefab, probabilityContent)
+                    .GetComponent<ProbabilitySlot>()
+                    .SetUp(tank, chance);
+            }
         }
+        else
+        {
+            float chancePerTank = totalChance / tanks.Length;
+
+            foreach (var tank in tanks)
+            {
+                Instantiate(probabilitySlotPrefab, probabilityContent)
+                    .GetComponent<ProbabilitySlot>()
+                    .SetUp(tank, chancePerTank);
+            }
+        }
+
     }
 
     private VertexGradient GetRankGradient(Rank rank)

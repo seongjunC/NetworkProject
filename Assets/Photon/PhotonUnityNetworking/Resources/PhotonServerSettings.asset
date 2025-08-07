@@ -38,45 +38,33 @@ MonoBehaviour:
   - DestroyRpc
   - DestroySpaceship
   - Fire
-  - RespawnSpaceship
-  - RPC_GameEnded
-  - RPC_PlayerDead
-  - RPC_SetBulletTarget
-  - RPC_SetCameraTarget
-  - RPC_Spawned
-  - RPC_SpawnTank
-  - RPC_TurnFinished
-  - SendChating
-  - StartTurnForPlayer
-  - RPC_CycleEnd
+  - Init
   - Kick_RPC
-  - OnHit
+  - LoadScene
   - ReceiveWhisper
-  - SendChat
+  - RespawnSpaceship
+  - RPC_ApplyExplosionEffects
+  - RPC_CycleEnd
+  - RPC_GameEnded
   - RPC_InitTank
   - RPC_NotifySpawned
-  - EndPlayerTurn
-  - ResetTurn
-  - ResultActivate
-  - RPC_PCDead
-  - TurnNotice
-  - UpdateResult
   - RPC_OpenBox
-  - RPC_RecordDamage
-  - RPC_UpdateTimer
-  - RPC_ApplyExplosionEffects
+  - RPC_PlayerDead
   - RPC_RecordDamage
   - RPC_RequestFireProjectile
-  - RPC_UpdateTimerText
-  - Init
+  - RPC_SetBulletTarget
+  - RPC_SetCameraTarget
   - RPC_SetWind
   - RPC_SpawnFireEffect
-  - RPC_SyncUseItem
-  - RPC_UseItem
-  - LoadScene
   - RPC_SpawnSFX
+  - RPC_SyncUseItem
   - RPC_TimeStop
+  - RPC_TurnFinished
+  - RPC_UpdateTimerText
+  - RPC_UseItem
+  - SendChat
   - SetOwnerActorNumber
+  - StartTurnForPlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
