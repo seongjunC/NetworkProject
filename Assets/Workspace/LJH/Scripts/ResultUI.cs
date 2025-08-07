@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
-using System.Runtime.CompilerServices;
 
 public class ResultUI : MonoBehaviour
 {
@@ -16,17 +15,17 @@ public class ResultUI : MonoBehaviour
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Button okButton;
 
-    [Header("ë¶?ëª? ?Œ¨?„")]
+    [Header("ºÎ¸ğ ÆĞ³Î")]
     [SerializeField] private Transform playersParent;
 
-    [Header("?”„ë¦¬íŒ¹")]
+    [Header("ÇÁ¸®ÆÕ")]
     [SerializeField] private GameObject playerSlotPrefab;
 
-    [Header("??? ?ƒ‰?ƒ")]
+    [Header("ÆÀ »ö»ó")]
     [SerializeField] private Color redTeamColor = new Color(1f, 0.3f, 0.3f);
     [SerializeField] private Color blueTeamColor = new Color(0.3f, 0.3f, 1f);
 
-    [Header("?—°ê²°í•  ?Œ¨?„")]
+    [Header("¿¬°áÇÒ ÆĞ³Î")]
     [SerializeField] private GameObject lobbyPanel;
 
 
@@ -34,19 +33,11 @@ public class ResultUI : MonoBehaviour
     {
         okButton.onClick.AddListener(OnClickOK);
     }
-
     public void UpdateResult(Team winnerTeam, int mvpActor)
     {
         Debug.Log("ResultActive");
         gameObject.SetActive(true);
 
-        Time.timeScale = 0;
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("°ÔÀÓ ³¡");
-            PhotonNetwork.CurrentRoom.SetGameStart(false);
-        }
         // °á°ú ÆĞ³Î Ç¥½Ã
         winnerText.text = $"½Â¸®: {(winnerTeam == Team.Red ? "RED ÆÀ" : "BLUE ÆÀ")}";
         // ÇÃ·¹ÀÌ¾î ½½·Ô ÃÊ±âÈ­
@@ -56,13 +47,13 @@ public class ResultUI : MonoBehaviour
         }
         PhotonNetwork.CurrentRoom.Players.TryGetValue(mvpActor, out Player mvpplayer);
         Debug.Log($"Mvp user == {mvpplayer.NickName}");
-        // ?Š¹ë¦? ??? ?”Œ? ˆ?´?–´ ì¶”ê??
+        // ½Â¸® ÆÀ ÇÃ·¹ÀÌ¾î Ãß°¡
         foreach (var player in PhotonNetwork.PlayerList)
         {
             Debug.Log($"{player.NickName}, {player.ActorNumber}, {mvpplayer.ActorNumber}");
             if (player.ActorNumber == mvpplayer.ActorNumber)
             {
-                Debug.Log($"{player} mvp panel ?ƒ?„±");
+                Debug.Log($"{player} mvp panel »ı¼º");
                 AddMVPPlayerSlot(player);
             }
             else if (CustomProperty.GetTeam(player) == winnerTeam)
@@ -74,32 +65,26 @@ public class ResultUI : MonoBehaviour
                 AddPlayerSlot(player, false);
             }
         }
-
-        if (PhotonNetwork.LocalPlayer.GetTeam() == winnerTeam)
-            Manager.Data.PlayerData.RaiseWinCount();
-        else
-            Manager.Data.PlayerData.RaiseLoseCount();
-
         resultPanel.SetActive(true);
+
+
     }
     public void AddPlayerSlot(Player player, bool isWinner)
     {
-        // ?”„ë¦¬íŒ¹ ?ƒ?„±
+        // ÇÁ¸®ÆÕ »ı¼º
         GameObject slot = Instantiate(playerSlotPrefab, playersParent);
-        // ?Œ¨?„ ë°°ê²½ ?ƒ‰?ƒ
+        // ÆĞ³Î ¹è°æ »ö»ó
         Image bgImage = slot.GetComponent<Image>();
         if (bgImage != null)
             bgImage.color = (CustomProperty.GetTeam(player) == Team.Red) ? redTeamColor : blueTeamColor;
-        // ?”Œ? ˆ?´?–´ ?‹‰?„¤?„
+        // ÇÃ·¹ÀÌ¾î ´Ğ³×ÀÓ
         TextMeshProUGUI nameText = slot.transform.Find("NickNameText (TMP)")?.GetComponent<TextMeshProUGUI>();
         if (nameText != null)
             nameText.text = player.NickName;
         else Debug.LogError("nameText == null");
-        // ë³´ìƒ ? ?ˆ˜ ê³„ì‚°
-
+        // º¸»ó Á¡¼ö °è»ê
         int reward = isWinner ? 100 : 50;
-
-        // ë³´ìƒ ?ˆ«? Text
+        // º¸»ó ¼ıÀÚ Text
         TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
         if (rewardText != null)
             rewardText.text = $"+{reward}";
@@ -107,19 +92,19 @@ public class ResultUI : MonoBehaviour
 
     public void AddMVPPlayerSlot(Player player)
     {
-        // ?”„ë¦¬íŒ¹ ?ƒ?„±
+        // ÇÁ¸®ÆÕ »ı¼º
         GameObject slot = Instantiate(playerSlotPrefab, playersParent);
-        // ?Œ¨?„ ë°°ê²½ ?ƒ‰?ƒ
+        // ÆĞ³Î ¹è°æ »ö»ó
         Image bgImage = slot.GetComponent<Image>();
         if (bgImage != null)
             bgImage.color = (CustomProperty.GetTeam(player) == Team.Red) ? redTeamColor : blueTeamColor;
-        // ?”Œ? ˆ?´?–´ ?‹‰?„¤?„
+        // ÇÃ·¹ÀÌ¾î ´Ğ³×ÀÓ
         TextMeshProUGUI nameText = slot.transform.Find("NickNameText (TMP)")?.GetComponent<TextMeshProUGUI>();
         if (nameText != null)
             nameText.text = player.NickName;
-        // ë³´ìƒ ? ?ˆ˜ ê³„ì‚°
+        // º¸»ó Á¡¼ö °è»ê
         int reward = 150;
-        // ë³´ìƒ ?ˆ«? Text
+        // º¸»ó ¼ıÀÚ Text
         TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
         if (rewardText != null)
             rewardText.text = $"+{reward}";
@@ -129,21 +114,21 @@ public class ResultUI : MonoBehaviour
     }
 
     ///// <summary>
-    ///// ê²°ê³¼ UI ?‘œ?‹œ
+    ///// °á°ú UI Ç¥½Ã
     ///// </summary>
     //public void ShowResult(Team winnerTeam, Dictionary<int, int> playerScores)
     //{
     //    gameObject.SetActive(true);
     //    resultPanel.SetActive(true);
-    //    winnerText.text = $"?Š¹ë¦?: {(winnerTeam == Team.Red ? "RED ???" : "BLUE ???")}";
+    //    winnerText.text = $"½Â¸®: {(winnerTeam == Team.Red ? "RED ÆÀ" : "BLUE ÆÀ")}";
 
-    //    // ê¸°ì¡´ ?Š¬ë¡? ? œê±?
+    //    // ±âÁ¸ ½½·Ô Á¦°Å
     //    foreach (Transform child in playersParent)
     //    {
     //        Destroy(child.gameObject);
     //    }
 
-    //    // MVP ì°¾ê¸°
+    //    // MVP Ã£±â
     //    int mvpActorNumber = -1;
     //    int highestScore = -1;
     //    foreach (var kv in playerScores)
@@ -156,7 +141,7 @@ public class ResultUI : MonoBehaviour
     //        }
     //    }
 
-    //    // ???ë³? ë¶„ë¥˜
+    //    // ÆÀº° ºĞ·ù
     //    List<Player> redPlayers = new();
     //    List<Player> bluePlayers = new();
     //    foreach (var player in PhotonNetwork.PlayerList)
@@ -168,22 +153,22 @@ public class ResultUI : MonoBehaviour
     //    int redIndex = 0;
     //    int blueIndex = 0;
 
-    //    // ìµœë?? 8ëª? ?Š¬ë¡? ?ƒ?„±
+    //    // ÃÖ´ë 8¸í ½½·Ô »ı¼º
     //    for (int i = 0; i < 8; i++)
     //    {
     //        Player playerToAdd = null;
 
-    //        // ????ˆ˜(0,2,4..) ?†’ ? ˆ?“œ???
+    //        // È¦¼ö(0,2,4..) ¡æ ·¹µåÆÀ
     //        if (i % 2 == 0 && redIndex < redPlayers.Count)
     //        {
     //            playerToAdd = redPlayers[redIndex++];
     //        }
-    //        // ì§ìˆ˜(1,3,5..) ?†’ ë¸”ë£¨???
+    //        // Â¦¼ö(1,3,5..) ¡æ ºí·çÆÀ
     //        else if (i % 2 == 1 && blueIndex < bluePlayers.Count)
     //        {
     //            playerToAdd = bluePlayers[blueIndex++];
     //        }
-    //        // ?•œìª? ????´ ë¶?ì¡±í•˜ë©? ?‹¤ë¥? ????—?„œ ì±„ì??
+    //        // ÇÑÂÊ ÆÀÀÌ ºÎÁ·ÇÏ¸é ´Ù¸¥ ÆÀ¿¡¼­ Ã¤¿ò
     //        else if (redIndex < redPlayers.Count)
     //        {
     //            playerToAdd = redPlayers[redIndex++];
@@ -199,34 +184,34 @@ public class ResultUI : MonoBehaviour
     //        int score = playerScores.ContainsKey(actorNumber) ? playerScores[actorNumber] : 0;
     //        Team playerTeam = CustomProperty.GetTeam(playerToAdd);
 
-    //        // ?”„ë¦¬íŒ¹ ?ƒ?„±
+    //        // ÇÁ¸®ÆÕ »ı¼º
     //        GameObject slot = Instantiate(playerSlotPrefab, playersParent);
 
-    //        // ?Œ¨?„ ë°°ê²½ ?ƒ‰?ƒ
+    //        // ÆĞ³Î ¹è°æ »ö»ó
     //        Image bgImage = slot.GetComponent<Image>();
     //        if (bgImage != null)
     //            bgImage.color = (playerTeam == Team.Red) ? redTeamColor : blueTeamColor;
 
-    //        // MVP ?´ë¯¸ì??
+    //        // MVP ÀÌ¹ÌÁö
     //        Image mvpImage = slot.transform.Find("MVPImage")?.GetComponent<Image>();
     //        if (mvpImage != null)
     //            mvpImage.gameObject.SetActive(actorNumber == mvpActorNumber);
 
-    //        // ?”Œ? ˆ?´?–´ ?‹‰?„¤?„
+    //        // ÇÃ·¹ÀÌ¾î ´Ğ³×ÀÓ
     //        TextMeshProUGUI nameText = slot.transform.Find("PlayerNickname")?.GetComponent<TextMeshProUGUI>();
     //        if (nameText != null)
     //            nameText.text = playerToAdd.NickName;
 
-    //        // ë³´ìƒ ? ?ˆ˜ ê³„ì‚°
+    //        // º¸»ó Á¡¼ö °è»ê
     //        int reward = (playerTeam == winnerTeam) ? 100 : 50;
     //        if (actorNumber == mvpActorNumber) reward = 150;
 
-    //        // ë³´ìƒ ?ˆ«? Text
+    //        // º¸»ó ¼ıÀÚ Text
     //        TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
     //        if (rewardText != null)
     //            rewardText.text = $"+{reward}";
 
-    //        // Gem ?´ë¯¸ì???Š” ?”„ë¦¬íŒ¹?— ì¡´ì¬ë§? ?•˜ë©? ??™ ?‘œ?‹œ?¨ (ë³„ë„ ë¡œì§ ?•„?š” ?—†?Œ)
+    //        // Gem ÀÌ¹ÌÁö´Â ÇÁ¸®ÆÕ¿¡ Á¸Àç¸¸ ÇÏ¸é ÀÚµ¿ Ç¥½ÃµÊ (º°µµ ·ÎÁ÷ ÇÊ¿ä ¾øÀ½)
     //    }
     //}
 
@@ -240,15 +225,12 @@ public class ResultUI : MonoBehaviour
     //}
 
     /// <summary>
-    /// OK ë²„íŠ¼ ?´ë¦? ?‹œ Title ?”¬?œ¼ë¡? ?´?™
+    /// OK ¹öÆ° Å¬¸¯ ½Ã Title ¾ÀÀ¸·Î ÀÌµ¿
     /// </summary>
     private void OnClickOK()
     {
-        okButton.interactable = false;
-
-        Debug.Log($"?”¬ ?™ê¸°í™” ?—¬ë¶? : {PhotonNetwork.AutomaticallySyncScene}");
-
-        StartCoroutine(GameExitRoutine());
+        PhotonNetwork.AutomaticallySyncScene = false;
+        SceneManager.LoadSceneAsync("Title");
     }
 
     private IEnumerator GameExitRoutine()
@@ -260,8 +242,7 @@ public class ResultUI : MonoBehaviour
 
         yield return new WaitUntil(() => op.progress >= 0.9f);
 
-        yield return new WaitForSecondsRealtime(1f);
-        Time.timeScale = 1;
+        yield return new WaitForSeconds(1f);
 
         PhotonNetwork.LocalPlayer.SetGamePlay(false);
 
