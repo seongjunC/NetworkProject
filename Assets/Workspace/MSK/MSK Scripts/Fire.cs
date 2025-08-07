@@ -16,7 +16,7 @@ public class Fire : MonoBehaviourPun
     [SerializeField] public float maxPower = 20f;
 
     public float powerCharge = 0f;
-    private bool isCharging = false;
+    public bool isCharging = false;
     private bool isDoubleAttack = false;
     private bool OnDamageBuff = false;
     private List<float?> DamageBuff = new List<float?>(2);

@@ -7594,7 +7594,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1495371541}
-  - component: {fileID: 1495371544}
   - component: {fileID: 1495371543}
   - component: {fileID: 1495371546}
   - component: {fileID: 1495371545}
@@ -7642,21 +7641,6 @@ MonoBehaviour:
   sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1495371544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1495371539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dd2103e6ef33d045a4700eef5b98578, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hp_Slider: {fileID: 1185878718}
-  _power_Slider: {fileID: 504923932}
-  _move_Slider: {fileID: 796068767}
 --- !u!114 &1495371545
 MonoBehaviour:
   m_ObjectHideFlags: 0
