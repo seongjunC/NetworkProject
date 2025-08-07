@@ -81,12 +81,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (isTurnRunning && isGameStart && !isGameEnd)
+        if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart && !isGameEnd)
         {
-            // 자신의 턴 일때만 요청
-            if (!IsMyTurn())
-                return;
-
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
 
@@ -109,6 +105,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         nextCycle.Clear();
         tanks.Clear();
         fireMap.Clear();
+        room = PhotonNetwork.CurrentRoom;
         allPlayers.Clear();
     }
     public void GameStart()
@@ -126,8 +123,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
-        players = allPlayers.Values;
-
 
         //         foreach (var playerInfo in PhotonNetwork.PlayerList)
         //         {
@@ -175,7 +170,9 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         //정렬 후 게임 시작
         players = orderedList;
         QueueAdd(players);
-        StartNextTurn();
+            isGameStart = true;
+            turnTimer = turnLimit;
+            StartNextTurn();
     }
 
     [PunRPC]
@@ -229,11 +226,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         //GameEndCheck();
 
-        if (turnQueue.Count <= 0)
-        {
-            //photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
-            QueueAdd(players);
-        }
+        // if (turnQueue.Count <= 0)
+        // {
+        //     //photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
+        //     QueueAdd(players);
+        // }
 
         currentPlayer = turnQueue.Dequeue();
         Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
@@ -244,6 +241,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             return;
         }
         isTurnRunning = true;
+
+        turnTimer = turnLimit;
 
         nextCycle.Add(currentPlayer);
 
@@ -370,9 +369,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         return currentActor == localActor;
     }
 
-    /*
+
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        if (isGameEnd) return;
         base.OnPlayerLeftRoom(otherPlayer);
 
         Debug.Log($"플레이어 퇴장 : ActorNumber = {otherPlayer.ActorNumber}");
@@ -390,7 +390,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             controller.PlayerDead();
         }
     }
-    */
+
     #endregion
 
 
@@ -402,11 +402,33 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         // 혹시 또 호출되면 바로 탈출
         if (!PhotonNetwork.IsMasterClient) return;
         Debug.Log("CycleEnd 호출");
+        var dropIDs = new List<int>();
         for (int i = 0; i < itemCount; i++)
         {
             Debug.Log($"아이템 생성 itemCount : {itemCount}, 현재 i : {i}");
-            itemSpawner.SpawnRandomItem();
+            var item = itemSpawner.SpawnRandomItem();
+            if (item != null)
+                dropIDs.Add(item.GetPhotonView().ViewID);
         }
+        photonView.RPC(
+            nameof(RPC_HighlightDroppedItems),
+            RpcTarget.All,
+            dropIDs.ToArray()
+        );
+    }
+    [PunRPC]
+    private void RPC_HighlightDroppedItems(int[] viewIDs)
+    {
+        var targets = new List<Transform>();
+        foreach (int id in viewIDs)
+        {
+            var pv = PhotonView.Find(id);
+            if (pv != null && pv.transform != null)
+                targets.Add(pv.transform);
+        }
+        photonView.RPC(nameof(RPC_TimeStop), RpcTarget.MasterClient);
+
+        CameraController.Instance.HighlightItems(targets, totalDuration: 2f);
     }
 
     [PunRPC]
@@ -561,7 +583,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         }
     }
     [PunRPC]
-    private void RPC_NotifySpawned()
+    public void RPC_NotifySpawned()
     {
         spawnedCount++;
         Debug.Log($"[MSKTurnController] 플레이어 스폰 완료 수: {spawnedCount}/{PhotonNetwork.CurrentRoom.PlayerCount}");
