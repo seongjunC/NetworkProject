@@ -12,8 +12,7 @@ public class SpawnPlayer : MonoBehaviour
     {
         PlayerSpawn();
 
-        var turnController = FindObjectOfType<MSKTurnController>();
-        turnController.photonView.RPC("RPC_NotifySpawned", RpcTarget.All);
+        MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.Instance.RPC_NotifySpawned), RpcTarget.All);
     }
 
     /// <summary>

@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private Transform muzzleRotatePos;
     [SerializeField] private float muzzleRotationSpeed = 50f; // 포신 회전 속도
 
+    [SerializeField] private Fire _fire;
+
 
     private float turretAngle = 0f;
     private bool isFacingRight = true;
@@ -53,6 +55,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         player = GetComponent<Transform>();
         _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
+        _fire = GetComponent<Fire>();
 
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
@@ -115,6 +118,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         // 입력 처리는 IsMine인 클라이언트에서만 실행
         if (!photonView.IsMine || _isDead || !isControllable)
+        {
+            return;
+        }
+
+        // 발사 차징중이면 조작 막음
+        if (_fire.isCharging)
         {
             return;
         }
@@ -226,7 +235,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void EndPlayerTurn()
     {
-        //_movable = 0;
+        _movable = 0;
         SetAttacked(true);
         isControllable = false;
     }
