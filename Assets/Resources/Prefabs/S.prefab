@@ -126,6 +126,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3961554663233773091}
   - component: {fileID: 7527076878715532330}
+  - component: {fileID: 5953139912642891358}
   m_Layer: 5
   m_Name: HealthSlider
   m_TagString: Untagged
@@ -152,7 +153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.30949998}
+  m_AnchoredPosition: {x: 0, y: 0.204}
   m_SizeDelta: {x: 3.4381, y: 0.38100004}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7527076878715532330
@@ -206,6 +207,21 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5953139912642891358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2376560059165336343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dd720f5be69b0a49b4c80bf571203ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 3946785669929708067}
+  slider: {fileID: 7527076878715532330}
+  healthText: {fileID: 7525588530300058867}
 --- !u!1 &3149140155048728798
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,8 +338,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3961554663233773091}
   - {fileID: 7326980855340762999}
+  - {fileID: 3961554663233773091}
   m_Father: {fileID: 55806390711248404}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -493,7 +509,6 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 17cb8d34800f11044b7cbf4304406168, type: 2}
   myInfo:
     items: []
-  _hp: 200
   _movable: 0
   _damage: 0
   moveSpeed: 3
@@ -613,7 +628,7 @@ GameObject:
   - component: {fileID: 7244069954177546098}
   - component: {fileID: 736693573828537321}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -635,7 +650,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.0226}
+  m_AnchoredPosition: {x: 0, y: 0.75}
   m_SizeDelta: {x: 3, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7244069954177546098
@@ -666,7 +681,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: HSD
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 76af3728e683ec24fb2343b741eaa4f8, type: 2}
   m_sharedMaterial: {fileID: -2405668869081189826, guid: 76af3728e683ec24fb2343b741eaa4f8, type: 2}

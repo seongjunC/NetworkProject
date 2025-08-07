@@ -107,7 +107,6 @@ MonoBehaviour:
   explosionMask: {fileID: 0}
   explosionScale: 3
   damage: 100
-  realDamage: 0
   explosionEffect: {fileID: 739683856073798810, guid: 6538bb1ec2794034f87d90690d5be8ae, type: 3}
   delay: 2
   windEffectMultiplier: 1

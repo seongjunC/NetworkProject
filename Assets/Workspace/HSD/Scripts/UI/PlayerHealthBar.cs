@@ -12,11 +12,22 @@ public class PlayerHealthBar : MonoBehaviour
 
     private void OnEnable()
     {
-        
+        UpdateHelathBar(player._hp);
+        player.OnHealthChanged += UpdateHelathBar;
     }
 
     private void OnDisable()
     {
-        
+        player.OnHealthChanged -= UpdateHelathBar;
+    }
+
+    private void UpdateHelathBar(float value)
+    {
+        if(slider.maxValue != player._data.maxHp)
+            slider.maxValue = player._data.maxHp;
+
+        slider.value = value;
+
+        healthText.text = $"{value} / {slider.maxValue}";
     }
 }
