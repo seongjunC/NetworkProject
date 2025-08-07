@@ -436,7 +436,7 @@ public class RoomManager : MonoBehaviourPun
     [PunRPC]
     private void GameStart_RPC()
     {
-        StartCoroutine(Manager.Game.GameStartRoutine(gameSceneName));
+        Manager.Game.GameStart(gameSceneName);
     }
 
     #region Events

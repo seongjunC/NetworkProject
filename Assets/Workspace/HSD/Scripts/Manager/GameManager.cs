@@ -17,19 +17,27 @@ public class GameManager : Singleton<GameManager>
         PhotonNetwork.LocalPlayer.SetGamePlay(true);
     }
 
-    public IEnumerator GameStartRoutine(string gameSceneName)
+    public void GameStart(string gameSceneName)
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
+        StartCoroutine(GameStartRoutine(gameSceneName));
+    }
 
+    private IEnumerator GameStartRoutine(string gameSceneName)
+    {       
         Manager.UI.FadeScreen.FadeIn();
-
+        Debug.Log("FadeIn");
         yield return new WaitForSeconds(1);
+
+        PhotonNetwork.AutomaticallySyncScene = true;
 
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.LoadLevel(gameSceneName);
 
+        Manager.Audio.PlayBGM("Game");
+
         yield return new WaitForSeconds(1);
 
         Manager.UI.FadeScreen.FadeOut();
+        Debug.Log("FadeOut");
     }
 }
