@@ -229,8 +229,8 @@ public class ResultUI : MonoBehaviour
     /// </summary>
     private void OnClickOK()
     {
-        PhotonNetwork.AutomaticallySyncScene = false;
-        SceneManager.LoadSceneAsync("Title");
+        okButton.interactable = false;
+        StartCoroutine(GameExitRoutine());
     }
 
     private IEnumerator GameExitRoutine()
