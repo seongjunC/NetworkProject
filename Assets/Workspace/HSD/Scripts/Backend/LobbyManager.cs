@@ -397,7 +397,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
 
     public override void OnLeftRoom()    
-    {
+    {        
         lobby.SetActive(true);
         room.SetActive(false);
         roomManager.OnLeftRoom();

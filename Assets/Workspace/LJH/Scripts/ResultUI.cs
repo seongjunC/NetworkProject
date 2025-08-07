@@ -28,6 +28,7 @@ public class ResultUI : MonoBehaviour
     [Header("연결할 패널")]
     [SerializeField] private GameObject lobbyPanel;
 
+    private Sprite loading;
 
     void Start()
     {
@@ -125,24 +126,8 @@ public class ResultUI : MonoBehaviour
     private void OnClickOK()
     {
         PhotonNetwork.AutomaticallySyncScene = false;
-        StartCoroutine(GameExitRoutine());
-    }
-
-    private IEnumerator GameExitRoutine()
-    {
-        AsyncOperation op = SceneManager.LoadSceneAsync("Title");
-        op.allowSceneActivation = false;
-
-        Manager.UI.FadeScreen.FadeIn();
-
-        yield return new WaitUntil(() => op.progress >= 0.9f);
-
-        yield return new WaitForSecondsRealtime(1f);
-
-        Time.timeScale = 1;
-
-        PhotonNetwork.LocalPlayer.SetGamePlay(false);
-
-        op.allowSceneActivation = true;
+        okButton.interactable = false;
+        loading = DataManager.loadingImage;
+        Manager.Game.GameExit(loading);
     }
 }

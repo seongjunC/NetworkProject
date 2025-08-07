@@ -5,7 +5,16 @@ using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
-    public static Sprite loadingImage => GetRamdomLoadingImage();
+    public static Sprite currentLoadingImage;
+    public static Sprite loadingImage 
+    {   
+        get 
+        { 
+            currentLoadingImage = GetRamdomLoadingImage();
+
+            return currentLoadingImage;
+        } 
+    }
     private static Sprite[] loadingSprite;
 
     public PlayerData PlayerData;

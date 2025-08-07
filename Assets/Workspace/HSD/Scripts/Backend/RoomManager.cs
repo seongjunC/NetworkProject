@@ -445,7 +445,7 @@ public class RoomManager : MonoBehaviourPun
     [PunRPC]
     private void GameStart_RPC()
     {
-        Manager.Game.GameStart(gameSceneName, loading);
+        Manager.Game.GameStart(gameSceneName, DataManager.loadingImage);
     }
 
     #region Events
@@ -480,7 +480,9 @@ public class RoomManager : MonoBehaviourPun
     {
         PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         roomName.text = PhotonNetwork.CurrentRoom.Name;
-        Manager.UI.FadeScreen.FadeOut(.5f);
+
+        if(Manager.Game.State != State.Game)
+            Manager.UI.FadeScreen.FadeOut(1);
 
         Init();
         MapChange();
