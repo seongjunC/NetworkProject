@@ -48,8 +48,8 @@ public class Fire : MonoBehaviourPun
             powerCharge = Mathf.Clamp(powerCharge, 0f, maxPower);
         }
 
-        // 스페이스바에서 손을 뗐을 때 발사
-        if (isCharging && Input.GetKeyUp(KeyCode.Space))
+        // 스페이스바에서 손을 뗐을 때 또는 풀차지시 발사 
+        if (isCharging && Input.GetKeyUp(KeyCode.Space) || powerCharge == maxPower)
         {
             Shoot();
             if (isDoubleAttack)
