@@ -65,7 +65,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #region public
 
     public bool isGameEnd = false;
-    public event System.Action<PlayerController, PlayerInfo, Team> OnPlayerDied;
+    public event System.Action<PlayerController, PlayerInfo> OnPlayerDied;
     public Dictionary<int, PlayerInfo> allPlayers = new Dictionary<int, PlayerInfo>();
     public HashSet<int> DeadPlayer = new();
     #endregion
@@ -262,7 +262,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private IEnumerator HandleCycleEnd()
     {
         RPC_TimeStop();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         var dropIDs = new List<int>();
         for (int i = 0; i < itemCount; i++)
@@ -553,11 +553,22 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_PlayerDead(int actorNumber)
     {
+        if (!DeadPlayer.Contains(actorNumber))
+        {
+            DeadPlayer.Add(actorNumber);
+        }
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
-        OnPlayerDied?.Invoke(tank, currentPlayer, tank.myInfo.player.GetTeam());
-        DeadPlayer.Add(actorNumber);
+        if (tank != null)
+        {
+            OnPlayerDied?.Invoke(tank, currentPlayer);
+            photonView.RPC(nameof(RPC_RemoveDead), RpcTarget.All, actorNumber);
+        }
+        else
+        {
+            testBattleManager.HandlePlayerExit(actorNumber);
+        }
 
-        photonView.RPC(nameof(RPC_RemoveDead), RpcTarget.All, actorNumber);
+
     }
 
     [PunRPC]

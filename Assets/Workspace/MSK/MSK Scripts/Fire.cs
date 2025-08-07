@@ -115,5 +115,7 @@ public class Fire : MonoBehaviourPun
         {
             DamageBuff.Add(null);
         }
+        powerCharge = 0f;
+
     }
 }
