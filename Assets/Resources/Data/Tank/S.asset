@@ -13,16 +13,13 @@ MonoBehaviour:
   m_Name: S
   m_EditorClassIdentifier: 
   baseDamage: 200
-  baseSpeed: 0
   baseMaxHp: 500
-  baseMaxMove: 1
+  baseMaxMove: 5
   damageGrowth: 20
-  speedGrowth: 0
   maxHpGrowth: 50
-  maxMoveGrowth: 0.1
+  maxMoveGrowth: 1
   damage: 1
   maxMove: 5
-  speed: 1
   maxHp: 1
   tankName: S
   rank: 0
