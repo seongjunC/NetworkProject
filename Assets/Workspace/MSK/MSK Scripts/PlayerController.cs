@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void EndPlayerTurn()
     {
-        //_movable = 0;
+        _movable = 0;
         SetAttacked(true);
         isControllable = false;
     }
