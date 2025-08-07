@@ -71,10 +71,10 @@ public class CameraController : MonoBehaviour
         perlin.m_AmplitudeGain = 0f;
     }
 
-    public void HighlightItems(List<Transform> targets, float totalDuration = 2f)
-    {
-        StartCoroutine(HighlightRoutine(targets, totalDuration));
-    }
+    // public void HighlightItems(List<Transform> targets, float totalDuration = 2f)
+    // {
+    //     StartCoroutine(HighlightRoutine(targets, totalDuration));
+    // }
 
     public IEnumerator HighlightRoutine(List<Transform> targets, float totalDuration)
     {
