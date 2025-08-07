@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class SpawnPlayer : MonoBehaviour
@@ -29,7 +30,16 @@ public class SpawnPlayer : MonoBehaviour
 
         // 0부터 spawnCount-1까지 랜덤 인덱스
         //int index = Random.Range(0, spawnCount);
-        int index = PhotonNetwork.LocalPlayer.ActorNumber - 1;
+
+        Player[] players = PhotonNetwork.PlayerList;
+        int index = System.Array.IndexOf(players, PhotonNetwork.LocalPlayer);
+
+        if (index < 0 || index >= spawnCount)
+        {
+            Debug.LogError($"SpawnPlayer: 잘못된 인덱스! index={index}, spawnCount={spawnCount}");
+            return;
+        }
+
         Transform chosenPoint = transform.GetChild(index);
 
         TankData data = Manager.Data.TankDataController.CurrentTank;
