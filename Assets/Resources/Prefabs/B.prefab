@@ -414,6 +414,7 @@ MonoBehaviour:
   stickToGroundForce: 5
   muzzleRotatePos: {fileID: 5143764862364520804}
   muzzleRotationSpeed: 50
+  _fire: {fileID: 0}
 --- !u!114 &8488200785960515094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,12 +430,13 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 2
+  Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
   - {fileID: 3946785669929708067}
   - {fileID: 7883107967485727059}
+  - {fileID: 6830080592245457887}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -471,6 +473,7 @@ MonoBehaviour:
   chargingSpeed: 10
   maxPower: 10
   powerCharge: 0
+  isCharging: 0
 --- !u!58 &7368446081822583022
 CircleCollider2D:
   m_ObjectHideFlags: 0

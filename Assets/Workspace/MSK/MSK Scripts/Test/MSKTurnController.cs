@@ -58,7 +58,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     public bool isGameEnd = false;
     public event System.Action<PlayerController, PlayerInfo> OnPlayerDied;
 
-
+    private Fire _fire;
 
     #region Unity LifeCycle
     private void Awake()
@@ -85,6 +85,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart && !isGameEnd)
         {
+            // 발사 차징중이면 타이머 정지
+            if (_fire.isCharging)
+            {
+                return;
+            }
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
 
@@ -257,6 +262,9 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             WindManager.Instance.GenerateNewWind();
         }
+
+        _fire = GetPlayerController(currentPlayer.ActorNumber).gameObject.GetComponent<Fire>();
+        Debug.Log($"현재 Fire는 {_fire.gameObject.name}의 것이다");
     }
 
     public void EndButtonInteractable()
