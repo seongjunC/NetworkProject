@@ -30,11 +30,12 @@ public class TankData : ScriptableObject
     public string description;
 
     private int level;
-    [field: SerializeField] 
+    [SerializeField]
     public int Level { get => level; set { level = value; } }
 
     private int count;
-    [field : SerializeField] public int Count
+    [SerializeField]
+    public int Count
     {
         get => count;
         set
@@ -119,7 +120,7 @@ public class TankData : ScriptableObject
             Rank.C => 1f,
             Rank.B => 1.15f,
             Rank.A => 1.35f,
-            Rank.S=> 1.6f,
+            Rank.S => 1.6f,
             _ => 1f
         };
     }
