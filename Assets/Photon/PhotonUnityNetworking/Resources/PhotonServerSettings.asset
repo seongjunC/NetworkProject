@@ -69,6 +69,7 @@ MonoBehaviour:
   - GameStart_RPC
   - RPC_ApplyRandomTurn
   - RPC_HighlightDroppedItems
+  - RPC_RemoveDead
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
