@@ -81,11 +81,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (isTurnRunning && isGameStart && !isGameEnd)
+        if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart && !isGameEnd)
         {
-            // 자신의 턴 일때만 턴 종료 요청
-            if (!IsMyTurn())
-                return;
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
 
@@ -126,8 +123,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         if (room.GetTurnRandom() && PhotonNetwork.IsMasterClient)
         {
             // players = players.OrderBy(_ => Random.value);
-            List<int> actorOrder = allPlayers.Keys.OrderBy(_ => Random.value).ToList();
-            photonView.RPC(nameof(RPC_SetTurnOrder), RpcTarget.All, actorOrder.ToArray());
+            var actorOrder = allPlayers.Keys.OrderBy(_ => Random.value).ToArray();
+            photonView.RPC(nameof(RPC_SetTurnOrder), RpcTarget.All, actorOrder);
         }
         else if (!room.GetTurnRandom())
         {
@@ -216,11 +213,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         //GameEndCheck();
 
-        if (turnQueue.Count <= 0)
-        {
-            //photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
-            QueueAdd(players);
-        }
+        // if (turnQueue.Count <= 0)
+        // {
+        //     //photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
+        //     QueueAdd(players);
+        // }
 
         currentPlayer = turnQueue.Dequeue();
         Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
@@ -231,6 +228,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             return;
         }
         isTurnRunning = true;
+
+        turnTimer = turnLimit;
 
         nextCycle.Add(currentPlayer);
 
@@ -389,11 +388,33 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         // 혹시 또 호출되면 바로 탈출
         if (!PhotonNetwork.IsMasterClient) return;
         Debug.Log("CycleEnd 호출");
+        var dropIDs = new List<int>();
         for (int i = 0; i < itemCount; i++)
         {
             Debug.Log($"아이템 생성 itemCount : {itemCount}, 현재 i : {i}");
-            itemSpawner.SpawnRandomItem();
+            var item = itemSpawner.SpawnRandomItem();
+            if (item != null)
+                dropIDs.Add(item.GetPhotonView().ViewID);
         }
+        photonView.RPC(
+            nameof(RPC_HighlightDroppedItems),
+            RpcTarget.All,
+            dropIDs.ToArray()
+        );
+    }
+    [PunRPC]
+    private void RPC_HighlightDroppedItems(int[] viewIDs)
+    {
+        var targets = new List<Transform>();
+        foreach (int id in viewIDs)
+        {
+            var pv = PhotonView.Find(id);
+            if (pv != null && pv.transform != null)
+                targets.Add(pv.transform);
+        }
+        photonView.RPC(nameof(RPC_TimeStop), RpcTarget.MasterClient);
+
+        CameraController.Instance.HighlightItems(targets, totalDuration: 2f);
     }
 
     [PunRPC]

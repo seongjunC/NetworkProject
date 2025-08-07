@@ -22,7 +22,7 @@ public class ItemSpawner : MonoBehaviourPun
     [SerializeField]
     private ItemDatabase itemDatabase;
 
-    public void SpawnRandomItem()
+    public GameObject SpawnRandomItem()
     {
         ItemData selectedItem = RandItem();
 
@@ -47,6 +47,7 @@ public class ItemSpawner : MonoBehaviourPun
         RpcTarget.AllBuffered,
         itemDatabase.GetIndex(selectedItem).ToString(), fallSpeed, swayAmp, swayFreq);
 
+        return drop;
     }
 
     public ItemData RandItem()

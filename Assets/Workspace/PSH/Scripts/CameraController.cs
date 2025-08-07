@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.Linq;
 
 public class CameraController : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class CameraController : MonoBehaviour
 
     public void ReturnToPlayerCam()
     {
-        if(vcamPlayer == null) return;
+        if (vcamPlayer == null) return;
         vcamBullet.Priority = 5;
         vcamBullet.Follow = null;
         Debug.Log("카메라가 돌아옴");
@@ -68,6 +69,26 @@ public class CameraController : MonoBehaviour
         }
 
         perlin.m_AmplitudeGain = 0f;
+    }
+
+    public void HighlightItems(List<Transform> targets, float totalDuration = 2f)
+    {
+        StartCoroutine(HighlightRoutine(targets, totalDuration));
+    }
+
+    public IEnumerator HighlightRoutine(List<Transform> targets, float totalDuration)
+    {
+        float per = totalDuration / targets.Count;
+
+        foreach (var target in targets)
+        {
+
+            vcamBullet.Follow = target;
+            vcamBullet.Priority = 20;
+
+            yield return new WaitForSeconds(per);
+        }
+        ReturnToPlayerCam();
     }
 
 }
