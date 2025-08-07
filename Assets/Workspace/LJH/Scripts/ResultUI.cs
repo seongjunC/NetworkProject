@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using System.Runtime.CompilerServices;
 
 public class ResultUI : MonoBehaviour
 {
@@ -33,10 +34,13 @@ public class ResultUI : MonoBehaviour
     {
         okButton.onClick.AddListener(OnClickOK);
     }
+
     public void UpdateResult(Team winnerTeam, int mvpActor)
     {
         Debug.Log("ResultActive");
         gameObject.SetActive(true);
+
+        Time.timeScale = 0;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -70,9 +74,13 @@ public class ResultUI : MonoBehaviour
                 AddPlayerSlot(player, false);
             }
         }
+
+        if (PhotonNetwork.LocalPlayer.GetTeam() == winnerTeam)
+            Manager.Data.PlayerData.RaiseWinCount();
+        else
+            Manager.Data.PlayerData.RaiseLoseCount();
+
         resultPanel.SetActive(true);
-
-
     }
     public void AddPlayerSlot(Player player, bool isWinner)
     {
@@ -89,11 +97,6 @@ public class ResultUI : MonoBehaviour
         else Debug.LogError("nameText == null");
         // ë³´ìƒ ? ?ˆ˜ ê³„ì‚°
 
-        if (isWinner)
-            Manager.Data.PlayerData.RaiseWinCount();
-        else
-            Manager.Data.PlayerData.RaiseLoseCount();
-        
         int reward = isWinner ? 100 : 50;
 
         // ë³´ìƒ ?ˆ«?ž Text
@@ -257,7 +260,8 @@ public class ResultUI : MonoBehaviour
 
         yield return new WaitUntil(() => op.progress >= 0.9f);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
+        Time.timeScale = 1;
 
         PhotonNetwork.LocalPlayer.SetGamePlay(false);
 

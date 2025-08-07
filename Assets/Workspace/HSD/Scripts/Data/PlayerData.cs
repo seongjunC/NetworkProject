@@ -138,7 +138,7 @@ public class PlayerData
             if (task.IsCompleted)
             {
                 Lose = newLoseCount;
-                Debug.Log($"패배 횟수 증가: 현재 패배 횟수는 {Lose}회입니다.");
+                Debug.Log($"패배 횟수 증가: 현재 패배 횟수는 {Lose}회입니다."); 
             }
             else
             {

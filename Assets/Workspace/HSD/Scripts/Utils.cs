@@ -11,7 +11,7 @@ public static class Utils
     public static IEnumerator Fade(Func<Color> getColor, Action<Color> setColor, 
         float start, float end, float fadeTime = 1, float delay = 0, Action action = null)
     {
-        if(delay > 0) yield return new WaitForSeconds(delay);
+        if(delay > 0) yield return new WaitForSecondsRealtime(delay);
 
         if(getColor == null || setColor == null) yield break;
 
@@ -21,7 +21,7 @@ public static class Utils
 
         while (percent < 1)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             percent = Mathf.Clamp01(elapsedTime / fadeTime);
 
             color = getColor();
