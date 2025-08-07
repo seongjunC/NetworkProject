@@ -109,7 +109,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         nextCycle.Clear();
         tanks.Clear();
         fireMap.Clear();
-        room = PhotonNetwork.CurrentRoom;
+        allPlayers.Clear();
+    }
+    public void GameStart()
+    {
+        ClearInit();
+        InitializePlayerEvents();
         Manager.Game.GameStart();
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
@@ -121,6 +126,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
+        players = allPlayers.Values;
+
 
         //         foreach (var playerInfo in PhotonNetwork.PlayerList)
         //         {
@@ -139,7 +146,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             SetRandomTurn();
     }
 
-
     private void SetRandomTurn()
     {
         room = PhotonNetwork.CurrentRoom;
@@ -151,6 +157,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             .ToArray();
         photonView.RPC("RPC_ApplyRandomTurn", RpcTarget.All, actorNumbers);
     }
+
     //  턴 사이클 시작
     [PunRPC]
     private void RPC_ApplyRandomTurn(int[] orderedActor)
@@ -558,7 +565,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         spawnedCount++;
         Debug.Log($"[MSKTurnController] 플레이어 스폰 완료 수: {spawnedCount}/{PhotonNetwork.CurrentRoom.PlayerCount}");
-
+        
         if (spawnedCount >= PhotonNetwork.CurrentRoom.PlayerCount)
         {
             Debug.Log("[MSKTurnController] 모든 플레이어가 스폰 완료됨 → GameStart()");
