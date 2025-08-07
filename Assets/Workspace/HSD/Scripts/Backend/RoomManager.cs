@@ -223,8 +223,7 @@ public class RoomManager : MonoBehaviourPun
 
         if (PhotonNetwork.IsMasterClient)
         {
-            startButton
-                .gameObject.SetActive(true);
+            startButton.gameObject.SetActive(true);
             readyButton.gameObject.SetActive(false);
         }
         else
@@ -430,14 +429,13 @@ public class RoomManager : MonoBehaviourPun
         }
 
         PhotonNetwork.CurrentRoom.SetGameStart(true);
-        photonView.RPC(nameof(AutomaticallySyncSceneTrue), RpcTarget.All);
-        PhotonNetwork.LoadLevel(gameSceneName);
+        photonView.RPC(nameof(GameStart_RPC), RpcTarget.All);        
     }
 
     [PunRPC]
-    private void AutomaticallySyncSceneTrue()
+    private void GameStart_RPC()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
+        Manager.Game.GameStart(gameSceneName);
     }
 
     #region Events
