@@ -501,6 +501,7 @@ MonoBehaviour:
   muzzleRotatePos: {fileID: 5143764862364520804}
   muzzleRotationSpeed: 50
   _fire: {fileID: 0}
+  _audioListener: {fileID: 0}
 --- !u!114 &8488200785960515094
 MonoBehaviour:
   m_ObjectHideFlags: 0
