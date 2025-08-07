@@ -39,16 +39,14 @@ public class TestBattleManager : MonoBehaviourPun
         if (_playerController != null)
             _playerController.EndPlayerTurn();
 
-        if (_turnController.IsMyTurn())
-            _turnController.TurnFinished();
+        _turnController.TurnFinished();
     }
     public void TestTurnEnd(int actnum)
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
 
-        if (_turnController.IsMyTurn())
-            _turnController.TurnFinished(actnum);
+        _turnController.TurnFinished(actnum);
     }
 
     private void InitRemains()
