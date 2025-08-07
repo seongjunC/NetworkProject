@@ -21,10 +21,13 @@ MonoBehaviour:
     chance: 20
   - rank: 3
     chance: 30
-  NeedGem: 0
+  NeedGem: 10
   GachaList:
   - {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
   - {fileID: 11400000, guid: 0b5327d3b52ddf4439d2a4dbc7c866c0, type: 2}
   - {fileID: 11400000, guid: 41e018700970c6a41a7bc5b4137027a2, type: 2}
   - {fileID: 11400000, guid: 17cb8d34800f11044b7cbf4304406168, type: 2}
+  - {fileID: 11400000, guid: 7fef07ba83838bc468ea1e870ec1a5cf, type: 2}
+  - {fileID: 11400000, guid: 311c445a06f50574eb9b5170db43a062, type: 2}
+  - {fileID: 11400000, guid: 0ed2111f27560d8499cb1bdc66a4ff92, type: 2}
   pickUp: {fileID: 11400000, guid: 17cb8d34800f11044b7cbf4304406168, type: 2}

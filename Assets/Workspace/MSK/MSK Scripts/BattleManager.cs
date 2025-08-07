@@ -24,6 +24,7 @@ public class TestBattleManager : MonoBehaviourPun
         InitRemains();
 
         _turnEndButton.onClick.AddListener(TestTurnEnd);
+        _turnEndButton.onClick.AddListener(DisableTurnEnd);
         _turnController.OnPlayerDied += HandlePlayerDied;
         _turnEndButton.interactable = false;
     }
@@ -47,6 +48,10 @@ public class TestBattleManager : MonoBehaviourPun
             _playerController.EndPlayerTurn();
 
         _turnController.TurnFinished(actnum);
+    }
+    public void DisableTurnEnd()
+    {
+        SetTurnEndButton(false);
     }
 
     private void InitRemains()
