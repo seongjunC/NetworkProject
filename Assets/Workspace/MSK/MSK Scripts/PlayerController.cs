@@ -13,12 +13,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public bool _isDead { get; private set; } = false;
     [SerializeField] public bool OnBarrier { get; private set; } = false;
     public PlayerInfo myInfo;
-    public float _hp;
+    private float hp;
+    public float _hp { get => hp; set { hp = value; OnHealthChanged?.Invoke(hp); } }
     public float _movable;
     public float _damage;
     public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
     public Action OnPlayerAttacked;
+    public event Action<float> OnHealthChanged;
 
     [Header("이동 및 지면 설정")]
     [SerializeField] private float moveSpeed = 5f;

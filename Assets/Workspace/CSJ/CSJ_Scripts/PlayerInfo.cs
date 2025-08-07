@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Realtime;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Analytics;
 
+[Serializable]
 public class PlayerInfo
 {
     public Player player;
@@ -25,8 +27,7 @@ public class PlayerInfo
 
     public bool ItemAcquire(ItemData item)
     {
-        int length = items.Length;
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < items.Length; i++)
         {
             if (items[i] == null)
             {
@@ -82,6 +83,7 @@ public class PlayerInfo
             Debug.LogError("잘못된 슬롯 번호입니다.");
             return;
         }
+
         for (int i = order; i < items.Length - 1; i++)
         {
             items[i] = items[i + 1];
@@ -98,7 +100,7 @@ public class PlayerInfo
         }
         if (items[order] == null)
         {
-            Debug.LogError($"해당 위치 {order + 1} 칸에 아이템이 없습니다.");
+            Debug.Log($"{player.NickName} : 해당 위치 {order + 1} 칸에 아이템이 없습니다.");
             return;
         }
         items[order].UseItem();
