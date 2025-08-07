@@ -79,6 +79,11 @@ public class RoomManager : MonoBehaviourPun
         Subscribe();
     }
 
+    private void OnDisable()
+    {
+        UnSubscribe();
+    }
+    #endregion
     public void RecreateRoom()
     {
         if (Manager.Game.State == Game.State.Game)
@@ -90,12 +95,6 @@ public class RoomManager : MonoBehaviourPun
             Manager.Game.State = Game.State.Lobby;
         }
     }
-
-    private void OnDisable()
-    {
-        UnSubscribe();
-    }
-    #endregion
 
     #region EventSubscribe
     private void Subscribe()
@@ -328,6 +327,7 @@ public class RoomManager : MonoBehaviourPun
     private void UpdateReadyCountText()
     {
         currentReadyCount = 0;
+
         foreach (var player in PhotonNetwork.PlayerList)
         {
             if (player.CustomProperties.TryGetValue("Ready", out object isReady) && (bool)isReady)
@@ -445,7 +445,7 @@ public class RoomManager : MonoBehaviourPun
     [PunRPC]
     private void GameStart_RPC()
     {
-        Manager.Game.GameStart(gameSceneName);
+        Manager.Game.GameStart(gameSceneName, loading);
     }
 
     #region Events

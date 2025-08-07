@@ -7888,6 +7888,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameSceneName: MSK InGameTest
+  loading: {fileID: 21300000, guid: dd91845b22e6aec4b9dcf7285c4d12c0, type: 3}
   playerSlotPrefab: {fileID: 4398182311349774773, guid: 7a08ab7af783c0246aafa561d7fd105b, type: 3}
   redPlayerContent: {fileID: 1704617411}
   bluePlayerContent: {fileID: 74122402}

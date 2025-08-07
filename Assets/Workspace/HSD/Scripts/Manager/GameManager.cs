@@ -17,14 +17,14 @@ public class GameManager : Singleton<GameManager>
         PhotonNetwork.LocalPlayer.SetGamePlay(true);
     }
 
-    public void GameStart(string gameSceneName)
+    public void GameStart(string gameSceneName, Sprite loading)
     {
-        StartCoroutine(GameStartRoutine(gameSceneName));
+        StartCoroutine(GameStartRoutine(gameSceneName, loading));
     }
 
-    private IEnumerator GameStartRoutine(string gameSceneName)
+    private IEnumerator GameStartRoutine(string gameSceneName, Sprite loading)
     {       
-        Manager.UI.FadeScreen.FadeIn();
+        Manager.UI.FadeScreen.FadeIn(1, loading);
         Debug.Log("FadeIn");
         yield return new WaitForSeconds(1);
 
@@ -38,7 +38,7 @@ public class GameManager : Singleton<GameManager>
 
         Manager.Audio.PlayBGMFade("Game", .8f, 1, 1);
 
-        Manager.UI.FadeScreen.FadeOut();
+        Manager.UI.FadeScreen.FadeOut(1, loading);
         Debug.Log("FadeOut");
     }
 }
