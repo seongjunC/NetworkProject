@@ -49,8 +49,6 @@ public class InGameUI : MonoBehaviour
         moveBar.value = 100f;        // 이동 게이지 초기화
         powerBar.value = 0f;       // 파워 차지 초기화
         windBar.value = 0f;        // 바람 세기 초기화
-        item1Button.gameObject.SetActive(false);
-        item2Button.gameObject.SetActive(false);
         endTurnButton.onClick.AddListener(OnEndTurnClick);
         Debug.Log($"AddListener 등록: {item1Button.gameObject.name}");
     }
@@ -70,6 +68,8 @@ public class InGameUI : MonoBehaviour
 
         playerController.myInfo.OnItemAcquired -= AddItem;
         playerController.myInfo.OnItemAcquired += AddItem;
+        item1Button.gameObject.SetActive(false);
+        item2Button.gameObject.SetActive(false);
         foreach (var item in playerController.myInfo.items)
             if (item != null) AddItem(item);
         Debug.Log("IngameUI 등록 완료");
