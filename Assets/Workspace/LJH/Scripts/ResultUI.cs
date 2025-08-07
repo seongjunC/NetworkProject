@@ -88,7 +88,14 @@ public class ResultUI : MonoBehaviour
             nameText.text = player.NickName;
         else Debug.LogError("nameText == null");
         // ë³´ìƒ ? ?ˆ˜ ê³„ì‚°
+
+        if (isWinner)
+            Manager.Data.PlayerData.RaiseWinCount();
+        else
+            Manager.Data.PlayerData.RaiseLoseCount();
+        
         int reward = isWinner ? 100 : 50;
+
         // ë³´ìƒ ?ˆ«? Text
         TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
         if (rewardText != null)
