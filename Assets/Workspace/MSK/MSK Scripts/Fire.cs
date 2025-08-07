@@ -74,7 +74,6 @@ public class Fire : MonoBehaviourPun
         {
             damageBuffObjects[i] = DamageBuff[i];
         }
-
         // PlayerController의 firePoint 정보를 사용합니다.
         // 포신 각도 * 로컬스케일 + 지면 각도
         bool isRight = transform.localScale.z > 0;
@@ -82,7 +81,7 @@ public class Fire : MonoBehaviourPun
         _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
             OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
-            ,projectileName, _playerController._damage);
+            , projectileName, _playerController._damage);
 
         InitDamageBuff();
     }
