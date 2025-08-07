@@ -109,6 +109,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         tanks.Clear();
         fireMap.Clear();
         room = PhotonNetwork.CurrentRoom;
+        InitializePlayerEvents();
         Manager.Game.GameStart();
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
@@ -120,10 +121,22 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
-        players = allPlayers.Values;
 
-        if (room.GetTurnRandom())
-            players = players.OrderBy(_ => Random.value);
+
+        if (room.GetTurnRandom() && PhotonNetwork.IsMasterClient)
+        {
+            // players = players.OrderBy(_ => Random.value);
+            List<int> actorOrder = allPlayers.Keys.OrderBy(_ => Random.value).ToList();
+            photonView.RPC(nameof(RPC_SetTurnOrder), RpcTarget.All, actorOrder.ToArray());
+        }
+        else if (!room.GetTurnRandom())
+        {
+            var actorOrder = allPlayers.Keys.ToArray();
+            photonView.RPC(nameof(RPC_SetTurnOrder), RpcTarget.All, actorOrder);
+        }
+
+
+
 
         //         foreach (var playerInfo in PhotonNetwork.PlayerList)
         //         {
@@ -136,10 +149,20 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         //         }
         //Debug.Log($"[QueueAdd] turnQueue 갱신 완료: redRemain={redRemain}, blueRemain={blueRemain}");
 
-        isGameStart = true;
-        InitializePlayerEvents();
+
+    }
+
+    [PunRPC]
+    private void RPC_SetTurnOrder(int[] actorOrder)
+    {
+        players = actorOrder.Select(a => allPlayers[a]);
         QueueAdd(players);
-        StartNextTurn();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            isGameStart = true;
+            turnTimer = turnLimit;
+            StartNextTurn();
+        }
     }
 
     [PunRPC]
@@ -333,9 +356,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         return currentActor == localActor;
     }
 
-    /*
+
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
+        if (isGameEnd) return;
         base.OnPlayerLeftRoom(otherPlayer);
 
         Debug.Log($"플레이어 퇴장 : ActorNumber = {otherPlayer.ActorNumber}");
@@ -353,7 +377,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             controller.PlayerDead();
         }
     }
-    */
+
     #endregion
 
 
@@ -525,7 +549,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         }
     }
     [PunRPC]
-    private void RPC_NotifySpawned()
+    public void RPC_NotifySpawned()
     {
         spawnedCount++;
         Debug.Log($"[MSKTurnController] 플레이어 스폰 완료 수: {spawnedCount}/{PhotonNetwork.CurrentRoom.PlayerCount}");
