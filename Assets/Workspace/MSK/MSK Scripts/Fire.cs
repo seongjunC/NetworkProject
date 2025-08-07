@@ -37,7 +37,11 @@ public class Fire : MonoBehaviourPun
 
     private void Update()
     {
-        if (!photonView.IsMine || !_playerController.isControllable || _playerController.IsAttacked)
+        if (!photonView.IsMine ||
+        !MSKTurnController.Instance.IsMyTurn() ||
+        !MSKTurnController.Instance.isTurnRunning ||
+        !_playerController.isControllable ||
+        _playerController.IsAttacked)
             return;
 
         // 스페이스바 누르고 있으면 차지 시작
