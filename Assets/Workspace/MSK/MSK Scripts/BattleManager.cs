@@ -33,20 +33,21 @@ public class TestBattleManager : MonoBehaviourPun
     public void SetTurnEndButton(bool result)
     {
         _turnEndButton.interactable = result;
+        inGameUI.SetItemButtonInteractable(false);
     }
 
     public void TestTurnEnd()
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-
+        inGameUI.SetItemButtonInteractable(false);
         _turnController.TurnFinished();
     }
     public void TestTurnEnd(int actnum)
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-
+        inGameUI.SetItemButtonInteractable(false);
         _turnController.TurnFinished(actnum);
     }
     public void DisableTurnEnd()
@@ -61,14 +62,27 @@ public class TestBattleManager : MonoBehaviourPun
         Debug.Log($"[BattleManager] 초기 생존자 R:{redRemain}, B:{blueRemain}");
     }
 
-    private void HandlePlayerDied(PlayerController victim, PlayerInfo killerInfo)
+    private void HandlePlayerDied(PlayerController victim, PlayerInfo killerInfo, Team victimTeam)
     {
-        var team = CustomProperty.GetTeam(victim.photonView.Owner);
+        Team team;
+        if (victim == null)
+        {
+            team = victimTeam;
+        }
+        team = CustomProperty.GetTeam(victim.photonView.Owner);
         if (team == Game.Team.Red) redRemain--;
         else blueRemain--;
 
         killerInfo.RecordKillCount();
-        Debug.Log($"[BattleManager] {killerInfo.NickName}가 {victim.myInfo.NickName} 처치. 남은 R:{redRemain}, B:{blueRemain}");
+        if (victim != null)
+        {
+            Debug.Log($"[BattleManager] {killerInfo.NickName}가 {victim.myInfo.NickName} 처치. 남은 R:{redRemain}, B:{blueRemain}");
+        }
+        else
+        {
+            Debug.Log($"[BattleManager] victim == null, {killerInfo.NickName} 남은 R:{redRemain}, B:{blueRemain}");
+        }
+
 
         if (!_gameEnded && (blueRemain == 0 || redRemain == 0))
         {
