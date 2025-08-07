@@ -157,7 +157,7 @@ public class ProjectileManager : MonoBehaviourPun
                     string str = realDamage.ToString("F0");
                     floatingTextSpawner.SpawnText(str, player.transform.position);
                 }
-                //player.OnHit(realDamage);
+                player.OnHit(realDamage);
                 Debug.Log($"[ProjectileManager] 플레이어 {actorNumber}에게 {realDamage} 데미지 적용");
             }
         }
