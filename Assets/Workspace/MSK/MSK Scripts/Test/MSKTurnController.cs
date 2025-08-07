@@ -51,6 +51,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private PlayerInfo currentPlayer;
     private Room room;
     IEnumerable<PlayerInfo> players;
+    private HashSet<int> _highlightAcks = new HashSet<int>();
 
     private bool isTurnRunning = false;
     private bool isGameStart = false;
@@ -400,7 +401,16 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         // 혹시 또 호출되면 바로 탈출
         if (!PhotonNetwork.IsMasterClient) return;
+
         Debug.Log("CycleEnd 호출");
+        _highlightAcks.Clear();
+        StartCoroutine(HandleCycleEnd());
+    }
+    private IEnumerator HandleCycleEnd()
+    {
+        RPC_TimeStop();
+        yield return new WaitForSeconds(2f);
+
         var dropIDs = new List<int>();
         for (int i = 0; i < itemCount; i++)
         {
@@ -415,8 +425,15 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             dropIDs.ToArray()
         );
     }
+
     [PunRPC]
     private void RPC_HighlightDroppedItems(int[] viewIDs)
+    {
+        StartCoroutine(HighlightThenAck(viewIDs));
+
+    }
+
+    private IEnumerator HighlightThenAck(int[] viewIDs)
     {
         var targets = new List<Transform>();
         foreach (int id in viewIDs)
@@ -425,15 +442,34 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             if (pv != null && pv.transform != null)
                 targets.Add(pv.transform);
         }
-        photonView.RPC(nameof(RPC_TimeStop), RpcTarget.MasterClient);
 
 
-        StartCoroutine(WaitForFinish(CameraController.Instance.HighlightRoutine(targets, totalDuration: 2f), targets));
+        yield return StartCoroutine(WaitForFinish(CameraController.Instance.HighlightRoutine(targets, totalDuration: 3f), targets));
+
+        photonView.RPC(nameof(RPC_HighlightAck),
+        RpcTarget.MasterClient,
+        PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+
+    [PunRPC]
+    private void RPC_HighlightAck(int actorNumber)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        _highlightAcks.Add(actorNumber);
+
+        if (_highlightAcks.Count >= PhotonNetwork.PlayerList.Length)
+        {
+            Debug.Log("모두 ACK 완료 → 다음 턴 진행");
+            turnTimer = turnLimit;
+            StartNextTurn();
+        }
+
+
     }
 
     private IEnumerator WaitForFinish(IEnumerator Func, List<Transform> targets)
     {
-        RPC_TimeStop();
 
         yield return StartCoroutine(Func);
 
@@ -456,9 +492,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
                 photonView.RPC("RPC_CycleEnd", RpcTarget.MasterClient);
         }
+        else
+        {
+            turnTimer = turnLimit;
+            StartNextTurn();
+        }
 
-        turnTimer = turnLimit;
-        StartNextTurn();
+
     }
     [PunRPC]
     public void RPC_GameEnded(Team winnerTeam, int mvpActor)

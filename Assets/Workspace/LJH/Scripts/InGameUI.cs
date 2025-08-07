@@ -26,8 +26,6 @@ public class InGameUI : MonoBehaviour
     public Image Button2Image;
 
     // 아이템 슬롯에 아이템 데이터 저장
-    private Sprite item1Sprite = null;
-    private Sprite item2Sprite = null;
     private ItemData item1 = null;
     private ItemData item2 = null;
 
@@ -93,7 +91,7 @@ public class InGameUI : MonoBehaviour
     {
 
         Debug.Log($"▶ InGameUI.AddItem 호출: {item.name}");
-        if (item1Sprite == null)
+        if (Button1Image.sprite == null)
         {
             Debug.Log("item1 실행");
             item1 = item;
@@ -108,11 +106,12 @@ public class InGameUI : MonoBehaviour
 
             Debug.Log($"▶ 슬롯 1에 아이템 {item.name} 세팅 완료");
         }
-        else if (item2Sprite == null)
+        else if (Button2Image.sprite == null)
         {
             Debug.Log("item2 실행");
             item2 = item;
             Button2Image.sprite = item.icon;
+            item2Button.image.sprite = Button2Image.sprite;
             item2Button.gameObject.SetActive(true);
             item2Button.onClick.RemoveAllListeners();
             item2Button.onClick.AddListener(() => OnClickSlot(1));
@@ -162,14 +161,12 @@ public class InGameUI : MonoBehaviour
     {
         if (slot == 0)
         {
-            item1Sprite = null;
             item1 = null;
             item1Button.GetComponent<Image>().sprite = null;
             item1Button.gameObject.SetActive(false);
         }
         else if (slot == 1)
         {
-            item2Sprite = null;
             item2 = null;
             item2Button.GetComponent<Image>().sprite = null;
             item2Button.gameObject.SetActive(false);
