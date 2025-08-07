@@ -13,47 +13,48 @@ public class InGameUI : MonoBehaviour
     public Slider powerBar;
 
     [Header("Wind")]
-    public Slider windBar;         // ÁÂ/¿ì ¹Ù¶÷ ¼¼±â
-    public RectTransform flagImage; // ±ê¹ß ¹æÇâ¿ë ÀÌ¹ÌÁö
+    public Slider windBar;         // ì¢Œ/ìš° ë°”ëŒ ì„¸ê¸°
+    public RectTransform flagImage; // ê¹ƒë°œ ë°©í–¥ìš© ì´ë¯¸ì§€
 
     [Header("Button")]
-    public Button item1Button;     // ¾ÆÀÌÅÛ1 ¹öÆ°
-    public Button item2Button;     // ¾ÆÀÌÅÛ2 ¹öÆ°
+    public Button item1Button;     // ì•„ì´í…œ1 ë²„íŠ¼
+    public Button item2Button;     // ì•„ì´í…œ2 ë²„íŠ¼
     public Button endTurnButton;
 
     [Header("ButtonImage")]
     public Image Button1Image;
     public Image Button2Image;
 
-    // ¾ÆÀÌÅÛ ½½·Ô¿¡ ¾ÆÀÌÅÛ µ¥ÀÌÅÍ ÀúÀå
+    // ì•„ì´í…œ ìŠ¬ë¡¯ì— ì•„ì´í…œ ë°ì´í„° ì €ì¥
     private Sprite item1Sprite = null;
     private Sprite item2Sprite = null;
     private ItemData item1 = null;
     private ItemData item2 = null;
 
     [Header("Text")]
-    public TextMeshProUGUI healthPointText; // Ã¼·Â ÅØ½ºÆ®
+    public TextMeshProUGUI healthPointText; // ì²´ë ¥ í…ìŠ¤íŠ¸
 
 
     private PlayerController _player;
     private Fire _fire;
 
-
+    /*
     void Start()
     {
-        // ÃÊ±âÈ­
-        hpBar.value = 1500f;          // Ã¼·Â °ÔÀÌÁö ÃÊ±âÈ­
-        hpBar.maxValue = 1500f;      // Ã¼·Â °ÔÀÌÁö ÃÖ´ë°ª ¼³Á¤
-        healthPointText.text = "1500/1500";  // Ã¼·Â ÅØ½ºÆ® ÃÊ±âÈ­
-        moveBar.value = 100f;        // ÀÌµ¿ °ÔÀÌÁö ÃÊ±âÈ­
-        powerBar.value = 0f;       // ÆÄ¿ö Â÷Áö ÃÊ±âÈ­
-        windBar.value = 0f;        // ¹Ù¶÷ ¼¼±â ÃÊ±âÈ­
+        // ì§€ê¸ˆ ì´ë¶€ë¶„ ë„ë ˆí¼ëŸ°ìŠ¤ë– ì„œ ì•ˆëŒì•„ê°
+        // ì´ˆê¸°í™”
+        hpBar.value = _player._hp;          // ì²´ë ¥ ê²Œì´ì§€ ì´ˆê¸°í™”
+        hpBar.maxValue = Mathf.CeilToInt(_player._hp);      // ì²´ë ¥ ê²Œì´ì§€ ìµœëŒ€ê°’ ì„¤ì •
+        healthPointText.text = $"{hpBar.maxValue} / {hpBar.maxValue}";  // ì²´ë ¥ í…ìŠ¤íŠ¸ ì´ˆê¸°í™”
+        moveBar.value = 100f;        // ì´ë™ ê²Œì´ì§€ ì´ˆê¸°í™”
+        powerBar.value = 0f;       // íŒŒì›Œ ì°¨ì§€ ì´ˆê¸°í™”
+        windBar.value = 0f;        // ë°”ëŒ ì„¸ê¸° ì´ˆê¸°í™”
         item1Button.gameObject.SetActive(false);
         item2Button.gameObject.SetActive(false);
         endTurnButton.onClick.AddListener(OnEndTurnClick);
-        Debug.Log($"AddListener µî·Ï: {item1Button.gameObject.name}");
+        Debug.Log($"AddListener ë“±ë¡: {item1Button.gameObject.name}");
     }
-
+    */
 
     public void RegisterPlayer(PlayerController playerController)
     {
@@ -63,13 +64,15 @@ public class InGameUI : MonoBehaviour
         if (_fire != null)
             powerBar.maxValue = _fire.maxPower;
 
-        hpBar.maxValue = _player._hp;
+        hpBar.maxValue = Mathf.CeilToInt(_player._hp);
         moveBar.maxValue = _player._movable;
+        healthPointText.text = $"{hpBar.maxValue} / {hpBar.maxValue}";
+
         playerController.myInfo.OnItemAcquired -= AddItem;
         playerController.myInfo.OnItemAcquired += AddItem;
         foreach (var item in playerController.myInfo.items)
             if (item != null) AddItem(item);
-        Debug.Log("IngameUI µî·Ï ¿Ï·á");
+        Debug.Log("IngameUI ë“±ë¡ ì™„ë£Œ");
     }
 
 
@@ -77,8 +80,9 @@ public class InGameUI : MonoBehaviour
     {
         if (_player == null) return;
 
-        hpBar.value = _player._hp;
+        hpBar.value = Mathf.CeilToInt(_player._hp);
         moveBar.value = _player._movable;
+        healthPointText.text = $"{hpBar.value} / {hpBar.maxValue}";
 
         if (_fire != null)
             powerBar.value = _fire.powerCharge;
@@ -88,10 +92,10 @@ public class InGameUI : MonoBehaviour
     public void AddItem(ItemData item)
     {
 
-        Debug.Log($"¢º InGameUI.AddItem È£Ãâ: {item.name}");
+        Debug.Log($"â–¶ InGameUI.AddItem í˜¸ì¶œ: {item.name}");
         if (item1Sprite == null)
         {
-            Debug.Log("item1 ½ÇÇà");
+            Debug.Log("item1 ì‹¤í–‰");
             item1 = item;
             Button1Image.sprite = item.icon;
             item1Button.image.sprite = Button1Image.sprite;
@@ -102,11 +106,11 @@ public class InGameUI : MonoBehaviour
             item1Button.interactable = true;
             item1Button.gameObject.SetActive(true);
 
-            Debug.Log($"¢º ½½·Ô 1¿¡ ¾ÆÀÌÅÛ {item.name} ¼¼ÆÃ ¿Ï·á");
+            Debug.Log($"â–¶ ìŠ¬ë¡¯ 1ì— ì•„ì´í…œ {item.name} ì„¸íŒ… ì™„ë£Œ");
         }
         else if (item2Sprite == null)
         {
-            Debug.Log("item2 ½ÇÇà");
+            Debug.Log("item2 ì‹¤í–‰");
             item2 = item;
             Button2Image.sprite = item.icon;
             item2Button.gameObject.SetActive(true);
@@ -116,17 +120,17 @@ public class InGameUI : MonoBehaviour
             item2Button.interactable = true;
             item2Button.gameObject.SetActive(true);
 
-            Debug.Log($"¢º ½½·Ô 2¿¡ ¾ÆÀÌÅÛ {item.name} ¼¼ÆÃ ¿Ï·á");
+            Debug.Log($"â–¶ ìŠ¬ë¡¯ 2ì— ì•„ì´í…œ {item.name} ì„¸íŒ… ì™„ë£Œ");
         }
         else
         {
-            Debug.Log("¾ÆÀÌÅÛ ½½·ÔÀÌ °¡µæ Ã¡½À´Ï´Ù.");
+            Debug.Log("ì•„ì´í…œ ìŠ¬ë¡¯ì´ ê°€ë“ ì°¼ìŠµë‹ˆë‹¤.");
         }
     }
     void OnClickSlot(int slot)
     {
         Button btn = slot == 0 ? item1Button : item2Button;
-        Debug.Log($"¢º ½½·Ô {slot} Å¬¸¯! ¾ÆÀÌÅÛ: {btn}");
+        Debug.Log($"â–¶ ìŠ¬ë¡¯ {slot} í´ë¦­! ì•„ì´í…œ: {btn}");
         if (btn != null)
         {
             MSKTurnController.Instance.photonView.RPC(
@@ -137,20 +141,20 @@ public class InGameUI : MonoBehaviour
         }
     }
 
-    // // ¾ÆÀÌÅÛ1 ¹öÆ° Å¬¸¯ ÀÌº¥Æ®
+    // // ì•„ì´í…œ1 ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸
     // private void OnItem1Click()
     // {
-    //     Debug.Log("¾ÆÀÌÅÛ 1 »ç¿ë");
+    //     Debug.Log("ì•„ì´í…œ 1 ì‚¬ìš©");
     //     MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 0);
-    //     // ¾ÆÀÌÅÛ 1 »ç¿ë ·ÎÁ÷ Ãß°¡
+    //     // ì•„ì´í…œ 1 ì‚¬ìš© ë¡œì§ ì¶”ê°€
     //     ClearSlot(1);
     // }
-    // // ¾ÆÀÌÅÛ2 ¹öÆ° Å¬¸¯ ÀÌº¥Æ®
+    // // ì•„ì´í…œ2 ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸
     // private void OnItem2Click()
     // {
-    //     Debug.Log("¾ÆÀÌÅÛ 2 »ç¿ë");
+    //     Debug.Log("ì•„ì´í…œ 2 ì‚¬ìš©");
     //     MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 1);
-    //     // ¾ÆÀÌÅÛ 2 »ç¿ë ·ÎÁ÷ Ãß°¡
+    //     // ì•„ì´í…œ 2 ì‚¬ìš© ë¡œì§ ì¶”ê°€
     //     ClearSlot(2);
     // }
 
@@ -172,35 +176,35 @@ public class InGameUI : MonoBehaviour
         }
     }
 
-    // ÅÏ Á¾·á ¹öÆ° Å¬¸¯ ÀÌº¥Æ®
+    // í„´ ì¢…ë£Œ ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸
     private void OnEndTurnClick()
     {
-        Debug.Log("ÅÏ Á¾·á");
-        // ÅÏ Á¾·á ·ÎÁ÷ Ãß°¡
+        Debug.Log("í„´ ì¢…ë£Œ");
+        // í„´ ì¢…ë£Œ ë¡œì§ ì¶”ê°€
     }
 
-    //     // Ã¼·Â ¾÷µ¥ÀÌÆ®
+    //     // ì²´ë ¥ ì—…ë°ì´íŠ¸
     //     public void SetHP(float current, float max)
     //     {
     //         hpBar.value = current / max;
     //     }
     // 
-    //     // ÀÌµ¿ °ÔÀÌÁö ¾÷µ¥ÀÌÆ®
+    //     // ì´ë™ ê²Œì´ì§€ ì—…ë°ì´íŠ¸
     //     public void SetMove(float current, float max)
     //     {
     //         moveBar.value = current / max;
     //     }
     // 
-    //     // ÆÄ¿ö Â÷Áö ¾÷µ¥ÀÌÆ®
+    //     // íŒŒì›Œ ì°¨ì§€ ì—…ë°ì´íŠ¸
     //     public void SetPower(float charge)
     //     {
     //         powerBar.value = charge;
     //     }
 
-    // ¹Ù¶÷ ¼¼±â ¾÷µ¥ÀÌÆ®
+    // ë°”ëŒ ì„¸ê¸° ì—…ë°ì´íŠ¸
     public void SetWind(float windStrength)
     {
-        // windStrength´Â -10 ~ +10 ¹üÀ§·Î °¡Á¤
+        // windStrengthëŠ” -10 ~ +10 ë²”ìœ„ë¡œ ê°€ì •
         windBar.value = Mathf.Abs(windStrength);
     }
 }
