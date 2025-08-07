@@ -376,6 +376,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             if (tank.myInfo.player.ActorNumber == otherPlayer.ActorNumber)
             {
                 tanks.Remove(tank);
+                allPlayers.Remove(otherPlayer.ActorNumber);
                 break;
             }
         }
