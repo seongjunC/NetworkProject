@@ -21,7 +21,7 @@ MonoBehaviour:
   damage: 1
   maxMove: 1
   maxHp: 1
-  tankName: S
+  tankName: S2
   rank: 0
   Icon: {fileID: 21300000, guid: d31fff224b1b8cf4ea1fbd0fd17b0d80, type: 3}
   description: "S\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
