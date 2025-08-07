@@ -201,7 +201,7 @@ public class RoomManager : MonoBehaviourPun
     {
         if (!playerSlotDic.ContainsKey(player.ActorNumber))
         {
-            GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
+            GameObject obj = Instantiate(playerSlotPrefab);
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
             playerSlotDic.Add(player.ActorNumber, playerSlot);
