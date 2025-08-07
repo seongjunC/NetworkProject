@@ -249,9 +249,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         nextCycle.Add(currentPlayer);
 
-        //  턴 종료 버튼 활성화
-        EndButtonInteractable();
-
         photonView.RPC("RPC_SetCameraTarget", RpcTarget.All, currentPlayer.ActorNumber);
         photonView.RPC("StartTurnForPlayer", RpcTarget.All, currentPlayer.ActorNumber);
 
@@ -347,7 +344,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         Debug.Log($"일반 [TurnFinished]{currentPlayer.player.NickName}님의 턴 종료 ");
         if (curArrow != null)
             Destroy(curArrow);
-        photonView.RPC("RPC_TurnFinished", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
+        photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     public void TurnFinished(int ownerActnum)
@@ -356,7 +353,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         Debug.Log($"[TurnFinished] : {ownerActnum}");
         if (curArrow != null)
             Destroy(curArrow);
-        photonView.RPC("RPC_TurnFinished", RpcTarget.All, ownerActnum);
+        photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, ownerActnum);
     }
 
     public bool IsMyTurn()
@@ -448,7 +445,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_TurnFinished(int actorNumber)
     {
-        if (actorNumber != currentPlayer.ActorNumber) return;
+        Debug.Log("RPC 턴 종료 호출");
 
         isTurnRunning = false;
         photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
@@ -531,9 +528,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartTurnForPlayer(int actorNumber)
     {
+
         // 현재 턴 대상 강제 지정
         if (allPlayers.TryGetValue(actorNumber, out var info))
             currentPlayer = info;
+
+        //  턴 종료 버튼 활성화
+        EndButtonInteractable();
 
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
@@ -545,6 +546,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_InitTank(int actorNumber)
     {
+        if (curArrow != null)
+            Destroy(curArrow);
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
             GetLocalPlayerFire().InitBuff();
     }
