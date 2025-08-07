@@ -18,6 +18,7 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Image masterPanel;
     [SerializeField] Button infoButton;
     [SerializeField] Button playerCloseConnectionButton;
+    [SerializeField] GameObject gamePlayPanel;
 
     [SerializeField] Image tankIcon;
     [SerializeField] Image tankRankImage;
@@ -32,23 +33,30 @@ public class PlayerSlot : MonoBehaviour
     [SerializeField] Color waitColor;
 
     private Player player;
-    public event Action<Player> OnKick;
+    public static event Action<Player> OnKick;
     
     #region LifeCycle
     private void OnEnable()
     {
         PhotonNetwork.EnableCloseConnection = true;
         infoButton.onClick.AddListener(ViewPlayerInfo);
+        playerCloseConnectionButton.onClick.AddListener(TryCloseConnection);
     }
 
     private void OnDisable()
     {
         infoButton.onClick.RemoveListener(ViewPlayerInfo);
+        playerCloseConnectionButton.onClick.RemoveListener(TryCloseConnection);
     }
     #endregion
 
     public void SetUp(Player player)
-    {   
+    {
+        if (this == null)
+        {
+            return;
+        }
+
         this.player = player;
 
         if (player != PhotonNetwork.MasterClient)
@@ -80,6 +88,8 @@ public class PlayerSlot : MonoBehaviour
 
         tankIcon.sprite = data.Icon;
         tankRankImage.color = Utils.GetColor(data.rank);
+
+        gamePlayPanel.SetActive(player.GetGamePlay());
     }
 
     public void ViewPlayerInfo()

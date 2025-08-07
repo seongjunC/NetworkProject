@@ -6,11 +6,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(PhotonView))]
 public class RoomManager : MonoBehaviourPun
 {
+    [SerializeField] string gameSceneName;
+
     [Header("Player")]
     [SerializeField] GameObject playerSlotPrefab;
     [SerializeField] Transform redPlayerContent;
@@ -64,25 +67,30 @@ public class RoomManager : MonoBehaviourPun
     #region LifeCycle
     private void Start()
     {
-        CreateMapSlot();
         redTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Red));
         blueTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Blue));
         waitTeamChangeButton.onClick.AddListener(() => teamManager.ChangeTeam(Team.Wait));
         gameSettingButton.onClick.AddListener(() => GameSettingPanelActive(true));
         gameSettingCloseButton.onClick.AddListener(() => GameSettingPanelActive(false));
     }
+
     private void OnEnable()
     {
         Subscribe();
+    }
 
+    public void RecreateRoom()
+    {
         if (Manager.Game.State == Game.State.Game)
         {
             login.SetActive(false);
             room.SetActive(true);
+            OnJoinedRoom();
 
             Manager.Game.State = Game.State.Lobby;
         }
     }
+
     private void OnDisable()
     {
         UnSubscribe();
@@ -92,6 +100,14 @@ public class RoomManager : MonoBehaviourPun
     #region EventSubscribe
     private void Subscribe()
     {
+        PlayerSlot.OnKick += Kick;
+
+        redTeamChangeButton.onClick.AddListener(OnClickRedTeamChange);
+        blueTeamChangeButton.onClick.AddListener(OnClickBlueTeamChange);
+        waitTeamChangeButton.onClick.AddListener(OnClickWaitTeamChange);
+        gameSettingButton.onClick.AddListener(OnClickGameSettingOpen);
+        gameSettingCloseButton.onClick.AddListener(OnClickGameSettingClose);
+
         exitButton.onClick.AddListener(LeaveRoom);
         readyButton.onClick.AddListener(Ready);
         startButton.onClick.AddListener(GameStart);
@@ -103,6 +119,14 @@ public class RoomManager : MonoBehaviourPun
 
     private void UnSubscribe()
     {
+        PlayerSlot.OnKick -= Kick;
+
+        redTeamChangeButton.onClick.RemoveListener(OnClickRedTeamChange);
+        blueTeamChangeButton.onClick.RemoveListener(OnClickBlueTeamChange);
+        waitTeamChangeButton.onClick.RemoveListener(OnClickWaitTeamChange);
+        gameSettingButton.onClick.RemoveListener(OnClickGameSettingOpen);
+        gameSettingCloseButton.onClick.RemoveListener(OnClickGameSettingClose);
+
         exitButton.onClick.RemoveListener(LeaveRoom);
         readyButton.onClick.RemoveListener(Ready);
         startButton.onClick.RemoveListener(GameStart);
@@ -143,6 +167,7 @@ public class RoomManager : MonoBehaviourPun
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
+    #region Kick
     private void Kick(Player player)
     {
         photonView.RPC(nameof(Kick_RPC), player);
@@ -167,9 +192,10 @@ public class RoomManager : MonoBehaviourPun
         PhotonNetwork.LeaveRoom();
 
         yield return new WaitForSeconds(.5f);
-        Manager.UI.PopUpUI.Show("πÊø°º≠ ∞≠≈ µ«æ˙Ω¿¥œ¥Ÿ.");
+        Manager.UI.PopUpUI.Show("Î∞©ÏóêÏÑú Í∞ïÌá¥ ÎêòÏóàÏäµÎãàÎã§.");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
+    #endregion
 
     #region PlayerSlot
     private void CreatePlayerSlot(Player player)
@@ -179,7 +205,6 @@ public class RoomManager : MonoBehaviourPun
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
-            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         else
@@ -193,7 +218,8 @@ public class RoomManager : MonoBehaviourPun
     private void SetButtonInteractable()
     {
         mapChangeButton.interactable = PhotonNetwork.IsMasterClient;
-        gameSettingButton.interactable = PhotonNetwork.IsMasterClient;
+        damageTypeButton.interactable = PhotonNetwork.IsMasterClient;
+        turnSwitchButton.interactable = PhotonNetwork.IsMasterClient;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -210,19 +236,11 @@ public class RoomManager : MonoBehaviourPun
 
     private void CreatePlayerSlot()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
-
-        if (!PhotonNetwork.IsMasterClient)
-        {
-            MapChange();
-        }
-
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             GameObject obj = Instantiate(playerSlotPrefab, GetPlayerTeamContent(player));
             PlayerSlot playerSlot = obj.GetComponent<PlayerSlot>();
             playerSlot.SetUp(player);
-            playerSlot.OnKick += Kick;
             playerSlotDic.Add(player.ActorNumber, playerSlot);
         }
         SetButtonInteractable();
@@ -242,12 +260,11 @@ public class RoomManager : MonoBehaviourPun
         if (playerSlotDic.TryGetValue(player.ActorNumber, out PlayerSlot panel))
         {
             Destroy(panel.gameObject);
-            panel.OnKick -= Kick;
             playerSlotDic.Remove(player.ActorNumber);
         }
         else
         {
-            Debug.LogError("ΩΩ∑‘ æ¯¿Ω");
+            Debug.LogError("Ïä¨Î°Ø ÏóÜÏùå");
         }
     }
 
@@ -365,7 +382,7 @@ public class RoomManager : MonoBehaviourPun
 
     private void UpdateTurnType()
     {
-        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "∑£¥˝" : "¿‘¿Âº¯º≠";
+        turnType.text = PhotonNetwork.CurrentRoom.GetTurnRandom() ? "ÎûúÎç§" : "ÏûÖÏû•ÏàúÏÑú";
     }
     #endregion
 
@@ -376,7 +393,7 @@ public class RoomManager : MonoBehaviourPun
     }
     private void ChangeDamageTypeText()
     {
-        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "∆¿ µ•πÃ¡ˆ «„øÎ" : "∆¿ µ•πÃ¡ˆ ±›¡ˆ";
+        damageType.text = PhotonNetwork.CurrentRoom.GetDamageType() ? "ÌåÄ Îç∞ÎØ∏ÏßÄ ÌóàÏö©" : "ÌåÄ Îç∞ÎØ∏ÏßÄ Í∏àÏßÄ";
     }
     #endregion
 
@@ -391,22 +408,63 @@ public class RoomManager : MonoBehaviourPun
 
     private void GameStart()
     {
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player.GetGamePlay())
+            {
+                Manager.UI.PopUpUI.Show("ÎàÑÍµ∞Í∞Ä ÏïÑÏßÅ Í≤åÏûÑ ÎÇ¥Î∂ÄÏóê ÏûàÏäµÎãàÎã§.", Color.red);
+                return;
+            }
+        }
+
         if (currentReadyCount != PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            Debug.Log("πÊø° ¿Œø¯¿Ã ∫Œ¡∑«œ∞≈≥™ ∏µÁ «√∑π¿ÃæÓ∞° ∑πµ«œ¡ˆ æ æ“Ω¿¥œ¥Ÿ.");
+            Debug.Log("Î∞©Ïóê Ïù∏ÏõêÏù¥ Î∂ÄÏ°±ÌïòÍ±∞ÎÇò Î™®Îì† ÌîåÎ†àÏù¥Ïñ¥Í∞Ä Î†àÎîîÌïòÏßÄ ÏïäÏïòÏäµÎãàÎã§.");
             return;
         }
 
         if (teamManager.GetWaitPlayerCount() > 0)
         {
-            Manager.UI.PopUpUI.Show("¥©±∫∞°∞° ¥Î±‚¿⁄ø° ∆˜«‘µ«æÓ ¿÷Ω¿¥œ¥Ÿ.");
+            Manager.UI.PopUpUI.Show("ÎàÑÍµ∞Í∞ÄÍ∞Ä ÎåÄÍ∏∞ÏûêÏóê Ìè¨Ìï®ÎêòÏñ¥ ÏûàÏäµÎãàÎã§.");
             return;
         }
 
-        Manager.Game.State = State.Game;
         PhotonNetwork.CurrentRoom.SetGameStart(true);
-        PhotonNetwork.LoadLevel("MSK InGameTest"); // æ¿¿Ãµø
+        photonView.RPC(nameof(LoadScene), RpcTarget.All);
     }
+
+    [PunRPC]
+    private void LoadScene()
+    {
+        SceneManager.LoadScene(gameSceneName);
+    }
+
+    #region Events
+    private void OnClickRedTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Red);
+    }
+
+    private void OnClickBlueTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Blue);
+    }
+
+    private void OnClickWaitTeamChange()
+    {
+        teamManager.ChangeTeam(Team.Wait);
+    }
+
+    private void OnClickGameSettingOpen()
+    {
+        GameSettingPanelActive(true);
+    }
+
+    private void OnClickGameSettingClose()
+    {
+        GameSettingPanelActive(false);
+    }
+    #endregion
 
     #region PhotonCallbacks
     public void OnJoinedRoom()
@@ -414,7 +472,10 @@ public class RoomManager : MonoBehaviourPun
         PhotonNetwork.LocalPlayer.SetTeam(teamManager.GetRemainingTeam());
         roomName.text = PhotonNetwork.CurrentRoom.Name;
         Manager.UI.FadeScreen.FadeOut(.5f);
+
         Init();
+        MapChange();
+        CreateMapSlot();
         CreatePlayerSlot();
         UpdateAllPlayerSlot();
         UpdateReadyCountText();

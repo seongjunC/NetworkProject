@@ -418,7 +418,7 @@ MonoBehaviour:
   _textMeshPro: {fileID: 736693573828537321}
   _data: {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
   _hp: 200
-  _movable: 0
+  _movable: 5
   moveSpeed: 3
   groundLayer:
     serializedVersion: 2
@@ -428,6 +428,8 @@ MonoBehaviour:
   maxSlopeAngle: 60
   rotationSpeed: 10
   stickToGroundForce: 5
+  muzzleRotatePos: {fileID: 0}
+  muzzleRotationSpeed: 50
 --- !u!114 &8488200785960515094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,6 +449,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: 3946785669929708067}
   - {fileID: 7883107967485727059}
   - {fileID: 6276650331225041331}
   sceneViewId: 0
@@ -480,11 +483,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99ac87444f6671441889eddb593f947d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePivot: {fileID: 6317161916298699979}
   firePoint: {fileID: 1467951412910940909}
-  bulletPrefab: {fileID: 7477408352287670730, guid: 6660d23fa609c7b429726b1dbac0125b, type: 3}
-  angle: 45
-  angleStep: 0.5
+  bulletPrefab: {fileID: 7477408352287670730, guid: 026f3f2646307f045819c010ae1090f2, type: 3}
   chargingSpeed: 10
   maxPower: 10
   powerCharge: 0

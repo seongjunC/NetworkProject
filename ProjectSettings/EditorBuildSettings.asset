@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Workspace/MSK/Test Scene/MSK InGameTest.unity
     guid: 21742153cdf528e429f0e01d963f00c3
+  - enabled: 1
+    path: Assets/Workspace/CSJ/Scene/MSK InGameTest 1.unity
+    guid: 1be8534013df5b84a8b274a51dec3dcf
+  - enabled: 1
+    path: Assets/Workspace/CSJ/Scene/MSK InGameTest 2.unity
+    guid: c1767fe770a53b946ab7d37afe1baac9
   m_configObjects: {}

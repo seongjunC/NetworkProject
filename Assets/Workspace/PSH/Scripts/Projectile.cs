@@ -11,8 +11,8 @@ public class Projectile : MonoBehaviourPun
     public int explosionRadiusy = 100;
     public Texture2D explosionMask;
     public float explosionScale = 1f;
-    public int damage = 50;
-    private int realDamage;
+    public float damage = 50;
+    private float realDamage;
 
     private float worldPerPixel; // Terrain 기준
     private DeformableTerrain terrain;
@@ -31,8 +31,17 @@ public class Projectile : MonoBehaviourPun
     [Header("기즈모")]
     private Vector2 gizmoCenter;
     private float gizmoRadius;
+
+    [Header("바람")]
+    [SerializeField] private float windEffectMultiplier = 1f; // 바람의 영향을 받는 정도
+
+    private Vector2 windForce;
+
+    private TestBattleManager testBattleManager;
+
     private void Awake()
     {
+        testBattleManager = FindAnyObjectByType<TestBattleManager>();
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
@@ -58,10 +67,31 @@ public class Projectile : MonoBehaviourPun
             myTeam = PhotonNetwork.LocalPlayer.GetTeam(); // 마스터 클라이언트의 팀
         }
         realDamage = damage;
+
+        // 바람 정보 저장
+        if (WindManager.Instance != null)
+        {
+            windForce = WindManager.Instance.CurrentWind;
+        }
     }
 
+    // 바람
+    private void FixedUpdate()
+    {
+        if (photonView.IsMine)
+        {
+            if (rb != null)
+            {
+                rb.AddForce(windForce * windEffectMultiplier, ForceMode2D.Force);
+            }
+        }
+    }
     private void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
         // 속도가 0에 가까울 정도로 작지 않을 때만 방향을 업데이트합니다.
         if (rb != null && rb.velocity.sqrMagnitude > 0.01f)
         {
@@ -129,17 +159,20 @@ public class Projectile : MonoBehaviourPun
                 // ProjectileManager를 통해 모든 클라이언트에 포탄 파괴 동기화
                 ProjectileManager.Instance.photonView.RPC(nameof(ProjectileManager.RPC_ApplyExplosionEffects), RpcTarget.All,
                     Vector2.zero, 0, 0, 0f, // 지형 파괴 없음
-                    photonView.ViewID, new int[0], 0); // 데미지 없음
+                    photonView.ViewID, new int[0], 0f); // 데미지 없음
 
                 BeginDestroyRoutine(false);
             }
         }
     }
 
+    //  RPC 호출 테스트
+    [PunRPC]
     public void SetOwnerActorNumber(int actorNumber)
     {
         ownerActorNumber = actorNumber;
     }
+
     public void BeginDestroyRoutine(bool hasExplosionEffect)
     {
         if (hasCollided) return;
@@ -163,6 +196,10 @@ public class Projectile : MonoBehaviourPun
 
         if (CameraController.Instance != null)
             CameraController.Instance.ReturnToPlayerCam();
+
+        Debug.Log($"[DestroyRoutine] : {ownerActorNumber}");
+        if (PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber)
+            testBattleManager.TestTurnEnd(ownerActorNumber);
 
         Destroy(gameObject);
     }

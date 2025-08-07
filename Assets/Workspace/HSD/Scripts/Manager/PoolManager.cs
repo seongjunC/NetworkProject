@@ -16,14 +16,14 @@ public class PoolManager : Singleton<PoolManager>
     private Transform parent;
 
     private Coroutine poolCleanupRoutine;   
-    private YieldInstruction cleamupDelay;
+    private YieldInstruction cleanUpDelay;
 
     private const float poolCleanupTime = 60;
     private const float poolCleanupDelay = 30;
 
     public void Start()
     {
-        cleamupDelay = new WaitForSeconds(poolCleanupDelay);
+        cleanUpDelay = new WaitForSeconds(poolCleanupDelay);
 
         ResetPool();
         poolCleanupRoutine = StartCoroutine(PoolCleanupRoutine());
@@ -48,7 +48,7 @@ public class PoolManager : Singleton<PoolManager>
     {
         while (true)
         {
-            yield return cleamupDelay;
+            yield return cleanUpDelay;
 
             float now = Time.time;
             List<string> removePoolKeys = new List<string>();
@@ -180,11 +180,14 @@ public class PoolManager : Singleton<PoolManager>
         yield return new WaitForSeconds(delay);
 
         GameObject obj = original as GameObject;
+
+        if (obj == null || !obj.activeSelf) yield break;
+
         string name = obj.name;
 
         if (!poolDic.ContainsKey(name) && !obj.activeSelf)
             yield break;
-        //Debug.Log(obj.activeSelf);
+
         poolDic[name].Release(obj);
     }
 

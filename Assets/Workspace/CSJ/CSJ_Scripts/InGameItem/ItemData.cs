@@ -22,7 +22,7 @@ public class ItemData : ScriptableObject
 
     public void UseItem()
     {
-
+        Debug.Log($"{itemName} 사용!");
         Effect.Activate();
     }
 

@@ -13,7 +13,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [Header("Room")]
     [SerializeField] GameObject roomPrefab;
     [SerializeField] Transform roomContent;
-    private static readonly Dictionary<string, RoomSlot> roomListDic = new Dictionary<string, RoomSlot>();
+    private Dictionary<string, RoomSlot> roomListDic = new Dictionary<string, RoomSlot>();
 
     [Header("RoomCreate")]
     [SerializeField] TMP_InputField roomNameField;
@@ -67,16 +67,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public int currentRoomSelectIdx { get => _currentRoomSelectIdx; set { _currentRoomSelectIdx = value; ChangeCurrentRoomIdx(); RoomSelectButtonActiveCheck(); } }
 
     #region LifeCycle
+
     public override void OnEnable()
     {
-        base.OnEnable();        
+        base.OnEnable();
 
         Subscribe();
+        roomManager.RecreateRoom();
         isRoomCreate = false;
     }
 
     public override void OnDisable()
     {
+        base.OnDisable();
+
         UnSubscribe();
     }
 

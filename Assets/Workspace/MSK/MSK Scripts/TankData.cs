@@ -9,20 +9,17 @@ public class TankData : ScriptableObject
 {
     [Header("Base Stats")]
     public float baseDamage;
-    public float baseSpeed;
     public float baseMaxHp;
     public float baseMaxMove;
 
     [Header("Growth Per Level")]
     public float damageGrowth;
-    public float speedGrowth;
     public float maxHpGrowth;
     public float maxMoveGrowth;
 
     [Header("Stat")]
     public float damage;
     public float maxMove;
-    public float speed;
     public float maxHp;
 
     [Header("MetaData")]
@@ -107,13 +104,11 @@ public class TankData : ScriptableObject
     public void InitStat()
     {
         damage = GetDamage();
-        speed = GetSpeed();
         maxHp = GetMaxHp();
         maxMove = GetMaxMove();
     }
 
     public float GetDamage() => baseDamage + damageGrowth * (Level - 1) * GetRankMultiplier();
-    public float GetSpeed() => baseSpeed + speedGrowth * (Level - 1) * GetRankMultiplier();
     public float GetMaxHp() => baseMaxHp + maxHpGrowth * (Level - 1) * GetRankMultiplier();
     public float GetMaxMove() => baseMaxMove + maxMoveGrowth * (Level - 1) * GetRankMultiplier();
 
