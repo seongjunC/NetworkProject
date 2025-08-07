@@ -36,6 +36,9 @@ public class ResultUI : MonoBehaviour
     }
     public void UpdateResult(Team winnerTeam, int mvpActor)
     {
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.CurrentRoom.SetGameStart(false);
+
         Debug.Log("ResultActive");
         gameObject.SetActive(true);
 
