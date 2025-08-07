@@ -1429,6 +1429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   miniMapRaw: {fileID: 243322896}
   playerIconPrefab: {fileID: 7079981367443557795, guid: a0b59dfa19715a840b2b584e4aad47fb, type: 3}
+  itemIconPrefab: {fileID: 7079981367443557795, guid: 68410bb22fcb7164a999778b7e6fb025, type: 3}
 --- !u!114 &243322896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3994,6 +3995,7 @@ GameObject:
   m_Component:
   - component: {fileID: 747523986}
   - component: {fileID: 747523985}
+  - component: {fileID: 747523987}
   m_Layer: 0
   m_Name: ItemSpawner
   m_TagString: Untagged
@@ -4019,6 +4021,7 @@ MonoBehaviour:
   swayAmp: 1
   swayFreq: 2
   itemDatabase: {fileID: 11400000, guid: 1d9cb44b6f07d49419894202358ad3af, type: 2}
+  miniMap2: {fileID: 243322895}
 --- !u!4 &747523986
 Transform:
   m_ObjectHideFlags: 0
@@ -4034,6 +4037,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &747523987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747523984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 6
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &796068765
 GameObject:
   m_ObjectHideFlags: 0
