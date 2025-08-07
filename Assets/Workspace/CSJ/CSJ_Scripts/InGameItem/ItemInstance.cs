@@ -14,12 +14,14 @@ public class ItemInstance : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"▶ itemInstance 충돌 감지: {other.name}");
         if (other.CompareTag("Player"))
         {
             var controller = other.GetComponent<PlayerController>();
             if (controller != null && controller.photonView.IsMine)
             {
                 controller.myInfo.ItemAcquire(data);
+                Debug.Log("▶ 바로 직후 ItemAcquire 호출");
                 Destroy(gameObject);
             }
         }

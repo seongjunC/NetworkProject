@@ -12,7 +12,7 @@ public class PlayerInfo
     public string NickName => player.NickName;
     public int ActorNumber => player.ActorNumber;
     public ItemData[] items = new ItemData[2];
-    public int damageDealt { get; private set; }
+    public float damageDealt { get; private set; }
     public int KillCount { get; private set; }
     public Action<ItemData> OnItemAcquired;
 
@@ -31,6 +31,7 @@ public class PlayerInfo
             if (items[i] == null)
             {
                 items[i] = item;
+                Debug.Log($"▶ ItemAcquire 성공: {item.name} / 슬롯 {i}");
                 OnItemAcquired?.Invoke(item);
                 return true;
             }
@@ -132,7 +133,7 @@ public class PlayerInfo
         return true;
     }
 
-    public void ToDealDamage(int amount)
+    public void ToDealDamage(float amount)
     {
         damageDealt += amount;
     }

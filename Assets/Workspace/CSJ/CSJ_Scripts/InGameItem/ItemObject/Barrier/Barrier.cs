@@ -9,7 +9,7 @@ public class Barrier : ItemEffectSO
 
     public override void Activate()
     {
-        TurnController turnCon = TurnController.Instance;
+        MSKTurnController turnCon = MSKTurnController.Instance;
         turnCon.GetLocalPlayerController().ApplyBarrier();
     }
 }

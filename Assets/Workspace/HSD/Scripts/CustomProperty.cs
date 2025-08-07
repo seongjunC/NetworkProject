@@ -1,5 +1,6 @@
 using Game;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ public static class CustomProperty
     private const string READY = "Ready";
     private const string TEAM = "Team";
     private const string TANK = "Tank";
+    private const string GAMEPLAY = "GamePlay";
     #endregion
 
     private static ExitGames.Client.Photon.Hashtable playerHash = new ExitGames.Client.Photon.Hashtable();
@@ -88,6 +90,22 @@ public static class CustomProperty
         }
         return null;
     }
+    
+    public static void SetGamePlay(this Player player, bool isGamePlay)
+    {
+        playerHash[GAMEPLAY] = isGamePlay;
+        player.SetCustomProperties(playerHash);
+    }
+
+    public static bool GetGamePlay(this Player player)
+    {
+        if(player.CustomProperties.TryGetValue(GAMEPLAY, out object value))
+        {
+            return (bool)value;
+        }
+        return false;
+    }
+
     #endregion
 
     #region Room

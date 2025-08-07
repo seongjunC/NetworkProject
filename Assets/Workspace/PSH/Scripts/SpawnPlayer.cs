@@ -17,27 +17,27 @@ public class SpawnPlayer : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î »ı¼º -> ÇöÀç ¼±ÅÃÁßÀÎ ÅÊÅ©·Î µ¥ÀÌÅÍ ¼¼ÆÃ ->
+    /// í”Œë ˆì´ì–´ ìƒì„± -> í˜„ì¬ ì„ íƒì¤‘ì¸ íƒ±í¬ë¡œ ë°ì´í„° ì„¸íŒ… ->
     /// </summary>
     private void PlayerSpawn()
     {
         int spawnCount = transform.childCount;
         if (spawnCount == 0)
         {
-            Debug.LogWarning("SpawnPlayer: ÀÚ½ÄÀ¸·Î SpawnPoint°¡ ¾ø¾î¿ä!");
+            Debug.LogWarning("SpawnPlayer: ìì‹ìœ¼ë¡œ SpawnPointê°€ ì—†ì–´ìš”!");
             return;
         }
 
-        // 0ºÎÅÍ spawnCount-1±îÁö ·£´ı ÀÎµ¦½º
+        // 0ë¶€í„° spawnCount-1ê¹Œì§€ ëœë¤ ì¸ë±ìŠ¤
         //int index = Random.Range(0, spawnCount);
         int index = PhotonNetwork.LocalPlayer.ActorNumber - 1;
         Transform chosenPoint = transform.GetChild(index);
 
         TankData data = Manager.Data.TankDataController.CurrentTank;
 
-        PhotonNetwork.Instantiate("Prefabs/Test Tank", chosenPoint.position, chosenPoint.rotation, 0,
+        PhotonNetwork.Instantiate($"Prefabs/{data.tankName}", chosenPoint.position, chosenPoint.rotation, 0,
             new object[] { data.tankName, data.Level });
 
-        Debug.Log($"SpawnPlayer: '{chosenPoint.name}' À§Ä¡¿¡ ½ºÆù ¿Ï·á! ÀÎµ¦½º = {index}");
+        Debug.Log($"SpawnPlayer: '{chosenPoint.name}' ìœ„ì¹˜ì— ìŠ¤í° ì™„ë£Œ! ì¸ë±ìŠ¤ = {index}");
     }
 }

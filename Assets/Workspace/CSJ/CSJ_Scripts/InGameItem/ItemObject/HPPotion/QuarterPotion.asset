@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: 
   description: "HP\uC758 1/4\uC744 \uCC44\uC6CC\uC8FC\uB294 \uD3EC\uC158\uC774\uB2E4."
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 339538ad8ef7f6f4890b24c37fb372dc, type: 3}
   prefab: {fileID: 0}
   appearRate: 1
   Effect: {fileID: 11400000, guid: db8d9b3f94cfb1a499f2baf152b56aac, type: 2}
