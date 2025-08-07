@@ -87,32 +87,38 @@ public class PlayerData
     // 추후 논의 후 이전 가능성이 있습니다.
     public void GemGain(int amount)
     {
+        int newGemValue = Gem + amount;
+
         Manager.Database.userDataRef.Child("Gem")
-        .SetValueAsync(Gem + amount).ContinueWithOnMainThread(task =>
+        .SetValueAsync(newGemValue).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
-                Gem += amount;
-                Debug.Log($"{amount}만큼의 Gem을 획득하였습니다.\n 현재 Gem의 개수 {Gem}");
+                Gem = newGemValue;
+                Debug.Log($"{amount}만큼의 Gem을 획득하였습니다.\n현재 Gem의 개수: {Gem}");
             }
             else
             {
-                Debug.LogError("저장 실패");
+                Debug.LogError("Gem 저장 실패");
             }
         });
     }
 
-
+    // Gem 구매 조건 체크
     public bool IsBuy(int amount) => Gem >= amount;
 
+    // 승리 횟수 증가
     public void RaiseWinCount()
     {
+        int newWinCount = Win + 1;
+
         Manager.Database.userDataRef.Child("Win")
-        .SetValueAsync(Win + 1).ContinueWithOnMainThread(task =>
+        .SetValueAsync(newWinCount).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
-                Win += 1;
+                Win = newWinCount;
+                Debug.Log($"승리 횟수 증가: 현재 승리 횟수는 {Win}회입니다.");
             }
             else
             {
@@ -120,14 +126,19 @@ public class PlayerData
             }
         });
     }
+
+    // 패배 횟수 증가
     public void RaiseLoseCount()
     {
+        int newLoseCount = Lose + 1;
+
         Manager.Database.userDataRef.Child("Lose")
-        .SetValueAsync(Lose + 1).ContinueWithOnMainThread(task =>
+        .SetValueAsync(newLoseCount).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
-                Lose += 1;
+                Lose = newLoseCount;
+                Debug.Log($"패배 횟수 증가: 현재 패배 횟수는 {Lose}회입니다.");
             }
             else
             {
@@ -135,4 +146,5 @@ public class PlayerData
             }
         });
     }
+
 }

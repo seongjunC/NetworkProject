@@ -33,9 +33,10 @@ public class GameManager : Singleton<GameManager>
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.LoadLevel(gameSceneName);
 
-        Manager.Audio.PlayBGM("Game");
 
         yield return new WaitForSeconds(1);
+
+        Manager.Audio.PlayBGMFade("Game", .8f, 1, 1);
 
         Manager.UI.FadeScreen.FadeOut();
         Debug.Log("FadeOut");
