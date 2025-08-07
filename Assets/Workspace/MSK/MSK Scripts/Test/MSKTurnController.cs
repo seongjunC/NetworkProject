@@ -510,6 +510,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
         OnPlayerDied?.Invoke(tank, currentPlayer);
+        DeadPlayer.Add(actorNumber);
 
         photonView.RPC(nameof(RPC_RemoveDead), RpcTarget.All, actorNumber);
     }
