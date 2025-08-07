@@ -17,6 +17,9 @@ public class PlayerInfoPanel : MonoBehaviour
     [SerializeField] GameObject namePanel;
     [SerializeField] Button exitButton;
 
+    private int win;
+    private int lose;
+
     #region LifeCycle
     private void Start()
     {
@@ -43,27 +46,38 @@ public class PlayerInfoPanel : MonoBehaviour
 
             var snapshot = task.Result;
 
-            int win = (int)(long)snapshot.Value;
+            win = (int)(long)snapshot.Value;
 
             winCount.text = win.ToString();
-        });
-        Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Data").Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsCanceled || task.IsFaulted) return;
 
-            var snapshot = task.Result;
+            if(task.IsCompleted)
+            {
+                Manager.Database.root.Child("UserData").Child(player.GetUID()).Child("Data").Child("Lose").GetValueAsync().ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsCanceled || task.IsFaulted) return;
 
-            int lose = (int)(long)snapshot.Value;
+                    var snapshot = task.Result;
 
-            loseCount.text = lose.ToString();
+                    lose = (int)(long)snapshot.Value;
 
-            Init(true);
-        });
+                    loseCount.text = lose.ToString();
+
+                    Init(true);
+                });
+            }
+        });     
     }
 
     private void Init(bool isEnded)
     {
-        winRate.text = $"{((float.Parse(winCount.text) / float.Parse(loseCount.text)) * 100).ToString("F1")} %";
+        float percent = 0f;
+
+        if (win + lose > 0)
+        {
+            percent = (win / (float)(win + lose)) * 100f;
+        }
+
+        winRate.text = $"{percent.ToString("F1")} %";
 
         waitforMessage.SetActive(!isEnded);
         namePanel.SetActive(isEnded);
