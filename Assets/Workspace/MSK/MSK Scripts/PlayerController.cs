@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         myInfo = new PlayerInfo(photonView.Owner);
     }
 
-    public void OnHit(int damage)
+    public void OnHit(float damage)
     {
         if (OnBarrier)
         {
