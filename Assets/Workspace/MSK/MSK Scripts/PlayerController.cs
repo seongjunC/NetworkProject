@@ -119,6 +119,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         // 입력 처리는 IsMine인 클라이언트에서만 실행
         if (!photonView.IsMine || _isDead || !isControllable)
         {
+            horizontalInput = 0;
             return;
         }
 
@@ -238,6 +239,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public void EndPlayerTurn()
     {
         _movable = 0;
+        _rigidbody.velocity = Vector2.zero;
         // SetAttacked(true);
         isControllable = false;
     }
