@@ -236,7 +236,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         // }
 
         currentPlayer = turnQueue.Dequeue();
-        Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
         if (DeadPlayer.Contains(currentPlayer.ActorNumber))
         {
             Debug.Log($"{currentPlayer}는 사망하여 다음턴으로 이동");
@@ -536,6 +535,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         //  턴 종료 버튼 활성화
         EndButtonInteractable();
+        Manager.UI.PopUpUI.Show($"{currentPlayer.player.NickName}님의 턴입니다.", Color.green);
 
         if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
         {
