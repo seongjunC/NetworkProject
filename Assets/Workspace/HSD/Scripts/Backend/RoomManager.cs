@@ -277,6 +277,16 @@ public class RoomManager : MonoBehaviourPun
         else
             return waitPlayerContent;
     }
+    private Transform GetPlayerTeamContent(Team team)
+    {        
+        if (team == Team.Red)
+            return redPlayerContent;
+        else if (team == Team.Blue)
+            return bluePlayerContent;
+        else
+            return waitPlayerContent;
+    }    
+
     private void PlayerSlotSetParent(Player player)
     {
         playerSlotDic[player.ActorNumber].gameObject.transform.SetParent(GetPlayerTeamContent(player), false);
@@ -517,6 +527,7 @@ public class RoomManager : MonoBehaviourPun
     public void OnLeftRoom()
     {
         chat.ResetChat();
+        PhotonNetwork.LocalPlayer.SetReady(false);
     }
     #endregion
 }
