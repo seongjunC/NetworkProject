@@ -428,6 +428,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         CreateRoomSlots(roomList);
     }
 
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Manager.UI.FadeScreen.FadeOut(1);
+        Manager.UI.PopUpUI.Show("방에 입장할 수 없었습니다.");
+    }
+
     private void CreateRoomSlots(List<RoomInfo> roomList)
     {
         foreach (RoomInfo room in roomList)
