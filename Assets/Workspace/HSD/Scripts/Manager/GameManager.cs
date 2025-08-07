@@ -64,5 +64,9 @@ public class GameManager : Singleton<GameManager>
         PhotonNetwork.LocalPlayer.SetGamePlay(false);
 
         op.allowSceneActivation = true;
+
+        yield return new WaitForSecondsRealtime(.5f);
+
+        Manager.UI.FadeScreen.FadeOut(1, loading);
     }
 }
