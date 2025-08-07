@@ -7887,7 +7887,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8fc1dfcd5b71434280b541e0d722b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSceneName: MSK InGameTest 1
+  gameSceneName: MSK InGameTest
   playerSlotPrefab: {fileID: 4398182311349774773, guid: 7a08ab7af783c0246aafa561d7fd105b, type: 3}
   redPlayerContent: {fileID: 1704617411}
   bluePlayerContent: {fileID: 74122402}
@@ -10410,8 +10410,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 829212c20ba2ea642ac6037415712f87, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: ea34a02283d71124cb3cae56094e5e65, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -12150,7 +12150,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1570882354}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
