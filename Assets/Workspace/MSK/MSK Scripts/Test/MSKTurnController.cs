@@ -129,7 +129,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private void GameStart()
     {
         ClearInit();
-        InitializePlayerEvents();
         Manager.Game.GameStart();
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
@@ -138,9 +137,13 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Fire fire = controller.GetComponent<Fire>();
             if (fire != null)
                 fireMap[controller] = fire;
+            var info = controller.myInfo;
+            allPlayers[controller.myInfo.ActorNumber] = info;
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
+
+
         isGameStart = true;
 
         if (PhotonNetwork.IsMasterClient)
@@ -633,7 +636,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         foreach (Player player in PhotonNetwork.PlayerList)
         {
-            var info = new PlayerInfo(player);
+            var info = GetPlayerController(player.ActorNumber).myInfo;
             allPlayers[player.ActorNumber] = info;
         }
     }
