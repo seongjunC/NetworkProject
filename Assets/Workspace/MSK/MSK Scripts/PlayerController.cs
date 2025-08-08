@@ -13,12 +13,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public bool _isDead { get; private set; } = false;
     [SerializeField] public bool OnBarrier { get; private set; } = false;
     public PlayerInfo myInfo;
-    public float _hp;
+    private float hp;
+    public float _hp { get => hp; set { hp = value; OnHealthChanged?.Invoke(hp); } }
     public float _movable;
     public float _damage;
     public bool isControllable { get; private set; } = false;
     public bool IsAttacked { get; private set; } = false;
     public Action OnPlayerAttacked;
+    public event Action<float> OnHealthChanged;
 
     [Header("이동 및 지면 설정")]
     [SerializeField] private float moveSpeed = 5f;
@@ -34,7 +36,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private float muzzleRotationSpeed = 50f; // 포신 회전 속도
 
     [SerializeField] private Fire _fire;
-
+    [SerializeField] private AudioListener _audioListener;
 
     private float turretAngle = 0f;
     private bool isFacingRight = true;
@@ -56,6 +58,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         player = GetComponent<Transform>();
         _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
         _fire = GetComponent<Fire>();
+        _audioListener = GetComponent<AudioListener>();
+        _audioListener.enabled = false;
 
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
@@ -63,6 +67,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             _movable = _data.maxMove;
             _hp = _data.maxHp;
 
+            _audioListener.enabled = true;
             //             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             //             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
             // 
@@ -116,6 +121,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void Update()
     {
+        if (Chat.isChating)
+            return;
+
         // 입력 처리는 IsMine인 클라이언트에서만 실행
         if (!photonView.IsMine || _isDead || !isControllable)
         {

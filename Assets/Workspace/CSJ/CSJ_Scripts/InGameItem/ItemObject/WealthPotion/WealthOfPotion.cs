@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +10,10 @@ public class WealthOfPotion : ItemEffectSO
     [SerializeField]
     private int GemAmount;
 
-    public override void Activate()
+    public override void Activate(int actorNumber)
     {
+        if (PhotonNetwork.LocalPlayer.ActorNumber != actorNumber) return;
+
         PlayerData data = Manager.Data.PlayerData;
         data.GemGain(GemAmount);
     }

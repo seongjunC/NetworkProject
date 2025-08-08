@@ -2,37 +2,41 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using Photon.Realtime;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Analytics;
 
+[Serializable]
 public class PlayerInfo
 {
     public Player player;
     public string NickName => player.NickName;
     public int ActorNumber => player.ActorNumber;
     public ItemData[] items = new ItemData[2];
+    private Team team;
+
     public float damageDealt { get; private set; }
     public int KillCount { get; private set; }
-    public Action<ItemData> OnItemAcquired;
+    public Action<ItemData[]> OnItemChanged;
 
     public PlayerInfo(Player _player)
     {
         player = _player;
         damageDealt = 0;
         KillCount = 0;
+        team = CustomProperty.GetTeam(_player);
     }
 
     public bool ItemAcquire(ItemData item)
     {
-        int length = items.Length;
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < items.Length; i++)
         {
             if (items[i] == null)
             {
                 items[i] = item;
                 Debug.Log($"▶ ItemAcquire 성공: {item.name} / 슬롯 {i}");
-                OnItemAcquired?.Invoke(item);
+                OnItemChanged?.Invoke(items);
                 return true;
             }
         }
@@ -82,11 +86,14 @@ public class PlayerInfo
             Debug.LogError("잘못된 슬롯 번호입니다.");
             return;
         }
+
         for (int i = order; i < items.Length - 1; i++)
         {
             items[i] = items[i + 1];
         }
         items[items.Length - 1] = null;
+
+        OnItemChanged?.Invoke(items);
     }
 
     public void ItemUse(int order)
@@ -98,10 +105,11 @@ public class PlayerInfo
         }
         if (items[order] == null)
         {
-            Debug.LogError($"해당 위치 {order + 1} 칸에 아이템이 없습니다.");
+            Debug.Log($"{player.NickName} : 해당 위치 {order + 1} 칸에 아이템이 없습니다.");
             return;
         }
-        items[order].UseItem();
+
+        items[order].UseItem(ActorNumber);
         ItemRemove(order);
     }
 

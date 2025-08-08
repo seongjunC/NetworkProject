@@ -72,7 +72,10 @@ MonoBehaviour:
   - RPC_RemoveDead
   - RPC_SetSpawnOrder
   - RPC_HighlightAck
+  - RPC_RegisterAllItemsByTag
   - DisableTurnEnd
+  - RPC_GetItem
+  - RPC_RequestPickup
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

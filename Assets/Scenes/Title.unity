@@ -12150,7 +12150,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1570882354}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -23423,8 +23423,8 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
@@ -33245,7 +33245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 696917177303876150, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 114.41425
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 696917177303876150, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -33366,10 +33366,6 @@ PrefabInstance:
     - target: {fileID: 5316795765084889719, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_Color.a
       value: 0.5529412
-      objectReference: {fileID: 0}
-    - target: {fileID: 6062703877778485246, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
-      propertyPath: m_PreserveAspect
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6085408916159698831, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_Name

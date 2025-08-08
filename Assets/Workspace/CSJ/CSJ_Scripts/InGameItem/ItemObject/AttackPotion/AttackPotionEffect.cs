@@ -13,7 +13,7 @@ public class AttackPotion : ItemEffectSO
     [SerializeField]
     private bool isFixed;
 
-    public override void Activate()
+    public override void Activate(int actorNumber)
     {
         MSKTurnController turnCon = MSKTurnController.Instance;
         if (isFixed)

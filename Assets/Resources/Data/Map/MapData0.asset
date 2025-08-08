@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2017d48d1d3903c4683f7a0aebad0bce, type: 3}
-  m_Name: MapData1
+  m_Name: MapData0
   m_EditorClassIdentifier: 
-  mapName: Map1
-  mapPrefab: {fileID: 8841352257447635857, guid: 18401f01f52828b40b4a72873643c8f7, type: 3}
+  mapName: Map0
+  mapPrefab: {fileID: 8841352257447635857, guid: 0066107ec5992824282c2d52025816bc, type: 3}
   spawnPointPrefab: {fileID: 1441971571940308797, guid: b1510efc086eb1940bc6ca85ed665bca, type: 3}

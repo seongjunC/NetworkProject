@@ -3,7 +3,7 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fire : MonoBehaviourPun
+public class Fire : MonoBehaviourPunCallbacks, IPunObservable
 {
     [Header("References")]
     // [SerializeField] private Transform firePivot; // PlayerController가 제어하므로 주석 처리 또는 삭제
@@ -19,7 +19,7 @@ public class Fire : MonoBehaviourPun
     public bool isCharging = false;
     private bool isDoubleAttack = false;
     private bool OnDamageBuff = false;
-    private List<float?> DamageBuff = new List<float?>(2);
+    private List<float?> DamageBuff = new List<float?> { 0f, 0f };
 
     private ProjectileManager _projectileManager;
     private PlayerController _playerController;
@@ -37,19 +37,34 @@ public class Fire : MonoBehaviourPun
 
     private void Update()
     {
-        if (!photonView.IsMine || !_playerController.isControllable || _playerController.IsAttacked)
+        if (Chat.isChating)
             return;
+
+        if (!photonView.IsMine ||
+        !MSKTurnController.Instance.IsMyTurn() ||
+        !MSKTurnController.Instance.isTurnRunning ||
+        !_playerController.isControllable)
+        {
+            if (isCharging)
+            {
+                isCharging = false;
+                powerCharge = 0f;
+            }
+            return;
+        }
+
 
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
         {
+            // isCharging 상태를 네트워크로 동기화
             isCharging = true;
             powerCharge += chargingSpeed * Time.deltaTime;
             powerCharge = Mathf.Clamp(powerCharge, 0f, maxPower);
         }
 
-        // 스페이스바에서 손을 뗐을 때 발사
-        if (isCharging && Input.GetKeyUp(KeyCode.Space))
+        // 스페이스바에서 손을 뗐을 때 또는 풀차지시 발사
+        if (isCharging && Input.GetKeyUp(KeyCode.Space) || powerCharge >= maxPower)
         {
             Shoot();
             if (isDoubleAttack)
@@ -57,14 +72,13 @@ public class Fire : MonoBehaviourPun
                 Invoke(nameof(Shoot), 1f);
                 isDoubleAttack = false;
             }
+            MSKTurnController.Instance.testBattleManager.SetTurnEndButton(false);
             powerCharge = 0f;
             isCharging = false;
             _playerController.SetAttacked(true);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
     }
-
-    // Aim() 함수는 PlayerController가 처리하므로 삭제
 
     private void Shoot()
     {
@@ -114,6 +128,24 @@ public class Fire : MonoBehaviourPun
         for (int i = 0; i < DamageBuff.Count; i++)
         {
             DamageBuff.Add(null);
+        }
+        powerCharge = 0f;
+        isCharging = false;
+
+    }
+
+    // IPunObservable 인터페이스 구현
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // 로컬 플레이어는 자신의 isCharging 상태를 다른 클라이언트에게 보냅니다.
+            stream.SendNext(isCharging);
+        }
+        else
+        {
+            // 다른 클라이언트는 스트림에서 isCharging 상태를 받습니다.
+            isCharging = (bool)stream.ReceiveNext();
         }
     }
 }

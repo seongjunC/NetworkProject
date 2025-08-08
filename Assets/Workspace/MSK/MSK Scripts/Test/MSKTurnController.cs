@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon.StructWrapping;
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
@@ -32,7 +33,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [Header("탱크 리스트 확인용")]
     [SerializeField] List<PlayerController> tanks = new();
     [SerializeField] GameObject Arrow;
-    [SerializeField] private TestBattleManager testBattleManager;
+    [SerializeField] public TestBattleManager testBattleManager;
 
 
     #region private
@@ -53,7 +54,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private PlayerInfo currentPlayer;
     private Room room;
     // 부울 변수
-    private bool isTurnRunning = false;
     private bool isGameStart = false;
     private bool isTurnEnd = false;
     // 내부 변수
@@ -63,12 +63,12 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #endregion
     #region public
 
+    public bool isTurnRunning { get; private set; } = false;
     public bool isGameEnd = false;
     public event System.Action<PlayerController, PlayerInfo> OnPlayerDied;
     public Dictionary<int, PlayerInfo> allPlayers = new Dictionary<int, PlayerInfo>();
     public HashSet<int> DeadPlayer = new();
     #endregion
-
 
     #region Unity LifeCycle
     private void Awake()
@@ -95,6 +95,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart && !isGameEnd)
         {
+            // 발사 차징중이면 타이머 정지
+            if (GetFireMap(GetLocalPlayerController()).isCharging)
+            {
+                return;
+            }
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
 
@@ -124,7 +129,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private void GameStart()
     {
         ClearInit();
-        InitializePlayerEvents();
         Manager.Game.GameStart();
 
         foreach (var controller in FindObjectsOfType<PlayerController>())
@@ -133,10 +137,16 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             Fire fire = controller.GetComponent<Fire>();
             if (fire != null)
                 fireMap[controller] = fire;
+            var info = controller.myInfo;
+            allPlayers[controller.myInfo.ActorNumber] = info;
             PhotonView view = controller.GetComponent<PhotonView>();
             string owner = view != null && view.Owner != null ? view.Owner.NickName : "null";
         }
+
+
         isGameStart = true;
+
+        InitializePlayerEvents();
 
         if (PhotonNetwork.IsMasterClient)
             SetRandomTurn();
@@ -181,6 +191,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             WindManager.Instance.GenerateNewWind();
         }
+
     }
 
 
@@ -263,7 +274,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private IEnumerator HandleCycleEnd()
     {
         RPC_TimeStop();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         var dropIDs = new List<int>();
         for (int i = 0; i < itemCount; i++)
@@ -325,6 +336,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         return fireMap[controller];
     }
+    public Fire GetFire(int actorNumber)
+    {
+        return fireMap[GetPlayerController(actorNumber)];
+    }
     public Fire GetLocalPlayerFire()
     {
         return GetFireMap(GetLocalPlayerController());
@@ -366,18 +381,19 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         base.OnPlayerLeftRoom(otherPlayer);
 
         Debug.Log($"플레이어 퇴장 : ActorNumber = {otherPlayer.ActorNumber}");
+        var controller = GetPlayerController(otherPlayer.ActorNumber);
+        if (controller != null)
+        {
+            controller.PlayerDead();
+        }
         foreach (var tank in tanks)
         {
             if (tank.myInfo.player.ActorNumber == otherPlayer.ActorNumber)
             {
                 tanks.Remove(tank);
+                allPlayers.Remove(otherPlayer.ActorNumber);
                 break;
             }
-        }
-        var controller = GetPlayerController(otherPlayer.ActorNumber);
-        if (controller != null)
-        {
-            controller.PlayerDead();
         }
     }
 
@@ -421,29 +437,27 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     [PunRPC]
     public void RPC_UseItem(int actorNumber, int slotIndex)
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
-
+    {       
         var info = allPlayers[actorNumber];
-        Debug.Log($"{info.NickName}의 아이템 사용");
-
-        if (actorNumber != currentPlayer.ActorNumber) return;
-
+        Debug.LogWarning($"{info.NickName}의 아이템 사용");
+        
         info.ItemUse(slotIndex);
 
         Debug.Log("동기화 호출");
 
-        photonView.RPC(nameof(RPC_SyncUseItem), RpcTarget.All, actorNumber, slotIndex);
+        //photonView.RPC(nameof(RPC_SyncUseItem), RpcTarget.All, actorNumber, slotIndex);
     }
-    [PunRPC]
-    private void RPC_SyncUseItem(int actorNumber, int slotIndex)
-    {
-        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
-        {
-            Debug.Log("ClearSlot");
-            inGameUI.ClearSlot(slotIndex + 1);
-        }
-    }
+
+    //[PunRPC]
+    //private void RPC_SyncUseItem(int actorNumber, int slotIndex)
+    //{
+    //    if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+    //    {
+    //        Debug.Log("ClearSlot");
+    //        inGameUI.ClearSlot(slotIndex + 1);
+    //    }
+    //}
+
     // TODO: 추후 아이템 생성 등과 연결
     [PunRPC]
     private void RPC_CycleEnd()
@@ -459,7 +473,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private void RPC_HighlightDroppedItems(int[] viewIDs)
     {
         StartCoroutine(HighlightThenAck(viewIDs));
-
     }
 
 
@@ -547,11 +560,22 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_PlayerDead(int actorNumber)
     {
+        if (!DeadPlayer.Contains(actorNumber))
+        {
+            DeadPlayer.Add(actorNumber);
+        }
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
-        OnPlayerDied?.Invoke(tank, currentPlayer);
-        DeadPlayer.Add(actorNumber);
+        if (tank != null)
+        {
+            OnPlayerDied?.Invoke(tank, currentPlayer);
+            photonView.RPC(nameof(RPC_RemoveDead), RpcTarget.All, actorNumber);
+        }
+        else
+        {
+            testBattleManager.HandlePlayerExit(actorNumber);
+        }
 
-        photonView.RPC(nameof(RPC_RemoveDead), RpcTarget.All, actorNumber);
+
     }
 
     [PunRPC]
@@ -580,7 +604,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             EnableCurrentPlayer();
             SpawnArrowCurrentPlayer();
+            inGameUI.SetItemButtonInteractable(true);
         }
+
+
     }
 
     [PunRPC]
@@ -599,6 +626,39 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         currentPlayer.ToDealDamage(damage);
         Debug.Log($"{currentPlayer.NickName}가 {damage}의 데미지를 가함!");
     }
+
+    [PunRPC]
+    public void RPC_RequestPickup(int itemViewID, int actorNumber)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        var pv = PhotonView.Find(itemViewID);
+        if (pv == null) return;
+
+        var item = pv.GetComponent<FallingBox>();
+        if (!allPlayers.TryGetValue(actorNumber, out var info)) return;
+
+        if (!info.ItemAcquire(item.itemData)) return; // 인벤 풀 등으로 실패 시 그대로 유지
+
+        PhotonNetwork.Destroy(pv); // 성공 시 전원에서 제거
+
+        photonView.RPC(nameof(RPC_GetItem), RpcTarget.All, itemSpawner.GetItemIndex(item.itemData), actorNumber);
+    }
+
+    [PunRPC]
+    private void RPC_GetItem(int itemId, int actorNumber)
+    {
+        if (PhotonNetwork.IsMasterClient) return;
+        var data = itemSpawner.GetItem(itemId);
+        if (allPlayers.TryGetValue(actorNumber, out var info))
+        {
+            info.ItemAcquire(data);
+        }
+        else
+        {
+            Debug.LogError($"해당 {actorNumber}의 플레이어를 찾을 수 없음");
+        }
+    }
     #endregion
 
     #region MSK added
@@ -606,7 +666,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         foreach (Player player in PhotonNetwork.PlayerList)
         {
-            var info = new PlayerInfo(player);
+            var info = GetPlayerController(player.ActorNumber).myInfo;
             allPlayers[player.ActorNumber] = info;
         }
     }

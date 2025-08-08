@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class ItemSpawner : MonoBehaviourPun
@@ -21,6 +20,9 @@ public class ItemSpawner : MonoBehaviourPun
     [Header("생성할 아이템 리스트")]
     [SerializeField]
     private ItemDatabase itemDatabase;
+
+    [Header("미니맵 참조")]
+    [SerializeField] private MiniMap2 miniMap2;
 
     public GameObject SpawnRandomItem()
     {
@@ -47,8 +49,18 @@ public class ItemSpawner : MonoBehaviourPun
         RpcTarget.AllBuffered,
         itemDatabase.GetIndex(selectedItem).ToString(), fallSpeed, swayAmp, swayFreq);
 
+        photonView.RPC(nameof(RPC_RegisterAllItemsByTag), RpcTarget.All);
+
         return drop;
     }
+
+    [PunRPC]
+    private void RPC_RegisterAllItemsByTag()
+    {
+        // 미니맵 아이콘 등록
+        miniMap2.RegisterAllItemsByTag();
+    }
+
 
     public ItemData RandItem()
     {
@@ -72,6 +84,17 @@ public class ItemSpawner : MonoBehaviourPun
         }
         return itemDatabase.Get("0");
     }
+
+    public int GetItemIndex(ItemData item)
+    {
+        return itemDatabase.GetIndex(item);
+    }
+
+    public ItemData GetItem(int index)
+    {
+        return itemDatabase.Get(index.ToString());
+    }
+
 
 
 }
