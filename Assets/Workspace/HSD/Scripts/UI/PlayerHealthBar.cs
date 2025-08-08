@@ -27,7 +27,6 @@ public class PlayerHealthBar : MonoBehaviour
             slider.maxValue = player._data.maxHp;
 
         slider.value = value;
-
-        healthText.text = $"{value} / {slider.maxValue}";
+        healthText.text = $"{Mathf.CeilToInt(value)} / {Mathf.CeilToInt(slider.maxValue)}";
     }
 }
