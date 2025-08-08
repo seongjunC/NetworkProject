@@ -1,4 +1,3 @@
-using ExitGames.Client.Photon.StructWrapping;
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
@@ -178,7 +177,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             StartNextTurn();
             return;
         }
-        isTurnRunning = true;
+        //isTurnRunning = true;
+        photonView.RPC(nameof(RPC_SetTurnRunning), RpcTarget.All, true);
         isTurnEnd = false;
 
         turnTimer = turnLimit;
@@ -500,8 +500,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (isTurnEnd) return;
         Debug.Log("RPC 턴 종료 호출");
+        photonView.RPC(nameof(RPC_DisableAllPlayersControl), RpcTarget.All);
         isTurnEnd = true;
-        isTurnRunning = false;
+        //isTurnRunning = false;
+        photonView.RPC(nameof(RPC_SetTurnRunning), RpcTarget.All, false);
         photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
         if (turnQueue.Count == 0 && nextCycle.Count > 0)
         {
@@ -719,4 +721,23 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         turnTimer = turnLimit;
     }
     #endregion
+
+    [PunRPC]
+    private void RPC_SetTurnRunning(bool isRunning)
+    {
+        isTurnRunning = isRunning;
+        Debug.Log($"[RPC_SetTurnRunning] isTurnRunning 상태 동기화: {isRunning}");
+    }
+
+    [PunRPC]
+    private void RPC_DisableAllPlayersControl()
+    {
+        foreach (var playerCon in tanks)
+        {
+            if (playerCon != null)
+            {
+                playerCon.EnableControl(false);
+            }
+        }
+    }
 }
