@@ -155,13 +155,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         if (string.IsNullOrEmpty(roomNameField.text))
         {
-            Manager.UI.PopUpUI.Show("¹æ ÀÌ¸§À» ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+            Manager.UI.PopUpUI.Show("ë°© ì´ë¦„ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
             return;
         }
 
         if(string.IsNullOrWhiteSpace(maxPlayerField.text))
         {
-            Manager.UI.PopUpUI.Show("ÀÎ¿øÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.\n(¶Ù¾î¾´ °ø°£ÀÌ ÀÖ¾î¼­´Â ¾ÈµË´Ï´Ù.)", Color.red);
+            Manager.UI.PopUpUI.Show("ì¸ì›ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.\n(ë„ì–´ ì“´ ê³µê°„ì´ ìˆì–´ì„œëŠ” ì•ˆ ë©ë‹ˆë‹¤.)", Color.red);
             return;
         }
 
@@ -169,17 +169,17 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {            
             if (maxPlayer <= 0)
             {
-                Manager.UI.PopUpUI.Show("0º¸´Ù Å« °ªÀ» ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+                Manager.UI.PopUpUI.Show("0ë³´ë‹¤ í° ê°’ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
                 return;
             }
             if (maxPlayer % 2 != 0)
             {
-                Manager.UI.PopUpUI.Show("Â¦¼ö¸¦ ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+                Manager.UI.PopUpUI.Show("ì§ìˆ˜ë¥¼ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
                 return;
             }
             if (maxPlayer > maxPlayerCount)
             {
-                Manager.UI.PopUpUI.Show($"{maxPlayerCount} º¸´Ù ³·Àº °ªÀ» ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
+                Manager.UI.PopUpUI.Show($"{maxPlayerCount} ì´í•˜ì˜ ê°’ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
                 return;
             }
         }
@@ -188,7 +188,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             if (string.IsNullOrWhiteSpace(passwordField.text))
             {
-                Manager.UI.PopUpUI.Show("ºñ¹Ğ¹øÈ£´Â ¶Ù¾î¾²°Å³ª ºóÄ­ÀÏ ¼ö ¾ø½À´Ï´Ù.");
+                Manager.UI.PopUpUI.Show("ë¹„ë°€ë²ˆí˜¸ëŠ” ë„ì–´ ì“°ê±°ë‚˜ ë¹ˆì¹¸ì¼ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
                 return;
             }
         }
@@ -345,7 +345,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         }        
 
         passwordField.text = "";
-        Debug.Log("¹æ »ı¼º ¿Ï·á");
+        Debug.Log("ë°© ìƒì„± ì™„ë£Œ");
         Manager.UI.FadeScreen.FadeOut(.5f);
     }
 
@@ -366,7 +366,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         lobby.SetActive(false);
 
-        Debug.Log("·Îºñ¿¡ Á¢¼ÓÇÔ");
+        Debug.Log("ë¡œë¹„ì— ì ‘ì†í•¨");
     }
 
     public override void OnJoinedLobby()
@@ -376,7 +376,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("¹æ ÀÔÀå ¿Ï·á");
+        Debug.Log("ë°© ì…ì¥ ì™„ë£Œ");
 
         room.SetActive(true);
         lobby.SetActive(false);
@@ -393,7 +393,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Manager.UI.PopUpUI.Show("Á¢¼Ó °¡´ÉÇÑ ¹æÀÌ ¾ø½À´Ï´Ù.", Color.red);
+        Manager.UI.PopUpUI.Show("ì ‘ì† ê°€ëŠ¥í•œ ë°©ì´ ì—†ìŠµë‹ˆë‹¤.", Color.red);
     }
 
     public override void OnLeftRoom()    
@@ -431,7 +431,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         Manager.UI.FadeScreen.FadeOut(1);
-        Manager.UI.PopUpUI.Show("¹æ¿¡ ÀÔÀåÇÒ ¼ö ¾ø¾ú½À´Ï´Ù.");
+        Manager.UI.PopUpUI.Show("ë°©ì— ì…ì¥í•  ìˆ˜ ì—†ì—ˆìŠµë‹ˆë‹¤.");
     }
 
     private void CreateRoomSlots(List<RoomInfo> roomList)

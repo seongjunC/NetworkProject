@@ -8,9 +8,11 @@ public class MiniMap2 : MonoBehaviourPunCallbacks
 {
     public RawImage miniMapRaw;
     public RectTransform playerIconPrefab;
+    public RectTransform itemIconPrefab;
 
     private DeformableTerrain terrain;
     private readonly Dictionary<int, (PlayerController player, RectTransform icon)> _playerIcons = new Dictionary<int, (PlayerController, RectTransform)>();
+    private readonly Dictionary<GameObject, RectTransform> _itemIcons = new Dictionary<GameObject, RectTransform>();
 
     private Vector3 _mapMinBounds;
     private Vector3 _mapSize;
@@ -57,6 +59,29 @@ public class MiniMap2 : MonoBehaviourPunCallbacks
         {
             RemovePlayerIcon(actorNumber);
         }
+
+        foreach (var kvp in _itemIcons)
+        {
+            GameObject item = kvp.Key;
+            RectTransform icon = kvp.Value;
+
+            if (item != null && item.activeInHierarchy)
+            {
+                Vector3 itemWorldPos = item.transform.position;
+                float u = (itemWorldPos.x - _mapMinBounds.x) / _mapSize.x;
+                float v = (itemWorldPos.y - _mapMinBounds.y) / _mapSize.y;
+                u = Mathf.Clamp01(u);
+                v = Mathf.Clamp01(v);
+                Rect rect = miniMapRaw.rectTransform.rect;
+                icon.anchoredPosition = new Vector2(u * rect.width, v * rect.height);
+            }
+            else
+            {
+                Destroy(icon.gameObject);
+                _itemIcons.Remove(item);
+                break;
+            }
+        }
     }
 
     private void UpdateIconPosition(PlayerController player, RectTransform icon)
@@ -98,6 +123,39 @@ public class MiniMap2 : MonoBehaviourPunCallbacks
         {
             if (entry.icon != null) Destroy(entry.icon.gameObject);
             _playerIcons.Remove(actorNumber);
+        }
+    }
+
+    public void AddItemIcon(GameObject item)
+    {
+        if (_itemIcons.ContainsKey(item)) return;
+
+        RectTransform newIcon = Instantiate(itemIconPrefab, miniMapRaw.transform);
+        newIcon.gameObject.SetActive(true);
+        _itemIcons[item] = newIcon;
+
+        // 색상 또는 이미지 변경 가능
+        Image iconImage = newIcon.GetComponent<Image>();
+        if (iconImage != null)
+            iconImage.color = Color.green;  // 예: 아이템은 녹색
+    }
+
+    public void RemoveItemIcon(GameObject item)
+    {
+        if (_itemIcons.TryGetValue(item, out var icon))
+        {
+            if (icon != null)
+                Destroy(icon.gameObject);
+            _itemIcons.Remove(item);
+        }
+    }
+
+    public void RegisterAllItemsByTag(string itemTag = "Item")
+    {
+        GameObject[] items = GameObject.FindGameObjectsWithTag(itemTag);
+        foreach (var item in items)
+        {
+            AddItemIcon(item);
         }
     }
 

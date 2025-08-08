@@ -140,22 +140,6 @@ public class InGameUI : MonoBehaviour
         }
     }
 
-    // // 아이템1 버튼 클릭 이벤트
-    // private void OnItem1Click()
-    // {
-    //     Debug.Log("아이템 1 사용");
-    //     MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 0);
-    //     // 아이템 1 사용 로직 추가
-    //     ClearSlot(1);
-    // }
-    // // 아이템2 버튼 클릭 이벤트
-    // private void OnItem2Click()
-    // {
-    //     Debug.Log("아이템 2 사용");
-    //     MSKTurnController.Instance.photonView.RPC(nameof(MSKTurnController.RPC_UseItem), RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, 1);
-    //     // 아이템 2 사용 로직 추가
-    //     ClearSlot(2);
-    // }
 
     public void ClearSlot(int slot)
     {
@@ -180,28 +164,21 @@ public class InGameUI : MonoBehaviour
         // 턴 종료 로직 추가
     }
 
-    //     // 체력 업데이트
-    //     public void SetHP(float current, float max)
-    //     {
-    //         hpBar.value = current / max;
-    //     }
-    // 
-    //     // 이동 게이지 업데이트
-    //     public void SetMove(float current, float max)
-    //     {
-    //         moveBar.value = current / max;
-    //     }
-    // 
-    //     // 파워 차지 업데이트
-    //     public void SetPower(float charge)
-    //     {
-    //         powerBar.value = charge;
-    //     }
 
     // 바람 세기 업데이트
     public void SetWind(float windStrength)
     {
         // windStrength는 -10 ~ +10 범위로 가정
         windBar.value = Mathf.Abs(windStrength);
+    }
+
+    /// <summary>
+    /// item 버튼의 클릭 가능 여부를 설정합니다
+    /// </summary>
+    /// <param name="interactable">클릭 가능 여부</param>
+    public void SetItemButtonInteractable(bool interactable)
+    {
+        item1Button.interactable = interactable && item1Button.gameObject.activeSelf;
+        item2Button.interactable = interactable && item2Button.gameObject.activeSelf;
     }
 }

@@ -102,8 +102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c2a549feff03f4e819a282153e833c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionRadiusx: 100
-  explosionRadiusy: 100
+  explosionRadiusx: 140
+  explosionRadiusy: 110
   explosionMask: {fileID: 0}
   explosionScale: 1
   damage: 100
