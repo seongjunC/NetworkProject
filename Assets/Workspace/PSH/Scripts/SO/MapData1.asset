@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapName: Map1
   mapPrefab: {fileID: 8841352257447635857, guid: 18401f01f52828b40b4a72873643c8f7, type: 3}
-  spawnPointPrefab: {fileID: 1441971571940308797, guid: b1510efc086eb1940bc6ca85ed665bca, type: 3}
+  spawnPointPrefab: {fileID: 2657230465000829999, guid: b1510efc086eb1940bc6ca85ed665bca, type: 3}

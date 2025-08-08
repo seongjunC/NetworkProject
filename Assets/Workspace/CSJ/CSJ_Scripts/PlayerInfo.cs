@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game;
 using Photon.Realtime;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class PlayerInfo
         player = _player;
         damageDealt = 0;
         KillCount = 0;
+        team = CustomProperty.GetTeam(_player);
     }
 
     public bool ItemAcquire(ItemData item)

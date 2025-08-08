@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private float muzzleRotationSpeed = 50f; // 포신 회전 속도
 
     [SerializeField] private Fire _fire;
-
+    [SerializeField] private AudioListener _audioListener;
 
     private float turretAngle = 0f;
     private bool isFacingRight = true;
@@ -58,6 +58,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         player = GetComponent<Transform>();
         _textMeshPro = GetComponentInChildren<TextMeshProUGUI>();
         _fire = GetComponent<Fire>();
+        _audioListener = GetComponent<AudioListener>();
+        _audioListener.enabled = false;
 
         myInfo = new PlayerInfo(photonView.Owner);
         if (photonView.IsMine)
@@ -65,6 +67,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             _movable = _data.maxMove;
             _hp = _data.maxHp;
 
+            _audioListener.enabled = true;
             //             TestBattleManager battleManager = FindObjectOfType<TestBattleManager>();
             //             MSK_UIManager uiManager = FindObjectOfType<MSK_UIManager>();
             // 

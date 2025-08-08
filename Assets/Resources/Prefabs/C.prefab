@@ -788,7 +788,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dd720f5be69b0a49b4c80bf571203ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 3946785669929708067}
   slider: {fileID: 3581467922785680952}
   healthText: {fileID: 5845840326483178191}
 --- !u!1 &5248397510107897432
@@ -940,6 +940,7 @@ GameObject:
   - component: {fileID: 7883107967485727059}
   - component: {fileID: 6830080592245457887}
   - component: {fileID: 7368446081822583022}
+  - component: {fileID: -1254897257145694607}
   m_Layer: 9
   m_Name: C
   m_TagString: Player
@@ -1012,6 +1013,7 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 41e018700970c6a41a7bc5b4137027a2, type: 2}
   myInfo:
     items: []
+    team: 0
   _movable: 0
   _damage: 0
   moveSpeed: 3
@@ -1020,12 +1022,13 @@ MonoBehaviour:
     m_Bits: 256
   groundCheckRadius: 0.3
   groundCheckDistance: 1.1
-  maxSlopeAngle: 40
+  maxSlopeAngle: 50
   rotationSpeed: 10
-  stickToGroundForce: 5
+  stickToGroundForce: 2
   muzzleRotatePos: {fileID: 5143764862364520804}
   muzzleRotationSpeed: 50
   _fire: {fileID: 0}
+  _audioListener: {fileID: 0}
 --- !u!114 &8488200785960515094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1041,12 +1044,13 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 2
+  Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
   - {fileID: 3946785669929708067}
   - {fileID: 7883107967485727059}
+  - {fileID: 6830080592245457887}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1080,8 +1084,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 3679909884157931425}
   bulletPrefab: {fileID: 7477408352287670730, guid: a21dfa8977e2388449290bbfecdf3f91, type: 3}
-  chargingSpeed: 10
-  maxPower: 10
+  chargingSpeed: 15
+  maxPower: 20
   powerCharge: 0
   isCharging: 0
 --- !u!58 &7368446081822583022
@@ -1119,6 +1123,14 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.13}
   serializedVersion: 2
   m_Radius: 0.65
+--- !u!81 &-1254897257145694607
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5767406228868708187}
+  m_Enabled: 1
 --- !u!1 &6693949736284291591
 GameObject:
   m_ObjectHideFlags: 0

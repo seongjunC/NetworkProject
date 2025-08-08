@@ -1,5 +1,4 @@
 using Game;
-using ParrelSync.NonCore;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;

@@ -38,7 +38,14 @@ public class TutorialsUI : MonoBehaviour
     [SerializeField] private List<TutorialPage> itemPages;
     [SerializeField] private List<TutorialPage> endTurnPages;
 
+    [Header("페이지 인디케이터")]
+    [SerializeField] private Transform dotParent;     // 동그라미 버튼 부모
+    [SerializeField] private GameObject dotPrefab;    // 동그라미 버튼 프리팹
+    [SerializeField] private Sprite activeDotSprite;  // 활성화 이미지
+    [SerializeField] private Sprite inactiveDotSprite;// 비활성화 이미지
+
     private List<List<TutorialPage>> tutorialData = new List<List<TutorialPage>>();
+    private List<Image> dots = new List<Image>();
 
     private int mode = 0; // 현재 모드 인덱스
     private int currentPage = 0;
@@ -81,6 +88,8 @@ public class TutorialsUI : MonoBehaviour
     {
         mode = newMode;
         currentPage = 0;
+
+        CreateDots();
         UpdatePageUI();
     }
 
@@ -100,6 +109,44 @@ public class TutorialsUI : MonoBehaviour
             currentPage++;
             UpdatePageUI();
         }
+    }
+
+    private void CreateDots()
+    {
+        // 기존 Dot 제거
+        foreach (Transform child in dotParent)
+        {
+            Destroy(child.gameObject);
+        }
+        dots.Clear();
+
+        // 새 Dot 생성
+        int totalPages = tutorialData[mode].Count;
+        for (int i = 0; i < totalPages; i++)
+        {
+            GameObject dot = Instantiate(dotPrefab, dotParent);
+            dot.SetActive(true); // 생성 직후 강제로 켜줌
+            dot.GetComponent<Image>().enabled = true; // 이미지 보이게
+            Image dotImage = dot.GetComponent<Image>();
+            dots.Add(dotImage);
+
+            int pageIndex = i; // 클릭용 로컬 변수
+            dot.GetComponent<Button>().onClick.AddListener(() => GoToPage(pageIndex));
+        }
+    }
+
+    private void UpdateDots()
+    {
+        for (int i = 0; i < dots.Count; i++)
+        {
+            dots[i].sprite = (i == currentPage) ? activeDotSprite : inactiveDotSprite;
+        }
+    }
+
+    private void GoToPage(int pageIndex)
+    {
+        currentPage = pageIndex;
+        UpdatePageUI();
     }
 
     private void UpdatePageUI()
@@ -131,6 +178,9 @@ public class TutorialsUI : MonoBehaviour
         // 버튼 상태 업데이트
         previousPageButton.gameObject.SetActive(currentPage > 0);
         nextPageButton.gameObject.SetActive(currentPage < tutorialData[mode].Count - 1);
+
+        // Dot 상태 업데이트
+        UpdateDots();
     }
 
     private void OnClickOutPage()
