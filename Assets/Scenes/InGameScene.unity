@@ -2653,7 +2653,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 42.052002, y: -21.427979}
+  m_AnchoredPosition: {x: 42.052002, y: -21.427948}
   m_SizeDelta: {x: 83.239, y: 49.143}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &507545158
@@ -3433,7 +3433,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1561105567}
   m_HandleRect: {fileID: 1561105566}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4786,7 +4786,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: -240}
+  m_AnchoredPosition: {x: 0.000030517578, y: -244.54286}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &865282696
@@ -8073,7 +8073,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 21}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1561105567
@@ -9083,6 +9083,8 @@ GameObject:
   - component: {fileID: 1837247481}
   - component: {fileID: 1837247480}
   - component: {fileID: 1837247479}
+  - component: {fileID: 1837247484}
+  - component: {fileID: 1837247483}
   - component: {fileID: 1837247478}
   m_Layer: 5
   m_Name: Chat Window Scroll View
@@ -9111,8 +9113,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -120}
-  m_SizeDelta: {x: 880, y: 240}
+  m_AnchoredPosition: {x: 0, y: -122.27161}
+  m_SizeDelta: {x: 880, y: 244.5428}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1837247478
 MonoBehaviour:
@@ -9222,6 +9224,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1837247476}
   m_CullTransparentMesh: 1
+--- !u!95 &1837247483
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1837247476}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1837247484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1837247476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac23ee4b3c12034429e53fcd0f3995e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chat: {fileID: 1837247479}
+  anim: {fileID: 1837247483}
 --- !u!1 &1839077059
 GameObject:
   m_ObjectHideFlags: 0

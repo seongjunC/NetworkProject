@@ -10,7 +10,7 @@ using UnityEngine;
 public class Chat : MonoBehaviourPun
 {
     public static bool isChating;
-    [SerializeField] TMP_InputField messageField;
+    public TMP_InputField messageField;
     [SerializeField] Transform chatContent;
     [SerializeField] ChatText chatPrefab;
     [SerializeField] TMP_Text chatTypeText;
