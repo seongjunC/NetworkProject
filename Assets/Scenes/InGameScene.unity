@@ -8153,6 +8153,7 @@ MonoBehaviour:
   turnLimit: 10
   itemSpawner: {fileID: 747523985}
   itemCount: 2
+  maxSpawnedItems: 10
   ResultPanel: {fileID: 920666501}
   inGameUI: {fileID: 1574390735}
   CountText: {fileID: 1229694190}
