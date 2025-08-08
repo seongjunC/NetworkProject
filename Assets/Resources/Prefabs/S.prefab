@@ -510,6 +510,7 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 17cb8d34800f11044b7cbf4304406168, type: 2}
   myInfo:
     items: []
+    team: 0
   _movable: 0
   _damage: 0
   moveSpeed: 3
@@ -518,12 +519,13 @@ MonoBehaviour:
     m_Bits: 256
   groundCheckRadius: 0.3
   groundCheckDistance: 1.1
-  maxSlopeAngle: 40
+  maxSlopeAngle: 50
   rotationSpeed: 10
-  stickToGroundForce: 5
+  stickToGroundForce: 2
   muzzleRotatePos: {fileID: 5143764862364520804}
   muzzleRotationSpeed: 50
   _fire: {fileID: 0}
+  _audioListener: {fileID: 0}
 --- !u!114 &8488200785960515094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -579,8 +581,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 3679909884157931425}
   bulletPrefab: {fileID: 7477408352287670730, guid: cad2697bb24936149881acad5f948d54, type: 3}
-  chargingSpeed: 10
-  maxPower: 10
+  chargingSpeed: 15
+  maxPower: 20
   powerCharge: 0
   isCharging: 0
 --- !u!58 &7368446081822583022

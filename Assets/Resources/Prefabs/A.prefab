@@ -728,9 +728,9 @@ MonoBehaviour:
     m_Bits: 256
   groundCheckRadius: 0.3
   groundCheckDistance: 1.1
-  maxSlopeAngle: 40
+  maxSlopeAngle: 50
   rotationSpeed: 10
-  stickToGroundForce: 5
+  stickToGroundForce: 2
   muzzleRotatePos: {fileID: 5143764862364520804}
   muzzleRotationSpeed: 50
   _fire: {fileID: 0}
@@ -790,8 +790,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firePoint: {fileID: 3679909884157931425}
   bulletPrefab: {fileID: 7477408352287670730, guid: 026f3f2646307f045819c010ae1090f2, type: 3}
-  chargingSpeed: 10
-  maxPower: 10
+  chargingSpeed: 15
+  maxPower: 20
   powerCharge: 0
   isCharging: 0
 --- !u!58 &7368446081822583022
