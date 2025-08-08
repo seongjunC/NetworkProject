@@ -97,6 +97,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
     public void StartRoutine()
     {
+        loading = DataManager.loadingImage;
+        
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(t =>
         {
             DependencyStatus status = t.Result;
@@ -117,8 +119,9 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
                         if (user != null)
                         {
+                            StartCoroutine(FadeRoutine());
                             PhotonNetwork.ConnectUsingSettings();
-                        }
+                        } 
                     }
                     else
                     {
@@ -127,6 +130,12 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 }
             }
         });
+    }
+
+    private IEnumerator FadeRoutine()
+    {
+        yield return new WaitForSeconds(.5f);
+        Manager.UI.FadeScreen.FadeIn(1, loading);
     }
 
     private void SignUp()
@@ -195,8 +204,6 @@ public class LoginManager : MonoBehaviourPunCallbacks
         var task = Manager.Database.root.Child("UserData").Child(user.UserId).Child("Data").GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
         bool connected = false;
-        Debug.Log(FirebaseManager.Auth.CurrentUser.Email);
-        Debug.Log(user.Email);
 
         if (user.Email != FirebaseManager.Auth.CurrentUser.Email)
             user = FirebaseManager.Auth.CurrentUser;
