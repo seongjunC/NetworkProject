@@ -29,7 +29,17 @@ public class FirebaseManager : Singleton<FirebaseManager>
     private void Awake()
     {
         Application.runInBackground = true;
+        Init();
+    }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+            Debug.Log(auth.CurrentUser.Email);
+    }
+
+    public void Init()
+    {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(t =>
         {
             DependencyStatus status = t.Result;
@@ -92,8 +102,9 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
         Manager.UI.FadeScreen.FadeOut(1);
         Auth.SignOut();
-        OnLogOut?.Invoke();
+        FirebaseAuth.DefaultInstance.SignOut();
 
+        OnLogOut?.Invoke();
         Manager.UI.PopUpUI.Show("성공적으로 로그아웃 하였습니다.");
     }
 

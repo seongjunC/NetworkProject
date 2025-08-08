@@ -6,7 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Battle/ItemEffect/AttackPotion")]
 public class AttackPotion : ItemEffectSO
 {
-    [Header("버프 수치 ")]
+    [Header("버프 수치")]
     [SerializeField]
     private float BuffAmount;
     [Header("적용 범위")]

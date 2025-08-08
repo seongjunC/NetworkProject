@@ -11,6 +11,12 @@ public class PlayerLobbyPanel : MonoBehaviour
     private PlayerData data;
 
     #region LifeCycle   
+
+    private void Start()
+    {
+        Manager.Firebase.OnLogOut += () => data = null;
+    }
+
     private void OnEnable()
     {
         data ??= Manager.Data.PlayerData;

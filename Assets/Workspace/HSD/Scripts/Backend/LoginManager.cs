@@ -30,6 +30,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject loginMessage;
 
     [SerializeField] bool isTest;
+    [SerializeField] TankData firstTank;
     private FirebaseUser user;
     private bool isLogin = false;
     private Sprite loading;
@@ -85,6 +86,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         email.text = "";
         pw.text = "";
         isLogin = false;
+        user = null;
     }
 
     private void EnterLogin(string s)
@@ -95,6 +97,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
     public void StartRoutine()
     {
+        loading = DataManager.loadingImage;
+        
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(t =>
         {
             DependencyStatus status = t.Result;
@@ -115,8 +119,9 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
                         if (user != null)
                         {
+                            StartCoroutine(FadeRoutine());
                             PhotonNetwork.ConnectUsingSettings();
-                        }
+                        } 
                     }
                     else
                     {
@@ -125,6 +130,12 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 }
             }
         });
+    }
+
+    private IEnumerator FadeRoutine()
+    {
+        yield return new WaitForSeconds(.5f);
+        Manager.UI.FadeScreen.FadeIn(1, loading);
     }
 
     private void SignUp()
@@ -193,6 +204,9 @@ public class LoginManager : MonoBehaviourPunCallbacks
         var task = Manager.Database.root.Child("UserData").Child(user.UserId).Child("Data").GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
         bool connected = false;
+
+        if (user.Email != FirebaseManager.Auth.CurrentUser.Email)
+            user = FirebaseManager.Auth.CurrentUser;
 
         Manager.Database.root.Child("UserData").Child(user.UserId).Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
         {
@@ -274,7 +288,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
         {
-            Manager.Data.TankInventoryData.AddTankEvent("C", 1);
+            Manager.Data.TankInventoryData.AddTankEvent(firstTank.tankName, 1);
             Manager.UI.NickNameSelectPanel.Show();
         }
 
