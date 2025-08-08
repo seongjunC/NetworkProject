@@ -30,6 +30,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject loginMessage;
 
     [SerializeField] bool isTest;
+    [SerializeField] TankData firstTank;
     private FirebaseUser user;
     private bool isLogin = false;
     private Sprite loading;
@@ -274,7 +275,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         if (string.IsNullOrEmpty(Manager.Data.PlayerData.Name))
         {
-            Manager.Data.TankInventoryData.AddTankEvent("C", 1);
+            Manager.Data.TankInventoryData.AddTankEvent(firstTank.tankName, 1);
             Manager.UI.NickNameSelectPanel.Show();
         }
 
