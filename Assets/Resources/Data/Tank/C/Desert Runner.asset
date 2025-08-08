@@ -21,7 +21,8 @@ MonoBehaviour:
   damage: 1
   maxMove: 5
   maxHp: 1
-  tankName: C
+  tankName: Desert Runner
+  tankMetaName: "\uC0AC\uB9C9 \uC9C8\uC8FC\uC790"
   rank: 3
   Icon: {fileID: 21300000, guid: 48bd9c3c1e23d014dac9dea37a9b4155, type: 3}
   description: "C\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

@@ -1242,6 +1242,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sand Beetle
       objectReference: {fileID: 0}
+    - target: {fileID: 8139258335568121355, guid: f3783fd8925ec3640b1d023db79c3b61, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 8139258335568121355, guid: f3783fd8925ec3640b1d023db79c3b61, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 8139258335568121355, guid: f3783fd8925ec3640b1d023db79c3b61, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.95702326
+      objectReference: {fileID: 0}
+    - target: {fileID: 8139258335568121355, guid: f3783fd8925ec3640b1d023db79c3b61, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.29001114
+      objectReference: {fileID: 0}
+    - target: {fileID: 8139258335568121355, guid: f3783fd8925ec3640b1d023db79c3b61, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 33.717
+      objectReference: {fileID: 0}
     - target: {fileID: 8319253104634241782, guid: f3783fd8925ec3640b1d023db79c3b61, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.0100002

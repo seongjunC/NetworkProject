@@ -22,6 +22,7 @@ MonoBehaviour:
   maxMove: 5
   maxHp: 1
   tankName: Titan Gear
+  tankMetaName: "\uD0C0\uC774\uD0C4 \uAE30\uC5B4"
   rank: 0
   Icon: {fileID: 21300000, guid: 08db0a28a176e0247b05169d091e965e, type: 3}
   description: "S\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

@@ -21,7 +21,8 @@ MonoBehaviour:
   damage: 1
   maxMove: 5
   maxHp: 1
-  tankName: A
+  tankName: Green Viper
+  tankMetaName: "\uB179\uC0C9 \uB3C5\uC0AC"
   rank: 1
   Icon: {fileID: 21300000, guid: fbc8f0dab81bbba409ba68826180b68a, type: 3}
   description: "A\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

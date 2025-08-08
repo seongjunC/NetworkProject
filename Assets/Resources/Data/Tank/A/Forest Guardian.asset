@@ -21,7 +21,8 @@ MonoBehaviour:
   damage: 1
   maxMove: 5
   maxHp: 1
-  tankName: A
+  tankName: Forest Guardian
+  tankMetaName: "\uC232\uC758 \uC218\uD638\uC790"
   rank: 1
   Icon: {fileID: 21300000, guid: 2d7d672c67664f741b7964e28f7fad82, type: 3}
   description: "A\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."

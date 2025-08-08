@@ -21,7 +21,8 @@ MonoBehaviour:
   damage: 1
   maxMove: 5
   maxHp: 1
-  tankName: C
+  tankName: Sand Beetle
+  tankMetaName: "\uBAA8\uB798 \uB531\uC815\uBC8C\uB808"
   rank: 3
   Icon: {fileID: 21300000, guid: 4f77a5c82e51d9d438a48eb1f8568c1e, type: 3}
   description: "C\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
