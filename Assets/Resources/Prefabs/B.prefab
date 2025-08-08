@@ -613,6 +613,7 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 0b5327d3b52ddf4439d2a4dbc7c866c0, type: 2}
   myInfo:
     items: []
+    team: 0
   _movable: 0
   _damage: 0
   moveSpeed: 3
@@ -730,7 +731,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5767406228868708187}
   m_Enabled: 1
---- !u!1 &6166826761552782158
+--- !u!1 &6693949736284291591
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
