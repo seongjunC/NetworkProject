@@ -33,7 +33,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [Header("탱크 리스트 확인용")]
     [SerializeField] List<PlayerController> tanks = new();
     [SerializeField] GameObject Arrow;
-    [SerializeField] private TestBattleManager testBattleManager;
+    [SerializeField] public TestBattleManager testBattleManager;
 
 
     #region private

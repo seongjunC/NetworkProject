@@ -40,8 +40,7 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine ||
         !MSKTurnController.Instance.IsMyTurn() ||
         !MSKTurnController.Instance.isTurnRunning ||
-        !_playerController.isControllable ||
-        _playerController.IsAttacked)
+        !_playerController.isControllable)
             return;
 
         // 스페이스바 누르고 있으면 차지 시작
@@ -62,6 +61,7 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
                 Invoke(nameof(Shoot), 1f);
                 isDoubleAttack = false;
             }
+            MSKTurnController.Instance.testBattleManager.SetTurnEndButton(false);
             powerCharge = 0f;
             isCharging = false;
             _playerController.SetAttacked(true);
