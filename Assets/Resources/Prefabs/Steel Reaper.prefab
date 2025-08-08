@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 4061002720274650685}
   - component: {fileID: 6807135137641065820}
   m_Layer: 9
-  m_Name: S (2)
+  m_Name: Steel Reaper
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 199289204340103367}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.790461, y: 1.34, z: 0.018474726}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -364,7 +364,7 @@ Transform:
   m_GameObject: {fileID: 2959060584201852885}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.64, y: 0.07, z: 0}
+  m_LocalPosition: {x: 0.433, y: 0.058, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -412,7 +412,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -32
-  m_Sprite: {fileID: 21300000, guid: d0cbf8743422bef4798dd99dcd07b745, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 37c14e4da0f31c54e88b46422d2312af, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -799,7 +799,7 @@ Transform:
   m_GameObject: {fileID: 6336581945676701768}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.953, y: -0.022, z: 0}
+  m_LocalPosition: {x: 0.77, y: -0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -829,14 +829,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7225005312757144137}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.20263427, w: 0.9792545}
+  m_LocalRotation: {x: -0, y: -0, z: 0.24937668, w: 0.96840656}
   m_LocalPosition: {x: 0, y: 0.186, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1295495662176681564}
   m_Father: {fileID: 954779543967579517}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 23.382}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 28.881}
 --- !u!1 &7903879125852305349
 GameObject:
   m_ObjectHideFlags: 0

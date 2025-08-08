@@ -30,6 +30,8 @@ public class GachaRecordsPanel : MonoBehaviour
 
         for (int i = 0; i < gachaResults.Count; i++)
         {
+            TankData data = Manager.Data.TankDataController.TankDatas[gachaResults[i].Name];
+            gachaResults[i].Name = data.tankMetaName;
             gachaResultSlots[i].gameObject.SetActive(true);
             gachaResultSlots[i].SetUp(gachaResults[i]);
 

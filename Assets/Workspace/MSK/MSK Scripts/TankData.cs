@@ -24,6 +24,7 @@ public class TankData : ScriptableObject
 
     [Header("MetaData")]
     public string tankName;
+    public string tankMetaName;
     public Rank rank;
     public Sprite Icon;
     [TextArea]

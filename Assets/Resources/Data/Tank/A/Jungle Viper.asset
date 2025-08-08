@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
-  m_Name: A
+  m_Name: Jungle Viper
   m_EditorClassIdentifier: 
   baseDamage: 100
   baseMaxHp: 250
@@ -23,5 +23,5 @@ MonoBehaviour:
   maxHp: 1
   tankName: A
   rank: 1
-  Icon: {fileID: 21300000, guid: fbc8f0dab81bbba409ba68826180b68a, type: 3}
+  Icon: {fileID: 21300000, guid: 7ac2de9ff49298741b0b3f425642da4e, type: 3}
   description: "A\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
