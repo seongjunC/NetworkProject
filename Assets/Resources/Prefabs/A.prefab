@@ -827,6 +827,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.13}
   serializedVersion: 2
   m_Radius: 0.65
+--- !u!1 &5858088244185059365
 --- !u!81 &-6485414112809708891
 AudioListener:
   m_ObjectHideFlags: 0
