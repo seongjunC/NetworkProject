@@ -54,7 +54,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private PlayerInfo currentPlayer;
     private Room room;
     // 부울 변수
-    private bool isTurnRunning = false;
     private bool isGameStart = false;
     private bool isTurnEnd = false;
     // 내부 변수
@@ -64,6 +63,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     #endregion
     #region public
 
+    public bool isTurnRunning { get; private set; } = false;
     public bool isGameEnd = false;
     public event System.Action<PlayerController, PlayerInfo> OnPlayerDied;
     public Dictionary<int, PlayerInfo> allPlayers = new Dictionary<int, PlayerInfo>();
@@ -371,18 +371,19 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         base.OnPlayerLeftRoom(otherPlayer);
 
         Debug.Log($"플레이어 퇴장 : ActorNumber = {otherPlayer.ActorNumber}");
+        var controller = GetPlayerController(otherPlayer.ActorNumber);
+        if (controller != null)
+        {
+            controller.PlayerDead();
+        }
         foreach (var tank in tanks)
         {
             if (tank.myInfo.player.ActorNumber == otherPlayer.ActorNumber)
             {
                 tanks.Remove(tank);
+                allPlayers.Remove(otherPlayer.ActorNumber);
                 break;
             }
-        }
-        var controller = GetPlayerController(otherPlayer.ActorNumber);
-        if (controller != null)
-        {
-            controller.PlayerDead();
         }
     }
 
@@ -558,11 +559,22 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_PlayerDead(int actorNumber)
     {
+        if (!DeadPlayer.Contains(actorNumber))
+        {
+            DeadPlayer.Add(actorNumber);
+        }
         var tank = tanks.Find(t => t.photonView.Owner.ActorNumber == actorNumber);
-        OnPlayerDied?.Invoke(tank, currentPlayer);
-        DeadPlayer.Add(actorNumber);
+        if (tank != null)
+        {
+            OnPlayerDied?.Invoke(tank, currentPlayer);
+            photonView.RPC(nameof(RPC_RemoveDead), RpcTarget.All, actorNumber);
+        }
+        else
+        {
+            testBattleManager.HandlePlayerExit(actorNumber);
+        }
 
-        photonView.RPC(nameof(RPC_RemoveDead), RpcTarget.All, actorNumber);
+
     }
 
     [PunRPC]
@@ -592,7 +604,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             EnableCurrentPlayer();
             SpawnArrowCurrentPlayer();
+            inGameUI.SetItemButtonInteractable(true);
         }
+
+
     }
 
     [PunRPC]

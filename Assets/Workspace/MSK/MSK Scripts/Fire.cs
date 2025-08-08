@@ -37,7 +37,11 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Update()
     {
-        if (!photonView.IsMine || !_playerController.isControllable || _playerController.IsAttacked)
+        if (!photonView.IsMine ||
+        !MSKTurnController.Instance.IsMyTurn() ||
+        !MSKTurnController.Instance.isTurnRunning ||
+        !_playerController.isControllable ||
+        _playerController.IsAttacked)
             return;
 
         // 스페이스바 누르고 있으면 차지 시작
@@ -114,6 +118,9 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         {
             DamageBuff.Add(null);
         }
+        powerCharge = 0f;
+        isCharging = false;
+
     }
 
     // IPunObservable 인터페이스 구현

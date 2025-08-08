@@ -33,20 +33,21 @@ public class TestBattleManager : MonoBehaviourPun
     public void SetTurnEndButton(bool result)
     {
         _turnEndButton.interactable = result;
+        inGameUI.SetItemButtonInteractable(result);
     }
 
     public void TestTurnEnd()
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-
+        SetTurnEndButton(false);
         _turnController.TurnFinished();
     }
     public void TestTurnEnd(int actnum)
     {
         if (_playerController != null)
             _playerController.EndPlayerTurn();
-
+        SetTurnEndButton(false);
         _turnController.TurnFinished(actnum);
     }
     public void DisableTurnEnd()
@@ -70,6 +71,7 @@ public class TestBattleManager : MonoBehaviourPun
         killerInfo.RecordKillCount();
         Debug.Log($"[BattleManager] {killerInfo.NickName}가 {victim.myInfo.NickName} 처치. 남은 R:{redRemain}, B:{blueRemain}");
 
+
         if (!_gameEnded && (blueRemain == 0 || redRemain == 0))
         {
             _gameEnded = true;
@@ -82,6 +84,29 @@ public class TestBattleManager : MonoBehaviourPun
         }
 
         Debug.Log($"GameEndCheck : 블루팀 : {blueRemain} , 레드팀 : {redRemain}");
+    }
+
+    /// <summary>
+    /// 탱크 오브젝트가 남아 있든 없든 무조건 팀원 수를 차감합니다.
+    /// </summary>
+    public void HandlePlayerExit(int actorNumber)
+    {
+        Team team = PhotonNetwork.CurrentRoom.GetPlayer(actorNumber).GetTeam();
+        if (team == Team.Red) redRemain--;
+        else blueRemain--;
+
+        Debug.Log($"[BattleManager] Actor {actorNumber} 퇴장/사망 처리 → 남은 R:{redRemain}, B:{blueRemain}");
+
+        if (!_gameEnded && (blueRemain == 0 || redRemain == 0))
+        {
+            _gameEnded = true;
+            Team winnerTeam = redRemain == 0 ? Team.Blue : Team.Red;
+
+            int mvpActor = ReturnMVP(winnerTeam);
+
+            Debug.Log($"게임 종료!\n {(winnerTeam == Team.Red ? "레드" : "블루")}팀의 승리");
+            photonView.RPC(nameof(_turnController.RPC_GameEnded), RpcTarget.All, winnerTeam, mvpActor);
+        }
     }
 
     private int ReturnMVP(Team WinnerTeam)
