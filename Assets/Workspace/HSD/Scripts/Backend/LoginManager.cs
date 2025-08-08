@@ -32,13 +32,14 @@ public class LoginManager : MonoBehaviourPunCallbacks
     [SerializeField] bool isTest;
     private FirebaseUser user;
     private bool isLogin = false;
+    private Sprite loading;
 
     #region LifeCycle
     public override void OnEnable()
     {
         base.OnEnable();
         if (Manager.Game.State == Game.State.Game)
-            return;
+            return;        
 
         Manager.UI.FadeScreen.FadeOut(1);
         Manager.Game.State = Game.State.Login;
@@ -49,6 +50,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         Subscribe();
         loginButton.interactable = true;
     }
+
     public override void OnDisable()
     {
         base.OnDisable();
@@ -135,6 +137,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     private void Login()
     {
         if (isLogin) return;
+        loading = DataManager.loadingImage;
         isLogin = true;
         loginButton.interactable = false;
         loginMessage.SetActive(true);
@@ -178,7 +181,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
                 }
 
                 PhotonNetwork.ConnectUsingSettings();
-                Manager.UI.FadeScreen.FadeIn(1);
+                Manager.UI.FadeScreen.FadeIn(1, loading);
             });
         });
     }
@@ -223,7 +226,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
             loginMessage.SetActive(false);
             loginPanel.SetActive(true);
             PhotonNetwork.Disconnect();
-            Manager.UI.FadeScreen.FadeOut(1);
+            Manager.UI.FadeScreen.FadeOut(1, loading);
             yield break;
         }
         
@@ -278,7 +281,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1);
 
         PhotonNetwork.JoinLobby();
-        Manager.UI.FadeScreen.FadeOut(1);        
+        Manager.UI.FadeScreen.FadeOut(1, loading);        
 
         gameObject.SetActive(false);
         lobbyPanel.SetActive(true);

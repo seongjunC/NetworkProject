@@ -24,9 +24,17 @@ public class FadeScreen : MonoBehaviour
         StartCoroutine(Utils.Fade(fadeImage, 0, 1, fadeTime));
     }
 
-    public void FadeOut(float fadeTime = 1)
+    public void FadeOut(float fadeTime = 1, Sprite sprite = null)
     {
-        StartCoroutine(Utils.Fade(fadeImage, 1, 0, fadeTime));
+        fadeImage.sprite = sprite;
+        fadeImage.color = sprite == null ? Color.black : Color.white;
+
+        StartCoroutine(FadeOutRouine(fadeTime));
+    }
+
+    private IEnumerator FadeOutRouine(float fadeTime)
+    {
+        yield return StartCoroutine(Utils.Fade(fadeImage, 1, 0, fadeTime));
         fadeImage.raycastTarget = false;
     }
 

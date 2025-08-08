@@ -118,4 +118,20 @@ public class FallingBox : MonoBehaviourPun
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDist);
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (MSKTurnController.Instance == null || MSKTurnController.Instance.isGameEnd)
+            return;
+        if (collision.CompareTag("MapBoundary"))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (MSKTurnController.Instance != null)
+            MSKTurnController.Instance.OnItemDestroyed(gameObject);
+    }
 }

@@ -109,6 +109,8 @@ public class Projectile : MonoBehaviourPun
     {
         if (!PhotonNetwork.IsMasterClient) return; // 마스터 클라이언트에서만 충돌 처리
 
+        realDamage = damage;
+
         Vector2 explosionPoint = collision.contacts[0].point;
 
         // 데미지 처리

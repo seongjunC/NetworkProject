@@ -66,6 +66,13 @@ MonoBehaviour:
   - SetOwnerActorNumber
   - StartTurnForPlayer
   - AutomaticallySyncSceneTrue
+  - GameStart_RPC
+  - RPC_ApplyRandomTurn
+  - RPC_HighlightDroppedItems
+  - RPC_RemoveDead
+  - RPC_SetSpawnOrder
+  - RPC_HighlightAck
+  - DisableTurnEnd
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

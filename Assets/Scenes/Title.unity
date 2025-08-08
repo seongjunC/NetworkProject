@@ -7887,7 +7887,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8fc1dfcd5b71434280b541e0d722b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSceneName: MSK InGameTest
+  gameSceneName: InGameScene
   playerSlotPrefab: {fileID: 4398182311349774773, guid: 7a08ab7af783c0246aafa561d7fd105b, type: 3}
   redPlayerContent: {fileID: 1704617411}
   bluePlayerContent: {fileID: 74122402}
@@ -29054,7 +29054,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 165
     m_Right: 0
-    m_Top: 100
+    m_Top: 53
     m_Bottom: 100
   m_ChildAlignment: 0
   m_StartCorner: 0
@@ -33245,7 +33245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 696917177303876150, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 114.41425
       objectReference: {fileID: 0}
     - target: {fileID: 696917177303876150, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -33366,6 +33366,10 @@ PrefabInstance:
     - target: {fileID: 5316795765084889719, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_Color.a
       value: 0.5529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 6062703877778485246, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6085408916159698831, guid: bea3241ffd1b5744e8597adbb106b293, type: 3}
       propertyPath: m_Name

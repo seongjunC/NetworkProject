@@ -5,6 +5,18 @@ using UnityEngine;
 
 public class DataManager : Singleton<DataManager>
 {
+    public static Sprite currentLoadingImage;
+    public static Sprite loadingImage 
+    {   
+        get 
+        { 
+            currentLoadingImage = GetRamdomLoadingImage();
+
+            return currentLoadingImage;
+        } 
+    }
+    private static Sprite[] loadingSprite;
+
     public PlayerData PlayerData;
     public TankInventoryData TankInventoryData;    
     
@@ -14,6 +26,7 @@ public class DataManager : Singleton<DataManager>
 
     private void Start()
     {
+        loadingSprite = Resources.LoadAll<Sprite>("Loading");
         saveManager = gameObject.AddComponent<SaveManager>();
         Manager.Firebase.OnLogOut += () => TankDataController.TankDatas.Clear();
     }
@@ -25,5 +38,10 @@ public class DataManager : Singleton<DataManager>
         TankInventoryData.OnTankCountUpdated += TankDataController.UpdateCount;
         TankInventoryData.Init();
         GachaManager.Init();
+    }
+
+    private static Sprite GetRamdomLoadingImage()
+    {
+        return loadingSprite[Random.Range(0, loadingSprite.Length)];
     }
 }

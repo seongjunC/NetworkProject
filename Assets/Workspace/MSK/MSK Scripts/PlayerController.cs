@@ -119,6 +119,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         // 입력 처리는 IsMine인 클라이언트에서만 실행
         if (!photonView.IsMine || _isDead || !isControllable)
         {
+            horizontalInput = 0;
             return;
         }
 
@@ -213,6 +214,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void OnHit(float damage)
     {
+        if (MSKTurnController.Instance == null || MSKTurnController.Instance.isGameEnd)
+            return;
         if (OnBarrier)
         {
             OnBarrier = false;
@@ -236,7 +239,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public void EndPlayerTurn()
     {
         _movable = 0;
-        SetAttacked(true);
+        _rigidbody.velocity = Vector2.zero;
+        // SetAttacked(true);
         isControllable = false;
     }
 
@@ -262,7 +266,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (_isDead || MSKTurnController.Instance.isGameEnd)
+        if (_isDead || MSKTurnController.Instance == null || MSKTurnController.Instance.isGameEnd)
             return;
         if (collision.CompareTag("MapBoundary"))
         {
@@ -276,11 +280,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         if (_isDead)
             return;
+        if (MSKTurnController.Instance == null)
+            return;
+        if (MSKTurnController.Instance.isGameEnd)
+            return;
         _isDead = true;
         OnPlayerAttacked = null;
         Debug.Log("플레이어 사망");
-        if (MSKTurnController.Instance == null)
-            return;
+
+
 
         MSKTurnController.Instance.photonView.RPC("RPC_PlayerDead", RpcTarget.MasterClient, photonView.Owner.ActorNumber);
     }
