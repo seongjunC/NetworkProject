@@ -76,6 +76,8 @@ MonoBehaviour:
   - DisableTurnEnd
   - RPC_GetItem
   - RPC_RequestPickup
+  - RPC_SetTurnRunning
+  - RPC_DisableAllPlayersControl
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
