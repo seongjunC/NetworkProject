@@ -44,6 +44,14 @@ public class Chat : MonoBehaviourPun
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            messageField.ActivateInputField();
+        }
+
+        if (!messageField.isFocused)
+            return;
+
         // 마지막 메시지 불러오기
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -62,11 +70,6 @@ public class Chat : MonoBehaviourPun
                 messageField.text = $"/귓 {beforeWhisperPlayerName} ";
                 messageField.caretPosition = messageField.text.Length;
             }
-        }
-
-        if(Input.GetKeyDown(KeyCode.Return))
-        {
-            messageField.ActivateInputField();
         }
 
         if(Input.GetKeyDown(KeyCode.Tab))

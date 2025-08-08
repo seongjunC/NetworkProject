@@ -34,14 +34,16 @@ public class RoomSlot : MonoBehaviour
 
     public void SetUp(RoomInfo _room)
     {
-        this.room = _room;
+        room = _room;
         roomName = _room.Name;
 
         // UI
         roomNameText.text = _room.Name;
         roomCountText.text = $"{_room.PlayerCount} / {_room.MaxPlayers}";
         mapIcon.texture = Manager.Resources.Load<Texture2D>($"MapIcon/{((MapType)((int)_room.CustomProperties["Map"])).ToString()}");
-        roomPasswordImage.sprite = (string)_room.CustomProperties["Password"] == null ? unlockSprite : lockSprite;
+
+        string password = room.CustomProperties["Password"] as string ?? "";
+        roomPasswordImage.sprite = string.IsNullOrEmpty(password) ? unlockSprite : lockSprite;
 
         if (_room.CustomProperties.TryGetValue("Full", out object value))
         {
@@ -73,13 +75,14 @@ public class RoomSlot : MonoBehaviour
             return;
         }
 
-        if ((string)room.CustomProperties["Password"] != null)
+        string password = room.CustomProperties["Password"] as string ?? "";
+        if (!string.IsNullOrEmpty(password))
         {
             OnPasswordRoomSelected?.Invoke(room);
             return;
         }
-        button.onClick.RemoveListener(JoinRoom);
 
+        button.onClick.RemoveListener(JoinRoom);
         StartCoroutine(JoinRoomRoutine());
     }
 

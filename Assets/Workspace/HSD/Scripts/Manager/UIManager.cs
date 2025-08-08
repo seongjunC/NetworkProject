@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class UIManager : Singleton<UIManager>
 {
     private Canvas mainCanvas;
+    private Canvas subCanvas;
 
     public PopUpUI PopUpUI;
     public PopUpUI_Action PopUpUI_Action;
@@ -19,7 +20,7 @@ public class UIManager : Singleton<UIManager>
     #region LifeCycle
     private void Awake()
     {
-        CreateMainCanvas();
+        mainCanvas = CreateCanvas(5);
 
         PopUpUI = Instantiate(Resources.Load<PopUpUI>("UI/PopupUI"), mainCanvas.transform);
         FadeScreen = Instantiate(Resources.Load<FadeScreen>("UI/FadeScreen"), mainCanvas.transform);
@@ -27,17 +28,20 @@ public class UIManager : Singleton<UIManager>
         PopUpUI_Action = Instantiate(Resources.Load<PopUpUI_Action>("UI/PopUpUI_Action"), mainCanvas.transform);
         PlayerInfoPanel = Instantiate(Resources.Load<PlayerInfoPanel>("UI/PlayerInfoPanel"), mainCanvas.transform);
         AccountDeletePanel = Instantiate(Resources.Load<AccountDeletePanel>("UI/AccountDeletePanel"), mainCanvas.transform);
-        NickNameSelectPanel = Instantiate(Resources.Load<NickNameSelectPanel>("UI/NickNameSelectPanel"), mainCanvas.transform);
+
+        subCanvas = CreateCanvas(2);
+
+        NickNameSelectPanel = Instantiate(Resources.Load<NickNameSelectPanel>("UI/NickNameSelectPanel"), subCanvas.transform);
     }
     #endregion
 
-    private void CreateMainCanvas()
+    private Canvas CreateCanvas(int sortingOrder)
     {
-        mainCanvas = new GameObject("MainCanvas").AddComponent<Canvas>();
+        Canvas mainCanvas = new GameObject("MainCanvas").AddComponent<Canvas>();
 
         mainCanvas.pixelPerfect = true;
         mainCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        mainCanvas.sortingOrder = 5;
+        mainCanvas.sortingOrder = sortingOrder;
 
         CanvasScaler scaler = mainCanvas.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -46,5 +50,7 @@ public class UIManager : Singleton<UIManager>
         mainCanvas.AddComponent<GraphicRaycaster>();
 
         mainCanvas.transform.SetParent(transform, false);
+
+        return mainCanvas;
     }
 }

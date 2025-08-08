@@ -240,8 +240,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         Manager.UI.FadeScreen.FadeIn(.5f);
         yield return new WaitForSeconds(.5f);
-        
-        PhotonNetwork.JoinRandomRoom();
+
+        var expectedCustomProperties = new ExitGames.Client.Photon.Hashtable
+        {
+            { "Password", "" }
+        };
+
+        PhotonNetwork.JoinRandomRoom(expectedCustomProperties, 0);
 
         yield return new WaitForSeconds(1f);
         Manager.UI.FadeScreen.FadeOut(.5f);
@@ -342,7 +347,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         if (isPassword.isOn)
         {
             PhotonNetwork.CurrentRoom.SetPassword(passwordField.text);            
-        }        
+        }
+        else
+        {
+            PhotonNetwork.CurrentRoom.SetPassword("");
+        }
 
         passwordField.text = "";
         Debug.Log("방 생성 완료");

@@ -10,18 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
-  m_Name: B
+  m_Name: Steel Hornet
   m_EditorClassIdentifier: 
-  baseDamage: 100
-  baseMaxHp: 250
-  baseMaxMove: 5
-  damageGrowth: 10
-  maxHpGrowth: 25
-  maxMoveGrowth: 1
+  baseDamage: 120
+  baseMaxHp: 220
+  baseMaxMove: 6
+  damageGrowth: 15
+  maxHpGrowth: 15
+  maxMoveGrowth: 0
   damage: 1
   maxMove: 5
   maxHp: 1
-  tankName: B
+  tankName: Steel Hornet
+  tankMetaName: "\uAC15\uCCA0 \uB9D0\uBC8C"
   rank: 2
   Icon: {fileID: 21300000, guid: f08838a4b0eb82741b2eabaec087ffe4, type: 3}
-  description: "B\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
+  description: "\uB9D0\uBC8C\uCC98\uB7FC \uBE60\uB974\uACE0 \uCE58\uBA85\uC801\uC778
+    \uC77C\uACA9. \uBC29\uC5B4\uB825\uC740 \uC57D\uD558\uC9C0\uB9CC \uC21C\uAC04
+    \uD654\uB825\uC774 \uAC15\uD568."

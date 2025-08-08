@@ -17,6 +17,7 @@ public class GachaManager
     public void Init()
     {
         InitGachaData();
+        gachaResults.Clear();
         GachaData = Resources.Load<GachaData>("Data/Gacha/GachaData");
     }
 
@@ -62,7 +63,7 @@ public class GachaManager
     {
         string data = args.Snapshot.GetRawJsonValue();
         GachaResult result = JsonUtility.FromJson<GachaResult>(data);
-        Debug.Log("Add Event Invoke");
+        Debug.Log("Add Event Invoke");        
         gachaResults.Add(result);
 
         OnGachaResultChanged?.Invoke(result);
