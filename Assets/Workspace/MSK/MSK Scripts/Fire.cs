@@ -41,7 +41,15 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         !MSKTurnController.Instance.IsMyTurn() ||
         !MSKTurnController.Instance.isTurnRunning ||
         !_playerController.isControllable)
+        {
+            if (isCharging)
+            {
+                isCharging = false;
+                powerCharge = 0f;
+            }
             return;
+        }
+
 
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
@@ -53,7 +61,7 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         // 스페이스바에서 손을 뗐을 때 또는 풀차지시 발사
-        if (isCharging && Input.GetKeyUp(KeyCode.Space) || powerCharge == maxPower)
+        if (isCharging && Input.GetKeyUp(KeyCode.Space) || powerCharge >= maxPower)
         {
             Shoot();
             if (isDoubleAttack)

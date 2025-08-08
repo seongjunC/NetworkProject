@@ -7,7 +7,7 @@ using UnityEngine.Analytics;
 
 public class FallingBox : MonoBehaviourPun
 {
-    [SerializeField] private ItemData itemData;
+    [SerializeField] public ItemData itemData { get; private set; }
     private float fallSpeed;
     private float swayAmp;
     private float swayFreq;
@@ -75,10 +75,14 @@ public class FallingBox : MonoBehaviourPun
             if (!h.CompareTag("Player")) continue;
 
             var pc = h.GetComponent<PlayerController>();
-            if (pc != null && pc.photonView.IsMine)
+            if (pc != null)
             {
-                if (TryAcquire(pc)) break;
-
+                MSKTurnController.Instance.photonView.RPC(
+                    nameof(MSKTurnController.RPC_RequestPickup),
+                    RpcTarget.MasterClient,
+                    photonView.ViewID,
+                    pc.photonView.Owner.ActorNumber
+                );
             }
         }
     }
@@ -90,19 +94,19 @@ public class FallingBox : MonoBehaviourPun
         triggerCol.isTrigger = true;
     }
 
-    private bool TryAcquire(PlayerController pc)
-    {
-        Debug.Log("아이템 획득 체크");
-        if (!pc.HasFreeItemSlot()) return false;
-
-        bool isAcquired = pc.TryAcquireItem(itemData);
-        Debug.Log($"아이템 획득 시도, {isAcquired}");
-        if (!isAcquired) return false;
-
-        Debug.Log($"{pc.myInfo.NickName}이 {itemData.name}을 획득하였습니다.");
-        photonView.RPC(nameof(RPC_OpenBox), RpcTarget.All);
-        return true;
-    }
+    //     private bool TryAcquire(PlayerController pc)
+    //     {
+    //         Debug.Log("아이템 획득 체크");
+    //         if (!pc.HasFreeItemSlot()) return false;
+    // 
+    //         bool isAcquired = pc.TryAcquireItem(itemData);
+    //         Debug.Log($"아이템 획득 시도, {isAcquired}");
+    //         if (!isAcquired) return false;
+    // 
+    //         Debug.Log($"{pc.myInfo.NickName}이 {itemData.name}을 획득하였습니다.");
+    //         photonView.RPC(nameof(RPC_OpenBox), RpcTarget.All);
+    //         return true;
+    //     }
 
     [PunRPC]
     private void RPC_OpenBox()
