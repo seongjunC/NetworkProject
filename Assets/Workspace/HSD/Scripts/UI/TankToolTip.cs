@@ -35,19 +35,21 @@ public class TankToolTip : MonoBehaviour
 
         gameObject.SetActive(true);
 
-        // ½ºÅİ
-        hpText.text = data.maxHp.ToString();
-        damageText.text = data.damage.ToString();
-        maxMoveText.text = data.maxMove.ToString();
+        data.InitStat();
 
-        // µ¥ÀÌÅÍ
+        // ìŠ¤í…Ÿ
+        hpText.text = data.maxHp.ToString("F0");
+        damageText.text = data.damage.ToString("F0");
+        maxMoveText.text = data.maxMove.ToString("F0");
+
+        // ë°ì´í„°
         levelText.text = $"Lv.{data.Level.ToString()}";
         rankText.text = data.rank.ToString();
         rankText.color = rankColor;
         tankIcon.sprite = data.Icon;
         tankNameText.text = data.tankName;
 
-        // ¾÷±×·¹ÀÌµå
+        // ì—…ê·¸ë ˆì´ë“œ
         int required = data.GetRequiredCountForNextLevel();
         int progress = data.GetProgressTowardsNextLevel();
 
