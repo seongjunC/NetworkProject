@@ -76,7 +76,7 @@ public class FallingBox : MonoBehaviourPun
             if (!h.CompareTag("Player")) continue;
 
             var pc = h.GetComponent<PlayerController>();
-            if (pc != null && pc.photonView.IsMine)
+            if (pc != null)
             {
                 if (TryAcquire(pc)) break;
 
@@ -101,7 +101,8 @@ public class FallingBox : MonoBehaviourPun
         if (!isAcquired) return false;
 
         Debug.Log($"{pc.myInfo.NickName}이 {itemData.name}을 획득하였습니다.");
-        photonView.RPC(nameof(RPC_OpenBox), RpcTarget.All);
+        Destroy(gameObject);
+        //photonView.RPC(nameof(RPC_OpenBox), RpcTarget.All);
         return true;
     }
 

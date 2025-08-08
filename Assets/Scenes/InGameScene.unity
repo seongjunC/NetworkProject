@@ -5558,7 +5558,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -7868,6 +7868,8 @@ MonoBehaviour:
   item1Button: {fileID: 718079426}
   item2Button: {fileID: 2045418933}
   endTurnButton: {fileID: 1225509752}
+  itemIcon1: {fileID: 1848486277}
+  itemIcon2: {fileID: 1043458697}
   Button1Image: {fileID: 1848486277}
   Button2Image: {fileID: 1043458697}
   healthPointText: {fileID: 847118187}
@@ -8805,7 +8807,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

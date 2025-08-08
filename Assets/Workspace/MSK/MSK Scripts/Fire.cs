@@ -19,7 +19,7 @@ public class Fire : MonoBehaviourPun
     public bool isCharging = false;
     private bool isDoubleAttack = false;
     private bool OnDamageBuff = false;
-    private List<float?> DamageBuff = new List<float?>(2);
+    private List<float?> DamageBuff = new List<float?> { 0f, 0f };
 
     private ProjectileManager _projectileManager;
     private PlayerController _playerController;
@@ -110,10 +110,10 @@ public class Fire : MonoBehaviourPun
     public void InitDamageBuff()
     {
         OnDamageBuff = false;
-        DamageBuff.Clear();
-        for (int i = 0; i < DamageBuff.Count; i++)
-        {
-            DamageBuff.Add(null);
-        }
+        //DamageBuff.Clear();
+        //for (int i = 0; i < DamageBuff.Count; i++)
+        //{
+        //    DamageBuff.Add(null);
+        //}
     }
 }
