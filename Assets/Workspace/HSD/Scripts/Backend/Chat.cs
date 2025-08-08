@@ -44,6 +44,9 @@ public class Chat : MonoBehaviourPun
 
     private void Update()
     {
+        if (!messageField.isFocused)
+            return;
+
         // 마지막 메시지 불러오기
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {

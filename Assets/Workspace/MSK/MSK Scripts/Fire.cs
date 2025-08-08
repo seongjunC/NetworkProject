@@ -119,7 +119,7 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         DamageBuff.Clear();
         for (int i = 0; i < DamageBuff.Count; i++)
         {
-            DamageBuff.Add(null);
+            DamageBuff.Add(0f);
         }
         powerCharge = 0f;
         isCharging = false;
