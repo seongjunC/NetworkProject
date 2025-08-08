@@ -613,6 +613,7 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 0b5327d3b52ddf4439d2a4dbc7c866c0, type: 2}
   myInfo:
     items: []
+    team: 0
   _movable: 0
   _damage: 0
   moveSpeed: 3
@@ -722,7 +723,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.13}
   serializedVersion: 2
   m_Radius: 0.65
---- !u!1 &6693949736284291591
 --- !u!81 &-8071435187452943445
 AudioListener:
   m_ObjectHideFlags: 0
@@ -731,7 +731,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5767406228868708187}
   m_Enabled: 1
---- !u!1 &6166826761552782158
+--- !u!1 &6693949736284291591
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -719,6 +719,7 @@ MonoBehaviour:
   _data: {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
   myInfo:
     items: []
+    team: 0
   _movable: 0
   _damage: 0
   moveSpeed: 3
@@ -733,6 +734,7 @@ MonoBehaviour:
   muzzleRotatePos: {fileID: 5143764862364520804}
   muzzleRotationSpeed: 50
   _fire: {fileID: 0}
+  _audioListener: {fileID: 0}
 --- !u!114 &8488200785960515094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -827,7 +829,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.13}
   serializedVersion: 2
   m_Radius: 0.65
---- !u!1 &5858088244185059365
 --- !u!81 &-6485414112809708891
 AudioListener:
   m_ObjectHideFlags: 0
@@ -836,7 +837,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5767406228868708187}
   m_Enabled: 1
---- !u!1 &6166826761552782158
+--- !u!1 &5858088244185059365
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -847,7 +848,7 @@ GameObject:
   - component: {fileID: 466081205463468617}
   - component: {fileID: 2395556189692386899}
   - component: {fileID: 3892844219151211834}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: File
   m_TagString: Untagged
   m_Icon: {fileID: 0}
