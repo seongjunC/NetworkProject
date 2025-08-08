@@ -38,7 +38,6 @@ public class FallingBox : MonoBehaviourPun
         swayFreq = freq;
         startPos = transform.position;
 
-
         triggerCol.isTrigger = false;
     }
 

@@ -5,11 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Battle/ItemEffect/Barrier")]
 public class Barrier : ItemEffectSO
 {
-
-
-    public override void Activate()
+    public override void Activate(int actorNumber)
     {
         MSKTurnController turnCon = MSKTurnController.Instance;
-        turnCon.GetLocalPlayerController().ApplyBarrier();
+        turnCon.GetPlayerController(actorNumber).ApplyBarrier();
     }
 }

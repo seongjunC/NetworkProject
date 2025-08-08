@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Battle/ItemEffect/Default")]
 public class DefaultEffect : ItemEffectSO
 {
-    public override void Activate()
+    public override void Activate(int actorNumber)
     {
         Debug.Log("미구현");
     }

@@ -105,7 +105,7 @@ public class PlayerInfo
             return;
         }
 
-        items[order].UseItem();
+        items[order].UseItem(ActorNumber);
         ItemRemove(order);
     }
 

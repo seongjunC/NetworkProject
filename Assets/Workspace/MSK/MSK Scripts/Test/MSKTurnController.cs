@@ -325,6 +325,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         return fireMap[controller];
     }
+    public Fire GetFire(int actorNumber)
+    {
+        return fireMap[GetPlayerController(actorNumber)];
+    }
     public Fire GetLocalPlayerFire()
     {
         return GetFireMap(GetLocalPlayerController());
