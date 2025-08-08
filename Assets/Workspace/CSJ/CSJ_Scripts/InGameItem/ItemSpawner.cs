@@ -85,5 +85,16 @@ public class ItemSpawner : MonoBehaviourPun
         return itemDatabase.Get("0");
     }
 
+    public int GetItemIndex(ItemData item)
+    {
+        return itemDatabase.GetIndex(item);
+    }
+
+    public ItemData GetItem(int index)
+    {
+        return itemDatabase.Get(index.ToString());
+    }
+
+
 
 }

@@ -22,6 +22,12 @@ public class ItemDatabase : ScriptableObject
     {
         return lookup.TryGetValue(id, out var d) ? d : null;
     }
+    public ItemData Get(ItemData item)
+    {
+        string id = GetIndex(item).ToString();
+        if (id == "-99") return null;
+        return lookup.TryGetValue(id, out var d) ? d : null;
+    }
 
     public ItemData[] GetAll()
     {

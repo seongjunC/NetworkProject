@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 4845445294165263660}
   m_Layer: 0
   m_Name: Muzzle
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -309,7 +309,7 @@ GameObject:
   - component: {fileID: 8571437363990197558}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -861,7 +861,7 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6166826761552782158}
+  m_GameObject: {fileID: 5858088244185059365}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -880,7 +880,7 @@ CanvasRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6166826761552782158}
+  m_GameObject: {fileID: 5858088244185059365}
   m_CullTransparentMesh: 1
 --- !u!114 &3892844219151211834
 MonoBehaviour:
@@ -888,7 +888,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6166826761552782158}
+  m_GameObject: {fileID: 5858088244185059365}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -924,7 +924,7 @@ GameObject:
   - component: {fileID: 7080874238435687535}
   m_Layer: 0
   m_Name: Track
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1007,7 +1007,7 @@ GameObject:
   - component: {fileID: 5143764862364520804}
   m_Layer: 0
   m_Name: MuzzleRotatePos
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

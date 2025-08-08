@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon.StructWrapping;
 using Game;
 using Photon.Pun;
 using Photon.Realtime;
@@ -631,6 +632,39 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         currentPlayer.ToDealDamage(damage);
         Debug.Log($"{currentPlayer.NickName}가 {damage}의 데미지를 가함!");
+    }
+
+    [PunRPC]
+    public void RPC_RequestPickup(int itemViewID, int actorNumber)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        var pv = PhotonView.Find(itemViewID);
+        if (pv == null) return;
+
+        var item = pv.GetComponent<FallingBox>();
+        if (!allPlayers.TryGetValue(actorNumber, out var info)) return;
+
+        if (!info.ItemAcquire(item.itemData)) return; // 인벤 풀 등으로 실패 시 그대로 유지
+
+        PhotonNetwork.Destroy(pv); // 성공 시 전원에서 제거
+
+        photonView.RPC(nameof(RPC_GetItem), RpcTarget.All, itemSpawner.GetItemIndex(item.itemData), actorNumber);
+    }
+
+    [PunRPC]
+    private void RPC_GetItem(int itemId, int actorNumber)
+    {
+        if (PhotonNetwork.IsMasterClient) return;
+        var data = itemSpawner.GetItem(itemId);
+        if (allPlayers.TryGetValue(actorNumber, out var info))
+        {
+            info.ItemAcquire(data);
+        }
+        else
+        {
+            Debug.LogError($"해당 {actorNumber}의 플레이어를 찾을 수 없음");
+        }
     }
     #endregion
 
