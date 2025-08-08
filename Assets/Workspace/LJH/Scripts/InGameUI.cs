@@ -18,20 +18,17 @@ public class InGameUI : MonoBehaviour
 
     [Header("Button")]
     public Button item1Button;     // 아이템1 버튼
-    public Button item2Button;     // 아이템2 버튼
+    public Button item2Button;     // 아이템2 버튼    
     public Button endTurnButton;
+    public Image itemIcon1;
+    public Image itemIcon2;
 
     [Header("ButtonImage")]
     public Image Button1Image;
     public Image Button2Image;
 
-    // 아이템 슬롯에 아이템 데이터 저장
-    private ItemData item1 = null;
-    private ItemData item2 = null;
-
     [Header("Text")]
     public TextMeshProUGUI healthPointText; // 체력 텍스트
-
 
     private PlayerController _player;
     private Fire _fire;
@@ -64,12 +61,12 @@ public class InGameUI : MonoBehaviour
         moveBar.maxValue = _player._movable;
         healthPointText.text = $"{hpBar.maxValue} / {hpBar.maxValue}";
 
-        playerController.myInfo.OnItemAcquired -= AddItem;
-        playerController.myInfo.OnItemAcquired += AddItem;
-        item1Button.gameObject.SetActive(false);
-        item2Button.gameObject.SetActive(false);
-        foreach (var item in playerController.myInfo.items)
-            if (item != null) AddItem(item);
+        playerController.myInfo.OnItemChanged -= ChangeItem;
+        playerController.myInfo.OnItemChanged += ChangeItem;
+
+        item1Button.onClick.AddListener(() => OnClickSlot(0));
+        item2Button.onClick.AddListener(() => OnClickSlot(1));
+
         Debug.Log("IngameUI 등록 완료");
     }
 
@@ -87,45 +84,15 @@ public class InGameUI : MonoBehaviour
     }
 
 
-    public void AddItem(ItemData item)
+    public void ChangeItem(ItemData[] items)
     {
+        itemIcon1.sprite = items[0] != null ?
+            items[0].icon : null;
 
-        Debug.Log($"▶ InGameUI.AddItem 호출: {item.name}");
-        if (Button1Image.sprite == null)
-        {
-            Debug.Log("item1 실행");
-            item1 = item;
-            Button1Image.sprite = item.icon;
-            item1Button.image.sprite = Button1Image.sprite;
-            item1Button.gameObject.SetActive(true);
-            item1Button.onClick.RemoveAllListeners();
-            item1Button.onClick.AddListener(() => OnClickSlot(0));
-
-            item1Button.interactable = true;
-            item1Button.gameObject.SetActive(true);
-
-            Debug.Log($"▶ 슬롯 1에 아이템 {item.name} 세팅 완료");
-        }
-        else if (Button2Image.sprite == null)
-        {
-            Debug.Log("item2 실행");
-            item2 = item;
-            Button2Image.sprite = item.icon;
-            item2Button.image.sprite = Button2Image.sprite;
-            item2Button.gameObject.SetActive(true);
-            item2Button.onClick.RemoveAllListeners();
-            item2Button.onClick.AddListener(() => OnClickSlot(1));
-
-            item2Button.interactable = true;
-            item2Button.gameObject.SetActive(true);
-
-            Debug.Log($"▶ 슬롯 2에 아이템 {item.name} 세팅 완료");
-        }
-        else
-        {
-            Debug.Log("아이템 슬롯이 가득 찼습니다.");
-        }
+        itemIcon2.sprite = items[1] != null ?
+            items[1].icon : null;
     }
+
     void OnClickSlot(int slot)
     {
         Button btn = slot == 0 ? item1Button : item2Button;
@@ -134,9 +101,9 @@ public class InGameUI : MonoBehaviour
         {
             MSKTurnController.Instance.photonView.RPC(
                 nameof(MSKTurnController.RPC_UseItem),
-                RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber,
+                RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber,
                 slot);
-            ClearSlot(slot);
+            //ClearSlot(slot);
         }
     }
 
@@ -145,15 +112,11 @@ public class InGameUI : MonoBehaviour
     {
         if (slot == 0)
         {
-            item1 = null;
-            item1Button.GetComponent<Image>().sprite = null;
-            item1Button.gameObject.SetActive(false);
+            itemIcon1.sprite = null;
         }
         else if (slot == 1)
         {
-            item2 = null;
-            item2Button.GetComponent<Image>().sprite = null;
-            item2Button.gameObject.SetActive(false);
+            itemIcon1.sprite = null;
         }
     }
 

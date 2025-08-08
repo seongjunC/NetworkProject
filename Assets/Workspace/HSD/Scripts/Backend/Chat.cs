@@ -9,7 +9,8 @@ using UnityEngine;
 
 public class Chat : MonoBehaviourPun
 {
-    [SerializeField] TMP_InputField messageField;
+    public static bool isChating;
+    public TMP_InputField messageField;
     [SerializeField] Transform chatContent;
     [SerializeField] ChatText chatPrefab;
     [SerializeField] TMP_Text chatTypeText;
@@ -30,6 +31,15 @@ public class Chat : MonoBehaviourPun
     private void OnEnable()
     {
         UpdateChatTypeText();
+        messageField.onSelect.AddListener((_) => isChating = true);
+        messageField.onDeselect.AddListener((_) => isChating = false);
+    }
+
+    private void OnDisable()
+    {
+        messageField.onSelect.RemoveAllListeners();
+        messageField.onDeselect.RemoveAllListeners();
+        isChating = false;
     }
 
     private void Update()

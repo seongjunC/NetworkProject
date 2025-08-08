@@ -147,6 +147,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
         isGameStart = true;
 
+        InitializePlayerEvents();
+
         if (PhotonNetwork.IsMasterClient)
             SetRandomTurn();
     }
@@ -333,6 +335,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         return fireMap[controller];
     }
+    public Fire GetFire(int actorNumber)
+    {
+        return fireMap[GetPlayerController(actorNumber)];
+    }
     public Fire GetLocalPlayerFire()
     {
         return GetFireMap(GetLocalPlayerController());
@@ -432,29 +438,27 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     [PunRPC]
     public void RPC_UseItem(int actorNumber, int slotIndex)
-    {
-        if (!PhotonNetwork.IsMasterClient) return;
-
+    {       
         var info = allPlayers[actorNumber];
-        Debug.Log($"{info.NickName}의 아이템 사용");
-
-        if (actorNumber != currentPlayer.ActorNumber) return;
-
+        Debug.LogWarning($"{info.NickName}의 아이템 사용");
+        
         info.ItemUse(slotIndex);
 
         Debug.Log("동기화 호출");
 
-        photonView.RPC(nameof(RPC_SyncUseItem), RpcTarget.All, actorNumber, slotIndex);
+        //photonView.RPC(nameof(RPC_SyncUseItem), RpcTarget.All, actorNumber, slotIndex);
     }
-    [PunRPC]
-    private void RPC_SyncUseItem(int actorNumber, int slotIndex)
-    {
-        if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
-        {
-            Debug.Log("ClearSlot");
-            inGameUI.ClearSlot(slotIndex + 1);
-        }
-    }
+
+    //[PunRPC]
+    //private void RPC_SyncUseItem(int actorNumber, int slotIndex)
+    //{
+    //    if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+    //    {
+    //        Debug.Log("ClearSlot");
+    //        inGameUI.ClearSlot(slotIndex + 1);
+    //    }
+    //}
+
     // TODO: 추후 아이템 생성 등과 연결
     [PunRPC]
     private void RPC_CycleEnd()
@@ -471,7 +475,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private void RPC_HighlightDroppedItems(int[] viewIDs)
     {
         StartCoroutine(HighlightThenAck(viewIDs));
-
     }
 
 

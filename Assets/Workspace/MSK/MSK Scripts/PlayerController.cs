@@ -121,6 +121,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void Update()
     {
+        if (Chat.isChating)
+            return;
+
         // 입력 처리는 IsMine인 클라이언트에서만 실행
         if (!photonView.IsMine || _isDead || !isControllable)
         {

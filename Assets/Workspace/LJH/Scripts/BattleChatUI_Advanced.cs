@@ -53,7 +53,7 @@ public class BattleChatUI_Advanced : MonoBehaviour
     private List<GameObject> chatMessages = new List<GameObject>();
 
     void Start()
-    {
+    {        
         chatPanel.SetActive(false);
         chatCanvasGroup.alpha = 0f;
     }

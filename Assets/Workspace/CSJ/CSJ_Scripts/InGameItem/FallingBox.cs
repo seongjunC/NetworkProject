@@ -37,7 +37,6 @@ public class FallingBox : MonoBehaviourPun
         swayFreq = freq;
         startPos = transform.position;
 
-
         triggerCol.isTrigger = false;
     }
 
@@ -93,7 +92,6 @@ public class FallingBox : MonoBehaviourPun
         FirstLanded = true;
         triggerCol.isTrigger = true;
     }
-
     //     private bool TryAcquire(PlayerController pc)
     //     {
     //         Debug.Log("아이템 획득 체크");
@@ -107,6 +105,7 @@ public class FallingBox : MonoBehaviourPun
     //         photonView.RPC(nameof(RPC_OpenBox), RpcTarget.All);
     //         return true;
     //     }
+
 
     [PunRPC]
     private void RPC_OpenBox()
