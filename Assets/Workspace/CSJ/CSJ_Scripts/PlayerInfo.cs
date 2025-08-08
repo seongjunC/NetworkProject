@@ -13,7 +13,7 @@ public class PlayerInfo
     public Player player;
     public string NickName => player.NickName;
     public int ActorNumber => player.ActorNumber;
-    public ItemData[] items = new ItemData[2];
+    public ItemData[] items { get; private set; } = new ItemData[2];
     private Team team;
 
     public float damageDealt { get; private set; }
@@ -71,11 +71,11 @@ public class PlayerInfo
                 if (items[i] == removeItem)
                 {
                     items[i] = null;
-                    return i + 1;
+                    return i;
                 }
             }
         }
-
+        OnItemChanged?.Invoke(items);
         return items.Length;
     }
 
@@ -116,18 +116,18 @@ public class PlayerInfo
     public void ItemUse(ItemData item)
     {
         int index;
-        if ((index = GetItemIndex(item)) != -99)
+        if ((index = GetItemIndex(item.GetID())) != -99)
             ItemUse(index);
         else
         {
             Debug.Log("해당 아이템이 없습니다");
         }
     }
-    public int GetItemIndex(ItemData item)
+    public int GetItemIndex(string id)
     {
         for (int i = 0; i < items.Length; i++)
         {
-            if (items[i] == item) return i;
+            if (items[i].GetID() == id) return i;
         }
         return -99;
     }

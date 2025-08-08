@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: potion of Wealth
   description: "\uBCF4\uC11D 50\uAC1C\uB97C \uD68D\uB4DD\uD55C\uB2E4."
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b30d4020b6992b84a8eef3574f048097, type: 3}
   prefab: {fileID: 0}
   appearRate: 1
   Effect: {fileID: 11400000, guid: 7e7f1ada89a32a4479909ae1b01192e5, type: 2}

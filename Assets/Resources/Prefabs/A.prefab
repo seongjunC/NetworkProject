@@ -717,9 +717,6 @@ MonoBehaviour:
   player: {fileID: 55806390711248404}
   _textMeshPro: {fileID: 0}
   _data: {fileID: 11400000, guid: 4d938f100daf70249aa1e20901ed93b8, type: 2}
-  myInfo:
-    items: []
-    team: 0
   _movable: 0
   _damage: 0
   moveSpeed: 3
