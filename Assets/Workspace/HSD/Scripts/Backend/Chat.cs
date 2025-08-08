@@ -44,6 +44,11 @@ public class Chat : MonoBehaviourPun
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            messageField.ActivateInputField();
+        }
+
         if (!messageField.isFocused)
             return;
 
@@ -65,11 +70,6 @@ public class Chat : MonoBehaviourPun
                 messageField.text = $"/±Ó {beforeWhisperPlayerName} ";
                 messageField.caretPosition = messageField.text.Length;
             }
-        }
-
-        if(Input.GetKeyDown(KeyCode.Return))
-        {
-            messageField.ActivateInputField();
         }
 
         if(Input.GetKeyDown(KeyCode.Tab))
