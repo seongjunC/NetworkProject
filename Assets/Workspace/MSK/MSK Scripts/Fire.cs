@@ -94,22 +94,23 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         // 포신 각도 * 로컬스케일 + 지면 각도
         bool isRight = transform.localScale.z > 0;
         float playerAngle = gameObject.transform.eulerAngles.z;
+        float totalDamage = _playerController._damage * Random.Range(0.85f, 1f);
+
         if (powerCharge != 0f)
         {
             _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
             OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
-            , projectileName, _playerController._damage);
+            , projectileName, totalDamage);
         }
         else
         {
             _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, storePower,
             OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
-            , projectileName, _playerController._damage);
+            , projectileName, totalDamage);
             storePower = 0f;
         }
-
 
         InitDamageBuff();
     }
