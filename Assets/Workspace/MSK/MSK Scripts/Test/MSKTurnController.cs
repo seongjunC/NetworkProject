@@ -177,7 +177,8 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
             StartNextTurn();
             return;
         }
-        isTurnRunning = true;
+        //isTurnRunning = true;
+        photonView.RPC(nameof(RPC_SetTurnRunning), RpcTarget.All, true);
         isTurnEnd = false;
 
         turnTimer = turnLimit;
@@ -437,10 +438,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     [PunRPC]
     public void RPC_UseItem(int actorNumber, int slotIndex)
-    {       
+    {
         var info = allPlayers[actorNumber];
         Debug.LogWarning($"{info.NickName}의 아이템 사용");
-        
+
         info.ItemUse(slotIndex);
 
         Debug.Log("동기화 호출");
@@ -499,8 +500,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (isTurnEnd) return;
         Debug.Log("RPC 턴 종료 호출");
+        photonView.RPC(nameof(RPC_DisableAllPlayersControl), RpcTarget.All);
         isTurnEnd = true;
-        isTurnRunning = false;
+        //isTurnRunning = false;
+        photonView.RPC(nameof(RPC_SetTurnRunning), RpcTarget.All, false);
         photonView.RPC("RPC_InitTank", RpcTarget.All, currentPlayer.ActorNumber);
         if (turnQueue.Count == 0 && nextCycle.Count > 0)
         {
@@ -632,6 +635,40 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         currentPlayer.ToDealDamage(damage);
         Debug.Log($"{currentPlayer.NickName}가 {damage}의 데미지를 가함!");
     }
+
+    [PunRPC]
+    public void RPC_RequestPickup(int itemViewID, int actorNumber)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (isGameEnd) return;
+
+        var pv = PhotonView.Find(itemViewID);
+        if (pv == null) return;
+
+        var item = pv.GetComponent<FallingBox>();
+        if (!allPlayers.TryGetValue(actorNumber, out var info)) return;
+
+        if (!info.ItemAcquire(item.itemData)) return; // 인벤 풀 등으로 실패 시 그대로 유지
+
+        PhotonNetwork.Destroy(pv); // 성공 시 전원에서 제거
+
+        photonView.RPC(nameof(RPC_GetItem), RpcTarget.All, itemSpawner.GetItemIndex(item.itemData), actorNumber);
+    }
+
+    [PunRPC]
+    private void RPC_GetItem(int itemId, int actorNumber)
+    {
+        if (PhotonNetwork.IsMasterClient) return;
+        var data = itemSpawner.GetItem(itemId);
+        if (allPlayers.TryGetValue(actorNumber, out var info))
+        {
+            info.ItemAcquire(data);
+        }
+        else
+        {
+            Debug.LogError($"해당 {actorNumber}의 플레이어를 찾을 수 없음");
+        }
+    }
     #endregion
 
     #region MSK added
@@ -685,4 +722,23 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         turnTimer = turnLimit;
     }
     #endregion
+
+    [PunRPC]
+    private void RPC_SetTurnRunning(bool isRunning)
+    {
+        isTurnRunning = isRunning;
+        Debug.Log($"[RPC_SetTurnRunning] isTurnRunning 상태 동기화: {isRunning}");
+    }
+
+    [PunRPC]
+    private void RPC_DisableAllPlayersControl()
+    {
+        foreach (var playerCon in tanks)
+        {
+            if (playerCon != null)
+            {
+                playerCon.EnableControl(false);
+            }
+        }
+    }
 }

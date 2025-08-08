@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 6298463602818347758}
   - component: {fileID: 2146551001009615366}
   - component: {fileID: 2382146634666849011}
-  - component: {fileID: 8646261822921735840}
+  - component: {fileID: -3023788434668576008}
+  - component: {fileID: 490013857707997727}
   m_Layer: 0
   m_Name: RandomBoxPrefab
   m_TagString: Item
@@ -152,7 +153,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 8646261822921735840}
+  - {fileID: 490013857707997727}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -168,14 +169,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c3228771a0e7674985ae815e1da3dc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemData: {fileID: 0}
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
   groundCheckDist: 0.5
   playerCheckDist: 0.5
   itemCandidate: {fileID: 11400000, guid: 1d9cb44b6f07d49419894202358ad3af, type: 2}
---- !u!114 &8646261822921735840
+--- !u!50 &-3023788434668576008
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4226410193357161813}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &490013857707997727
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -189,5 +216,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
+  m_SynchronizeScale: 1
   m_UseLocal: 1

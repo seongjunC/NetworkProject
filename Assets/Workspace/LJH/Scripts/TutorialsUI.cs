@@ -1,3 +1,4 @@
+using GifImporter;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class TutorialPage
 {
     public string text;   // 설명 텍스트
     public Sprite image;  // 설명 이미지
+    public Gif gif;       // 움직이는 Gif (ScriptableObject)
 }
 
 public class TutorialsUI : MonoBehaviour
@@ -26,6 +28,7 @@ public class TutorialsUI : MonoBehaviour
     [Header("UI 출력")]
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Image tutorialImage;
+    [SerializeField] private GifPlayer gifPlayer; // 추가: gif 재생 전용
 
     [Header("패널 연결")]
     [SerializeField] private GameObject mainmenuPanel;
@@ -155,6 +158,7 @@ public class TutorialsUI : MonoBehaviour
         {
             text.text = "페이지 데이터가 없습니다.";
             tutorialImage.gameObject.SetActive(false);
+            gifPlayer.gameObject.SetActive(false);
             return;
         }
 
@@ -164,15 +168,23 @@ public class TutorialsUI : MonoBehaviour
         text.text = page.text;
         text.gameObject.SetActive(true);
 
+        if (page.gif != null)
+        {
+            gifPlayer.Gif = page.gif;
+            gifPlayer.gameObject.SetActive(true);
+            tutorialImage.gameObject.SetActive(false);
+        }
         // 이미지 업데이트
-        if (page.image != null)
+        else if (page.image != null)
         {
             tutorialImage.sprite = page.image;
             tutorialImage.gameObject.SetActive(true);
+            gifPlayer.gameObject.SetActive(false);
         }
         else
         {
             tutorialImage.gameObject.SetActive(false);
+            gifPlayer.gameObject.SetActive(false);
         }
 
         // 버튼 상태 업데이트
@@ -185,6 +197,7 @@ public class TutorialsUI : MonoBehaviour
 
     private void OnClickOutPage()
     {
+        Debug.Log("튜토리얼 종료 버튼 클릭됨");
         gameObject.SetActive(false);    // 튜토리얼 패널 닫기
         mainmenuPanel.SetActive(true);  // 메인 메뉴 패널 열기
     }

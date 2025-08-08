@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,11 +16,18 @@ public class ItemDatabase : ScriptableObject
         for (int i = 0; i < items.Length; i++)
         {
             lookup.Add(i.ToString(), items[i]);
+            items[i].AddID(i.ToString());
         }
     }
 
     public ItemData Get(string id)
     {
+        return lookup.TryGetValue(id, out var d) ? d : null;
+    }
+    public ItemData Get(ItemData item)
+    {
+        string id = GetIndex(item).ToString();
+        if (id == "-99") return null;
         return lookup.TryGetValue(id, out var d) ? d : null;
     }
 

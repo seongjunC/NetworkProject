@@ -154,6 +154,12 @@ public class ProjectileManager : MonoBehaviourPun
                 if (EffectSpawner.Instance != null)
                 {
                     EffectSpawner.Instance.SpawnExplosion(player.transform.position);
+
+                    // 베리어가 있다면 데미지를 0으로
+                    if (player.OnBarrier)
+                    {
+                        realDamage = 0;
+                    }
                     string str = realDamage.ToString("F0");
                     floatingTextSpawner.SpawnText(str, player.transform.position);
                 }

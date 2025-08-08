@@ -16,10 +16,11 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] public float maxPower = 20f;
 
     public float powerCharge = 0f;
+    private float storePower = 0f;
     public bool isCharging = false;
     private bool isDoubleAttack = false;
     private bool OnDamageBuff = false;
-    private List<float?> DamageBuff = new List<float?> { 0f, 0f };
+    private List<float> DamageBuff = new List<float> { 0f, 0f };
 
     private ProjectileManager _projectileManager;
     private PlayerController _playerController;
@@ -44,7 +45,15 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         !MSKTurnController.Instance.IsMyTurn() ||
         !MSKTurnController.Instance.isTurnRunning ||
         !_playerController.isControllable)
+        {
+            if (isCharging)
+            {
+                isCharging = false;
+                powerCharge = 0f;
+            }
             return;
+        }
+
 
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
@@ -56,11 +65,12 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         // 스페이스바에서 손을 뗐을 때 또는 풀차지시 발사
-        if (isCharging && Input.GetKeyUp(KeyCode.Space) || powerCharge == maxPower)
+        if (isCharging && Input.GetKeyUp(KeyCode.Space) || powerCharge >= maxPower)
         {
             Shoot();
             if (isDoubleAttack)
             {
+                storePower = powerCharge;
                 Invoke(nameof(Shoot), 1f);
                 isDoubleAttack = false;
             }
@@ -84,10 +94,22 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         // 포신 각도 * 로컬스케일 + 지면 각도
         bool isRight = transform.localScale.z > 0;
         float playerAngle = gameObject.transform.eulerAngles.z;
-        _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
+        if (powerCharge != 0f)
+        {
+            _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
             firePoint.position, firePoint.rotation, powerCharge,
             OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
             , projectileName, _playerController._damage);
+        }
+        else
+        {
+            _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
+            firePoint.position, firePoint.rotation, storePower,
+            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
+            , projectileName, _playerController._damage);
+            storePower = 0f;
+        }
+
 
         InitDamageBuff();
     }
@@ -116,10 +138,9 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
     public void InitDamageBuff()
     {
         OnDamageBuff = false;
-        DamageBuff.Clear();
         for (int i = 0; i < DamageBuff.Count; i++)
         {
-            DamageBuff.Add(0f);
+            DamageBuff[i] = 0;
         }
         powerCharge = 0f;
         isCharging = false;
