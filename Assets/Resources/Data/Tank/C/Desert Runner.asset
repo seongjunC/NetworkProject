@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Desert Runner
   m_EditorClassIdentifier: 
-  baseDamage: 100
+  baseDamage: 50
   baseMaxHp: 250
-  baseMaxMove: 5
+  baseMaxMove: 7
   damageGrowth: 10
   maxHpGrowth: 25
-  maxMoveGrowth: 1
-  damage: 1
+  maxMoveGrowth: 0
+  damage: 100
   maxMove: 5
-  maxHp: 1
+  maxHp: 250
   tankName: Desert Runner
   tankMetaName: "\uC0AC\uB9C9 \uC9C8\uC8FC\uC790"
   rank: 3

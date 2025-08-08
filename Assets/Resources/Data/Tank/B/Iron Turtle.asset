@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Iron Turtle
   m_EditorClassIdentifier: 
-  baseDamage: 100
-  baseMaxHp: 250
+  baseDamage: 75
+  baseMaxHp: 280
   baseMaxMove: 5
   damageGrowth: 10
   maxHpGrowth: 25
-  maxMoveGrowth: 1
+  maxMoveGrowth: 0
   damage: 1
   maxMove: 5
   maxHp: 1

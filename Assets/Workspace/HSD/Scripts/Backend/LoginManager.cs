@@ -86,6 +86,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
         email.text = "";
         pw.text = "";
         isLogin = false;
+        user = null;
     }
 
     private void EnterLogin(string s)
@@ -194,6 +195,11 @@ public class LoginManager : MonoBehaviourPunCallbacks
         var task = Manager.Database.root.Child("UserData").Child(user.UserId).Child("Data").GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
         bool connected = false;
+        Debug.Log(FirebaseManager.Auth.CurrentUser.Email);
+        Debug.Log(user.Email);
+
+        if (user.Email != FirebaseManager.Auth.CurrentUser.Email)
+            user = FirebaseManager.Auth.CurrentUser;
 
         Manager.Database.root.Child("UserData").Child(user.UserId).Child(UserDataType.Connected.ToString()).GetValueAsync().ContinueWithOnMainThread(task =>
         {

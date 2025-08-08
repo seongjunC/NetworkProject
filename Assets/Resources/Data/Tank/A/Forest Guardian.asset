@@ -17,7 +17,7 @@ MonoBehaviour:
   baseMaxMove: 5
   damageGrowth: 10
   maxHpGrowth: 25
-  maxMoveGrowth: 1
+  maxMoveGrowth: 0
   damage: 1
   maxMove: 5
   maxHp: 1

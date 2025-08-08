@@ -12,6 +12,11 @@ public class GachaRecordsPanel : MonoBehaviour
     [SerializeField] List<GachaResult> gachaResults;
     [SerializeField] List<GachaResultSlot> gachaResultSlots = new();
 
+    private void Start()
+    {
+        Manager.Firebase.OnLogOut += Clear;
+    }
+
     private void OnEnable()
     {
         Manager.Data.GachaManager.GachaResultsOrderBy();
@@ -36,6 +41,14 @@ public class GachaRecordsPanel : MonoBehaviour
             gachaResultSlots[i].SetUp(gachaResults[i]);
 
             gachaResultSlots[i].transform.SetSiblingIndex(i);
+        }
+    }
+
+    private void Clear()
+    {
+        foreach(var slot in gachaResultSlots)
+        {
+            Destroy(slot.gameObject);
         }
     }
 }

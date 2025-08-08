@@ -17,6 +17,7 @@ public class GachaManager
     public void Init()
     {
         InitGachaData();
+        gachaResults.Clear();
         GachaData = Resources.Load<GachaData>("Data/Gacha/GachaData");
     }
 
