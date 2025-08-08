@@ -128,4 +128,10 @@ public class FallingBox : MonoBehaviourPun
             Destroy(gameObject);
         }
     }
+
+    void OnDestroy()
+    {
+        if (MSKTurnController.Instance != null)
+            MSKTurnController.Instance.OnItemDestroyed(gameObject);
+    }
 }

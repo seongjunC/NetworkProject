@@ -73,6 +73,7 @@ MonoBehaviour:
   - RPC_SetSpawnOrder
   - RPC_HighlightAck
   - RPC_RegisterAllItemsByTag
+  - DisableTurnEnd
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -73,7 +73,6 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         {
             damageBuffObjects[i] = DamageBuff[i];
         }
-
         // PlayerController의 firePoint 정보를 사용합니다.
         // 포신 각도 * 로컬스케일 + 지면 각도
         bool isRight = transform.localScale.z > 0;
