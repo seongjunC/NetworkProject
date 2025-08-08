@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Green Viper
   m_EditorClassIdentifier: 
-  baseDamage: 100
-  baseMaxHp: 250
+  baseDamage: 110
+  baseMaxHp: 240
   baseMaxMove: 5
-  damageGrowth: 10
-  maxHpGrowth: 25
+  damageGrowth: 12
+  maxHpGrowth: 20
   maxMoveGrowth: 0
   damage: 1
   maxMove: 5
@@ -25,4 +25,6 @@ MonoBehaviour:
   tankMetaName: "\uB179\uC0C9 \uB3C5\uC0AC"
   rank: 1
   Icon: {fileID: 21300000, guid: fbc8f0dab81bbba409ba68826180b68a, type: 3}
-  description: "A\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
+  description: "\uBBFC\uCCA9\uD55C \uB3C5\uC0AC\uC758 \uC774\uB984\uB2F5\uAC8C \uBE60\uB978
+    \uACF5\uACA9 \uC18D\uB3C4\uC640 \uB192\uC740 \uD53C\uD574\uB7C9, \uADF8\uB7EC\uB098
+    \uB0B4\uAD6C\uB825\uC740 \uB0AE\uC74C."

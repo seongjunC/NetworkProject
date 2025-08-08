@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Harbor Crab
   m_EditorClassIdentifier: 
   baseDamage: 50
-  baseMaxHp: 250
-  baseMaxMove: 5
-  damageGrowth: 10
+  baseMaxHp: 270
+  baseMaxMove: 4
+  damageGrowth: 7
   maxHpGrowth: 25
   maxMoveGrowth: 0
   damage: 1
@@ -25,4 +25,5 @@ MonoBehaviour:
   tankMetaName: "\uD56D\uAD6C \uAC8C"
   rank: 3
   Icon: {fileID: 21300000, guid: b3b99f50414f360479ac4a8287763f87, type: 3}
-  description: "C\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
+  description: "\uBC14\uB2E4\uC758 \uAC11\uAC01\uB958\uCC98\uB7FC \uB2E8\uB2E8\uD558\uACE0
+    \uBC29\uC5B4\uC801\uC778 \uC2A4\uD0C0\uC77C. \uB290\uB9AC\uC9C0\uB9CC \uC548\uC815\uC801."

@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Crimson Striker
   m_EditorClassIdentifier: 
-  baseDamage: 200
-  baseMaxHp: 500
-  baseMaxMove: 5
-  damageGrowth: 20
-  maxHpGrowth: 50
+  baseDamage: 190
+  baseMaxHp: 480
+  baseMaxMove: 6
+  damageGrowth: 25
+  maxHpGrowth: 45
   maxMoveGrowth: 0
   damage: 1
   maxMove: 5
@@ -25,4 +25,6 @@ MonoBehaviour:
   tankMetaName: "\uC9C4\uD64D\uBE5B \uD0C0\uACA9\uC790"
   rank: 0
   Icon: {fileID: 21300000, guid: 3ce5d2b4bcdb27f43b957c724a8a1069, type: 3}
-  description: "S\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
+  description: "\t\uBD89\uC740 \uC12C\uAD11\uCC98\uB7FC \uADE0\uD615 \uC7A1\uD78C
+    \uC131\uB2A5\uC73C\uB85C \uC5B4\uB5A4 \uC0C1\uD669\uC5D0\uB3C4 \uB300\uC751 \uAC00\uB2A5.
+    \uAE30\uB3D9\uC131, \uD654\uB825, \uBC29\uC5B4 \uBAA8\uB450 \uC6B0\uC218."

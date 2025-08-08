@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Titan Gear
   m_EditorClassIdentifier: 
-  baseDamage: 200
-  baseMaxHp: 500
-  baseMaxMove: 5
+  baseDamage: 250
+  baseMaxHp: 600
+  baseMaxMove: 2
   damageGrowth: 20
-  maxHpGrowth: 50
+  maxHpGrowth: 60
   maxMoveGrowth: 0
   damage: 1
   maxMove: 5
@@ -25,4 +25,7 @@ MonoBehaviour:
   tankMetaName: "\uD0C0\uC774\uD0C4 \uAE30\uC5B4"
   rank: 0
   Icon: {fileID: 21300000, guid: 08db0a28a176e0247b05169d091e965e, type: 3}
-  description: "S\uB7AD\uD06C\uC758 \uD0F1\uD06C\uC774\uB2E4."
+  description: "\uAC70\uB300\uD55C \uC804\uC7A5\uC758 \uAD34\uBB3C. \uBC29\uC5B4\uC640
+    \uACF5\uACA9 \uBAA8\uB450 \uCD5C\uACE0\uC9C0\uB9CC \uC774\uB3D9 \uC18D\uB3C4\uAC00
+    \uB9E4\uC6B0 \uB290\uB9BC. \uC801\uC774 \uC624\uAE30 \uC804\uAE4C\uC9C0\uB294
+    \uB290\uB9BF\uD558\uAC8C \uC555\uBC15."
