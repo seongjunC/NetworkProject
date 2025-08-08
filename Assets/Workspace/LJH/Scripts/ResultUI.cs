@@ -15,17 +15,17 @@ public class ResultUI : MonoBehaviour
     [SerializeField] private GameObject resultPanel;
     [SerializeField] private Button okButton;
 
-    [Header("�θ� �г�")]
+    [Header("부모 패널")]
     [SerializeField] private Transform playersParent;
 
-    [Header("������")]
+    [Header("프리팹")]
     [SerializeField] private GameObject playerSlotPrefab;
 
-    [Header("�� ����")]
+    [Header("팀 색상")]
     [SerializeField] private Color redTeamColor = new Color(1f, 0.3f, 0.3f);
     [SerializeField] private Color blueTeamColor = new Color(0.3f, 0.3f, 1f);
 
-    [Header("������ �г�")]
+    [Header("연결할 패널")]
     [SerializeField] private GameObject lobbyPanel;
 
     private Sprite loading;
@@ -44,22 +44,22 @@ public class ResultUI : MonoBehaviour
 
         Time.timeScale = 0;
 
-        // ��� �г� ǥ��
-        winnerText.text = $"�¸�: {(winnerTeam == Team.Red ? "RED ��" : "BLUE ��")}";
-        // �÷��̾� ���� �ʱ�ȭ
+        // 결과 패널 표시
+        winnerText.text = $"승리: {(winnerTeam == Team.Red ? "RED 팀" : "BLUE 팀")}";
+        // 플레이어 슬롯 초기화
         foreach (Transform child in playersParent)
         {
             Destroy(child.gameObject);
         }
         PhotonNetwork.CurrentRoom.Players.TryGetValue(mvpActor, out Player mvpplayer);
         Debug.Log($"Mvp user == {mvpplayer.NickName}");
-        // �¸� �� �÷��̾� �߰�
+        // 승리 팀 플레이어 추가
         foreach (var player in PhotonNetwork.PlayerList)
         {
             Debug.Log($"{player.NickName}, {player.ActorNumber}, {mvpplayer.ActorNumber}");
             if (player.ActorNumber == mvpplayer.ActorNumber)
             {
-                Debug.Log($"{player} mvp panel ����");
+                Debug.Log($"{player} mvp panel 생성");
                 AddMVPPlayerSlot(player);
             }
             else if (CustomProperty.GetTeam(player) == winnerTeam)
@@ -81,20 +81,20 @@ public class ResultUI : MonoBehaviour
     }
     public void AddPlayerSlot(Player player, bool isWinner)
     {
-        // ������ ����
+        // 프리팹 생성
         GameObject slot = Instantiate(playerSlotPrefab, playersParent);
-        // �г� ��� ����
+        // 패널 배경 색상
         Image bgImage = slot.GetComponent<Image>();
         if (bgImage != null)
             bgImage.color = (CustomProperty.GetTeam(player) == Team.Red) ? redTeamColor : blueTeamColor;
-        // �÷��̾� �г���
+        // 플레이어 닉네임
         TextMeshProUGUI nameText = slot.transform.Find("NickNameText (TMP)")?.GetComponent<TextMeshProUGUI>();
         if (nameText != null)
             nameText.text = player.NickName;
         else Debug.LogError("nameText == null");
-        // ���� ���� ���
+        // 보상 점수 계산
         int reward = isWinner ? 100 : 50;
-        // ���� ���� Text
+        // 보상 숫자 Text
         TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
         if (rewardText != null)
             rewardText.text = $"+{reward}";
@@ -102,19 +102,19 @@ public class ResultUI : MonoBehaviour
 
     public void AddMVPPlayerSlot(Player player)
     {
-        // ������ ����
+        // 프리팹 생성
         GameObject slot = Instantiate(playerSlotPrefab, playersParent);
-        // �г� ��� ����
+        // 패널 배경 색상
         Image bgImage = slot.GetComponent<Image>();
         if (bgImage != null)
             bgImage.color = (CustomProperty.GetTeam(player) == Team.Red) ? redTeamColor : blueTeamColor;
-        // �÷��̾� �г���
+        // 플레이어 닉네임
         TextMeshProUGUI nameText = slot.transform.Find("NickNameText (TMP)")?.GetComponent<TextMeshProUGUI>();
         if (nameText != null)
             nameText.text = player.NickName;
-        // ���� ���� ���
+        // 보상 점수 계산
         int reward = 150;
-        // ���� ���� Text
+        // 보상 숫자 Text
         TextMeshProUGUI rewardText = slot.transform.Find("RewardText")?.GetComponent<TextMeshProUGUI>();
         if (rewardText != null)
             rewardText.text = $"+{reward}";
@@ -124,7 +124,7 @@ public class ResultUI : MonoBehaviour
     }
 
     /// <summary>
-    /// OK ��ư Ŭ�� �� Title ������ �̵�
+    /// OK 버튼 클릭 시 Title 씬으로 이동
     /// </summary>
     private void OnClickOK()
     {
