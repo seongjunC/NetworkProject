@@ -3075,7 +3075,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 556263582}
-  - component: {fileID: 556263583}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -3098,27 +3097,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1574390734}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &556263583
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 556263581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53452a691a15f5948ab8f2c8348962db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chatPanel: {fileID: 0}
-  chatCanvasGroup: {fileID: 0}
-  TeamTypeText: {fileID: 0}
-  chatInputField: {fileID: 0}
-  scrollRect: {fileID: 0}
-  contentParent: {fileID: 0}
-  chatMessagePrefab: {fileID: 8765486316741427516, guid: 75e008659df358344a6c925b5ed895ae, type: 3}
-  fadeDelay: 3
-  fadeDuration: 1
 --- !u!1 &570238322
 GameObject:
   m_ObjectHideFlags: 0
@@ -3433,8 +3411,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1561105567}
   m_HandleRect: {fileID: 1561105566}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0.8773285
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4786,7 +4764,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: -244.54286}
+  m_AnchoredPosition: {x: 0.000030517578, y: -0.000076293945}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &865282696
@@ -9113,8 +9091,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -122.27161}
-  m_SizeDelta: {x: 880, y: 244.5428}
+  m_AnchoredPosition: {x: 0, y: 32.183167}
+  m_SizeDelta: {x: 880, y: -64.3667}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1837247478
 MonoBehaviour:
@@ -9234,7 +9212,7 @@ Animator:
   m_GameObject: {fileID: 1837247476}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fa5ec40135a5f5745bae56475592c84f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

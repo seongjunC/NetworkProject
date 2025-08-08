@@ -16,8 +16,14 @@ public class ChatAnimController : MonoBehaviour
     private void ShowChat(bool isShow)
     {
         if(isShow)
+        {
+            anim.ResetTrigger("Out");
             anim.SetTrigger("In");  
+        }
         else
+        {
+            anim.ResetTrigger("In");
             anim.SetTrigger("Out");
+        }
     }    
 }
