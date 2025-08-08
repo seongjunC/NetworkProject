@@ -20,10 +20,10 @@ public class ItemData : ScriptableObject
     [Header("아이템 스크립트")]
     public ItemEffectSO Effect;
 
-    public void UseItem()
+    public void UseItem(int actorNumber)
     {
         Debug.Log($"{itemName} 사용!");
-        Effect.Activate();
+        Effect.Activate(actorNumber);
     }
 
 }

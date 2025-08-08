@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ItemEffectSO : ScriptableObject
 {
-    public virtual void Activate()
+    public virtual void Activate(int actorNumber)
     {
         Debug.Log("미구현");
     }

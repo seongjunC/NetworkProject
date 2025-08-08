@@ -6,9 +6,9 @@ using UnityEngine;
 public class DoubleAttackPotion : ItemEffectSO
 {
 
-    public override void Activate()
+    public override void Activate(int actorNumber)
     {
         MSKTurnController turnCon = MSKTurnController.Instance;
-        turnCon.GetLocalPlayerFire().SetDoubleAttack();
+        turnCon.GetFire(actorNumber).SetDoubleAttack();
     }
 }

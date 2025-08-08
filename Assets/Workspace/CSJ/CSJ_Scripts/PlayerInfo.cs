@@ -6,7 +6,6 @@ using Game;
 using Photon.Realtime;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 [Serializable]
 public class PlayerInfo
@@ -15,10 +14,11 @@ public class PlayerInfo
     public string NickName => player.NickName;
     public int ActorNumber => player.ActorNumber;
     public ItemData[] items = new ItemData[2];
+    private Team team;
+
     public float damageDealt { get; private set; }
     public int KillCount { get; private set; }
-    public Action<ItemData> OnItemAcquired;
-    public Team team;
+    public Action<ItemData[]> OnItemChanged;
 
     public PlayerInfo(Player _player)
     {
@@ -36,7 +36,7 @@ public class PlayerInfo
             {
                 items[i] = item;
                 Debug.Log($"▶ ItemAcquire 성공: {item.name} / 슬롯 {i}");
-                OnItemAcquired?.Invoke(item);
+                OnItemChanged?.Invoke(items);
                 return true;
             }
         }
@@ -92,6 +92,8 @@ public class PlayerInfo
             items[i] = items[i + 1];
         }
         items[items.Length - 1] = null;
+
+        OnItemChanged?.Invoke(items);
     }
 
     public void ItemUse(int order)
@@ -106,7 +108,8 @@ public class PlayerInfo
             Debug.Log($"{player.NickName} : 해당 위치 {order + 1} 칸에 아이템이 없습니다.");
             return;
         }
-        items[order].UseItem();
+
+        items[order].UseItem(ActorNumber);
         ItemRemove(order);
     }
 

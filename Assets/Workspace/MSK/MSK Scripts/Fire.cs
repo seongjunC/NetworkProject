@@ -19,7 +19,7 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
     public bool isCharging = false;
     private bool isDoubleAttack = false;
     private bool OnDamageBuff = false;
-    private List<float?> DamageBuff = new List<float?>(2);
+    private List<float?> DamageBuff = new List<float?> { 0f, 0f };
 
     private ProjectileManager _projectileManager;
     private PlayerController _playerController;
@@ -37,6 +37,9 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Update()
     {
+        if (Chat.isChating)
+            return;
+
         if (!photonView.IsMine ||
         !MSKTurnController.Instance.IsMyTurn() ||
         !MSKTurnController.Instance.isTurnRunning ||

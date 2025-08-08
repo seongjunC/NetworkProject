@@ -14,7 +14,7 @@ public class HPPotionSO : ItemEffectSO
 
     private MSKTurnController turnController;
 
-    public override void Activate()
+    public override void Activate(int actorNumber)
     {
         // 추후 플레이어 컨트롤러에서 체력을 변경시키는 메서드 추가
         if (MSKTurnController.Instance != null)
@@ -26,7 +26,7 @@ public class HPPotionSO : ItemEffectSO
             Debug.LogError("턴 컨트롤러를 찾을 수 없습니다");
             return;
         }
-        PlayerController playerCon = turnController.GetPlayerController(PhotonNetwork.LocalPlayer.ActorNumber);
+        PlayerController playerCon = turnController.GetPlayerController(actorNumber);
         playerCon.RatioHealToPlayer(HealAmount);
         if (isTurnSkip)
         {
