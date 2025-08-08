@@ -14,6 +14,8 @@ public class PlayerInfo
     public string NickName => player.NickName;
     public int ActorNumber => player.ActorNumber;
     public ItemData[] items = new ItemData[2];
+    private Team team;
+
     public float damageDealt { get; private set; }
     public int KillCount { get; private set; }
     public Action<ItemData[]> OnItemChanged;
