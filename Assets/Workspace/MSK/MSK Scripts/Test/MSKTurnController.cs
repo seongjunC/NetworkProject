@@ -438,10 +438,10 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
 
     [PunRPC]
     public void RPC_UseItem(int actorNumber, int slotIndex)
-    {       
+    {
         var info = allPlayers[actorNumber];
         Debug.LogWarning($"{info.NickName}의 아이템 사용");
-        
+
         info.ItemUse(slotIndex);
 
         Debug.Log("동기화 호출");
@@ -638,6 +638,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     public void RPC_RequestPickup(int itemViewID, int actorNumber)
     {
         if (!PhotonNetwork.IsMasterClient) return;
+        if (isGameEnd) return;
 
         var pv = PhotonView.Find(itemViewID);
         if (pv == null) return;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 
@@ -65,22 +66,20 @@ public class ItemSpawner : MonoBehaviourPun
     public ItemData RandItem()
     {
         int rate = 0;
-        List<int> rateArr = new();
-        foreach (ItemData item in itemDatabase.GetAll())
+        var rateArr = itemDatabase.GetAll().ToList();
+        foreach (var item in rateArr)
         {
             rate += item.appearRate;
-            rateArr.Add(rate);
         }
         int rands = Random.Range(0, rate);
 
+        int sum = 0;
+
         for (int i = 0; i < rateArr.Count; i++)
         {
-            if (rands < rateArr[i])
-            {
-                return itemDatabase.Get($"{i}");
-            }
-
-            else rands -= rateArr[i];
+            int w = Mathf.Max(0, rateArr[i].appearRate);
+            sum += w;
+            if (rands < sum) return rateArr[i];
         }
         return itemDatabase.Get("0");
     }
