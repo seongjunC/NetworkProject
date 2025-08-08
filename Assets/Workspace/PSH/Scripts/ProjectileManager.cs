@@ -42,7 +42,7 @@ public class ProjectileManager : MonoBehaviourPun
         photonView.RPC(nameof(RPC_SpawnFireEffect), RpcTarget.All, firePointPosition, firePointRotation, playerAngle, isRight);
 
         // 효과음 재생
-        photonView.RPC(nameof(RPC_SpawnSFX), RpcTarget.All, projectileName);
+        photonView.RPC(nameof(RPC_SpawnSFX), RpcTarget.All, projectileName, firePointPosition);
 
         // 데미지 버프 적용
         if (onDamageBuff)
@@ -93,15 +93,15 @@ public class ProjectileManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void RPC_SpawnSFX(string projectileName)
+    public void RPC_SpawnSFX(string projectileName, Vector3 firePointPosition)
     {
         if (projectileName == "StarProjectile")
         {
-            Manager.Audio.PlaySFX("StarFire", transform.position);
+            Manager.Audio.PlaySFX("StarFire", firePointPosition);
         }
         else
         {
-            Manager.Audio.PlaySFX("TankFire", transform.position);
+            Manager.Audio.PlaySFX("TankFire", firePointPosition);
         }
     }
 
@@ -138,7 +138,7 @@ public class ProjectileManager : MonoBehaviourPun
         }
 
         // 효과음 재생
-        Manager.Audio.PlaySFX("Explosion", transform.position);
+        Manager.Audio.PlaySFX("Explosion", explosionPoint);
 
         // 카메라 흔들림
         float shakeIntensity = 12f + realDamage * .1f;

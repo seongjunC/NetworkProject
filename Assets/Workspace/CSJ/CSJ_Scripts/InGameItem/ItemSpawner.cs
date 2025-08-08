@@ -22,6 +22,9 @@ public class ItemSpawner : MonoBehaviourPun
     [SerializeField]
     private ItemDatabase itemDatabase;
 
+    [Header("미니맵 참조")]
+    [SerializeField] private MiniMap2 miniMap2;
+
     public GameObject SpawnRandomItem()
     {
         ItemData selectedItem = RandItem();
@@ -47,8 +50,18 @@ public class ItemSpawner : MonoBehaviourPun
         RpcTarget.AllBuffered,
         itemDatabase.GetIndex(selectedItem).ToString(), fallSpeed, swayAmp, swayFreq);
 
+        photonView.RPC(nameof(RPC_RegisterAllItemsByTag), RpcTarget.All);
+
         return drop;
     }
+
+    [PunRPC]
+    private void RPC_RegisterAllItemsByTag()
+    {
+        // 미니맵 아이콘 등록
+        miniMap2.RegisterAllItemsByTag();
+    }
+
 
     public ItemData RandItem()
     {

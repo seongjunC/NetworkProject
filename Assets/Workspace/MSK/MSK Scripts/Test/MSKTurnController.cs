@@ -70,7 +70,6 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     public HashSet<int> DeadPlayer = new();
     #endregion
 
-
     #region Unity LifeCycle
     private void Awake()
     {
@@ -96,6 +95,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient && isTurnRunning && isGameStart && !isGameEnd)
         {
+            // 발사 차징중이면 타이머 정지
+            if (GetFireMap(GetLocalPlayerController()).isCharging)
+            {
+                return;
+            }
             turnTimer -= Time.deltaTime;
             turnTimer = Mathf.Max(0f, turnTimer);
 
@@ -183,6 +187,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         {
             WindManager.Instance.GenerateNewWind();
         }
+
     }
 
 
@@ -262,7 +267,7 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
     private IEnumerator HandleCycleEnd()
     {
         RPC_TimeStop();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         var dropIDs = new List<int>();
         for (int i = 0; i < itemCount; i++)
