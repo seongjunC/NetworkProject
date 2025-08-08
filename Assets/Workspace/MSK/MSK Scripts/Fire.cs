@@ -37,6 +37,9 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Update()
     {
+        if (Chat.isChating)
+            return;
+
         if (!photonView.IsMine ||
         !MSKTurnController.Instance.IsMyTurn() ||
         !MSKTurnController.Instance.isTurnRunning ||
