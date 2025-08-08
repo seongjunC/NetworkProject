@@ -74,9 +74,12 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
                 Invoke(nameof(Shoot), 1f);
                 isDoubleAttack = false;
             }
+            else
+            {
+                powerCharge = 0f;
+                isCharging = false;
+            }
             MSKTurnController.Instance.testBattleManager.SetTurnEndButton(false);
-            powerCharge = 0f;
-            isCharging = false;
             _playerController.SetAttacked(true);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
@@ -109,9 +112,6 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
             , projectileName, _playerController._damage);
             storePower = 0f;
         }
-
-
-        InitDamageBuff();
     }
 
     public void SetDoubleAttack()
