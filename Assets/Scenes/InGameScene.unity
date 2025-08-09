@@ -7872,7 +7872,7 @@ MonoBehaviour:
   winnerTeamReward: 100
   loserTeamReward: 50
   MVPTeamReward: 150
-  turnLimit: 10
+  turnLimit: 20
   itemSpawner: {fileID: 747523985}
   itemCount: 2
   maxSpawnedItems: 10
