@@ -41,7 +41,7 @@ public class TankSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         if (tankData == null) return;
-
+        Manager.Audio.PlaySFX("GachaSelect", Vector3.zero);
         Manager.Data.TankDataController.SetSelectTank(tankData);
     }
 }
