@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Desert Runner
   m_EditorClassIdentifier: 
-  baseDamage: 55
+  baseDamage: 70
   baseMaxHp: 240
   baseMaxMove: 6
   damageGrowth: 8

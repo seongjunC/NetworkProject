@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Steel Hornet
   m_EditorClassIdentifier: 
-  baseDamage: 120
+  baseDamage: 100
   baseMaxHp: 220
   baseMaxMove: 5
   damageGrowth: 15
