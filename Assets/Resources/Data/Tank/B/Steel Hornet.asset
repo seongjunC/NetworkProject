@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseDamage: 120
   baseMaxHp: 220
-  baseMaxMove: 6
+  baseMaxMove: 5
   damageGrowth: 15
   maxHpGrowth: 15
   maxMoveGrowth: 0

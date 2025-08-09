@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseDamage: 40
   baseMaxHp: 300
-  baseMaxMove: 3
+  baseMaxMove: 2
   damageGrowth: 6
   maxHpGrowth: 30
   maxMoveGrowth: 0
-  damage: 1
-  maxMove: 5
-  maxHp: 1
+  damage: 40
+  maxMove: 3
+  maxHp: 300
   tankName: Sand Beetle
   tankMetaName: "\uBAA8\uB798 \uB531\uC815\uBC8C\uB808"
   rank: 3
