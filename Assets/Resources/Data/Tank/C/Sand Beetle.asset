@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Sand Beetle
   m_EditorClassIdentifier: 
-  baseDamage: 40
+  baseDamage: 55
   baseMaxHp: 300
-  baseMaxMove: 3
+  baseMaxMove: 2
   damageGrowth: 6
   maxHpGrowth: 30
   maxMoveGrowth: 0
-  damage: 1
-  maxMove: 5
-  maxHp: 1
+  damage: 40
+  maxMove: 3
+  maxHp: 300
   tankName: Sand Beetle
   tankMetaName: "\uBAA8\uB798 \uB531\uC815\uBC8C\uB808"
   rank: 3

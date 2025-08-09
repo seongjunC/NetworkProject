@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseDamage: 110
   baseMaxHp: 240
-  baseMaxMove: 5
+  baseMaxMove: 4
   damageGrowth: 12
   maxHpGrowth: 20
   maxMoveGrowth: 0
-  damage: 1
+  damage: 110
   maxMove: 5
-  maxHp: 1
+  maxHp: 240
   tankName: Green Viper
   tankMetaName: "\uB179\uC0C9 \uB3C5\uC0AC"
   rank: 1
