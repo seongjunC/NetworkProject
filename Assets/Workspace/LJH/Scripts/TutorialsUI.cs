@@ -30,9 +30,6 @@ public class TutorialsUI : MonoBehaviour
     [SerializeField] private Image tutorialImage;
     [SerializeField] private GifPlayer gifPlayer; // 추가: gif 재생 전용
 
-    [Header("패널 연결")]
-    [SerializeField] private GameObject mainmenuPanel;
-
     [Header("튜토리얼 데이터")]
     [SerializeField] private List<TutorialPage> gachaPages;
     [SerializeField] private List<TutorialPage> movePages;
@@ -199,6 +196,5 @@ public class TutorialsUI : MonoBehaviour
     {
         Debug.Log("튜토리얼 종료 버튼 클릭됨");
         gameObject.SetActive(false);    // 튜토리얼 패널 닫기
-        mainmenuPanel.SetActive(true);  // 메인 메뉴 패널 열기
     }
 }

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(PolygonCollider2D))]
 public class MapBoundary : MonoBehaviour
 {
     public SpriteRenderer mapSpriteRenderer;
@@ -10,12 +12,15 @@ public class MapBoundary : MonoBehaviour
     public float paddingUp = 10f;  //위로 쐈을 때는 맵 영역을 벗어났다고 생각하면 안됨
 
     private BoxCollider2D boxCollider;
+    private PolygonCollider2D polygonCollider;
 
     public Vector2 mapSize;
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
+        polygonCollider = GetComponent<PolygonCollider2D>();
 
+        polygonCollider.isTrigger = true;
     }
 
     private void OnEnable()
@@ -75,6 +80,18 @@ public class MapBoundary : MonoBehaviour
         boxCollider.size = mapSize + new Vector2(padding,padding + 2 * paddingUp);
         boxCollider.offset = new Vector2(0, paddingUp);
         Debug.Log("맵 크기에 맞게 트리거 영역 설정 완료");
+
+        Vector2 halfSize = boxCollider.size / 2f;
+        Vector2 offset = boxCollider.offset;
+
+        Vector2[] points = new Vector2[4];
+        points[0] = new Vector2(-halfSize.x, -halfSize.y) + offset; // 왼쪽 아래
+        points[1] = new Vector2(-halfSize.x, halfSize.y) + offset; // 왼쪽 위
+        points[2] = new Vector2(halfSize.x, halfSize.y) + offset; // 오른쪽 위
+        points[3] = new Vector2(halfSize.x, -halfSize.y) + offset; // 오른쪽 아래
+
+        polygonCollider.pathCount = 1;
+        polygonCollider.SetPath(0, points);
     }
     private void OnDrawGizmos()
     {
