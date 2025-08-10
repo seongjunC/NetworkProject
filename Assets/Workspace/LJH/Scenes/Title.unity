@@ -1001,6 +1001,9 @@ MonoBehaviour:
   messageField: {fileID: 254444597}
   chatContent: {fileID: 1795996672}
   chatPrefab: {fileID: 2380134647262137451, guid: aff4845d7669b9943acce245f92daeab, type: 3}
+  chatTypeText: {fileID: 0}
+  whisperColor: {r: 0, g: 0, b: 0, a: 0}
+  teamChatColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &90580810
 GameObject:
   m_ObjectHideFlags: 0
@@ -4819,9 +4822,13 @@ MonoBehaviour:
   pw: {fileID: 1520045308}
   loginButton: {fileID: 946512428}
   signupButton: {fileID: 504369270}
+  gameOutButton: {fileID: 0}
   signupPanel: {fileID: 1171272062}
   loginPanel: {fileID: 338581431}
   lobbyPanel: {fileID: 1161290376}
+  loginMessage: {fileID: 0}
+  isTest: 0
+  firstTank: {fileID: 0}
 --- !u!114 &494625360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4837,6 +4844,7 @@ MonoBehaviour:
   fields:
   - {fileID: 1346663378}
   - {fileID: 1520045308}
+  typing: {fileID: 0}
 --- !u!114 &494625361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5357,6 +5365,7 @@ GameObject:
   m_Component:
   - component: {fileID: 514901867}
   - component: {fileID: 514901866}
+  - component: {fileID: 514901868}
   m_Layer: 0
   m_Name: RoomManager
   m_TagString: Untagged
@@ -5376,8 +5385,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8fc1dfcd5b71434280b541e0d722b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSceneName: 
   playerSlotPrefab: {fileID: 4398182311349774773, guid: 7a08ab7af783c0246aafa561d7fd105b, type: 3}
-  playerContent: {fileID: 1704617411}
+  redPlayerContent: {fileID: 0}
+  bluePlayerContent: {fileID: 0}
+  waitPlayerContent: {fileID: 0}
   mapPrefab: {fileID: 2625679696576558356, guid: decee03dc4cb97845b94d708cbe31b47, type: 3}
   mapContent: {fileID: 975803561}
   mapSelectPanel: {fileID: 1978165175}
@@ -5388,13 +5400,22 @@ MonoBehaviour:
   startButton: {fileID: 1129176671}
   turnSwitchButton: {fileID: 2129785244}
   exitButton: {fileID: 1583460837}
+  damageTypeButton: {fileID: 0}
+  gameSettingButton: {fileID: 0}
+  gameSettingCloseButton: {fileID: 0}
   turnType: {fileID: 1872027177}
+  damageType: {fileID: 0}
   readyCount: {fileID: 1949107464}
   teamManager: {fileID: 122676290}
-  teamSwitchButton: {fileID: 1475644347}
+  blueTeamChangeButton: {fileID: 0}
+  redTeamChangeButton: {fileID: 0}
+  waitTeamChangeButton: {fileID: 0}
   lobby: {fileID: 1412463139}
   room: {fileID: 742476366}
+  gameSettingPanel: {fileID: 0}
+  login: {fileID: 0}
   chat: {fileID: 90391378}
+  roomName: {fileID: 0}
 --- !u!4 &514901867
 Transform:
   m_ObjectHideFlags: 0
@@ -5410,6 +5431,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &514901868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514901865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &556918627
 GameObject:
   m_ObjectHideFlags: 0
@@ -10604,6 +10647,7 @@ MonoBehaviour:
   - {fileID: 2068083345}
   - {fileID: 2004536275}
   - {fileID: 1827230979}
+  typing: {fileID: 0}
 --- !u!1 &1178142177
 GameObject:
   m_ObjectHideFlags: 0
@@ -12791,7 +12835,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b87c629154c8c43b97529f2528871a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nickNameSelectPanel: {fileID: 0}
   roomManager: {fileID: 514901866}
   roomPrefab: {fileID: 1617075138329975792, guid: 4510a627ce58bb4458847265f49addd3, type: 3}
   roomContent: {fileID: 1898938360}
@@ -12808,6 +12851,8 @@ MonoBehaviour:
   optionButton: {fileID: 467177389}
   gameOutButton: {fileID: 513053680}
   logOutButton: {fileID: 1957983575}
+  couponButton: {fileID: 0}
+  couponPanel: {fileID: 0}
   roomSelectPanel: {fileID: 1412463139}
   roomCreatePanel: {fileID: 1543071116}
   roomCloseSelectButton: {fileID: 590341445}
@@ -12815,6 +12860,14 @@ MonoBehaviour:
   roomCreateCloseButton: {fileID: 163036120}
   roomCreateButton: {fileID: 2023180171}
   fastJoinButton: {fileID: 751974556}
+  roomLeftButton: {fileID: 0}
+  roomRightButton: {fileID: 0}
+  gachaPanel: {fileID: 0}
+  gachaButton: {fileID: 0}
+  tankInventory: {fileID: 0}
+  tankInventoryButton: {fileID: 0}
+  tankInventoryButton2: {fileID: 0}
+  roomMax: 8
 --- !u!4 &1377205620
 Transform:
   m_ObjectHideFlags: 0
@@ -13201,6 +13254,7 @@ MonoBehaviour:
   fields:
   - {fileID: 1178142179}
   - {fileID: 890610683}
+  typing: {fileID: 0}
 --- !u!1 &1417640280
 GameObject:
   m_ObjectHideFlags: 0

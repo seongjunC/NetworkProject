@@ -10,7 +10,7 @@ public partial class GameData
 
     public GameData()
     {
-        bgm = -6f; // µü ¹Ý
-        sfx = -6f;
+        bgm = -9f; // µü ¹Ý
+        sfx = 0f;
     }
 }

@@ -1,3 +1,4 @@
+using Database;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -71,7 +72,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnEnable()
     {
         base.OnEnable();
-
         Subscribe();
         roomManager.RecreateRoom();
         isRoomCreate = false;
@@ -151,17 +151,21 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        if (isRoomCreate) return;        
+        if (isRoomCreate) return;
+
+        isRoomCreate = true;
 
         if (string.IsNullOrEmpty(roomNameField.text))
         {
             Manager.UI.PopUpUI.Show("방 이름을 입력해 주세요.");
+            isRoomCreate = false;
             return;
         }
 
         if(string.IsNullOrWhiteSpace(maxPlayerField.text))
         {
             Manager.UI.PopUpUI.Show("인원을 입력해주세요.\n(띄어 쓴 공간이 있어서는 안 됩니다.)", Color.red);
+            isRoomCreate = false;
             return;
         }
 
@@ -170,16 +174,19 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             if (maxPlayer <= 0)
             {
                 Manager.UI.PopUpUI.Show("0보다 큰 값을 입력해 주세요.");
+                isRoomCreate = false;
                 return;
             }
             if (maxPlayer % 2 != 0)
             {
                 Manager.UI.PopUpUI.Show("짝수를 입력해 주세요.");
+                isRoomCreate = false;
                 return;
             }
             if (maxPlayer > maxPlayerCount)
             {
                 Manager.UI.PopUpUI.Show($"{maxPlayerCount} 이하의 값을 입력해 주세요.");
+                isRoomCreate = false;
                 return;
             }
         }
@@ -189,11 +196,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             if (string.IsNullOrWhiteSpace(passwordField.text))
             {
                 Manager.UI.PopUpUI.Show("비밀번호는 띄어 쓰거나 빈칸일 수 없습니다.");
+                isRoomCreate = false;
                 return;
             }
-        }
-
-        isRoomCreate = true;
+        }        
 
         StartCoroutine(RoomCreateRoutine(maxPlayer));
     }

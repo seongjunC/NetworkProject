@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseDamage: 105
   baseMaxHp: 250
-  baseMaxMove: 5
+  baseMaxMove: 4
   damageGrowth: 10
   maxHpGrowth: 22
   maxMoveGrowth: 0
-  damage: 1
+  damage: 105
   maxMove: 5
-  maxHp: 1
+  maxHp: 250
   tankName: Jungle Viper
   tankMetaName: "\uC815\uAE00 \uB3C5\uC0AC"
   rank: 1

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e03c9967cd3d54b8f893ce10c03919, type: 3}
   m_Name: Harbor Crab
   m_EditorClassIdentifier: 
-  baseDamage: 50
+  baseDamage: 80
   baseMaxHp: 270
   baseMaxMove: 4
   damageGrowth: 7
