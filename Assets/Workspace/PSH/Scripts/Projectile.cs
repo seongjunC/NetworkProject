@@ -37,6 +37,7 @@ public class Projectile : MonoBehaviourPun
     private Vector2 windForce;
 
     private TestBattleManager testBattleManager;
+    public bool isDoubleAttack;
 
     private void Awake()
     {
@@ -199,7 +200,7 @@ public class Projectile : MonoBehaviourPun
             CameraController.Instance.ReturnToPlayerCam();
 
         Debug.Log($"[DestroyRoutine] : {ownerActorNumber}");
-        if (PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber)
+        if ((PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber) && !isDoubleAttack)
             testBattleManager.TestTurnEnd(ownerActorNumber);
 
         Destroy(gameObject);

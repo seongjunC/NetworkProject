@@ -32,7 +32,9 @@ public class HPPotionSO : ItemEffectSO
         {
             if (turnController != null)
             {
-                turnController.photonView.RPC("RPC_TurnFinished", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber);
+                Debug.Log("힐링포션 턴엔드");
+                if (PhotonNetwork.LocalPlayer.ActorNumber == actorNumber)
+                    turnController.testBattleManager.TestTurnEnd();
             }
         }
 
