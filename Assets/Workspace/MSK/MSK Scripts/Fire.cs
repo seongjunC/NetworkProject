@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
     private PlayerController _playerController;
 
     private string projectileName;
+    private bool shootRoutineRunning;
+    private Coroutine fireCorou;
 
     private void Awake()
     {
@@ -54,6 +57,8 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
+        if (shootRoutineRunning) return;
+
 
         // 스페이스바 누르고 있으면 차지 시작
         if (Input.GetKey(KeyCode.Space))
@@ -65,27 +70,57 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         // 스페이스바에서 손을 뗐을 때 또는 풀차지시 발사
-        if (isCharging && Input.GetKeyUp(KeyCode.Space) || powerCharge >= maxPower)
+        if ((isCharging && Input.GetKeyUp(KeyCode.Space)) || powerCharge >= maxPower)
         {
-            Shoot();
-            if (isDoubleAttack)
-            {
-                storePower = powerCharge;
-                Invoke(nameof(Shoot), 1f);
-                isDoubleAttack = false;
-            }
-            else
-            {
-                powerCharge = 0f;
-                isCharging = false;
-            }
+            storePower = Mathf.Max(powerCharge, 0f);
+            bool isDouble = isDoubleAttack;
+            powerCharge = 0f;
+            isCharging = false;
+
             MSKTurnController.Instance.testBattleManager.SetTurnEndButton(false);
-            _playerController.SetAttacked(true);
+
+            if (fireCorou != null) StopCoroutine(fireCorou);
+            fireCorou = StartCoroutine(ShootRoutine(storePower, isDouble));
+
+            //             Shoot();
+            //             if (isDoubleAttack)
+            //             {
+            // 
+            //                 storePower = powerCharge;
+            //                 Invoke(nameof(Shoot), 1f);
+            //                 isDoubleAttack = false;
+            //             }
+            //             else
+            //             {
+            //                 powerCharge = 0f;
+            //                 isCharging = false;
+            //             }
+            //             MSKTurnController.Instance.testBattleManager.SetTurnEndButton(false);
         }
         Debug.DrawRay(firePoint.position, firePoint.up * 2f, Color.red);
     }
 
-    private void Shoot()
+    private IEnumerator ShootRoutine(float power, bool isDouble)
+    {
+        shootRoutineRunning = true;
+
+        Shoot(power);
+        if (isDouble)
+        {
+            isDoubleAttack = false;
+            float t = 0;
+            while (t < 1f)
+            {
+                t += Time.deltaTime;
+                yield return null;
+            }
+            Shoot(power);
+        }
+        _playerController.SetAttacked(true);
+        shootRoutineRunning = false;
+    }
+
+    private void Shoot(float power)
     {
         // 마스터 클라이언트에게 발사 요청
         object[] damageBuffObjects = new object[DamageBuff.Count];
@@ -99,21 +134,10 @@ public class Fire : MonoBehaviourPunCallbacks, IPunObservable
         float playerAngle = gameObject.transform.eulerAngles.z;
         float totalDamage = _playerController._damage * Random.Range(0.85f, 1f);
 
-        if (powerCharge != 0f)
-        {
-            _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
-            firePoint.position, firePoint.rotation, powerCharge,
-            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
-            , projectileName, totalDamage);
-        }
-        else
-        {
-            _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
-            firePoint.position, firePoint.rotation, storePower,
-            OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
-            , projectileName, totalDamage);
-            storePower = 0f;
-        }
+        _projectileManager.photonView.RPC(nameof(ProjectileManager.RPC_RequestFireProjectile), RpcTarget.MasterClient,
+        firePoint.position, firePoint.rotation, power,
+        OnDamageBuff, damageBuffObjects, PhotonNetwork.LocalPlayer.ActorNumber, playerAngle, isRight
+        , projectileName, totalDamage, isDoubleAttack);
     }
 
     public void SetDoubleAttack()

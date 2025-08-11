@@ -27,7 +27,7 @@ public class ProjectileManager : MonoBehaviourPun
     [PunRPC]
     public void RPC_RequestFireProjectile(Vector3 firePointPosition, Quaternion firePointRotation,
         float powerCharge, bool onDamageBuff, object[] damageBuffArray, int ownerActorNumber, float playerAngle, bool isRight
-        ,string projectileName, float damage)
+        , string projectileName, float damage, bool isDoubleAttack)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -37,6 +37,7 @@ public class ProjectileManager : MonoBehaviourPun
         // 포탄 생성
         GameObject bullet = PhotonNetwork.Instantiate($"Prefabs/{projectileName}", firePointPosition, firePointRotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
+        bulletScript.isDoubleAttack = isDoubleAttack;
         bulletScript.damage = damage;
         // 발사 이펙트 생성
         photonView.RPC(nameof(RPC_SpawnFireEffect), RpcTarget.All, firePointPosition, firePointRotation, playerAngle, isRight);

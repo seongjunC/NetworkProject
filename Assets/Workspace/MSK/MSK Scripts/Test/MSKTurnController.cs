@@ -410,6 +410,11 @@ public class MSKTurnController : MonoBehaviourPunCallbacks
         }
     }
 
+    public int GetCurrentPlayerActor()
+    {
+        return currentPlayer.ActorNumber;
+    }
+
     #endregion
 
 
